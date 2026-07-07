@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4D Frozen Fresh Holdout
+
+Added `eval/interventional_evidence_acquisition_phase4d_frozen_fresh_holdout.py` and generated aggregate-only report [`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json). Status is `fresh_holdout_screen_positive_no_claim`.
+
+The run followed Phase 4C: Phase 4C gate required, seven frozen labels, four frozen pre-action features, deterministic stdlib-only smoothed categorical table, fit only from Phase 2 private training rows, and no fit/tuning on fresh holdout rows. It used a fresh ignored manifest, wrote private rows only under ignored `runs/`, and published buckets only. It creates no reusable model artifact and makes no winner/lift/product/default claim.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4C Frozen Fresh-Holdout Protocol Design
 
 Added [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) and public docs-only summary [`phase4c_frozen_fresh_holdout_protocol_design_only_report.json`](../../artifacts/phase4c_frozen_fresh_holdout_protocol_design_only/phase4c_frozen_fresh_holdout_protocol_design_only_report.json). Status is `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`.

@@ -93,3 +93,9 @@ Allowed future Phase 4D statuses are only:
 ## Outcome of Phase 4C
 
 Phase 4C freezes the design for a possible future Phase 4D. It does not authorize Phase 4D execution by itself.
+
+## Phase 4D execution note
+
+Phase 4D was later run as a standalone local screen using this frozen protocol. Public report: [`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json). Status is `fresh_holdout_screen_positive_no_claim`.
+
+The Phase 4D result remains no-claim. It used ignored private input/output, published aggregate buckets only, created no reusable model artifact, and does not support winner, lift, product, default, provider/network, or runtime claims.

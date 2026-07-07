@@ -2,15 +2,15 @@
 
 日期：2026-07-07
 
-Status: `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`
+Status: `fresh_holdout_screen_positive_no_claim`
 
-Authorization: `design_only_not_execution`
+Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 4C frozen fresh-holdout protocol design。参见 [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) 和 `artifacts/phase4c_frozen_fresh_holdout_protocol_design_only/phase4c_frozen_fresh_holdout_protocol_design_only_report.json`。Status 为 `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`。它在 Phase 4B commit `6626075` 后冻结 possible future Phase 4D protocol；它不读取 private rows、不创建 manifests、不收集 data、不训练/拟合、不改变 CI，也不授权 execution。
+最新 checkpoint：Phase 4D frozen fresh-holdout local screen。参见 [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) 和 `artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json`。Status 为 `fresh_holdout_screen_positive_no_claim`。它在显式 private input/output confirmations 下遵循 Phase 4C frozen protocol，private rows 保存在 ignored `runs/` 下，public output 仅为 aggregate-only。它不授权 product/default changes 或 method claim。
 
 ## Phase 2 small fair local comparison status
 
@@ -49,6 +49,12 @@ Phase 4B 在既有 ignored Phase 2/3 private rows 上运行 stdlib-only determin
 Phase 4C 只是 design-only。它在任何 execution 前冻结 possible future Phase 4D fresh-holdout protocol：target 12 个 fresh hard current-source tasks，hard max 16 tasks，7 个 fixed labels，max 112 private rows，只使用 ignored `runs/`，固定 features 为 `action_label`/`task_family_bucket`/`availability_bucket`/`budget_bucket`，使用 deterministic stdlib-only smoothed categorical table，并且不在 holdout rows 上 fit/tune。
 
 Future Phase 4D statuses 仅限 `stop_no_learning_claim`、`repair_holdout_contract_no_claim` 或 `fresh_holdout_screen_positive_no_claim`。该 design 禁止 RPM-D2/model scaling、LLM/provider/network、runtime/default changes、新 retrieval families、reusable model artifacts、在 holdout rows 上 training、holdout 后 tuning、winner/lift/product/default claims，以及公开 private refs 或 rows。
+
+## Phase 4D frozen fresh-holdout screen status
+
+Phase 4D 作为 standalone local script `eval/interventional_evidence_acquisition_phase4d_frozen_fresh_holdout.py` 运行。它要求 Phase 4C public gate，使用 fresh ignored private manifest，只从 frozen Phase 2 private training rows fit，并且不在 holdout rows 上 fit/tune。Private manifest 和 private rows 保留在 ignored `runs/phase4d_frozen_fresh_holdout/...`；public output 仅为 aggregate-only。
+
+Public status 为 `fresh_holdout_screen_positive_no_claim`。这只是 screen result；不是 method selection，不是 reusable model artifact，也不是 runtime/default/product claim。
 
 ## 边界
 

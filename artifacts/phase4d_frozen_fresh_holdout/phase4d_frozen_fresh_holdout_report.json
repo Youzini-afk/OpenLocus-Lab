@@ -1,0 +1,113 @@
+{
+  "authorization_attestation": {
+    "ci_changed": false,
+    "claim_level": "no_claim",
+    "confirm_private_input_required": true,
+    "confirm_private_output_required": true,
+    "llm_used": false,
+    "local_only": true,
+    "method_claimed": false,
+    "model_training_executed": false,
+    "new_retrieval_family_added": false,
+    "phase4c_gate_passed": true,
+    "phase4c_gate_required": true,
+    "provider_network_used": false,
+    "reusable_model_artifact_created": false,
+    "rpm_d2_or_model_scaling_used": false,
+    "runtime_default_changed": false
+  },
+  "conservative_recommendation": "fresh_holdout_screen_positive_no_claim",
+  "coverage_summary": {
+    "family_coverage_buckets": {
+      "boundary_condition": "count_6_to_20",
+      "config_or_test_mismatch": "count_6_to_20",
+      "cross_file_symbol": "count_6_to_20",
+      "distractor_file": "count_6_to_20",
+      "helper_dependency_choice": "count_6_to_20",
+      "nearby_wrong_function": "count_6_to_20",
+      "operation_ambiguity": "count_6_to_20",
+      "same_symbol_support_relation": "count_6_to_20"
+    },
+    "label_coverage_buckets": {
+      "abstain": "count_6_to_20",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_6_to_20",
+      "stop": "count_6_to_20",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "overlap_check_bucket": "count_0"
+  },
+  "evidencecore_summary": {
+    "candidate_found_alone_is_not_evidence": true,
+    "evidence_materialization_pass_bucket": "count_gt_50",
+    "evidence_requires_current_source_refs_hash_currentness_range_match_task_tie": true,
+    "evidence_requires_real_current_source_read": true,
+    "evidence_success_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_1_to_5",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "materialized_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_6_to_20",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_1_to_5",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_6_to_20"
+    },
+    "stop_abstain_success_bucket": "count_0"
+  },
+  "frozen_protocol_summary": {
+    "basis_commit": "6626075",
+    "feature_set_frozen": true,
+    "fit_or_tune_on_holdout_rows": false,
+    "fit_source": "frozen_phase2_training_rows",
+    "labels_frozen": true,
+    "screen_method_frozen": true,
+    "stdlib_only": true
+  },
+  "input_summary": {
+    "fresh_holdout_task_count_bucket": "count_6_to_20",
+    "phase2_training_row_count_bucket": "count_gt_50",
+    "private_row_count_bucket": "count_gt_50",
+    "source_kind_bucket": "fresh_current_source_manifest_private"
+  },
+  "phase": "phase4d_frozen_fresh_holdout",
+  "privacy_summary": {
+    "private_hashes_public": false,
+    "private_manifest_paths_public": false,
+    "private_paths_public": false,
+    "private_ranges_public": false,
+    "private_row_ids_public": false,
+    "private_rows_published": false,
+    "private_rows_written": true,
+    "private_run_dirs_public": false,
+    "private_snippets_public": false,
+    "private_task_ids_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "raw_rows_public": false
+  },
+  "schema_version": "phase4d_frozen_fresh_holdout_public_report_v1",
+  "screen_summary": {
+    "heldout_screen_bucket": "count_gt_50",
+    "majority_non_success_control_bucket": "count_0",
+    "shuffled_control_bucket": "count_21_to_50",
+    "shuffled_control_comparison_bucket": "above_control_6_to_20"
+  },
+  "status": "fresh_holdout_screen_positive_no_claim",
+  "validation_summary": {
+    "no_count_1_values": true,
+    "no_runs_files_staged_required": true,
+    "public_leak_scan": "passed",
+    "route_specific_phase4d_validation": "passed",
+    "self_test_available": true
+  }
+}

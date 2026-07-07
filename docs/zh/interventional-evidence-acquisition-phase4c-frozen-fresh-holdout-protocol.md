@@ -93,3 +93,9 @@ Public output 不得包含 private rows、task text、task IDs、exact paths、r
 ## Phase 4C outcome
 
 Phase 4C 只冻结 possible future Phase 4D 的设计。它本身不授权 Phase 4D 执行。
+
+## Phase 4D execution note
+
+Phase 4D 后续已按该 frozen protocol 作为 standalone local screen 运行。Public report：[`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json)。Status 为 `fresh_holdout_screen_positive_no_claim`。
+
+Phase 4D result 仍是 no-claim。它使用 ignored private input/output，只发布 aggregate buckets，不创建 reusable model artifact，也不支持 winner、lift、product、default、provider/network 或 runtime claims。
