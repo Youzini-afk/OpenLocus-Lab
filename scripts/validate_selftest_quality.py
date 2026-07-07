@@ -36,6 +36,9 @@ SELF_TEST_FUNCTION_NAMES = {"run_self_test", "run_self_tests"}
 EXPECTED_TEXT_BOOLEAN_METHODS = {"startswith", "endswith"}
 GENERATOR_CONSUMING_CALL_NAMES = {"all", "any", "dict", "list", "max", "min", "next", "set", "sorted", "sum", "tuple"}
 TRY_STATEMENT_TYPES = (ast.Try,) + ((ast.TryStar,) if hasattr(ast, "TryStar") else ())
+MAX_STATIC_STRING_CHARS = 4096
+MAX_STATIC_VALUE_ITEMS = 128
+MAX_STATIC_INT_BITS = 1024
 
 
 @dataclass(frozen=True)
@@ -626,6 +629,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._set_expression_cannot_raise(node)
         if isinstance(node, ast.UnaryOp):
             return cls._expression_cannot_raise(node.operand)
+        if isinstance(node, ast.BinOp):
+            return cls._binop_expression_cannot_raise(node)
         if isinstance(node, ast.BoolOp):
             return cls._boolop_expression_cannot_raise(node)
         if isinstance(node, ast.IfExp):
@@ -652,6 +657,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if isinstance(node.op, ast.Or) and truth is True:
                 return True
         return True
+
+    @classmethod
+    def _binop_expression_cannot_raise(cls, node: ast.BinOp) -> bool:
+        if not cls._expression_cannot_raise(node.left) or not cls._expression_cannot_raise(node.right):
+            return False
+        known, _value = cls._static_binop_value(node)
+        return known
 
     @classmethod
     def _dict_expression_cannot_raise(cls, node: ast.Dict) -> bool:
@@ -1265,10 +1277,77 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return False, None
 
     @classmethod
+    def _static_binop_value(cls, node: ast.BinOp) -> tuple[bool, object]:
+        known_left, left_value = cls._static_comparison_value(node.left)
+        known_right, right_value = cls._static_comparison_value(node.right)
+        if not known_left or not known_right:
+            return False, None
+        try:
+            if isinstance(node.op, ast.Add):
+                value = left_value + right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.Sub) and cls._static_values_are_numbers(left_value, right_value):
+                value = left_value - right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.Mult) and cls._static_values_are_numbers(left_value, right_value):
+                value = left_value * right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.Div) and cls._static_values_are_numbers(left_value, right_value):
+                value = left_value / right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.FloorDiv) and cls._static_values_are_numbers(left_value, right_value):
+                value = left_value // right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.Mod) and cls._static_values_are_numbers(left_value, right_value):
+                value = left_value % right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.BitAnd) and cls._static_values_are_ints(left_value, right_value):
+                value = left_value & right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.BitOr) and cls._static_values_are_ints(left_value, right_value):
+                value = left_value | right_value  # type: ignore[operator]
+            elif isinstance(node.op, ast.BitXor) and cls._static_values_are_ints(left_value, right_value):
+                value = left_value ^ right_value  # type: ignore[operator]
+            else:
+                return False, None
+        except (ArithmeticError, TypeError, ValueError, OverflowError):
+            return False, None
+        if not cls._static_value_is_small(value):
+            return False, None
+        return True, value
+
+    @staticmethod
+    def _static_values_are_numbers(left: object, right: object) -> bool:
+        number_types = (int, float, complex)
+        return (
+            isinstance(left, number_types)
+            and isinstance(right, number_types)
+            and not isinstance(left, bool)
+            and not isinstance(right, bool)
+        )
+
+    @staticmethod
+    def _static_values_are_ints(left: object, right: object) -> bool:
+        return isinstance(left, int) and isinstance(right, int) and not isinstance(left, bool) and not isinstance(right, bool)
+
+    @classmethod
+    def _static_value_is_small(cls, value: object) -> bool:
+        if isinstance(value, bool):
+            return True
+        if isinstance(value, int):
+            return value.bit_length() <= MAX_STATIC_INT_BITS
+        if isinstance(value, (float, complex, type(None))):
+            return True
+        if isinstance(value, (str, bytes)):
+            return len(value) <= MAX_STATIC_STRING_CHARS
+        if isinstance(value, (tuple, list, set, frozenset)):
+            return len(value) <= MAX_STATIC_VALUE_ITEMS and all(cls._static_value_is_small(element) for element in value)
+        if isinstance(value, dict):
+            return len(value) <= MAX_STATIC_VALUE_ITEMS and all(
+                cls._static_value_is_small(key) and cls._static_value_is_small(item) for key, item in value.items()
+            )
+        return False
+
+    @classmethod
     def _static_comparison_value(cls, node: ast.AST) -> tuple[bool, object]:
         known, value = cls._static_literal_value(node)
         if known:
             return True, value
+        if isinstance(node, ast.BinOp):
+            return cls._static_binop_value(node)
         if isinstance(node, ast.Tuple):
             values = []
             for element in node.elts:
@@ -2240,6 +2319,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_add_except_check_rejected",
+            "def run_self_tests():\n    try:\n        1 + 2\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_string_concat_except_check_rejected",
+            "def run_self_tests():\n    try:\n        'a' + 'b'\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_tuple_concat_except_check_rejected",
+            "def run_self_tests():\n    try:\n        (1,) + (2,)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_true_or_risky_except_check_rejected",
             "def run_self_tests():\n    try:\n        True or risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2285,6 +2379,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_add_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        1 + 2\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_known_raise_disjoint_except_then_check_rejected",
             "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2317,6 +2416,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_dict_with_risky_value_except_check_allowed",
             "def run_self_tests():\n    try:\n        {'a': risky()}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_divzero_except_check_allowed",
+            "def run_self_tests():\n    try:\n        1 / 0\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_type_error_binop_except_check_allowed",
+            "def run_self_tests():\n    try:\n        'a' + 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_risky_binop_except_check_allowed",
+            "def run_self_tests():\n    try:\n        risky() + 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2689,7 +2803,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container no-raise, "
+            "boolop no-raise, literal-container/binop no-raise, "
             "and missing-check cases"
         )
         return 0
