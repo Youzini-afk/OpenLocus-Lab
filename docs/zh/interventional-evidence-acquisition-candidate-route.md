@@ -2,15 +2,21 @@
 
 日期：2026-07-07
 
-Status: `phase2_comparison_design_only_no_execution_no_claim`
+Status: `phase2_small_fair_local_comparison_no_claim`
 
-Authorization: `design_only_not_execution`
+Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 design checkpoint：[`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md)。它只是 Phase 2 comparison design，不是 execution evidence，也不是 method claim。
+最新 checkpoint：Phase 2 small fair local comparison pilot。Public report：`artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json`，status 为 `phase2_small_fair_local_comparison_no_claim`，recommendation 为 `phase2_positive_screen_no_promotion`。它只是 aggregate screen，不是 method winner、lift、signal、product 或 default claim。
+
+## Phase 2 small fair local comparison status
+
+同一 script 现在支持 `--run-phase2-comparison --confirm-private-output --phase2-private-manifest <ignored-local-path>`。它使用 ignored private manifest 中的 hard current-source tasks，对既有 7 个 micro-policy/control labels 做 paired local comparison。Private rows 保留在 ignored `runs/`；public output 只包含 aggregate 信息。
+
+该 screen 比较 fixed-label buckets，并记录 best fixed local baselines。Best label 被视为 baseline，不是 winner。Counted success 需要 real current-source read、path/range/content/hash/currentness/range match、non-empty content 和 task-target tie。Candidate-found 不是 evidence。`stop` 和 `abstain` 仍保持 controls。
 
 ## 边界
 

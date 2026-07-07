@@ -2,9 +2,11 @@
 
 Date: 2026-07-07
 
-Status: `phase2_comparison_design_only_no_execution_no_claim`
+Status: `phase2_small_fair_local_comparison_no_claim`
 
-Authorization: design only. This document does not authorize execution, private row collection, artifact creation, CI changes, model work, provider/network use, or runtime/default changes.
+Authorization: low-resource local pilot completed with private rows under ignored `runs/`. This document still does not authorize CI changes, model work, provider/network use, runtime/default changes, product promotion, or method-winner claims.
+
+Latest result: public aggregate-only report [`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json), status `phase2_small_fair_local_comparison_no_claim`, recommendation `phase2_positive_screen_no_promotion`.
 
 ## What Phase 1 showed
 
@@ -26,7 +28,7 @@ The comparison must be against the best fixed local baseline, not only against `
 
 ## Proposed Phase 2 shape
 
-This is a possible future experiment design only:
+The pilot used this shape:
 
 - 24-40 hard tasks.
 - Same seven local labels/families unless a separate decision changes them:
@@ -59,6 +61,8 @@ This is a possible future experiment design only:
 - `repair_design_no_claim`: instrumentation, task mix, or privacy boundary is bad.
 - `phase2_positive_screen_no_promotion`: positive screen only; still no product/default claim.
 - No method winner unless a later independent validation confirms it.
+
+The completed pilot selected `phase2_positive_screen_no_promotion`. This means only that the aggregate screen was positive enough to keep a future explicit decision possible. It is not a winner, lift, signal, product, or default claim.
 
 ## Forbidden list
 

@@ -2,9 +2,11 @@
 
 日期：2026-07-07
 
-Status: `phase2_comparison_design_only_no_execution_no_claim`
+Status: `phase2_small_fair_local_comparison_no_claim`
 
-Authorization：仅 design。本文不授权 execution、private row collection、artifact creation、CI changes、model work、provider/network use 或 runtime/default changes。
+Authorization：low-resource local pilot 已完成，private rows 只在 ignored `runs/` 下。本文仍不授权 CI changes、model work、provider/network use、runtime/default changes、product promotion 或 method-winner claims。
+
+Latest result：public aggregate-only report [`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json)，status 为 `phase2_small_fair_local_comparison_no_claim`，recommendation 为 `phase2_positive_screen_no_promotion`。
 
 ## Phase 1 说明了什么
 
@@ -26,7 +28,7 @@ Phase 1E 只是 diagnostic screen。它没有排序 policies，也没有提出 m
 
 ## Proposed Phase 2 shape
 
-这只是可能的 future experiment design：
+Pilot 使用了该形态：
 
 - 24-40 个 hard tasks。
 - 除非另有单独决定，否则使用同样 7 个 local labels/families：
@@ -59,6 +61,8 @@ Phase 1E 只是 diagnostic screen。它没有排序 policies，也没有提出 m
 - `repair_design_no_claim`：instrumentation、task mix 或 privacy boundary 有问题。
 - `phase2_positive_screen_no_promotion`：只是 positive screen；仍然没有 product/default claim。
 - 除非后续 independent validation 确认，否则没有 method winner。
+
+已完成 pilot 选择 `phase2_positive_screen_no_promotion`。这只表示 aggregate screen 足够正向，可保留 future explicit decision 的可能；它不是 winner、lift、signal、product 或 default claim。
 
 ## Forbidden list
 

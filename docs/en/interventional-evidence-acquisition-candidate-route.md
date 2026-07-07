@@ -2,15 +2,21 @@
 
 Date: 2026-07-07
 
-Status: `phase2_comparison_design_only_no_execution_no_claim`
+Status: `phase2_small_fair_local_comparison_no_claim`
 
-Authorization: `design_only_not_execution`
+Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest design checkpoint: [`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md). It is Phase 2 comparison design only, not execution evidence and not a method claim.
+Latest checkpoint: Phase 2 small fair local comparison pilot. Public report: `artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json`, status `phase2_small_fair_local_comparison_no_claim`, recommendation `phase2_positive_screen_no_promotion`. It is an aggregate screen only, not a method winner, lift, signal, product, or default claim.
+
+## Phase 2 small fair local comparison status
+
+The same script now supports `--run-phase2-comparison --confirm-private-output --phase2-private-manifest <ignored-local-path>`. It runs a paired local comparison of the existing seven micro-policy/control labels over hard current-source tasks from an ignored private manifest. Private rows stay under ignored `runs/`; public output is aggregate-only.
+
+The screen compares fixed-label buckets and records best fixed local baselines. The best label is treated as the baseline, not as a winner. Counted success requires real current-source read, path/range/content/hash/currentness/range match, non-empty content, and task-target tie. Candidate-found is not evidence. `stop` and `abstain` remain controls.
 
 ## Boundary
 

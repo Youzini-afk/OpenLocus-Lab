@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 2 Small Fair Local Comparison
+
+已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase2-comparison --confirm-private-output` 和 `--validate-phase2-report`。Confirmed local run 使用 `runs/` 下 ignored private manifest，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`phase2_small_fair_local_comparison_pilot_report.json`](../../artifacts/phase2_small_fair_local_comparison_pilot/phase2_small_fair_local_comparison_pilot_report.json)，status 为 `phase2_small_fair_local_comparison_no_claim`。
+
+这只是 conservative aggregate screen。它比较既有 7 个 local micro-policy/control labels 与 best fixed local baseline，并记录 recommendation `phase2_positive_screen_no_promotion`。它不声称 winner、lift、signal、product readiness 或 default change。无 provider/network/LLM、无 model/training、无 runtime/default change、无新增 retrieval family。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 2 Comparison Design
 
 已新增 paired design-only docs：[`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md)。Status 为 `phase2_comparison_design_only_no_execution_no_claim`。
