@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Starred-Unpack Boundary
+
+Starred-unpack boundary validation now keeps fake active coverage out of try/except checks when static tuple/list starred unpack assignments cannot raise. Synthetic files where the only active-looking check lived in an except handler after safe starred unpack assignments such as `a, *rest = (1, 2)`, `*rest, = ()`, `a, *rest, b = (1, 2, 3)`, or nested `a, (*mid, z) = (1, (2, 3))` now fail with `missing_selftest_checks`, and post-try checks after a safe starred unpack body whose `else` exits also fail as unreachable. Non-iterable RHS values, length-too-short starred unpack assignments, nested-shape mismatches, and dynamic RHS values remain conservative and active.
+
+After the starred-unpack boundary guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28841568615`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28841568615) passed on `6cd17f6` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Assignment-Unpack Boundary
 
 Assignment-unpack boundary validation now keeps try/except checks active when tuple/list unpack assignments may raise. Synthetic files where the only active-looking check lived in an except handler after safe same-shape unpack assignments such as `a, b = (1, 2)` still fail with `missing_selftest_checks`, and post-try checks after a matching unpack body whose `else` exits also fail as unreachable. Unsafe or uncertain unpack assignments such as `a, b = 1`, `a, b = (1,)`, nested shape mismatches, and dynamic RHS values remain conservative and active.

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Starred-Unpack Boundary
+
+Starred-unpack boundary validation 现在会在 static tuple/list starred unpack assignments 不会 raise 时，阻止 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于 `a, *rest = (1, 2)`、`*rest, = ()`、`a, *rest, b = (1, 2, 3)` 或 nested `a, (*mid, z) = (1, (2, 3))` 这类 safe starred unpack assignments 后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；safe starred unpack body 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。Non-iterable RHS values、length-too-short starred unpack assignments、nested-shape mismatches 和 dynamic RHS values 仍保持 conservative active。
+
+加入 starred-unpack boundary guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28841568615`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28841568615) 已在 `6cd17f6` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Assignment-Unpack Boundary
 
 Assignment-unpack boundary validation 现在会在 tuple/list unpack assignments 可能 raise 时让 try/except checks 保持 active。唯一看似 active 的 check 位于 `a, b = (1, 2)` 这类 safe same-shape unpack assignment 后的 except handler 时，仍会以 `missing_selftest_checks` 失败；matching unpack body 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。`a, b = 1`、`a, b = (1,)`、nested shape mismatches 和 dynamic RHS values 这类 unsafe/uncertain unpack assignments 仍保持 conservative active。
