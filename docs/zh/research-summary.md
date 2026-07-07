@@ -52,7 +52,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest assert-statement validation**：在 normal Python assert evaluation boundaries 被纳入 self-test coverage guard 后，follow-up run [`28829592130`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28829592130) 已在 `7023786` 上通过。
 - **Latest known-exception try-handler validation**：在 definitely raised built-in exceptions 被纳入 try-handler/fallthrough reachability 后，follow-up run [`28830363816`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28830363816) 已在 `a21504b` 上通过。
 - **Latest with-control-flow validation**：在 `with` control-flow exits 与 suppressible exceptions 被分开处理 self-test reachability 后，follow-up run [`28831054909`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831054909) 已在 `cbecc9b` 上通过。
-- **Latest for-else exit local guard**：本地 guard probes 现在会拒绝 nonempty literal iterables、unknown iterables 和 `continue` bodies 的 no-break `for ... else: return` 后续 check，同时 possible-break paths 仍保持 active。
+- **Latest for-else exit validation**：在 no-break loop `else` exits 被带入 post-loop self-test reachability 后，follow-up run [`28831889828`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831889828) 已在 `9ec18aa` 上通过。
 - **Interpretation**：这是 CI 中 fail-closed 的 evaluator quality gating；不扩大 benchmark repo/provider scope，不改变 retrieval/runtime behavior，不扫描 historical evaluators，也不重开 closed routes。
 
 ## CI targeted Django validation checkpoint
