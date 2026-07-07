@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-Container No-Raise
+
+Literal-container no-raise coverage 现在会把 static hashable dict/set literal facts 带入 try-body no-raise analysis。唯一看似 active 的 check 位于 `{}`、`{'a': 1}` 或 `{1, 2}` 后的 except handler 内时，synthetic files 现在会以 `missing_selftest_checks` 失败；statically non-raising container body 且 `else` 会 return 之后的 post-try check 也会作为 unreachable 失败。`{[]: 1}` 这类 unhashable key、dict/set unpacking，以及带 risky values 的 container literals 仍保持 conservative active。
+
+加入 literal-container no-raise guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probe、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28836270835`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28836270835) 已在 `ccbf1e0` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Short-Circuit No-Raise
 
 Short-circuit no-raise coverage 现在会把 Python `and`/`or` evaluation facts 带入 try-body no-raise analysis。唯一看似 active 的 check 位于 `True or risky()` 或 `False and risky()` 后的 except handler 内时，synthetic files 现在会以 `missing_selftest_checks` 失败；short-circuited no-raise body 且 `else` 会 return 之后的 post-try check 也会作为 unreachable 失败。`False or risky()` 和 `True and risky()` 仍保持 conservative active，因为 risky operand 可能执行。
