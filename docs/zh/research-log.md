@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Assignment Target Reachability
+
+Assignment target reachability 现在会让 ordinary assignments 遵循 Python 的 RHS-before-target 求值顺序。唯一 recognized check 藏在 `[][0]`、`{}['x']` 或 `1 / 0` 这类 statically raising RHS 之后的 subscript target 中时，synthetic files 现在会以 `missing_selftest_checks` 失败；RHS 内在 later static raise 之前被求值的 checks，以及 safe 或 dynamic RHS 之后的 target checks 仍保持 active。
+
+加入 assignment target reachability change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused assignment target probes、默认 allowlist scan、使用 isolated pycache 的 `python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28849465524`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28849465524) 已在 `87ba484` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Loop/Comprehension Target Reachability
 
 Loop/comprehension target reachability 现在会遵循 Python 的 iterable-before-target 求值顺序。唯一 recognized check 藏在 `for ... in []`、`for ... in range(0)` 或 empty list comprehension 的 subscript target 中时，synthetic files 现在会以 `missing_selftest_checks` 失败；同样的 target checks 在 nonempty `[1]` iterables 中仍保持 active。
