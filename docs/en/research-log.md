@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard NamedExpr Reachability
+
+NamedExpr reachability now carries simple assignment-expression truth and no-raise facts into self-test analysis. Synthetic files where the only active-looking check lived under `(flag := False)`, inside a short-circuited operand after `(flag := False) and ...`, or in an except handler/post-try check after a non-raising `(value := 1)` try body now fail with `missing_selftest_checks`. True/unknown assignment-expression branches and risky assigned values remain conservative and active.
+
+After the namedexpr reachability guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28838585800`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28838585800) passed on `729322d` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-Subscript No-Raise
 
 Literal-subscript no-raise coverage now carries bounded static literal subscript expression facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `(1, 2)[0]`, `'abc'[1]`, `(1, 2, 3)[1:]`, or `{'a': 1}['a']` now fail with `missing_selftest_checks`, and a post-try check after a statically non-raising subscript body whose `else` returns also fails as unreachable. Out-of-bounds indexes, missing keys, type-error subscripts, and dynamic operands remain conservative and active.
