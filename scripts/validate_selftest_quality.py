@@ -671,6 +671,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             )
         if isinstance(node, (ast.With, ast.AsyncWith)):
             return cls._block_guarantees_nonsuppressible_exit(node.body)
+        if isinstance(node, ast.While):
+            return cls._while_statement_guarantees_return(node)
+        if isinstance(node, (ast.For, ast.AsyncFor)):
+            return cls._for_statement_guarantees_return(node)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_nonsuppressible_exit(node.finalbody):
                 return True
@@ -702,6 +706,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.orelse:
                 return False
             return cls._block_guarantees_function_exit(node.body) and cls._block_guarantees_function_exit(node.orelse)
+        if isinstance(node, ast.While):
+            return cls._while_statement_guarantees_function_exit(node)
+        if isinstance(node, (ast.For, ast.AsyncFor)):
+            return cls._for_statement_guarantees_function_exit(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
             return cls._block_guarantees_return(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
@@ -728,6 +736,29 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return False
 
     @classmethod
+    def _while_statement_guarantees_function_exit(cls, node: ast.While) -> bool:
+        test_truth = cls._literal_truth_value(node.test)
+        body_guarantees_function_exit = cls._block_guarantees_function_exit(node.body)
+        orelse_guarantees_function_exit = cls._block_guarantees_function_exit(node.orelse)
+        if test_truth is True:
+            return not cls._block_may_reach_loop_break(node.body) and body_guarantees_function_exit
+        if test_truth is False:
+            return orelse_guarantees_function_exit
+        return body_guarantees_function_exit and orelse_guarantees_function_exit
+
+    @classmethod
+    def _for_statement_guarantees_function_exit(cls, node: ast.For | ast.AsyncFor) -> bool:
+        iter_truth = cls._literal_iter_truth_value(node.iter)
+        body_guarantees_function_exit = cls._block_guarantees_function_exit(node.body)
+        body_may_break = cls._block_may_reach_loop_break(node.body)
+        orelse_guarantees_function_exit = cls._block_guarantees_function_exit(node.orelse)
+        if iter_truth is False:
+            return orelse_guarantees_function_exit
+        if iter_truth is True:
+            return not body_may_break and (body_guarantees_function_exit or orelse_guarantees_function_exit)
+        return not body_may_break and body_guarantees_function_exit and orelse_guarantees_function_exit
+
+    @classmethod
     def _block_guarantees_return(cls, statements: list[ast.stmt]) -> bool:
         for statement in statements:
             if cls._statement_guarantees_return(statement):
@@ -749,6 +780,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not node.orelse:
                 return False
             return cls._block_guarantees_return(node.body) and cls._block_guarantees_return(node.orelse)
+        if isinstance(node, ast.While):
+            return cls._while_statement_guarantees_return(node)
+        if isinstance(node, (ast.For, ast.AsyncFor)):
+            return cls._for_statement_guarantees_return(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
             return cls._block_guarantees_return(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
@@ -764,6 +799,29 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             selected_body = cls._known_match_selected_body(node)
             return selected_body is not None and cls._block_guarantees_return(selected_body)
         return False
+
+    @classmethod
+    def _while_statement_guarantees_return(cls, node: ast.While) -> bool:
+        test_truth = cls._literal_truth_value(node.test)
+        body_guarantees_return = cls._block_guarantees_return(node.body)
+        orelse_guarantees_return = cls._block_guarantees_return(node.orelse)
+        if test_truth is True:
+            return not cls._block_may_reach_loop_break(node.body) and body_guarantees_return
+        if test_truth is False:
+            return orelse_guarantees_return
+        return body_guarantees_return and orelse_guarantees_return
+
+    @classmethod
+    def _for_statement_guarantees_return(cls, node: ast.For | ast.AsyncFor) -> bool:
+        iter_truth = cls._literal_iter_truth_value(node.iter)
+        body_guarantees_return = cls._block_guarantees_return(node.body)
+        body_may_break = cls._block_may_reach_loop_break(node.body)
+        orelse_guarantees_return = cls._block_guarantees_return(node.orelse)
+        if iter_truth is False:
+            return orelse_guarantees_return
+        if iter_truth is True:
+            return not body_may_break and (body_guarantees_return or orelse_guarantees_return)
+        return not body_may_break and body_guarantees_return and orelse_guarantees_return
 
     @classmethod
     def _block_may_reach_loop_break(cls, statements: list[ast.stmt]) -> bool:
@@ -1803,6 +1861,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_with_nested_while_return_then_check_rejected",
+            "def run_self_tests(lock):\n    with lock:\n        while True:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_break_then_body_check_rejected",
             "def run_self_tests(lock):\n    for item in [1]:\n        with lock:\n            break\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -1868,8 +1931,23 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_nested_while_return_then_check_rejected",
+            "def run_self_tests():\n    for outer in [1]:\n        while True:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nested_for_return_then_check_rejected",
+            "def run_self_tests():\n    for outer in [1]:\n        for inner in [1]:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_nonempty_for_else_return_then_check_rejected",
             "def run_self_tests():\n    for value in [1]:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nested_for_else_return_then_check_rejected",
+            "def run_self_tests():\n    for outer in [1]:\n        for inner in [1]:\n            pass\n        else:\n            return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2218,6 +2296,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_nested_loop_possible_break_then_check_allowed",
+            "def run_self_tests(value, flag):\n    for outer in [1]:\n        for inner in [1]:\n            if flag:\n                break\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_try_fallthrough_else_check_allowed",
             "def run_self_tests(value):\n    try:\n        other()\n    except Error:\n        return\n    else:\n        check('ok', value is True)\n",
             [],
@@ -2296,7 +2379,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
-            "for-else exit, "
+            "for-else exit, nested-loop function-exit, "
             "and missing-check cases"
         )
         return 0
