@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1D Coverage Robustness
+
+已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase1d-real-source --confirm-private-output`。该 run 从 ignored private manifest 读取 exact local task paths/ranges，使用最多 16 个 repository-file tasks 和同样 7 个 micro-policy/control labels，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json`](../../artifacts/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json)，status 为 `phase1d_real_source_coverage_robustness_no_claim`。
+
+这只是 robustness/coverage，不是 policy efficacy。Counted success 仍需要 private current-source materialization、hash 和 re-read/currentness checks。Public output 只包含 buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`，并且 no claim：无 provider/network、无 model/training、无 runtime/default change、无新增 retrieval family、无 method winner。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1C Real Current-Source Feasibility
 
 已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase1c-real-source --confirm-private-output`。该 run 从 ignored private manifest 读取 exact local task paths/ranges，使用 8 个 repository-file tasks 和同样 7 个 micro-policy/control labels，只向 ignored `runs/` 写入 private rows，并发布 aggregate-only report：[`interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json`](../../artifacts/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot/interventional_evidence_acquisition_phase1c_tiny_real_current_source_pilot_report.json)，status 为 `phase1c_tiny_real_current_source_pilot_evidencecore_feasibility_no_claim`。

@@ -52,6 +52,12 @@ Phase 1B 只使用 7 个 local micro-policy/control labels：`bm25_then_read_top
 
 这只检查 local micro-policy framework 是否能安全执行 real current-source materialization。Counted success 需要 private path/range/content bytes、SHA-256、re-read/currentness match 和 range/content match。Public output 只包含 aggregate buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`。它不提出 method-winner、lift 或 signal claim，也不改变 provider/network、training/model、runtime/default 或 retrieval-family 边界。
 
+## Phase 1D real-source coverage robustness status
+
+同一 script 现在支持 `--run-phase1d-real-source --confirm-private-output --phase1d-private-manifest <ignored-local-path>`。它在最多 16 个 current repository-file tasks 上运行 modest local robustness pilot，并覆盖全部 7 个既有 micro-policy/control labels；exact task paths/ranges 从 ignored private manifest 读取。Private rows 位于 ignored `runs/`；public report 为 `artifacts/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json`，status 为 `phase1d_real_source_coverage_robustness_no_claim`。
+
+这只测试 coverage robustness，不是 policy efficacy。Counted success 需要 real current-source materialization，以及 private hash 和 currentness checks。Public output 只包含 aggregate buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`；它不提出 method-winner、lift 或 signal claim。
+
 ## 候选问题
 
 在 hard product-workflow episodes 上，使用极小的本地 randomized intervention 来选择既有 evidence-acquisition actions，是否比 passive trace review 更能产生清晰的 workflow evidence，同时保持 EvidenceCore 与 privacy invariants？

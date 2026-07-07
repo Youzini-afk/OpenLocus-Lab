@@ -52,6 +52,12 @@ The same script now supports `--run-phase1c-real-source --confirm-private-output
 
 This only checks whether the local micro-policy framework can safely perform real current-source materialization. Counted success requires private path/range/content bytes, SHA-256, re-read/currentness match, and range/content match. Public output is aggregate buckets only with recommendation `maybe_expand_with_new_explicit_decision`. It makes no method-winner, lift, or signal claim and does not change provider/network, training/model, runtime/default, or retrieval-family boundaries.
 
+## Phase 1D real-source coverage robustness status
+
+The same script now supports `--run-phase1d-real-source --confirm-private-output --phase1d-private-manifest <ignored-local-path>`. It ran a modest local robustness pilot over up to 16 current repository-file tasks and all seven existing micro-policy/control labels, with exact task paths/ranges read from an ignored private manifest. Private rows are under ignored `runs/`; the public report is `artifacts/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness/interventional_evidence_acquisition_phase1d_real_source_coverage_robustness_report.json` with status `phase1d_real_source_coverage_robustness_no_claim`.
+
+This tests coverage robustness only, not policy efficacy. Counted success requires real current-source materialization with private hash and currentness checks. Public output is aggregate buckets only with recommendation `maybe_expand_with_new_explicit_decision`; it makes no method-winner, lift, or signal claim.
+
 ## Candidate question
 
 Can a tiny, local, randomized intervention over existing evidence-acquisition actions produce clearer product-workflow evidence than passive trace review, while preserving EvidenceCore and privacy invariants?
