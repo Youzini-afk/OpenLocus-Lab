@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Selected-Match Guard Safety
+
+Selected-match guard safety 现在会阻止可能 raise 的 `match` case guard 泄漏 fake active coverage。`case 1 if True:` 选择 caught `raise ValueError(...)` body 的 synthetic files 仍会以 `missing_selftest_checks` 失败；同样的 class-body caught-try 形态在使用 `case 1 if risky() or True:` 时仍保持 active，因为 guard evaluation 可能在 body 到达前 raise。
+
+加入 selected-match guard safety change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused selected-match guard probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28847070931`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28847070931) 已在 `04ee20b` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Class-Body Caught-Try No-Raise
 
 Class-body caught-try no-raise validation 现在会阻止 known built-in exception 被内部捕获的 narrow class-body `try` statements 之后的 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于被 `except ValueError` 或 bare `except` 捕获的 `raise ValueError(...)` 之后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；这些 no-raise try bodies 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。Disjoint handlers、unknown handler types、risky caught handlers、risky `finally` suites 和 raise 之前的 class-body annotations 仍保持 conservative active。

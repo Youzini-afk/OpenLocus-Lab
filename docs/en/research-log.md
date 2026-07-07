@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Selected-Match Guard Safety
+
+Selected-match guard safety now keeps fake active coverage from leaking through a statically matching `match` case whose guard may raise. Synthetic files where `case 1 if True:` selects a caught `raise ValueError(...)` body still fail with `missing_selftest_checks`, while the same class-body caught-try shape with `case 1 if risky() or True:` remains active because guard evaluation can raise before the body is reached.
+
+After the selected-match guard safety change, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused selected-match guard probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28847070931`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28847070931) passed on `04ee20b` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Class-Body Caught-Try No-Raise
 
 Class-body caught-try no-raise validation now keeps fake active coverage out of try/except checks for narrow class-body `try` statements whose known built-in exception is caught internally. Synthetic files where the only active-looking check lived in an except handler after `raise ValueError(...)` caught by `except ValueError` or a bare `except` now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Disjoint handlers, unknown handler types, risky caught handlers, risky `finally` suites, and class-body annotations before the raise remain conservative and active.
