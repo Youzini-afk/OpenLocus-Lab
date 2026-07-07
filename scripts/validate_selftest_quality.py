@@ -348,7 +348,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self._visit_unreachable_statements(node.body)
             self._visit_statements(node.orelse)
             return
-        self.visit(node.target)
+        value_known, value = self._static_first_iter_value(node.iter) if iter_truth is True else (False, None)
+        target_is_reachable = self._visit_assignment_store_target(node.target, value_known=value_known, value=value)
+        if not target_is_reachable:
+            self._visit_unreachable_statements(node.body)
+            if iter_truth is True:
+                self._visit_unreachable_statements(node.orelse)
+            else:
+                self._visit_statements(node.orelse)
+            return
         if iter_truth is True:
             self._visit_statements(node.body)
             if self._block_guarantees_loop_else_skip(node.body):
@@ -367,7 +375,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self._visit_unreachable_statements(node.body)
             self._visit_statements(node.orelse)
             return
-        self.visit(node.target)
+        value_known, value = self._static_first_iter_value(node.iter) if iter_truth is True else (False, None)
+        target_is_reachable = self._visit_assignment_store_target(node.target, value_known=value_known, value=value)
+        if not target_is_reachable:
+            self._visit_unreachable_statements(node.body)
+            if iter_truth is True:
+                self._visit_unreachable_statements(node.orelse)
+            else:
+                self._visit_statements(node.orelse)
+            return
         if iter_truth is True:
             self._visit_statements(node.body)
             if self._block_guarantees_loop_else_skip(node.body):
@@ -512,7 +528,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 for if_clause in generator.ifs:
                     self._visit_unreachable(if_clause)
                 continue
-            self.visit(generator.target)
+            value_known, value = self._static_first_iter_value(generator.iter)
+            target_is_reachable = self._visit_assignment_store_target(
+                generator.target, value_known=value_known, value=value
+            )
+            if not target_is_reachable:
+                can_yield = False
+                for if_clause in generator.ifs:
+                    self._visit_unreachable(if_clause)
+                continue
 
             for if_clause in generator.ifs:
                 if not can_yield:
@@ -680,6 +704,18 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         body_guarantees_function_exit = cls._block_guarantees_function_exit(node.body)
         body_may_break = cls._block_may_reach_loop_break(node.body)
         orelse_guarantees_exit = cls._block_guarantees_exit(node.orelse)
+        target_guarantees_raise = False
+        if iter_truth is True:
+            value_known, value = cls._static_first_iter_value(node.iter)
+            target_guarantees_raise = cls._assignment_target_guarantees_raise(
+                node.target, value_known=value_known, value=value
+            )
+        elif iter_truth is None:
+            target_guarantees_raise = cls._assignment_target_guarantees_raise(node.target)
+        if target_guarantees_raise:
+            if iter_truth is True:
+                return True
+            return orelse_guarantees_exit
         if iter_truth is False:
             return orelse_guarantees_exit
         if iter_truth is True:
@@ -2432,7 +2468,31 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return None
 
     @classmethod
-    def _literal_range_truth_value(cls, node: ast.AST) -> bool | None:
+    def _static_first_iter_value(cls, node: ast.AST) -> tuple[bool, object]:
+        if isinstance(node, (ast.Tuple, ast.List)) and node.elts:
+            return cls._static_comparison_value(node.elts[0])
+        if isinstance(node, ast.Dict) and node.keys:
+            first_key = node.keys[0]
+            if first_key is None:
+                return False, None
+            return cls._static_comparison_value(first_key)
+        range_values = cls._static_range_values(node)
+        if range_values is not None:
+            range_value = range(*range_values)
+            if range_value:
+                return True, range_value[0]
+            return False, None
+        known, value = cls._static_comparison_value(node)
+        if not known:
+            return False, None
+        if isinstance(value, (str, bytes, tuple, list)) and value:
+            return True, value[0]
+        if isinstance(value, dict) and value:
+            return True, next(iter(value.keys()))
+        return False, None
+
+    @classmethod
+    def _static_range_values(cls, node: ast.AST) -> list[int] | None:
         if not isinstance(node, ast.Call):
             return None
         if not isinstance(node.func, ast.Name) or node.func.id != "range":
@@ -2445,6 +2505,17 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if value is None:
                 return None
             values.append(value)
+        try:
+            range(*values)
+        except ValueError:
+            return None
+        return values
+
+    @classmethod
+    def _literal_range_truth_value(cls, node: ast.AST) -> bool | None:
+        values = cls._static_range_values(node)
+        if values is None:
+            return None
         try:
             return bool(range(*values))
         except ValueError:
@@ -3126,6 +3197,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_listcomp_static_oob_target_result_check_rejected",
+            "def run_self_tests(value):\n    checks = [check('ok', value is True) for [][0] in [1]]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_listcomp_static_oob_target_filter_check_rejected",
+            "def run_self_tests(value):\n    checks = [1 for [][0] in [1] if check('ok', value is True)]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_genexp_consumed_static_oob_target_result_check_rejected",
+            "def run_self_tests(value):\n    list(check('ok', value is True) for [][0] in [1])\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_empty_range_setcomp_check_only_rejected",
             "def run_self_tests():\n    checks = {check('ok', value is True) for value in range(0)}\n",
             ["missing_selftest_checks"],
@@ -3258,6 +3344,31 @@ def run_self_test() -> list[str]:
         (
             "target_with_empty_range_for_subscript_target_check_rejected",
             "def run_self_tests(value, items):\n    for items[check('ok', value is True)] in range(0):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_for_static_oob_target_body_check_rejected",
+            "def run_self_tests(value):\n    for [][0] in [1]:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_for_static_oob_target_else_check_rejected",
+            "def run_self_tests(value):\n    for [][0] in [1]:\n        pass\n    else:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_for_static_oob_target_post_check_rejected",
+            "def run_self_tests(value):\n    for [][0] in [1]:\n        pass\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_for_unpack_shape_mismatch_target_check_rejected",
+            "def run_self_tests(value, items):\n    for a, items[check('ok', value is True)] in [(1,)]:\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_for_range_unpack_shape_mismatch_body_check_rejected",
+            "def run_self_tests(value):\n    for a, b in range(1):\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -4481,6 +4592,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_listcomp_static_oob_target_index_check_allowed",
+            "def run_self_tests(value):\n    checks = [1 for [][check('ok', value is True)] in [1]]\n",
+            [],
+        ),
+        (
             "target_with_unknown_comp_filter_check_allowed",
             "def run_self_tests(value, flag):\n    checks = [check('ok', value is True) for item in [1] if flag]\n",
             [],
@@ -4543,6 +4659,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_nonempty_for_subscript_target_check_allowed",
             "def run_self_tests(value, items):\n    for items[check('ok', value is True)] in [1]:\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_for_static_oob_target_index_check_allowed",
+            "def run_self_tests(value):\n    for [][check('ok', value is True)] in [1]:\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_empty_for_static_oob_target_else_check_allowed",
+            "def run_self_tests(value):\n    for [][0] in []:\n        pass\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_unknown_for_static_oob_target_else_check_allowed",
+            "def run_self_tests(value, items):\n    for [][0] in items:\n        pass\n    else:\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -4690,7 +4821,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, assignment/delete target sequencing, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, loop/comprehension target store failure, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, assignment/delete target sequencing, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
