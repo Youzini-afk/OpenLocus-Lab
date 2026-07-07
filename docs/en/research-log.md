@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Augmented Assignment / With Reachability
+
+Augmented assignment and `with` reachability now follow Python evaluation boundaries more closely. Synthetic files where the only recognized check is in the RHS after a statically failing augmented-assignment target load such as `[][0] += check(...)` or `{}['x'] += check(...)` now fail with `missing_selftest_checks`. Body/post checks under `with [][0]: ...`, optional-vars checks after a statically failing context expression, and body checks after statically failing optional-var store targets also fail. Target-index checks evaluated before augmented-assignment target load failure, dict store-target annotations such as `{}['x']: check(...) = 1`, dynamic/safe `with` contexts, and post-`with` checks after suppressible optional-var target failures remain active.
+
+After the augmented assignment / `with` reachability change, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused augmented-assignment and `with` probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py` with an isolated pycache, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28851887144`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28851887144) passed on `0769f33` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Annotated Assignment Target Reachability
 
 Annotated assignment target reachability now follows Python's value-before-target-before-evaluated-annotation order. Synthetic files where the only recognized check is hidden in an annotated-assignment subscript target after a statically raising RHS such as `[][0]`, `{}['x']`, or `1 / 0` now fail with `missing_selftest_checks`; evaluated class-body annotation checks after a statically raising RHS or target also fail. Checks after safe or dynamic RHS values, and checks inside the RHS before a later static raise, remain active.

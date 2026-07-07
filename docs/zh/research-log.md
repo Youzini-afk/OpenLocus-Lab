@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Augmented Assignment / With Reachability
+
+Augmented assignment 和 `with` reachability 现在更贴近 Python evaluation boundaries。唯一 recognized check 位于 `[][0] += check(...)` 或 `{}['x'] += check(...)` 这类 statically failing augmented-assignment target load 之后的 RHS 中时，synthetic files 现在会以 `missing_selftest_checks` 失败。`with [][0]: ...` 下的 body/post checks、statically failing context expression 之后的 optional-vars checks，以及 statically failing optional-var store targets 之后的 body checks 也会失败。位于 augmented-assignment target load failure 之前会被求值的 target-index checks、`{}['x']: check(...) = 1` 这类 dict store-target annotations、dynamic/safe `with` contexts，以及 suppressible optional-var target failures 之后的 post-`with` checks 仍保持 active。
+
+加入 augmented assignment / `with` reachability change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused augmented-assignment and `with` probes、默认 allowlist scan、使用 isolated pycache 的 `python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28851887144`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28851887144) 已在 `0769f33` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Annotated Assignment Target Reachability
 
 Annotated assignment target reachability 现在会遵循 Python 的 value-before-target-before-evaluated-annotation 求值顺序。唯一 recognized check 藏在 `[][0]`、`{}['x']` 或 `1 / 0` 这类 statically raising RHS 之后的 annotated-assignment subscript target 中时，synthetic files 现在会以 `missing_selftest_checks` 失败；位于 statically raising RHS 或 target 之后、会被求值的 class-body annotation checks 也会失败。safe 或 dynamic RHS 之后的 checks，以及 RHS 内在 later static raise 之前被求值的 checks 仍保持 active。
