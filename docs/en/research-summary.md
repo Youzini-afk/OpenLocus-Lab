@@ -51,7 +51,7 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 - **Latest known-exception try-handler validation**: follow-up run [`28830363816`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28830363816) passed on `a21504b` after definitely raised built-in exceptions were added to try-handler/fallthrough reachability.
 - **Latest with-control-flow validation**: follow-up run [`28831054909`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831054909) passed on `cbecc9b` after `with` control-flow exits were separated from suppressible exceptions in self-test reachability.
 - **Latest for-else exit validation**: follow-up run [`28831889828`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28831889828) passed on `9ec18aa` after no-break loop `else` exits were carried into post-loop self-test reachability.
-- **Latest nested-loop function-exit local guard**: local guard probes now reject checks after nested `while` / `for` returns, nested no-break `for ... else: return`, and `with`-wrapped nested loop returns, while possible-break nested loops remain active.
+- **Latest nested-loop function-exit validation**: follow-up run [`28832634252`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28832634252) passed on `c2961d6` after actual function exits were propagated through nested loop self-test reachability.
 - **Interpretation**: this is fail-closed evaluator quality gating in CI. It does not expand benchmark repo/provider scope, change retrieval/runtime behavior, sweep historical evaluators, or reopen closed routes.
 
 ## Post-closeout Windows platform validation checkpoint
