@@ -520,12 +520,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return cls._block_guarantees_exit(node.orelse)
             return False
         if isinstance(node, (ast.For, ast.AsyncFor)):
-            iter_truth = cls._literal_iter_truth_value(node.iter)
-            if iter_truth is True:
-                return cls._block_guarantees_function_exit(node.body)
-            if iter_truth is False:
-                return cls._block_guarantees_exit(node.orelse)
-            return False
+            return cls._for_statement_guarantees_exit(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
             return cls._block_guarantees_nonsuppressible_exit(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
@@ -552,6 +547,18 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     @classmethod
     def _block_guarantees_exit(cls, statements: list[ast.stmt]) -> bool:
         return any(cls._statement_guarantees_exit(statement) for statement in statements)
+
+    @classmethod
+    def _for_statement_guarantees_exit(cls, node: ast.For | ast.AsyncFor) -> bool:
+        iter_truth = cls._literal_iter_truth_value(node.iter)
+        body_guarantees_function_exit = cls._block_guarantees_function_exit(node.body)
+        body_may_break = cls._block_may_reach_loop_break(node.body)
+        orelse_guarantees_exit = cls._block_guarantees_exit(node.orelse)
+        if iter_truth is False:
+            return orelse_guarantees_exit
+        if iter_truth is True:
+            return body_guarantees_function_exit or (not body_may_break and orelse_guarantees_exit)
+        return not body_may_break and orelse_guarantees_exit
 
     @classmethod
     def _block_cannot_raise(cls, statements: list[ast.stmt]) -> bool:
@@ -1861,6 +1868,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_nonempty_for_else_return_then_check_rejected",
+            "def run_self_tests():\n    for value in [1]:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_unknown_for_else_return_then_check_rejected",
+            "def run_self_tests(items):\n    for value in items:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_nonempty_for_continue_else_return_then_check_rejected",
+            "def run_self_tests():\n    for value in [1]:\n        continue\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_nonempty_for_break_else_check_rejected",
             "def run_self_tests():\n    for value in [1]:\n        break\n    else:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2191,6 +2213,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_possible_break_else_return_then_check_allowed",
+            "def run_self_tests(value, flag):\n    for item in [1]:\n        if flag:\n            break\n    else:\n        return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_try_fallthrough_else_check_allowed",
             "def run_self_tests(value):\n    try:\n        other()\n    except Error:\n        return\n    else:\n        check('ok', value is True)\n",
             [],
@@ -2269,6 +2296,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
+            "for-else exit, "
             "and missing-check cases"
         )
         return 0
