@@ -154,8 +154,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 self._visit_unreachable(node.target)
                 self._visit_unreachable(node.annotation)
                 return
-        self.visit(node.target)
-        if self._assignment_store_target_guarantees_raise(node.target):
+        target_reachable = self._visit_assignment_store_target(node.target)
+        if not target_reachable:
             self._visit_unreachable(node.annotation)
             return
         annotation_is_evaluated = not self._future_annotations and (not self._function_stack or self._class_scope_depth > 0)
@@ -167,8 +167,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             for target in node.targets:
                 self._visit_unreachable(target)
             return
+        value_known, value = self._static_comparison_value(node.value)
+        targets_are_reachable = True
         for target in node.targets:
-            self.visit(target)
+            if targets_are_reachable:
+                targets_are_reachable = self._visit_assignment_store_target(target, value_known=value_known, value=value)
+            else:
+                self._visit_unreachable(target)
 
     def visit_AugAssign(self, node: ast.AugAssign) -> None:
         self.visit(node.target)
@@ -176,6 +181,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             self._visit_unreachable(node.value)
             return
         self.visit(node.value)
+
+    def visit_Delete(self, node: ast.Delete) -> None:
+        targets_are_reachable = True
+        for target in node.targets:
+            if targets_are_reachable:
+                targets_are_reachable = self._visit_delete_target(target)
+            else:
+                self._visit_unreachable(target)
 
     def _visit_annotation(self, node: ast.AST, *, evaluated: bool) -> None:
         if evaluated:
@@ -550,10 +563,63 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self.visit(node)
         self._unreachable_scope_depth -= 1
 
+    def _visit_assignment_store_target(self, target: ast.AST, *, value_known: bool = False, value: object = None) -> bool:
+        if isinstance(target, (ast.Tuple, ast.List)):
+            element_values: list[object] | None = None
+            if value_known:
+                match, element_values = self._static_unpack_values_for_target(target, value)
+                if not match:
+                    self._visit_unreachable(target)
+                    return False
+            target_is_reachable = True
+            for index, element in enumerate(target.elts):
+                element_value_known = element_values is not None
+                element_value = element_values[index] if element_values is not None else None
+                if not target_is_reachable:
+                    self._visit_unreachable(element)
+                    continue
+                if isinstance(element, ast.Starred):
+                    target_is_reachable = self._visit_assignment_store_target(
+                        element.value, value_known=element_value_known, value=element_value
+                    )
+                else:
+                    target_is_reachable = self._visit_assignment_store_target(
+                        element, value_known=element_value_known, value=element_value
+                    )
+            return target_is_reachable
+
+        self.visit(target)
+        return not self._assignment_store_target_guarantees_raise(target)
+
+    def _visit_delete_target(self, target: ast.AST) -> bool:
+        if isinstance(target, (ast.Tuple, ast.List)):
+            target_is_reachable = True
+            for element in target.elts:
+                if target_is_reachable:
+                    target_is_reachable = self._visit_delete_target(element)
+                else:
+                    self._visit_unreachable(element)
+            return target_is_reachable
+
+        self.visit(target)
+        return not self._delete_target_guarantees_raise(target)
+
     @classmethod
     def _statement_guarantees_exit(cls, node: ast.stmt) -> bool:
         if isinstance(node, (ast.Return, ast.Raise, ast.Break, ast.Continue)):
             return True
+        if isinstance(node, ast.Assign):
+            return cls._assign_statement_guarantees_raise(node)
+        if isinstance(node, ast.AnnAssign):
+            return cls._annassign_statement_guarantees_raise(node)
+        if isinstance(node, ast.AugAssign):
+            return (
+                cls._expression_guarantees_raise(node.target)
+                or cls._expression_guarantees_raise(node.value)
+                or cls._assignment_store_target_guarantees_raise(node.target)
+            )
+        if isinstance(node, ast.Delete):
+            return any(cls._delete_target_guarantees_raise(target) for target in node.targets)
         if isinstance(node, ast.Assert):
             return cls._literal_truth_value(node.test) is False
         if isinstance(node, ast.If):
@@ -892,6 +958,22 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return node.value is None or cls._expression_cannot_raise(node.value)
 
     @classmethod
+    def _assign_statement_guarantees_raise(cls, node: ast.Assign) -> bool:
+        if cls._expression_guarantees_raise(node.value):
+            return True
+        value_known, value = cls._static_comparison_value(node.value)
+        return any(
+            cls._assignment_target_guarantees_raise(target, value_known=value_known, value=value)
+            for target in node.targets
+        )
+
+    @classmethod
+    def _annassign_statement_guarantees_raise(cls, node: ast.AnnAssign) -> bool:
+        if node.value is not None and cls._expression_guarantees_raise(node.value):
+            return True
+        return cls._assignment_store_target_guarantees_raise(node.target)
+
+    @classmethod
     def _assignment_target_cannot_raise(cls, node: ast.AST) -> bool:
         if isinstance(node, ast.Name):
             return True
@@ -939,6 +1021,87 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if isinstance(value, dict):
                 return not cls._static_value_is_hashable(slice_value)
         return False
+
+    @classmethod
+    def _assignment_target_guarantees_raise(
+        cls, target: ast.AST, *, value_known: bool = False, value: object = None
+    ) -> bool:
+        if isinstance(target, ast.Starred):
+            return cls._assignment_target_guarantees_raise(target.value, value_known=value_known, value=value)
+        if isinstance(target, (ast.Tuple, ast.List)):
+            element_values: list[object] | None = None
+            if value_known:
+                match, element_values = cls._static_unpack_values_for_target(target, value)
+                if not match:
+                    return True
+            for index, element in enumerate(target.elts):
+                element_value_known = element_values is not None
+                element_value = element_values[index] if element_values is not None else None
+                if isinstance(element, ast.Starred):
+                    element = element.value
+                if cls._assignment_target_guarantees_raise(
+                    element, value_known=element_value_known, value=element_value
+                ):
+                    return True
+            return False
+        return cls._assignment_store_target_guarantees_raise(target)
+
+    @classmethod
+    def _delete_target_guarantees_raise(cls, target: ast.AST) -> bool:
+        if isinstance(target, ast.Name):
+            return False
+        if isinstance(target, ast.Starred):
+            return cls._delete_target_guarantees_raise(target.value)
+        if isinstance(target, (ast.Tuple, ast.List)):
+            return any(cls._delete_target_guarantees_raise(element) for element in target.elts)
+        if isinstance(target, ast.Attribute):
+            return cls._expression_guarantees_raise(target.value)
+        if isinstance(target, ast.Subscript):
+            if cls._expression_guarantees_raise(target.value) or cls._expression_guarantees_raise(target.slice):
+                return True
+            known_value, value = cls._static_comparison_value(target.value)
+            known_slice, slice_value = cls._static_slice_value(target.slice)
+            if not known_value or not known_slice:
+                return False
+            if isinstance(target.slice, ast.Slice):
+                return not isinstance(value, list)
+            if isinstance(value, (tuple, str)):
+                return True
+            if isinstance(value, list):
+                if not isinstance(slice_value, int):
+                    return True
+                index = slice_value if slice_value >= 0 else len(value) + slice_value
+                return index < 0 or index >= len(value)
+            if isinstance(value, dict):
+                if not cls._static_value_is_hashable(slice_value):
+                    return True
+                return slice_value not in value
+        return False
+
+    @classmethod
+    def _static_unpack_values_for_target(cls, target: ast.AST, value: object) -> tuple[bool, list[object] | None]:
+        if not isinstance(target, (ast.Tuple, ast.List)) or not isinstance(value, (tuple, list)):
+            return False, None
+        starred_indexes = [index for index, element in enumerate(target.elts) if isinstance(element, ast.Starred)]
+        if len(starred_indexes) > 1:
+            return False, None
+        if not starred_indexes:
+            if len(target.elts) != len(value):
+                return False, None
+            return True, list(value)
+
+        starred_index = starred_indexes[0]
+        prefix_count = starred_index
+        suffix_count = len(target.elts) - starred_index - 1
+        if len(value) < prefix_count + suffix_count:
+            return False, None
+        suffix_offset = len(value) - suffix_count
+        element_values = [
+            *value[:prefix_count],
+            list(value[prefix_count:suffix_offset]),
+            *value[suffix_offset:],
+        ]
+        return True, element_values
 
     @classmethod
     def _unpack_assignment_target_matches_value(cls, target: ast.AST, value: object) -> bool:
@@ -2713,6 +2876,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_assign_first_static_oob_target_second_target_check_rejected",
+            "def run_self_tests(value, items):\n    [][0] = items[check('ok', value is True)] = 1\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assign_unpack_shape_mismatch_target_check_rejected",
+            "def run_self_tests(value, items):\n    a, items[check('ok', value is True)] = (1,)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assign_unpack_first_static_oob_target_second_check_rejected",
+            "def run_self_tests(value, items):\n    [][0], items[check('ok', value is True)] = (1, 2)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_assign_static_oob_target_post_check_rejected",
+            "def run_self_tests(value):\n    [][0] = 1\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_annassign_static_oob_rhs_subscript_target_check_rejected",
             "def run_self_tests(value, items):\n    items[check('ok', value is True)]: int = [][0]\n",
             ["missing_selftest_checks"],
@@ -2775,6 +2958,26 @@ def run_self_test() -> list[str]:
         (
             "target_with_augassign_safe_target_rhs_check_allowed",
             "def run_self_tests(value, items):\n    items[0] += check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_delete_first_static_oob_target_second_target_check_rejected",
+            "def run_self_tests(value, items):\n    del [][0], items[check('ok', value is True)]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_delete_static_oob_target_post_check_rejected",
+            "def run_self_tests(value):\n    del [][0]\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_delete_static_missing_key_target_post_check_rejected",
+            "def run_self_tests(value):\n    del {}['x']\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_delete_first_static_oob_target_index_check_allowed",
+            "def run_self_tests(value):\n    del [][check('ok', value is True)]\n",
             [],
         ),
         (
@@ -4238,6 +4441,16 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_assign_first_static_oob_target_index_check_allowed",
+            "def run_self_tests(value):\n    [][check('ok', value is True)] = 1\n",
+            [],
+        ),
+        (
+            "target_with_assign_safe_multi_target_second_check_allowed",
+            "def run_self_tests(value, items):\n    a = items[check('ok', value is True)] = 1\n",
+            [],
+        ),
+        (
             "target_with_assign_dynamic_rhs_subscript_target_check_allowed",
             "def run_self_tests(value, items):\n    items[check('ok', value is True)] = risky()\n",
             [],
@@ -4477,7 +4690,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, assignment/delete target sequencing, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
