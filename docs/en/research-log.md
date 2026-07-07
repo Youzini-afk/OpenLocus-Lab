@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Declaration and Function-Definition No-Raise
+
+Declaration/function-definition no-raise validation now keeps fake active coverage out of try/except checks for declarations and narrow function definitions. Synthetic files where the only active-looking check lived in an except handler after `global flag`, simple `def helper(): ...`, simple `async def helper(): ...`, or a function definition with statically non-raising defaults now fail with `missing_selftest_checks`, and post-try checks after those no-raise try bodies whose `else` exits also fail as unreachable. Function definitions with risky defaults, decorators, or annotations remain conservative and active because those definition-time paths may raise or are intentionally not interpreted.
+
+After the declaration/function-definition no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28842531968`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28842531968) passed on `fbc6f6a` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Annotated-Assignment No-Raise
 
 Annotated-assignment no-raise validation now keeps fake active coverage out of try/except checks for simple function-local annotated assignments. Synthetic files where the only active-looking check lived in an except handler after `value: int = 1`, `value: int`, or `value: risky() = 1` now fail with `missing_selftest_checks`, and post-try checks after a simple annotated assignment body whose `else` exits also fail as unreachable. This matches Python's runtime boundary: local annotation expressions are not evaluated, but RHS values still are. Risky RHS values such as `value: int = risky()` and complex targets such as `obj.value: int = 1` or `items[0]: int = 1` remain conservative and active.
