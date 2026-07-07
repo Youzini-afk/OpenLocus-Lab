@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Annotated-Assignment No-Raise
+
+Annotated-assignment no-raise validation now keeps fake active coverage out of try/except checks for simple function-local annotated assignments. Synthetic files where the only active-looking check lived in an except handler after `value: int = 1`, `value: int`, or `value: risky() = 1` now fail with `missing_selftest_checks`, and post-try checks after a simple annotated assignment body whose `else` exits also fail as unreachable. This matches Python's runtime boundary: local annotation expressions are not evaluated, but RHS values still are. Risky RHS values such as `value: int = risky()` and complex targets such as `obj.value: int = 1` or `items[0]: int = 1` remain conservative and active.
+
+After the annotated-assignment no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes including a runtime annotation-evaluation sanity check, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28842042692`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28842042692) passed on `93c7bd7` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Starred-Unpack Boundary
 
 Starred-unpack boundary validation now keeps fake active coverage out of try/except checks when static tuple/list starred unpack assignments cannot raise. Synthetic files where the only active-looking check lived in an except handler after safe starred unpack assignments such as `a, *rest = (1, 2)`, `*rest, = ()`, `a, *rest, b = (1, 2, 3)`, or nested `a, (*mid, z) = (1, (2, 3))` now fail with `missing_selftest_checks`, and post-try checks after a safe starred unpack body whose `else` exits also fail as unreachable. Non-iterable RHS values, length-too-short starred unpack assignments, nested-shape mismatches, and dynamic RHS values remain conservative and active.

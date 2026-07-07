@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Annotated-Assignment No-Raise
+
+Annotated-assignment no-raise validation 现在会阻止 simple function-local annotated assignments 之后的 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于 `value: int = 1`、`value: int` 或 `value: risky() = 1` 之后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；simple annotated assignment body 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。这符合 Python runtime boundary：local annotation expressions 不会求值，但 RHS values 仍会求值。`value: int = risky()` 这类 risky RHS values，以及 `obj.value: int = 1` 或 `items[0]: int = 1` 这类 complex targets 仍保持 conservative active。
+
+加入 annotated-assignment no-raise guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probes（包括 runtime annotation-evaluation sanity check）、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28842042692`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28842042692) 已在 `93c7bd7` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Starred-Unpack Boundary
 
 Starred-unpack boundary validation 现在会在 static tuple/list starred unpack assignments 不会 raise 时，阻止 try/except checks 形成 fake active coverage。唯一看似 active 的 check 位于 `a, *rest = (1, 2)`、`*rest, = ()`、`a, *rest, b = (1, 2, 3)` 或 nested `a, (*mid, z) = (1, (2, 3))` 这类 safe starred unpack assignments 后的 except handler 时，synthetic files 现在会以 `missing_selftest_checks` 失败；safe starred unpack body 且 `else` 退出之后的 post-try checks 也会作为 unreachable 失败。Non-iterable RHS values、length-too-short starred unpack assignments、nested-shape mismatches 和 dynamic RHS values 仍保持 conservative active。
