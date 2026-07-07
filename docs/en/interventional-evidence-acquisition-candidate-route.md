@@ -2,9 +2,9 @@
 
 Date: 2026-07-07
 
-Status: `candidate_route_phase1_methodology_repair_preflight_no_private_write`
+Status: `candidate_route_phase1_hard_source_preflight_no_private_rows`
 
-Authorization: `methodology_repair_preflight_only_no_confirmed_private_capture`
+Authorization: `hard_source_preflight_only_no_confirmed_private_capture`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
@@ -21,6 +21,12 @@ Phase 1 private pilot output still requires explicit `--confirm-private-output`.
 The minimal local pilot runner is `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`. A confirmed low-resource local run previously wrote private rows only under ignored `runs/` storage after `--confirm-private-output`. The current public aggregate report at `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json` was regenerated as a methodology-repair `phase1_preflight` dry run with no private rows written.
 
 The report is aggregate-only: no private row contents, task text, paths, ranges, hashes, snippets, provider payloads, or per-episode details are public. No provider/network actions were authorized or executed, no training or runtime/default change was authorized, no method-winner claim is made, and the next authorized action remains `stop/request next explicit decision`.
+
+## Hard-source preflight status
+
+The hard-source preflight script is `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py`. It generated `artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json` with status `phase1_hard_source_preflight_no_private_rows`.
+
+This is not a confirmed private capture. It checks 32 synthetic/local hard task shapes across 8 family buckets and publishes only aggregate buckets for balance, structural availability, candidate ambiguity, baseline non-saturation, EvidenceCore summary, and privacy summary. It does not write private rows and does not authorize provider/network work, training, runtime/default changes, new retrieval families, method-winner claims, or route reopening.
 
 ## Candidate question
 

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Hard-Source Preflight
+
+已新增 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py`，并生成 aggregate-only public report：[`interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json)。Report status 为 `phase1_hard_source_preflight_no_private_rows`。
+
+这是针对 32 个 synthetic/local hard task shapes、8 个 family buckets 的 dry-run/preflight。Public output 只包含 source balance、local action availability、ambiguity、baseline non-saturation、EvidenceCore summary 和 privacy summary 的 buckets。它不写入 private rows，并保持既有边界：无 provider/network、无 model/training、无 runtime/default change、无新增 retrieval family、无 method-winner claim，也不重启已关闭路线。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Methodology Repair Preflight
 
 已更新 `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`：每个 randomized action block（包括 first block）都会 shuffle，并且 structurally unavailable actions 不再参与 randomized assignment。Aggregate-only public report 现在包含 per-action preflight availability buckets，并已用 `--dry-run` 重新生成，因此没有写入 private rows。

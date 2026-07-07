@@ -1,0 +1,148 @@
+{
+  "action_summary": {
+    "allowed_action_count_bucket": "count_6_to_20",
+    "confirmed_row_count_bucket": "count_0",
+    "local_action_families_only": true,
+    "provider_or_network_action_count_bucket": "count_0"
+  },
+  "authorization_attestation": {
+    "dry_run_preflight_only": true,
+    "local_existing_capabilities_only": true,
+    "method_winner_claimed": false,
+    "model_training_executed": false,
+    "new_retrieval_channel_family_added": false,
+    "private_rows_written": false,
+    "provider_network_authorized": false,
+    "provider_network_used": false,
+    "runtime_default_change_authorized": false,
+    "runtime_default_changed": false,
+    "training_authorized": false
+  },
+  "baseline_non_saturation": {
+    "best_fixed_action_bucket": "local_read_or_retrieve_action",
+    "best_fixed_action_saturation_detected": false,
+    "best_fixed_action_saturation_no_go": false,
+    "best_fixed_action_success_rate_bucket": "rate_25_to_50",
+    "candidate_source_meaningful_for_private_pilot": true,
+    "method_winner_claimed": false,
+    "signal_claim": "no_signal_claim"
+  },
+  "candidate_ambiguity": {
+    "ambiguous_shape_count_bucket": "count_21_to_50",
+    "candidate_count_buckets": {
+      "count_2_to_5": "count_21_to_50"
+    },
+    "distractor_family_present": true,
+    "nearby_wrong_function_family_present": true,
+    "unique_file_candidate_buckets": {
+      "count_2_to_5": "count_21_to_50"
+    }
+  },
+  "evidencecore_summary": {
+    "candidate_found_count_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_21_to_50",
+      "read_related_test": "count_6_to_20",
+      "read_top1": "count_21_to_50",
+      "retrieve_bm25": "count_21_to_50",
+      "retrieve_symbol_regex": "count_21_to_50",
+      "stop": "count_0"
+    },
+    "current_source_required_for_counted_evidence": true,
+    "evidence_success_count_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_6_to_20",
+      "read_related_test": "count_6_to_20",
+      "read_top1": "count_2_to_5",
+      "retrieve_bm25": "count_0",
+      "retrieve_symbol_regex": "count_0",
+      "stop": "count_0"
+    },
+    "materialized_action_count_buckets": {
+      "abstain": "count_0",
+      "read_next_unique_file": "count_21_to_50",
+      "read_related_test": "count_6_to_20",
+      "read_top1": "count_21_to_50",
+      "retrieve_bm25": "count_0",
+      "retrieve_symbol_regex": "count_0",
+      "stop": "count_0"
+    },
+    "materialized_not_success_count_bucket": "count_21_to_50",
+    "success_is_not_mere_materialization": true
+  },
+  "next_authorized_action": "stop/request explicit decision before any confirmed private pilot",
+  "phase": "interventional_evidence_acquisition_phase1_hard_source_preflight",
+  "privacy_summary": {
+    "hashes_public": false,
+    "paths_public": false,
+    "private_rows_written": false,
+    "private_task_details_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "queries_public": false,
+    "ranges_public": false,
+    "snippets_public": false,
+    "symbols_public": false,
+    "task_ids_public": false
+  },
+  "schema_version": "interventional_evidence_acquisition_phase1_hard_source_preflight_public_report_v1",
+  "source_summary": {
+    "family_balance_ok": true,
+    "family_bucket_count": "count_6_to_20",
+    "family_shape_count_buckets": {
+      "boundary_condition": "count_2_to_5",
+      "config_or_test_mismatch": "count_2_to_5",
+      "cross_file_symbol": "count_2_to_5",
+      "distractor_file": "count_2_to_5",
+      "helper_dependency_choice": "count_2_to_5",
+      "nearby_wrong_function": "count_2_to_5",
+      "operation_ambiguity": "count_2_to_5",
+      "same_symbol_support_relation": "count_2_to_5"
+    },
+    "shape_count_bucket": "count_21_to_50",
+    "source_kind": "synthetic_local_hard_task_shapes"
+  },
+  "status": "phase1_hard_source_preflight_no_private_rows",
+  "structural_availability": {
+    "abstain": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "read_next_unique_file": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "read_related_test": {
+      "eligible_shape_count_bucket": "count_6_to_20",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "read_top1": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "retrieve_bm25": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "retrieve_symbol_regex": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    },
+    "stop": {
+      "eligible_shape_count_bucket": "count_21_to_50",
+      "sampled_confirmed_row_count_bucket": "count_0",
+      "structural_status": "eligible"
+    }
+  },
+  "validation_summary": {
+    "public_artifact_privacy_audit_expected": "manual_local_only_not_ci_gate",
+    "route_specific_public_report_validation": "passed",
+    "self_test_available": true
+  }
+}

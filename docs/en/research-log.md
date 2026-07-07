@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Hard-Source Preflight
+
+Added `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` and generated the aggregate-only public report [`interventional_evidence_acquisition_phase1_hard_source_preflight_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_preflight/interventional_evidence_acquisition_phase1_hard_source_preflight_report.json). The report status is `phase1_hard_source_preflight_no_private_rows`.
+
+This is a dry-run/preflight over 32 synthetic/local hard task shapes across 8 family buckets. Public output contains only buckets for source balance, local action availability, ambiguity, baseline non-saturation, EvidenceCore summary, and privacy summary. It writes no private rows and keeps the existing boundaries: no provider/network, no model/training, no runtime/default change, no new retrieval family, no method-winner claim, and no route reopening.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Methodology Repair Preflight
 
 Updated `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py` to shuffle every randomized action block, including the first block, and to exclude structurally unavailable actions from randomized assignment. The aggregate-only public report now includes per-action preflight availability buckets and was regenerated with `--dry-run`, so no private rows were written.
