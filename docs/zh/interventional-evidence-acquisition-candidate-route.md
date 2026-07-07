@@ -2,19 +2,25 @@
 
 日期：2026-07-07
 
-Status: `candidate_route_design_only`
+Status: `candidate_route_phase1_private_pilot_complete_no_claim`
 
-Authorization: `design_only_not_implementation`
+Authorization: `phase1_local_private_pilot_authorized_confirmed_ignored_private_rows`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
-本文只记录 interventional evidence acquisition 的 Phase 0 候选路线设计。它不是 OpenLocus v3 branding，不是 implementation authorization，也不创建 public artifact/report。
+本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
 ## 边界
 
 该候选路线不重启 HAAE-A2/v2 trace-driven policy、RPM-D2/model scaling、FRK repair、LDI/static support、provider/network、runtime/default 或 method-winner routes。既有关闭结论仍是权威上下文；参见 [`current-route-closure.md`](./current-route-closure.md)、[`state-action-trace-v2-bootstrap.md`](./state-action-trace-v2-bootstrap.md) 和 [`openlocus-v2-rpm-d1-learning-smoke.md`](./openlocus-v2-rpm-d1-learning-smoke.md)，此处不重复旧路线细节。
 
-Phase 1 需要单独、明确的 route decision。Phase 0 不授权 artifacts、scripts、evaluators、schema validators、row/report creation、trace capture、retrieval implementation、provider/LLM plumbing、runtime/default changes、CI gates、model changes、training、source scans 或 README changes。
+Phase 1 private pilot output 仍需要显式 `--confirm-private-output`；未提供该 flag 时，runner 不得写入 private rows。该 pilot 不授权 provider/LLM plumbing、runtime/default changes、CI gates、model changes、training、source scans 或 README changes。
+
+## Phase 1 local private pilot status
+
+最小 local pilot runner 为 `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`。一次 confirmed low-resource local run 已在提供 `--confirm-private-output` 后，只向 ignored `runs/` storage 写入 private rows。Public aggregate report 为 `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json`，status 为 `phase1_private_pilot_complete_no_claim`。
+
+该 report 仅包含 aggregate 信息：private row contents、task text、paths、ranges、hashes、snippets、provider payloads 和 per-episode details 均不公开。未授权或执行 provider/network actions，未授权 training 或 runtime/default change，不提出 method-winner claim；下一步授权动作仍为 `stop/request next explicit decision`。
 
 ## 候选问题
 
@@ -22,9 +28,9 @@ Phase 1 需要单独、明确的 route decision。Phase 0 不授权 artifacts、
 
 目标 evidence 是决策质量，而不是 branding：受控 action choice 是否能更快找到 current、可 rematerialize 的 evidence。
 
-## Phase 1 形态（仅在后续授权时）
+## Phase 1 local pilot 形态
 
-若后续明确授权，Phase 1 只能是 private randomized local pilot：
+Phase 1 已按 private randomized local pilot 运行：
 
 - 24-40 个 hard product-workflow episodes。
 - 最多 7 个既有 local actions：`retrieve_bm25`、`retrieve_symbol_regex`、`read_top1`、`read_next_unique_file`、`read_related_test`、`stop`、`abstain`。
@@ -34,9 +40,9 @@ Phase 1 需要单独、明确的 route decision。Phase 0 不授权 artifacts、
 - 不改变 runtime/default。
 - 不提出 method-winner、scale、default 或 product-readiness claim。
 
-## Private row schema proposal
+## Private row schema
 
-如果 Phase 1 被明确授权，private rows 可采用小型 fail-closed schema，例如：
+Confirmed run 使用的小型 fail-closed private row shape 包括：
 
 - `schema_version`：固定 candidate schema id。
 - `episode_id`、`step_index`、`randomization_block_id`：private identifiers。
@@ -49,11 +55,11 @@ Phase 1 需要单独、明确的 route decision。Phase 0 不授权 artifacts、
 - `outcome`：post-action success/failure-safe label 与 reason bucket，只能在 action 之后或 offline review 后填写。
 - `privacy`：用于确认 prompt/response/snippet/gold/provider/path/range/hash/reference containment 的 private-only markers。
 
-这只是 proposal。Phase 0 不创建 row artifact，也不创建 validator。
+Private rows 保留在 ignored `runs/` storage 下，不是 public artifacts。
 
 ## Aggregate-only public report shape
 
-如果后续运行 Phase 1，任何 public report 都应只包含 aggregate/sanitized 信息，例如：
+Public report 只包含 aggregate/sanitized 信息，例如：
 
 - route/status/authorization fields；
 - episode-count 与 step-count buckets；
@@ -64,7 +70,7 @@ Phase 1 需要单独、明确的 route decision。Phase 0 不授权 artifacts、
 - privacy scan summary；
 - 不含 private rows 的 stop/go recommendation。
 
-Public report 不得包含 private traces、prompts、responses、snippets、gold labels、provider payloads、exact paths、exact ranges、hashes、private refs、raw task text、raw row values 或 per-episode details。Phase 0 不创建 report。
+Public report 不得包含 private traces、prompts、responses、snippets、gold labels、provider payloads、exact paths、exact ranges、hashes、private refs、raw task text、raw row values 或 per-episode details。
 
 ## EvidenceCore 与 privacy invariants
 
@@ -74,9 +80,9 @@ Public report 不得包含 private traces、prompts、responses、snippets、gol
 - Private traces、prompts、responses、snippets、gold、provider payloads、exact paths、exact ranges、hashes 和 private refs 必须保持 private。
 - State/action fields 必须保持 label-blind；labels/outcomes 只能 post-action 或 offline-only。
 
-## Phase 0 -> Phase 1 go criteria
+## Phase 0 -> Phase 1 decision record
 
-只有全部满足时，才可考虑 Phase 1：
+Phase 1 只在满足以下条件后运行：
 
 1. 单独的 explicit route decision 点名该 candidate route，并授权 tiny private pilot。
 2. Episode source 被限制为 24-40 个 hard product-workflow episodes。
@@ -85,9 +91,9 @@ Public report 不得包含 private traces、prompts、responses、snippets、gol
 5. 从第一行开始要求 EvidenceCore rematerialization 与 privacy checks。
 6. 该 decision 明确保留本文列出的全部 closed-route boundaries。
 
-## Phase 1 stop/go criteria
+## Phase 1 stop/go status
 
-如果后续授权并完成 Phase 1，除非 private pilot 同时满足以下条件，否则 stop：
+Phase 1 已作为 no-claim pilot 完成。除非后续另有单独 decision，否则必须 stop，因为 public report 明确不提出 signal 或 method-winner claim。未来若要继续，需要同时满足：
 
 1. Private rows schema-valid，且 state/action fields 无 label leakage。
 2. EvidenceCore rematerialization 达到预先声明的最低要求，足以支撑 counted evidence。

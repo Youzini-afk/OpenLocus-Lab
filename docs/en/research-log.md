@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1 Local Private Pilot
+
+Added `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py` and generated the aggregate-only public report [`interventional_evidence_acquisition_phase1_local_episode_runner_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json). A confirmed low-resource local run used 24 bounded episodes from existing FRK workflow tasks and wrote private rows only under ignored `runs/` storage after `--confirm-private-output`.
+
+Status is `phase1_private_pilot_complete_no_claim`. The public report stays aggregate-only and records no provider/network action, no training, no runtime/default change, no new retrieval family, no method-winner claim, and no reopening of closed HAAE/RPM/FRK routes. It is a local pilot checkpoint only, not a production retrieval result.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Candidate Route Design
 
 Added paired Phase 0 documentation for [`interventional-evidence-acquisition-candidate-route.md`](./interventional-evidence-acquisition-candidate-route.md). Status is `candidate_route_design_only`, authorization is `design_only_not_implementation`, and route relation is `new_candidate_route_not_reopening_closed_v2_lines`.

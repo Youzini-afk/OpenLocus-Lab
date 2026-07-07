@@ -2,19 +2,25 @@
 
 Date: 2026-07-07
 
-Status: `candidate_route_design_only`
+Status: `candidate_route_phase1_private_pilot_complete_no_claim`
 
-Authorization: `design_only_not_implementation`
+Authorization: `phase1_local_private_pilot_authorized_confirmed_ignored_private_rows`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
-This note records a Phase 0 candidate-route design for interventional evidence acquisition. It is not OpenLocus v3 branding, not an implementation authorization, and not a public artifact/report creation step.
+This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
 ## Boundary
 
 This candidate route does not reopen HAAE-A2/v2 trace-driven policy, RPM-D2/model scaling, FRK repair, LDI/static support, provider/network, runtime/default, or method-winner routes. Existing closure context remains authoritative; see [`current-route-closure.md`](./current-route-closure.md), [`state-action-trace-v2-bootstrap.md`](./state-action-trace-v2-bootstrap.md), and [`openlocus-v2-rpm-d1-learning-smoke.md`](./openlocus-v2-rpm-d1-learning-smoke.md) instead of duplicating those route histories here.
 
-Phase 1 requires a separate explicit route decision. Nothing in Phase 0 authorizes artifacts, scripts, evaluators, schema validators, row/report creation, trace capture, retrieval implementation, provider/LLM plumbing, runtime/default changes, CI gates, model changes, training, source scans, or README changes.
+Phase 1 private pilot output still requires explicit `--confirm-private-output`. Without that flag, the runner must not write private rows. This pilot does not authorize provider/LLM plumbing, runtime/default changes, CI gates, model changes, training, source scans, or README changes.
+
+## Phase 1 local private pilot status
+
+The minimal local pilot runner is `eval/interventional_evidence_acquisition_phase1_local_episode_runner.py`. A confirmed low-resource local run wrote private rows only under ignored `runs/` storage after `--confirm-private-output`. The public aggregate report is `artifacts/interventional_evidence_acquisition_phase1_local_episode_runner/interventional_evidence_acquisition_phase1_local_episode_runner_report.json` with status `phase1_private_pilot_complete_no_claim`.
+
+The report is aggregate-only: no private row contents, task text, paths, ranges, hashes, snippets, provider payloads, or per-episode details are public. No provider/network actions were authorized or executed, no training or runtime/default change was authorized, no method-winner claim is made, and the next authorized action remains `stop/request next explicit decision`.
 
 ## Candidate question
 
@@ -22,9 +28,9 @@ Can a tiny, local, randomized intervention over existing evidence-acquisition ac
 
 The intended evidence is decision-quality, not branding: whether controlled action choice helps find current, rematerializable evidence sooner on hard product-workflow episodes.
 
-## Phase 1 shape, if later authorized
+## Phase 1 local pilot shape
 
-Phase 1 would be a private randomized local pilot only:
+Phase 1 was run as a private randomized local pilot only:
 
 - 24-40 hard product-workflow episodes.
 - Maximum 7 existing local actions: `retrieve_bm25`, `retrieve_symbol_regex`, `read_top1`, `read_next_unique_file`, `read_related_test`, `stop`, `abstain`.
@@ -34,9 +40,9 @@ Phase 1 would be a private randomized local pilot only:
 - No runtime/default changes.
 - No method-winner, scale, default, or product-readiness claim.
 
-## Private row schema proposal
+## Private row schema
 
-If Phase 1 is explicitly authorized, private rows may use a small fail-closed schema such as:
+The confirmed run used a small fail-closed private row shape with:
 
 - `schema_version`: fixed candidate schema id.
 - `episode_id`, `step_index`, `randomization_block_id`: private identifiers.
@@ -49,11 +55,11 @@ If Phase 1 is explicitly authorized, private rows may use a small fail-closed sc
 - `outcome`: post-action success/failure-safe label and reason bucket, filled only after action/offline review.
 - `privacy`: private-only markers for prompt/response/snippet/gold/provider/path/range/hash/reference containment.
 
-This is a proposal only. Phase 0 creates no row artifact and no validator.
+Private rows stay under ignored `runs/` storage and are not public artifacts.
 
 ## Aggregate-only public report shape
 
-If Phase 1 is later run, any public report should be aggregate/sanitized only, for example:
+The public report is aggregate/sanitized only and contains:
 
 - route/status/authorization fields;
 - episode-count and step-count buckets;
@@ -64,7 +70,7 @@ If Phase 1 is later run, any public report should be aggregate/sanitized only, f
 - privacy scan summary;
 - stop/go recommendation with no private rows.
 
-The public report must not include private traces, prompts, responses, snippets, gold labels, provider payloads, exact paths, exact ranges, hashes, private refs, raw task text, raw row values, or per-episode details. Phase 0 creates no report.
+The public report must not include private traces, prompts, responses, snippets, gold labels, provider payloads, exact paths, exact ranges, hashes, private refs, raw task text, raw row values, or per-episode details.
 
 ## EvidenceCore and privacy invariants
 
@@ -74,9 +80,9 @@ The public report must not include private traces, prompts, responses, snippets,
 - Private traces, prompts, responses, snippets, gold, provider payloads, exact paths, exact ranges, hashes, and private refs stay private.
 - State/action fields must remain label-blind; labels/outcomes are post-action or offline-only.
 
-## Phase 0 to Phase 1 go criteria
+## Phase 0 to Phase 1 decision record
 
-Phase 1 may be considered only if all are true:
+Phase 1 was allowed only after these conditions were met:
 
 1. A separate explicit route decision names this candidate route and authorizes the tiny private pilot.
 2. The episode source is bounded to 24-40 hard product-workflow episodes.
@@ -85,9 +91,9 @@ Phase 1 may be considered only if all are true:
 5. EvidenceCore rematerialization and privacy checks are required from the first row.
 6. The decision explicitly preserves all closed-route boundaries listed in this note.
 
-## Phase 1 stop/go criteria
+## Phase 1 stop/go status
 
-If Phase 1 is later authorized and completed, stop unless the private pilot shows all of:
+Phase 1 completed as a no-claim pilot. It must stop unless a separate later decision is made, because the public report deliberately makes no signal or method-winner claim. Future continuation would require all of:
 
 1. Schema-valid private rows with no label leakage into state/action fields.
 2. EvidenceCore rematerialization meets the predeclared minimum needed for counted evidence to be trusted.
