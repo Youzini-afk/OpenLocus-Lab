@@ -2,13 +2,15 @@
 
 Date: 2026-07-07
 
-Status: `candidate_route_phase1_hard_source_private_pilot_complete_no_claim`
+Status: `phase2_comparison_design_only_no_execution_no_claim`
 
-Authorization: `hard_source_local_private_pilot_confirmed_ignored_private_rows`
+Authorization: `design_only_not_execution`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
+
+Latest design checkpoint: [`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md). It is Phase 2 comparison design only, not execution evidence and not a method claim.
 
 ## Boundary
 

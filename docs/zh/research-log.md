@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 2 Comparison Design
+
+已新增 paired design-only docs：[`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md)。Status 为 `phase2_comparison_design_only_no_execution_no_claim`。
+
+这只是 possible future comparison design。它记录 Phase 1 证明了什么，提出是否有 small local evidence-finding strategy 能在 hard tasks 上超过 best fixed local baseline，并规定 fair comparison rules。它不运行 scripts、不收集 rows、不创建 artifacts、不改变 CI、不使用 provider/network/LLM、不训练 models、不改变 runtime/default、不新增 retrieval families，也不提出 method claim。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 1E Cross-Phase Diagnostic
 
 已为 `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` 增加 `--run-phase1e-diagnostic --confirm-private-input`。该模式只在本地读取既有 ignored Phase 1C 和 Phase 1D private rows，并发布 aggregate-only report：[`phase1e_cross_phase_private_row_diagnostic_screen_report.json`](../../artifacts/phase1e_cross_phase_private_row_diagnostic_screen/phase1e_cross_phase_private_row_diagnostic_screen_report.json)，status 为 `phase1e_cross_phase_private_row_diagnostic_no_claim`。

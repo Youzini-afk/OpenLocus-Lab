@@ -2,13 +2,15 @@
 
 日期：2026-07-07
 
-Status: `candidate_route_phase1_hard_source_private_pilot_complete_no_claim`
+Status: `phase2_comparison_design_only_no_execution_no_claim`
 
-Authorization: `hard_source_local_private_pilot_confirmed_ignored_private_rows`
+Authorization: `design_only_not_execution`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
+
+最新 design checkpoint：[`interventional-evidence-acquisition-phase2-comparison-design.md`](./interventional-evidence-acquisition-phase2-comparison-design.md)。它只是 Phase 2 comparison design，不是 execution evidence，也不是 method claim。
 
 ## 边界
 
