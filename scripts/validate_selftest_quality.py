@@ -623,6 +623,93 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return all(cls._expression_cannot_raise(default) for default in defaults)
 
     @classmethod
+    def _iter_expression_cannot_raise_and_truth(cls, node: ast.AST) -> tuple[bool, bool | None]:
+        iter_truth = cls._literal_iter_truth_value(node)
+        if iter_truth is None:
+            return False, None
+        if cls._literal_range_truth_value(node) is not None:
+            return True, iter_truth
+        if not cls._expression_cannot_raise(node):
+            return False, None
+        return True, iter_truth
+
+    @classmethod
+    def _comprehension_generators_cannot_raise_and_yield_truth(
+        cls, generators: list[ast.comprehension]
+    ) -> tuple[bool, bool | None]:
+        can_yield: bool | None = True
+        for generator in generators:
+            if generator.is_async:
+                return False, None
+            if can_yield is False:
+                continue
+
+            iter_cannot_raise, iter_truth = cls._iter_expression_cannot_raise_and_truth(generator.iter)
+            if not iter_cannot_raise:
+                return False, None
+            if iter_truth is False:
+                can_yield = False
+                continue
+            if not isinstance(generator.target, ast.Name):
+                return False, None
+
+            for if_clause in generator.ifs:
+                if not cls._expression_cannot_raise(if_clause):
+                    return False, None
+                if_truth = cls._literal_truth_value(if_clause)
+                if if_truth is False:
+                    can_yield = False
+                    break
+                if if_truth is not True:
+                    can_yield = None
+        return True, can_yield
+
+    @classmethod
+    def _hashable_expression_cannot_raise(cls, node: ast.AST) -> bool:
+        if not cls._expression_cannot_raise(node):
+            return False
+        known, value = cls._static_comparison_value(node)
+        return known and cls._static_value_is_hashable(value)
+
+    @classmethod
+    def _eager_comprehension_result_cannot_raise(cls, node: ast.ListComp | ast.SetComp | ast.DictComp) -> bool:
+        if isinstance(node, ast.ListComp):
+            return cls._expression_cannot_raise(node.elt)
+        if isinstance(node, ast.SetComp):
+            return cls._hashable_expression_cannot_raise(node.elt)
+        return cls._hashable_expression_cannot_raise(node.key) and cls._expression_cannot_raise(node.value)
+
+    @classmethod
+    def _eager_comprehension_cannot_raise(cls, node: ast.ListComp | ast.SetComp | ast.DictComp) -> bool:
+        generators_cannot_raise, can_yield = cls._comprehension_generators_cannot_raise_and_yield_truth(node.generators)
+        if not generators_cannot_raise:
+            return False
+        if can_yield is False:
+            return True
+        return cls._eager_comprehension_result_cannot_raise(node)
+
+    @classmethod
+    def _eager_comprehension_truth_value(cls, node: ast.ListComp | ast.SetComp | ast.DictComp) -> bool | None:
+        generators_cannot_raise, can_yield = cls._comprehension_generators_cannot_raise_and_yield_truth(node.generators)
+        if not generators_cannot_raise:
+            return None
+        if can_yield is False:
+            return False
+        if can_yield is True and cls._eager_comprehension_result_cannot_raise(node):
+            return True
+        return None
+
+    @classmethod
+    def _generator_expression_cannot_raise(cls, node: ast.GeneratorExp) -> bool:
+        if not node.generators:
+            return True
+        first_generator = node.generators[0]
+        if first_generator.is_async:
+            return False
+        iter_cannot_raise, _iter_truth = cls._iter_expression_cannot_raise_and_truth(first_generator.iter)
+        return iter_cannot_raise
+
+    @classmethod
     def _expression_cannot_raise(cls, node: ast.AST) -> bool:
         if isinstance(node, ast.Constant):
             return True
@@ -658,6 +745,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return known
         if isinstance(node, ast.Lambda):
             return cls._lambda_expression_cannot_raise(node)
+        if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp)):
+            return cls._eager_comprehension_cannot_raise(node)
+        if isinstance(node, ast.GeneratorExp):
+            return cls._generator_expression_cannot_raise(node)
         return False
 
     @classmethod
@@ -1286,6 +1377,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return None
         if isinstance(node, ast.Lambda):
             if cls._lambda_expression_cannot_raise(node):
+                return True
+            return None
+        if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp)):
+            return cls._eager_comprehension_truth_value(node)
+        if isinstance(node, ast.GeneratorExp):
+            if cls._generator_expression_cannot_raise(node):
                 return True
             return None
         if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
@@ -2104,6 +2201,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_empty_listcomp_branch_rejected",
+            "def run_self_tests():\n    if [risky() for item in []]:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_if_not_true_only_rejected",
             "def run_self_tests():\n    if not True:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2136,6 +2238,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_lambda_short_circuited_or_check_rejected",
             "def run_self_tests():\n    if (lambda: 1) or check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_static_listcomp_short_circuited_or_check_rejected",
+            "def run_self_tests():\n    if [1 for item in [1]] or check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_empty_listcomp_short_circuited_and_check_rejected",
+            "def run_self_tests():\n    if [risky() for item in []] and check('ok', value is True):\n        pass\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2609,6 +2721,41 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_empty_listcomp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        [risky() for item in []]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_range_empty_listcomp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        [risky() for item in range(0)]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_static_listcomp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        [1 for item in [1]]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_empty_genexp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        (risky() for item in [])\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_static_setcomp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {1 for item in [1]}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_static_dictcomp_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {1: 2 for item in [1]}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_empty_listcomp_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        [risky() for item in []]\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_namedexpr_literal_except_check_rejected",
             "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2651,6 +2798,36 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_dict_with_risky_value_except_check_allowed",
             "def run_self_tests():\n    try:\n        {'a': risky()}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_listcomp_risky_iter_except_check_allowed",
+            "def run_self_tests():\n    try:\n        [item for item in risky()]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_listcomp_risky_result_except_check_allowed",
+            "def run_self_tests():\n    try:\n        [risky() for item in [1]]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_listcomp_bound_name_result_except_check_allowed",
+            "def run_self_tests():\n    try:\n        [item for item in [1]]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_genexp_risky_outer_iter_except_check_allowed",
+            "def run_self_tests():\n    try:\n        (item for item in risky())\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_setcomp_unhashable_result_except_check_allowed",
+            "def run_self_tests():\n    try:\n        {[] for item in [1]}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_dictcomp_unhashable_key_except_check_allowed",
+            "def run_self_tests():\n    try:\n        {[]: 1 for item in [1]}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2806,6 +2983,21 @@ def run_self_test() -> list[str]:
         (
             "target_with_if_not_false_check_allowed",
             "def run_self_tests(value):\n    if not False:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_static_listcomp_true_branch_allowed",
+            "def run_self_tests(value):\n    if [1 for item in [1]]:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_unknown_filter_listcomp_branch_allowed",
+            "def run_self_tests(value, flag):\n    if [1 for item in [1] if flag]:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_genexp_true_branch_allowed",
+            "def run_self_tests(value):\n    if (risky() for item in []):\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -3118,7 +3310,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda no-raise, "
+            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
         return 0
