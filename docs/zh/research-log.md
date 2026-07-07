@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Risky Match-Guard Exit
+
+Risky match-guard exit analysis 现在会把 match fallthrough 与 no-raise selected-body selection 分开处理。`case 1 if risky() or True:` 以 `return` exit、`case 1 if risky() and False:` 只能 fall through 到 exiting wildcard，或 risky unknown guard 的 true/false paths 都 exit 的 synthetic files 现在会以 `missing_selftest_checks` 失败。selected body 可 fall through 的 risky truthy guard 仍保持 active，`with` 内可抑制异常也继续 conservative。
+
+加入 risky match-guard exit change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused risky match-guard exit probes、默认 allowlist scan、使用 isolated pycache 的 `python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28848014434`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28848014434) 已在 `ba26ff8` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Selected-Match Guard Safety
 
 Selected-match guard safety 现在会阻止可能 raise 的 `match` case guard 泄漏 fake active coverage。`case 1 if True:` 选择 caught `raise ValueError(...)` body 的 synthetic files 仍会以 `missing_selftest_checks` 失败；同样的 class-body caught-try 形态在使用 `case 1 if risky() or True:` 时仍保持 active，因为 guard evaluation 可能在 body 到达前 raise。

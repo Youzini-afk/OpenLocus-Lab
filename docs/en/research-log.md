@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Risky Match-Guard Exit
+
+Risky match-guard exit analysis now separates match fallthrough from no-raise selected-body selection. Synthetic files where `case 1 if risky() or True:` exits with `return`, where `case 1 if risky() and False:` can only fall through to an exiting wildcard, or where risky unknown guard true/false paths both exit now fail with `missing_selftest_checks`. A risky truthy guard whose selected body can fall through remains active, and suppressible exceptions inside `with` remain conservative.
+
+After the risky match-guard exit change, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused risky match-guard exit probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py` with an isolated pycache, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28848014434`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28848014434) passed on `ba26ff8` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Selected-Match Guard Safety
 
 Selected-match guard safety now keeps fake active coverage from leaking through a statically matching `match` case whose guard may raise. Synthetic files where `case 1 if True:` selects a caught `raise ValueError(...)` body still fail with `missing_selftest_checks`, while the same class-body caught-try shape with `case 1 if risky() or True:` remains active because guard evaluation can raise before the body is reached.
