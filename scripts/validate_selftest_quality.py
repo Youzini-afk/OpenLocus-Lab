@@ -535,8 +535,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_exit(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_exit(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_exit)
         return False
 
     @classmethod
@@ -691,8 +690,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_nonsuppressible_exit(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_nonsuppressible_exit(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_nonsuppressible_exit)
         return False
 
     @classmethod
@@ -735,8 +733,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_exits
             return normal_path_exits and all(cls._block_guarantees_function_exit(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_function_exit(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_function_exit)
         return False
 
     @classmethod
@@ -800,8 +797,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_returns
             return normal_path_returns and all(cls._block_guarantees_return(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_return(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_return)
         return False
 
     @classmethod
@@ -911,8 +907,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return normal_path_skips
             return normal_path_skips and all(cls._block_guarantees_loop_else_skip(handler.body) for handler in node.handlers)
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_loop_else_skip(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_loop_else_skip)
         return False
 
     @classmethod
@@ -957,8 +952,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 cls._block_guarantees_nonsuppressible_loop_else_skip(handler.body) for handler in node.handlers
             )
         if isinstance(node, ast.Match):
-            selected_body = cls._known_match_selected_body(node)
-            return selected_body is not None and cls._block_guarantees_nonsuppressible_loop_else_skip(selected_body)
+            return cls._match_statement_guarantees(node, cls._block_guarantees_nonsuppressible_loop_else_skip)
         return False
 
     @classmethod
@@ -1034,6 +1028,29 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if isinstance(candidate, type) and issubclass(candidate, BaseException):
                 return issubclass(raised_type, candidate)
         return None
+
+    @classmethod
+    def _match_statement_guarantees(cls, node: ast.Match, block_checker) -> bool:
+        selected_body = cls._known_match_selected_body(node)
+        if selected_body is not None:
+            return block_checker(selected_body)
+        if not any(cls._case_is_unguarded_irrefutable(case) for case in node.cases):
+            return False
+        return all(block_checker(case.body) for case in node.cases)
+
+    @classmethod
+    def _case_is_unguarded_irrefutable(cls, case: ast.match_case) -> bool:
+        return case.guard is None and cls._pattern_is_irrefutable(case.pattern)
+
+    @classmethod
+    def _pattern_is_irrefutable(cls, pattern: ast.pattern) -> bool:
+        if isinstance(pattern, ast.MatchAs):
+            if pattern.pattern is None:
+                return True
+            return cls._pattern_is_irrefutable(pattern.pattern)
+        if isinstance(pattern, ast.MatchOr):
+            return any(cls._pattern_is_irrefutable(subpattern) for subpattern in pattern.patterns)
+        return False
 
     @classmethod
     def _known_match_selected_body(cls, node: ast.Match) -> list[ast.stmt] | None:
@@ -2020,6 +2037,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_match_unknown_wildcard_return_then_check_rejected",
+            "def run_self_tests(value):\n    match value:\n        case _:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_unknown_capture_return_then_check_rejected",
+            "def run_self_tests(value):\n    match value:\n        case captured:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_unknown_literal_then_wildcard_return_then_check_rejected",
+            "def run_self_tests(value):\n    match value:\n        case 1:\n            return\n        case _:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_return_then_check_rejected",
             "def run_self_tests():\n    try:\n        return\n    finally:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2359,6 +2391,21 @@ def run_self_test() -> list[str]:
             "def run_self_tests(value, flag):\n    match 1:\n        case 1 if flag:\n            check('ok', value is True)\n",
             [],
         ),
+        (
+            "target_with_match_unknown_guarded_wildcard_then_check_allowed",
+            "def run_self_tests(value, flag):\n    match value:\n        case _ if flag:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_unknown_wildcard_nonexit_then_check_allowed",
+            "def run_self_tests(value):\n    match value:\n        case _:\n            pass\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_unknown_no_irrefutable_then_check_allowed",
+            "def run_self_tests(value):\n    match value:\n        case 1:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     if hasattr(ast, "TryStar"):
@@ -2408,7 +2455,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
-            "for-else exit, nested-loop function-exit, unknown-while else-exit, "
+            "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, "
             "and missing-check cases"
         )
         return 0
