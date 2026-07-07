@@ -305,13 +305,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_statements(node.orelse)
 
     def visit_For(self, node: ast.For) -> None:
-        self.visit(node.target)
         self.visit(node.iter)
         iter_truth = self._literal_iter_truth_value(node.iter)
         if iter_truth is False:
+            self._visit_unreachable(node.target)
             self._visit_unreachable_statements(node.body)
             self._visit_statements(node.orelse)
             return
+        self.visit(node.target)
         if iter_truth is True:
             self._visit_statements(node.body)
             if self._block_guarantees_loop_else_skip(node.body):
@@ -323,13 +324,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_statements(node.orelse)
 
     def visit_AsyncFor(self, node: ast.AsyncFor) -> None:
-        self.visit(node.target)
         self.visit(node.iter)
         iter_truth = self._literal_iter_truth_value(node.iter)
         if iter_truth is False:
+            self._visit_unreachable(node.target)
             self._visit_unreachable_statements(node.body)
             self._visit_statements(node.orelse)
             return
+        self.visit(node.target)
         if iter_truth is True:
             self._visit_statements(node.body)
             if self._block_guarantees_loop_else_skip(node.body):
@@ -443,13 +445,14 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                     self._visit_unreachable(if_clause)
                 continue
 
-            self.visit(generator.target)
             self.visit(generator.iter)
             if self._literal_iter_truth_value(generator.iter) is False:
                 can_yield = False
+                self._visit_unreachable(generator.target)
                 for if_clause in generator.ifs:
                     self._visit_unreachable(if_clause)
                 continue
+            self.visit(generator.target)
 
             for if_clause in generator.ifs:
                 if not can_yield:
@@ -2623,6 +2626,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_empty_listcomp_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    checks = [1 for items[check('ok', value is True)] in []]\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_empty_range_setcomp_check_only_rejected",
             "def run_self_tests():\n    checks = {check('ok', value is True) for value in range(0)}\n",
             ["missing_selftest_checks"],
@@ -2743,8 +2751,18 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_empty_for_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    for items[check('ok', value is True)] in []:\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_empty_range_for_only_rejected",
             "def run_self_tests():\n    for value in range(0):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_empty_range_for_subscript_target_check_rejected",
+            "def run_self_tests(value, items):\n    for items[check('ok', value is True)] in range(0):\n        pass\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -3938,6 +3956,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_nonempty_listcomp_subscript_target_check_allowed",
+            "def run_self_tests(value, items):\n    checks = [1 for items[check('ok', value is True)] in [1]]\n",
+            [],
+        ),
+        (
             "target_with_unknown_comp_filter_check_allowed",
             "def run_self_tests(value, flag):\n    checks = [check('ok', value is True) for item in [1] if flag]\n",
             [],
@@ -3995,6 +4018,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_for_continue_else_check_allowed",
             "def run_self_tests(value):\n    for item in [1]:\n        continue\n    else:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_nonempty_for_subscript_target_check_allowed",
+            "def run_self_tests(value, items):\n    for items[check('ok', value is True)] in [1]:\n        pass\n",
             [],
         ),
         (
@@ -4142,7 +4170,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
