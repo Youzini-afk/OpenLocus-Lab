@@ -5,6 +5,8 @@
 Self-test quality guard 现在新增 narrow `--runtime-check` mode，范围仅限 current evaluator chain。Runtime mode 只导入既有默认 allowlisted targets，或通过同一 path logic 解析的 explicit paths；它会临时把 repository/import roots prepend 到 `sys.path` 并恢复，优先选择 `run_self_tests`、否则选择 `run_self_test`，拒绝缺失或需要参数的 entrypoints，执行 entrypoint，并要求返回 simple passing dict result，且没有 failed checks，存在 check counts 时保持一致。
 `retrieval-benchmark` plan job 现在会在 static guard 之后运行这个 runtime gate。
 
+CI evidence：手动 `retrieval-benchmark` `pr_smoke` run [`28863898352`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28863898352) 已在 `bf1bacf` 上以 `max_repos=1`、`enable_remote_models=false` 通过。plan job 已成功，包括新的 `Run evaluator runtime self-test quality guard` step；bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 已 skipped。
+
 这只是 evaluator-chain runtime self-test quality gating。它不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
 
 ## 2026-07-07 - Self-Test Quality Guard Loop/Comprehension Target Store Failure
