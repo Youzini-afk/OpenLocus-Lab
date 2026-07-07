@@ -77,6 +77,8 @@ jobs:
         run: python3 scripts/validate_selftest_quality.py --self-test
       - name: Run evaluator self-test quality guard
         run: python3 scripts/validate_selftest_quality.py
+      - name: Run evaluator runtime self-test quality guard
+        run: python3 scripts/validate_selftest_quality.py --runtime-check
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Runtime Self-Test Quality Gate
+
+The self-test quality guard now has a narrow `--runtime-check` mode for the current evaluator chain. Runtime mode imports only the existing default allowlisted targets, or explicit paths resolved by the same path logic, temporarily prepends the repository/import roots to `sys.path` and restores them, selects `run_self_tests` before `run_self_test`, rejects missing or argument-requiring entrypoints, executes the entrypoint, and requires a simple passing dict result with no failed checks and consistent check counts when present. The `retrieval-benchmark` plan job now runs this runtime gate after the static guard.
+
+This is evaluator-chain runtime self-test quality gating only. It is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Loop/Comprehension Target Store Failure
 
 Loop and eager-comprehension target store failure reachability now follows Python target assignment boundaries more closely. Synthetic files where the only recognized check is in a body, loop `else`, post-loop statement, comprehension result, or comprehension filter after a statically failing nonempty target such as `for [][0] in [1]: ...` or `[check(...) for [][0] in [1]]` now fail with `missing_selftest_checks`. Static first-iteration unpack shape mismatches such as `for a, items[check(...)] in [(1,)]: ...` and `for a, b in range(1): ...` also fail before later target/body checks. Target-index checks evaluated before the store failure, empty-iterable `else` checks, unknown-iterable `else` checks, dynamic targets, and safe nonempty target checks remain active.

@@ -12,6 +12,8 @@ from __future__ import annotations
 import argparse
 import ast
 import builtins
+import importlib.util
+import inspect
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,6 +54,17 @@ class Issue:
     def format(self) -> str:
         rel = self.path.relative_to(REPO) if self.path.is_relative_to(REPO) else self.path
         return f"{rel}:{self.line}:{self.column}: {self.code}: {self.message}"
+
+
+@dataclass(frozen=True)
+class RuntimeIssue:
+    path: Path
+    function: str
+    message: str
+
+    def format(self) -> str:
+        rel = self.path.relative_to(REPO) if self.path.is_relative_to(REPO) else self.path
+        return f"{rel}:{self.function}: {self.message}"
 
 
 @dataclass(frozen=True)
@@ -2648,6 +2661,103 @@ def collect_issues(paths: list[Path]) -> list[Issue]:
     return issues
 
 
+def _module_name_for_path(path: Path) -> str:
+    try:
+        rel = path.relative_to(REPO)
+    except ValueError:
+        rel = path
+    stem = "_".join(rel.with_suffix("").parts)
+    safe = "".join(ch if ch.isalnum() or ch == "_" else "_" for ch in stem)
+    return f"_selftest_runtime_{safe}"
+
+
+def _validate_runtime_result(path: Path, function_name: str, result: object) -> RuntimeIssue | None:
+    if not isinstance(result, dict):
+        return RuntimeIssue(path, function_name, "self-test entrypoint must return a dict result")
+    if result.get("status") != "passed":
+        return RuntimeIssue(path, function_name, "self-test result status is not 'passed'")
+    failed_checks = result.get("failed_checks")
+    if failed_checks:
+        return RuntimeIssue(path, function_name, "self-test result failed_checks is not empty")
+    checks_total = result.get("checks_total")
+    checks_passed = result.get("checks_passed")
+    if checks_total is not None:
+        if not isinstance(checks_total, int) or isinstance(checks_total, bool) or checks_total <= 0:
+            return RuntimeIssue(path, function_name, "self-test result checks_total must be positive when present")
+    if checks_total is not None and checks_passed is not None:
+        if checks_passed != checks_total:
+            return RuntimeIssue(path, function_name, "self-test result checks_passed does not equal checks_total")
+    return None
+
+
+def _can_call_without_required_args(function: object) -> bool:
+    try:
+        signature = inspect.signature(function)
+    except (TypeError, ValueError):
+        return False
+    for parameter in signature.parameters.values():
+        if parameter.kind in (parameter.VAR_POSITIONAL, parameter.VAR_KEYWORD):
+            continue
+        if parameter.default is parameter.empty:
+            return False
+    return True
+
+
+def collect_runtime_issues(paths: list[Path]) -> list[RuntimeIssue]:
+    issues: list[RuntimeIssue] = []
+    repo_str = str(REPO)
+    previous_path = list(sys.path)
+    try:
+        import_roots = [repo_str]
+        for path in paths:
+            parent = str(path.parent)
+            if parent not in import_roots:
+                import_roots.append(parent)
+        sys.path[:] = import_roots + [entry for entry in previous_path if entry not in import_roots]
+        for path in paths:
+            if not path.exists():
+                issues.append(RuntimeIssue(path, "<import>", "target evaluator script does not exist"))
+                continue
+            module_name = _module_name_for_path(path)
+            try:
+                spec = importlib.util.spec_from_file_location(module_name, path)
+                if spec is None or spec.loader is None:
+                    issues.append(RuntimeIssue(path, "<import>", "could not create import spec for target"))
+                    continue
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = module
+                try:
+                    spec.loader.exec_module(module)
+                finally:
+                    sys.modules.pop(module_name, None)
+            except Exception as exc:  # noqa: BLE001 - runtime gate reports target exceptions as failures.
+                issues.append(RuntimeIssue(path, "<import>", f"{type(exc).__name__}: {exc}"))
+                continue
+
+            function_name = "run_self_tests" if hasattr(module, "run_self_tests") else "run_self_test" if hasattr(module, "run_self_test") else ""
+            if not function_name:
+                issues.append(RuntimeIssue(path, "<entrypoint>", "missing run_self_tests or run_self_test entrypoint"))
+                continue
+            function = getattr(module, function_name)
+            if not callable(function):
+                issues.append(RuntimeIssue(path, function_name, "selected entrypoint is not callable"))
+                continue
+            if not _can_call_without_required_args(function):
+                issues.append(RuntimeIssue(path, function_name, "selected entrypoint requires arguments"))
+                continue
+            try:
+                result = function()
+            except Exception as exc:  # noqa: BLE001 - runtime gate reports self-test exceptions as failures.
+                issues.append(RuntimeIssue(path, function_name, f"{type(exc).__name__}: {exc}"))
+                continue
+            issue = _validate_runtime_result(path, function_name, result)
+            if issue is not None:
+                issues.append(issue)
+    finally:
+        sys.path[:] = previous_path
+    return issues
+
+
 def run_self_test() -> list[str]:
     failures: list[str] = []
 
@@ -2667,6 +2777,43 @@ def run_self_test() -> list[str]:
         elif visitor.selftest_check_count == 0:
             codes.append("missing_selftest_checks")
         return codes
+
+    runtime_result_cases = [
+        ("runtime_result_minimal_passed", {"status": "passed"}, False),
+        ("runtime_result_with_counts_passed", {"status": "passed", "checks_passed": 1, "checks_total": 1, "failed_checks": []}, False),
+        ("runtime_result_nondict_rejected", None, True),
+        ("runtime_result_bad_status_rejected", {"status": "failed"}, True),
+        ("runtime_result_failed_checks_rejected", {"status": "passed", "failed_checks": ["bad"]}, True),
+        ("runtime_result_zero_total_rejected", {"status": "passed", "checks_total": 0}, True),
+        ("runtime_result_count_mismatch_rejected", {"status": "passed", "checks_passed": 1, "checks_total": 2}, True),
+    ]
+    for name, result, should_fail in runtime_result_cases:
+        issue = _validate_runtime_result(REPO / "selftest.py", "run_self_tests", result)
+        if (issue is not None) is not should_fail:
+            failures.append(f"{name}: expected failure={should_fail}, got {issue}")
+
+    def no_args() -> None:
+        return None
+
+    def required_arg(value: object) -> None:
+        return None
+
+    def default_arg(value: object = None) -> None:
+        return None
+
+    def variadic_args(*values: object, **kwargs: object) -> None:
+        return None
+
+    runtime_signature_cases = [
+        ("runtime_signature_no_args_allowed", no_args, True),
+        ("runtime_signature_required_arg_rejected", required_arg, False),
+        ("runtime_signature_default_arg_allowed", default_arg, True),
+        ("runtime_signature_variadic_args_allowed", variadic_args, True),
+    ]
+    for name, function, expected in runtime_signature_cases:
+        actual = _can_call_without_required_args(function)
+        if actual is not expected:
+            failures.append(f"{name}: expected {expected}, got {actual}")
 
     cases = [
         ("direct_check_literal_true", "def f():\n    check('bad', True)\n", 1),
@@ -4805,6 +4952,7 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="*", help="optional repo-relative or absolute Python files to scan")
     parser.add_argument("--self-test", action="store_true", help="run synthetic validator self-test")
+    parser.add_argument("--runtime-check", action="store_true", help="import and execute allowlisted target self-tests")
     args = parser.parse_args(argv)
 
     if args.self_test:
@@ -4823,11 +4971,23 @@ def main(argv: list[str]) -> int:
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
             "risky match-guard exit, loop/comprehension target reachability, loop/comprehension target store failure, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, assignment/delete target sequencing, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
-            "and missing-check cases"
+            "missing-check cases, and runtime-result checks"
         )
         return 0
 
     targets = resolve_paths(args.paths)
+    if args.runtime_check:
+        issues = collect_runtime_issues(targets)
+        if issues:
+            print("Runtime self-test validation FAILED:")
+            for issue in issues:
+                print(f"  - {issue.format()}")
+            return 1
+        print("Runtime self-test validation passed:")
+        print(f"  executed files: {len(targets)}")
+        print("  every selected run_self_test(s) entrypoint returned a passing simple dict result")
+        return 0
+
     issues = collect_issues(targets)
     if issues:
         print("Validation FAILED:")
