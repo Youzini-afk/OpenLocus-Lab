@@ -620,6 +620,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return True
         if isinstance(node, (ast.Tuple, ast.List)):
             return all(cls._expression_cannot_raise(element) for element in node.elts)
+        if isinstance(node, ast.Dict):
+            return cls._dict_expression_cannot_raise(node)
+        if isinstance(node, ast.Set):
+            return cls._set_expression_cannot_raise(node)
         if isinstance(node, ast.UnaryOp):
             return cls._expression_cannot_raise(node.operand)
         if isinstance(node, ast.BoolOp):
@@ -647,6 +651,36 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return True
             if isinstance(node.op, ast.Or) and truth is True:
                 return True
+        return True
+
+    @classmethod
+    def _dict_expression_cannot_raise(cls, node: ast.Dict) -> bool:
+        for key, value in zip(node.keys, node.values):
+            if key is None:
+                return False
+            if not cls._expression_cannot_raise(key) or not cls._expression_cannot_raise(value):
+                return False
+            known_key, key_value = cls._static_comparison_value(key)
+            if not known_key or not cls._static_value_is_hashable(key_value):
+                return False
+        return True
+
+    @classmethod
+    def _set_expression_cannot_raise(cls, node: ast.Set) -> bool:
+        for element in node.elts:
+            if not cls._expression_cannot_raise(element):
+                return False
+            known_value, value = cls._static_comparison_value(element)
+            if not known_value or not cls._static_value_is_hashable(value):
+                return False
+        return True
+
+    @staticmethod
+    def _static_value_is_hashable(value: object) -> bool:
+        try:
+            hash(value)
+        except TypeError:
+            return False
         return True
 
     @classmethod
@@ -2191,6 +2225,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_empty_dict_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_static_dict_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {'a': 1}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_static_set_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {1, 2}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_true_or_risky_except_check_rejected",
             "def run_self_tests():\n    try:\n        True or risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2231,6 +2280,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_empty_dict_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        {}\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_known_raise_disjoint_except_then_check_rejected",
             "def run_self_tests():\n    try:\n        raise ValueError('needle')\n    except TypeError:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2253,6 +2307,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_true_and_risky_except_check_allowed",
             "def run_self_tests():\n    try:\n        True and risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_unhashable_dict_key_except_check_allowed",
+            "def run_self_tests():\n    try:\n        {[]: 1}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_dict_with_risky_value_except_check_allowed",
+            "def run_self_tests():\n    try:\n        {'a': risky()}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2625,7 +2689,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, "
+            "boolop no-raise, literal-container no-raise, "
             "and missing-check cases"
         )
         return 0
