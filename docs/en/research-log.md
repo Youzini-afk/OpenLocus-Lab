@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Lambda Reachability
+
+Lambda reachability now carries simple lambda truth and no-raise facts into self-test analysis while preserving definition-time default evaluation. Synthetic files where the only active-looking check lived under `not (lambda: 1)`, inside a short-circuited operand after `(lambda: 1) or ...`, or in an except handler/post-try check after a non-raising `lambda: 1` or `lambda item=1: item` try body now fail with `missing_selftest_checks`. Lambda definitions with risky defaults such as `lambda item=risky(): item` remain conservative and active.
+
+After the lambda reachability guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28839710154`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28839710154) passed on `44a6a45` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-FString Reachability
 
 Literal-fstring reachability now carries pure literal f-string truth and no-raise facts into self-test analysis. Synthetic files where the only active-looking check lived under `if f'':`, behind a false literal f-string comparison such as `f'a' == 'b'`, or in an except handler/post-try check after a non-raising `f'abc'` try body now fail with `missing_selftest_checks`. Dynamic f-strings with formatted values remain conservative and active.

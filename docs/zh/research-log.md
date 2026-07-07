@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Lambda Reachability
+
+Lambda reachability 现在会把 simple lambda truth 和 no-raise facts 带入 self-test analysis，同时保留 definition-time default evaluation。唯一看似 active 的 check 位于 `not (lambda: 1)` 下、位于 `(lambda: 1) or ...` 之后的 short-circuited operand 内，或位于 non-raising `lambda: 1` / `lambda item=1: item` try body 之后的 except handler/post-try check 时，synthetic files 现在会以 `missing_selftest_checks` 失败。`lambda item=risky(): item` 这类 risky defaults 的 lambda definitions 仍保持 conservative active。
+
+加入 lambda reachability guard 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、focused probes、默认 allowlist scan、`python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28839710154`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28839710154) 已在 `44a6a45` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-FString Reachability
 
 Literal-fstring reachability 现在会把 pure literal f-string truth 和 no-raise facts 带入 self-test analysis。唯一看似 active 的 check 位于 `if f'':` 下、位于 `f'a' == 'b'` 这类 false literal f-string comparison 后，或位于 non-raising `f'abc'` try body 之后的 except handler/post-try check 时，synthetic files 现在会以 `missing_selftest_checks` 失败。带 formatted values 的 dynamic f-strings 仍保持 conservative active。
