@@ -155,7 +155,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 self._visit_unreachable(node.annotation)
                 return
         self.visit(node.target)
-        if self._expression_guarantees_raise(node.target):
+        if self._assignment_store_target_guarantees_raise(node.target):
             self._visit_unreachable(node.annotation)
             return
         annotation_is_evaluated = not self._future_annotations and (not self._function_stack or self._class_scope_depth > 0)
@@ -169,6 +169,13 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return
         for target in node.targets:
             self.visit(target)
+
+    def visit_AugAssign(self, node: ast.AugAssign) -> None:
+        self.visit(node.target)
+        if self._expression_guarantees_raise(node.target):
+            self._visit_unreachable(node.value)
+            return
+        self.visit(node.value)
 
     def _visit_annotation(self, node: ast.AST, *, evaluated: bool) -> None:
         if evaluated:
@@ -359,12 +366,16 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         self._visit_statements(node.orelse)
 
     def visit_With(self, node: ast.With) -> None:
-        self._visit_with_items(node.items)
-        self._visit_statements(node.body)
+        if self._visit_with_items(node.items):
+            self._visit_statements(node.body)
+        else:
+            self._visit_unreachable_statements(node.body)
 
     def visit_AsyncWith(self, node: ast.AsyncWith) -> None:
-        self._visit_with_items(node.items)
-        self._visit_statements(node.body)
+        if self._visit_with_items(node.items):
+            self._visit_statements(node.body)
+        else:
+            self._visit_unreachable_statements(node.body)
 
     def visit_Try(self, node: ast.Try) -> None:
         self._visit_try_like(node)
@@ -445,11 +456,31 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if case.guard is not None:
             self.visit(case.guard)
 
-    def _visit_with_items(self, items: list[ast.withitem]) -> None:
+    def _visit_with_items(self, items: list[ast.withitem]) -> bool:
+        body_is_reachable = True
         for item in items:
+            if not body_is_reachable:
+                self._visit_unreachable(item.context_expr)
+                if item.optional_vars is not None:
+                    self._visit_unreachable(item.optional_vars)
+                continue
             self.visit(item.context_expr)
+            if self._expression_guarantees_raise(item.context_expr):
+                if item.optional_vars is not None:
+                    self._visit_unreachable(item.optional_vars)
+                body_is_reachable = False
+                continue
             if item.optional_vars is not None:
                 self.visit(item.optional_vars)
+                if self._assignment_store_target_guarantees_raise(item.optional_vars):
+                    body_is_reachable = False
+        return body_is_reachable
+
+    @classmethod
+    def _with_context_expression_guarantees_raise(cls, node: ast.With | ast.AsyncWith) -> bool:
+        if not node.items:
+            return False
+        return cls._expression_guarantees_raise(node.items[0].context_expr)
 
     def _visit_comprehension(self, generators: list[ast.comprehension], result_nodes: list[ast.AST]) -> None:
         can_yield = True
@@ -539,6 +570,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, (ast.For, ast.AsyncFor)):
             return cls._for_statement_guarantees_exit(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
+            if cls._with_context_expression_guarantees_raise(node):
+                return True
             return cls._block_guarantees_nonsuppressible_exit(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_exit(node.finalbody):
@@ -875,6 +908,36 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(target, (ast.Tuple, ast.List)):
             known, static_value = cls._static_comparison_value(value)
             return known and cls._unpack_assignment_target_matches_value(target, static_value)
+        return False
+
+    @classmethod
+    def _assignment_store_target_guarantees_raise(cls, target: ast.AST) -> bool:
+        if isinstance(target, (ast.Name, ast.Starred)):
+            return False
+        if isinstance(target, (ast.Tuple, ast.List)):
+            return any(cls._assignment_store_target_guarantees_raise(element) for element in target.elts)
+        if isinstance(target, ast.Attribute):
+            return cls._expression_guarantees_raise(target.value)
+        if isinstance(target, ast.Subscript):
+            if cls._expression_guarantees_raise(target.value) or cls._expression_guarantees_raise(target.slice):
+                return True
+            known_value, value = cls._static_comparison_value(target.value)
+            known_slice, slice_value = cls._static_slice_value(target.slice)
+            if not known_value or not known_slice:
+                return False
+            if isinstance(target.slice, ast.Slice):
+                return not isinstance(value, list)
+            if isinstance(value, tuple):
+                return True
+            if isinstance(value, str):
+                return True
+            if isinstance(value, list):
+                if not isinstance(slice_value, int):
+                    return True
+                index = slice_value if slice_value >= 0 else len(value) + slice_value
+                return index < 0 or index >= len(value)
+            if isinstance(value, dict):
+                return not cls._static_value_is_hashable(slice_value)
         return False
 
     @classmethod
@@ -1244,6 +1307,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 node.orelse
             )
         if isinstance(node, (ast.With, ast.AsyncWith)):
+            if cls._with_context_expression_guarantees_raise(node):
+                return True
             return cls._block_guarantees_nonsuppressible_exit(node.body)
         if isinstance(node, ast.While):
             return cls._while_statement_guarantees_return(node)
@@ -1284,6 +1349,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, (ast.For, ast.AsyncFor)):
             return cls._for_statement_guarantees_function_exit(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
+            if cls._with_context_expression_guarantees_raise(node):
+                return True
             return cls._block_guarantees_return(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_function_exit(node.finalbody):
@@ -1460,6 +1527,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return False
             return cls._block_guarantees_loop_else_skip(node.body) and cls._block_guarantees_loop_else_skip(node.orelse)
         if isinstance(node, (ast.With, ast.AsyncWith)):
+            if cls._with_context_expression_guarantees_raise(node):
+                return True
             return cls._block_guarantees_nonsuppressible_loop_else_skip(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_loop_else_skip(node.finalbody):
@@ -1512,6 +1581,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 node.body
             ) and cls._block_guarantees_nonsuppressible_loop_else_skip(node.orelse)
         if isinstance(node, (ast.With, ast.AsyncWith)):
+            if cls._with_context_expression_guarantees_raise(node):
+                return True
             return cls._block_guarantees_nonsuppressible_loop_else_skip(node.body)
         if isinstance(node, TRY_STATEMENT_TYPES):
             if cls._block_guarantees_nonsuppressible_loop_else_skip(node.finalbody):
@@ -2680,6 +2751,71 @@ def run_self_test() -> list[str]:
             "target_with_annassign_rhs_check_before_later_raise_allowed",
             "def run_self_tests(value, items):\n    items[0]: int = (check('ok', value is True), [][0])\n",
             [],
+        ),
+        (
+            "target_with_annassign_dict_store_target_annotation_check_allowed",
+            "def run_self_tests(value):\n    class Helper:\n        {}['x']: check('ok', value is True) = 1\n",
+            [],
+        ),
+        (
+            "target_with_augassign_static_oob_target_rhs_check_rejected",
+            "def run_self_tests(value):\n    [][0] += check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_augassign_static_missing_key_target_rhs_check_rejected",
+            "def run_self_tests(value):\n    {}['x'] += check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_augassign_static_oob_target_index_check_allowed",
+            "def run_self_tests(value):\n    [][check('ok', value is True)] += 1\n",
+            [],
+        ),
+        (
+            "target_with_augassign_safe_target_rhs_check_allowed",
+            "def run_self_tests(value, items):\n    items[0] += check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_with_static_oob_context_body_check_rejected",
+            "def run_self_tests(value):\n    with [][0]:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_with_static_oob_context_optional_vars_check_rejected",
+            "def run_self_tests(value, items):\n    with [][0] as items[check('ok', value is True)]:\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_with_static_oob_context_post_check_rejected",
+            "def run_self_tests(value):\n    with [][0]:\n        pass\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_with_static_oob_optional_vars_target_body_check_rejected",
+            "def run_self_tests(value, guard):\n    with guard as [][0]:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_with_static_oob_optional_vars_target_check_allowed",
+            "def run_self_tests(value, guard):\n    with guard as [][check('ok', value is True)]:\n        pass\n",
+            [],
+        ),
+        (
+            "target_with_with_dict_optional_vars_target_body_check_allowed",
+            "def run_self_tests(value, guard):\n    with guard as {}['x']:\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_with_suppressible_optional_vars_target_then_post_check_allowed",
+            "def run_self_tests(value, guard):\n    with guard as [][0]:\n        pass\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_with_second_static_oob_context_body_check_rejected",
+            "def run_self_tests(value, guard):\n    with guard, [][0]:\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
         ),
         (
             "target_with_literal_fstring_false_branch_rejected",
@@ -4341,7 +4477,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "risky match-guard exit, loop/comprehension target reachability, assignment target reachability, annotated assignment target reachability, augmented assignment/with context reachability, boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
