@@ -1325,6 +1325,20 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                     return False, None
                 values.append(value)
             return True, tuple(values)
+        if isinstance(node, ast.Dict):
+            values = []
+            for key, value_node in zip(node.keys, node.values):
+                if key is None:
+                    return False, None
+                known_key, key_value = cls._static_match_subject_value(key)
+                known_value, value = cls._static_match_subject_value(value_node)
+                if not known_key or not known_value:
+                    return False, None
+                values.append((key_value, value))
+            try:
+                return True, dict(values)
+            except TypeError:
+                return False, None
         return False, None
 
     @classmethod
@@ -1358,6 +1372,28 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 cls._match_pattern_matches_literal(subject_element, subpattern)
                 for subject_element, subpattern in zip(subject_value, pattern.patterns)
             ]
+            if any(result is False for result in results):
+                return False
+            if all(result is True for result in results):
+                return True
+            return None
+        if isinstance(pattern, ast.MatchMapping):
+            if not isinstance(subject_value, dict):
+                return False
+            if pattern.rest is not None:
+                return None
+            results = []
+            for key_node, value_pattern in zip(pattern.keys, pattern.patterns):
+                known_key, key_value = cls._static_match_subject_value(key_node)
+                if not known_key:
+                    return None
+                try:
+                    if key_value not in subject_value:
+                        return False
+                    subject_element = subject_value[key_value]
+                except TypeError:
+                    return None
+                results.append(cls._match_pattern_matches_literal(subject_element, value_pattern))
             if any(result is False for result in results):
                 return False
             if all(result is True for result in results):
@@ -2103,6 +2139,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_match_mapping_return_then_check_rejected",
+            "def run_self_tests(value):\n    match {'a': 1}:\n        case {'a': 1}:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_mapping_extra_key_return_then_check_rejected",
+            "def run_self_tests(value):\n    match {'a': 1, 'b': 2}:\n        case {'a': 1}:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_nonmatching_mapping_only_rejected",
+            "def run_self_tests(value):\n    match {'a': 1}:\n        case {'a': 2}:\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_return_then_check_rejected",
             "def run_self_tests():\n    try:\n        return\n    finally:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2472,6 +2523,21 @@ def run_self_test() -> list[str]:
             "def run_self_tests(value):\n    match (1, 2):\n        case (1, 2, 3):\n            return\n    check('ok', value is True)\n",
             [],
         ),
+        (
+            "target_with_match_mapping_missing_key_allowed",
+            "def run_self_tests(value):\n    match {'a': 1}:\n        case {'b': 2}:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_mapping_unknown_subject_value_allowed",
+            "def run_self_tests(value):\n    match {'a': value}:\n        case {'a': 1}:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_mapping_rest_allowed",
+            "def run_self_tests(value):\n    match {'a': 1, 'b': 2}:\n        case {'a': 1, **rest}:\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     if hasattr(ast, "TryStar"):
@@ -2521,7 +2587,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
-            "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence-match exit, "
+            "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
             "and missing-check cases"
         )
         return 0
