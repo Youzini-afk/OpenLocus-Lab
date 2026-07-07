@@ -382,7 +382,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     def visit_Match(self, node: ast.Match) -> None:
         self.visit(node.subject)
-        known, subject_value = self._static_literal_value(node.subject)
+        known, subject_value = self._static_match_subject_value(node.subject)
         if not known:
             for case in node.cases:
                 self._visit_match_case(case)
@@ -1054,7 +1054,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
 
     @classmethod
     def _known_match_selected_body(cls, node: ast.Match) -> list[ast.stmt] | None:
-        known, subject_value = cls._static_literal_value(node.subject)
+        known, subject_value = cls._static_match_subject_value(node.subject)
         if not known:
             return None
         for case in node.cases:
@@ -1313,6 +1313,21 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return None
 
     @classmethod
+    def _static_match_subject_value(cls, node: ast.AST) -> tuple[bool, object]:
+        known, value = cls._static_literal_value(node)
+        if known:
+            return True, value
+        if isinstance(node, (ast.Tuple, ast.List)):
+            values = []
+            for element in node.elts:
+                known, value = cls._static_match_subject_value(element)
+                if not known:
+                    return False, None
+                values.append(value)
+            return True, tuple(values)
+        return False, None
+
+    @classmethod
     def _match_pattern_matches_literal(cls, subject_value: object, pattern: ast.pattern) -> bool | None:
         if isinstance(pattern, ast.MatchAs):
             if pattern.pattern is None:
@@ -1332,6 +1347,22 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             if not known:
                 return None
             return subject_value == pattern_value
+        if isinstance(pattern, ast.MatchSequence):
+            if not isinstance(subject_value, tuple):
+                return False
+            if any(isinstance(subpattern, ast.MatchStar) for subpattern in pattern.patterns):
+                return None
+            if len(subject_value) != len(pattern.patterns):
+                return False
+            results = [
+                cls._match_pattern_matches_literal(subject_element, subpattern)
+                for subject_element, subpattern in zip(subject_value, pattern.patterns)
+            ]
+            if any(result is False for result in results):
+                return False
+            if all(result is True for result in results):
+                return True
+            return None
         return None
 
     @classmethod
@@ -2052,6 +2083,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_match_tuple_sequence_return_then_check_rejected",
+            "def run_self_tests(value):\n    match (1, 2):\n        case (1, 2):\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_list_sequence_return_then_check_rejected",
+            "def run_self_tests(value):\n    match [1, 2]:\n        case [1, 2]:\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_sequence_or_return_then_check_rejected",
+            "def run_self_tests(value):\n    match (1, 2):\n        case (0, 0) | (1, 2):\n            return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_match_nonmatching_sequence_only_rejected",
+            "def run_self_tests(value):\n    match (1, 2):\n        case (1, 3):\n            check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_return_then_check_rejected",
             "def run_self_tests():\n    try:\n        return\n    finally:\n        pass\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2406,6 +2457,21 @@ def run_self_test() -> list[str]:
             "def run_self_tests(value):\n    match value:\n        case 1:\n            return\n    check('ok', value is True)\n",
             [],
         ),
+        (
+            "target_with_match_sequence_unknown_subject_element_allowed",
+            "def run_self_tests(value):\n    match (1, value):\n        case (1, 2):\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_sequence_star_pattern_allowed",
+            "def run_self_tests(value):\n    match (1, 2):\n        case (1, *rest):\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_match_sequence_length_mismatch_allowed",
+            "def run_self_tests(value):\n    match (1, 2):\n        case (1, 2, 3):\n            return\n    check('ok', value is True)\n",
+            [],
+        ),
         ("target_with_tuple_check_allowed", "def run_self_tests(value):\n    checks.append(('ok', value is True))\n", []),
     ]
     if hasattr(ast, "TryStar"):
@@ -2455,7 +2521,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
-            "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, "
+            "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence-match exit, "
             "and missing-check cases"
         )
         return 0
