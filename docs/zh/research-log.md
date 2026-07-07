@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4C Frozen Fresh-Holdout Protocol Design
+
+已新增 [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) 和 public docs-only summary [`phase4c_frozen_fresh_holdout_protocol_design_only_report.json`](../../artifacts/phase4c_frozen_fresh_holdout_protocol_design_only/phase4c_frozen_fresh_holdout_protocol_design_only_report.json)。Status 为 `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`。
+
+这会在 Phase 4B commit `6626075` 后冻结 possible future Phase 4D fresh-holdout protocol：target 12 个 fresh hard current-source tasks，hard max 16 tasks，7 个 fixed labels，max 112 private rows，只使用 ignored `runs/`，固定 4 个 features，使用 deterministic stdlib-only smoothed categorical table，并且不在 holdout rows 上 fit/tune。它不读取 private rows、不创建 manifests、不读取 source、不收集 data、不改变 CI、不训练/拟合、不创建 reusable model artifact，也不提出 winner/lift/product/default claims。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4B Tiny Local Learning Screen
 
 已新增 `eval/interventional_evidence_acquisition_phase4b_tiny_local_learning_screen.py`，并生成 aggregate-only report：[`phase4b_tiny_local_learning_screen_report.json`](../../artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json)。Status 为 `learning_screen_positive_no_claim`。

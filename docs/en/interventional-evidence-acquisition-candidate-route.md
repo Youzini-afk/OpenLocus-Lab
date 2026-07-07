@@ -2,15 +2,15 @@
 
 Date: 2026-07-07
 
-Status: `learning_screen_positive_no_claim`
+Status: `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`
 
-Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
+Authorization: `design_only_not_execution`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 4B tiny local learning screen. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) and `artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json`. Status is `learning_screen_positive_no_claim`. It reads existing ignored Phase 2/3 private rows locally with explicit confirmation, requires the Phase 4A public gate, and publishes aggregate buckets only; it does not authorize training or runtime/default changes.
+Latest checkpoint: Phase 4C frozen fresh-holdout protocol design. See [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) and `artifacts/phase4c_frozen_fresh_holdout_protocol_design_only/phase4c_frozen_fresh_holdout_protocol_design_only_report.json`. Status is `phase4c_frozen_fresh_holdout_protocol_design_only_no_execution`. It freezes a possible future Phase 4D protocol after Phase 4B commit `6626075`; it does not read private rows, create manifests, collect data, train/fit, change CI, or authorize execution.
 
 ## Phase 2 small fair local comparison status
 
@@ -43,6 +43,12 @@ Phase 4A checks whether the pre-action feature contract is non-leaky enough to p
 ## Phase 4B tiny local learning screen status
 
 Phase 4B runs a stdlib-only deterministic heldout bucket screen over existing ignored Phase 2/3 private rows. It uses only allowed pre-action categorical features, checks negative controls, refuses private inputs outside ignored `runs/`, and emits an aggregate-only public report. It creates no reusable model artifact and makes no method/default claim.
+
+## Phase 4C frozen fresh-holdout protocol design status
+
+Phase 4C is design-only. It freezes a possible future Phase 4D fresh-holdout protocol before any execution: target 12 fresh hard current-source tasks, hard max 16 tasks, seven fixed labels, max 112 private rows, ignored `runs/` only, fixed features `action_label`/`task_family_bucket`/`availability_bucket`/`budget_bucket`, deterministic stdlib-only smoothed categorical table, and no fit/tuning on holdout rows.
+
+Future Phase 4D statuses would be limited to `stop_no_learning_claim`, `repair_holdout_contract_no_claim`, or `fresh_holdout_screen_positive_no_claim`. The design forbids RPM-D2/model scaling, LLM/provider/network, runtime/default changes, new retrieval families, reusable model artifacts, training on holdout rows, tuning after holdout, winner/lift/product/default claims, and public private refs or rows.
 
 ## Boundary
 

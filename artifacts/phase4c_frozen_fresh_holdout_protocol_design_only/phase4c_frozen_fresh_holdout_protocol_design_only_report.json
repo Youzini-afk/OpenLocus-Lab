@@ -1,0 +1,71 @@
+{
+  "schema_version": "phase4c_frozen_fresh_holdout_protocol_design_only_public_report_v1",
+  "phase": "phase4c_frozen_fresh_holdout_protocol_design_only",
+  "status": "phase4c_frozen_fresh_holdout_protocol_design_only_no_execution",
+  "basis": {
+    "code_protocol_basis_commit": "6626075",
+    "phase4b_interpretation": "small_local_screen_only_no_model_or_method_claim",
+    "fresh_holdout_required": true
+  },
+  "future_phase4d_caps": {
+    "target_task_bucket": "count_6_to_20",
+    "hard_max_task_bucket": "count_6_to_20",
+    "fixed_label_count_bucket": "count_6_to_20",
+    "private_row_cap_bucket": "count_gt_50",
+    "private_storage": "ignored_runs_only"
+  },
+  "frozen_protocol": {
+    "labels": [
+      "bm25_then_read_top1",
+      "bm25_then_read_next_unique_file",
+      "symbol_regex_then_read_top1",
+      "symbol_regex_then_read_next_unique_file",
+      "read_related_test_when_available",
+      "stop",
+      "abstain"
+    ],
+    "features": [
+      "action_label",
+      "task_family_bucket",
+      "availability_bucket",
+      "budget_bucket"
+    ],
+    "screen_method": "stdlib_only_smoothed_categorical_table_deterministic",
+    "fit_on_holdout_rows_allowed": false,
+    "tuning_after_holdout_allowed": false,
+    "reusable_model_artifact_allowed": false
+  },
+  "future_public_report_contract": {
+    "aggregate_only": true,
+    "allowed_fields_summary": [
+      "coarse_task_row_buckets",
+      "screen_bucket",
+      "shuffled_control_buckets",
+      "evidence_materialization_pass_bucket",
+      "overlap_check_bucket",
+      "privacy_validation",
+      "conservative_recommendation"
+    ],
+    "allowed_statuses": [
+      "stop_no_learning_claim",
+      "repair_holdout_contract_no_claim",
+      "fresh_holdout_screen_positive_no_claim"
+    ],
+    "exact_count_1_allowed": false,
+    "private_refs_allowed": false
+  },
+  "authorization_attestation": {
+    "design_only": true,
+    "private_rows_read": false,
+    "manifest_created": false,
+    "source_read_for_new_evidence": false,
+    "new_data_collected": false,
+    "ci_changed": false,
+    "model_training_executed": false,
+    "provider_network_used": false,
+    "runtime_default_changed": false,
+    "new_retrieval_family_added": false,
+    "method_claimed": false
+  },
+  "conservative_recommendation": "freeze_protocol_before_any_future_phase4d_execution"
+}
