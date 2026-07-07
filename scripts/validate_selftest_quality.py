@@ -618,6 +618,11 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         return False
 
     @classmethod
+    def _lambda_expression_cannot_raise(cls, node: ast.Lambda) -> bool:
+        defaults = [*node.args.defaults, *(default for default in node.args.kw_defaults if default is not None)]
+        return all(cls._expression_cannot_raise(default) for default in defaults)
+
+    @classmethod
     def _expression_cannot_raise(cls, node: ast.AST) -> bool:
         if isinstance(node, ast.Constant):
             return True
@@ -651,6 +656,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
         if isinstance(node, ast.JoinedStr):
             known, _value = cls._static_joined_str_value(node)
             return known
+        if isinstance(node, ast.Lambda):
+            return cls._lambda_expression_cannot_raise(node)
         return False
 
     @classmethod
@@ -1276,6 +1283,10 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             known, value = cls._static_joined_str_value(node)
             if known:
                 return bool(value)
+            return None
+        if isinstance(node, ast.Lambda):
+            if cls._lambda_expression_cannot_raise(node):
+                return True
             return None
         if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
             return bool(node.elts)
@@ -2068,6 +2079,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_not_lambda_branch_rejected",
+            "def run_self_tests():\n    if not (lambda: 1):\n        check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_assert_false_then_check_rejected",
             "def run_self_tests():\n    assert False\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2115,6 +2131,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_short_circuited_or_check_only_rejected",
             "def run_self_tests():\n    if True or check('ok', value is True):\n        pass\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_lambda_short_circuited_or_check_rejected",
+            "def run_self_tests():\n    if (lambda: 1) or check('ok', value is True):\n        pass\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2573,6 +2594,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_lambda_except_check_rejected",
+            "def run_self_tests():\n    try:\n        lambda: 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_lambda_literal_default_except_check_rejected",
+            "def run_self_tests():\n    try:\n        lambda item=1: item\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_lambda_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        lambda: 1\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_namedexpr_literal_except_check_rejected",
             "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2678,6 +2714,11 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_try_lambda_risky_default_except_check_allowed",
+            "def run_self_tests():\n    try:\n        lambda item=risky(): item\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
             "target_with_try_handler_then_check_allowed",
             "def run_self_tests(value):\n    try:\n        return risky()\n    except Error:\n        pass\n    check('ok', value is True)\n",
             [],
@@ -2730,6 +2771,16 @@ def run_self_test() -> list[str]:
         (
             "target_with_dynamic_fstring_branch_allowed",
             "def run_self_tests(value):\n    if f'{value}':\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_lambda_true_branch_allowed",
+            "def run_self_tests(value):\n    if (lambda: 1):\n        check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_lambda_risky_default_branch_allowed",
+            "def run_self_tests(value):\n    if (lambda item=risky(): item):\n        check('ok', value is True)\n",
             [],
         ),
         (
@@ -3067,7 +3118,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring no-raise, "
+            "boolop no-raise, literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda no-raise, "
             "and missing-check cases"
         )
         return 0
