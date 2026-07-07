@@ -64,6 +64,8 @@ with-statement control-flow coverage 现在会区分 non-suppressible control ex
 
 Loop `else` exit coverage 现在会把 no-break completion 带入 post-loop reachability。若 loop body 没有可达 `break`，包括 nonempty literal iterables、unknown iterables 和 `continue` bodies，`for ... else: return` 后的 checks 现在会以 `missing_selftest_checks` 失败。Possible-break body 仍保持 conservative active。
 
+Unknown-condition `while` else-exit coverage 现在会把 no-break completion 带入 post-loop reachability。若 loop body 没有可达 `break`，`while flag: pass`、`while flag: return` 或 `while flag: continue` bodies 后接 `else: return` 之后的 checks 现在会以 `missing_selftest_checks` 失败。Possible-break 和 no-else paths 仍保持 conservative active。
+
 Nested loop function-exit coverage 现在会在判断 self-test reachability 时，把 nested `while` / `for` statements 中的 actual returns 向外传播。位于 nested `while True: return`、nested nonempty `for: return`、nested no-break `for ... else: return` 和 `with`-wrapped nested loop returns 之后的 checks 现在会以 `missing_selftest_checks` 失败。带 possible `break` 的 nested loops 仍保持 conservative active。
 
 在 actual function exits 被传播进 nested loop self-test reachability 后，手动 `retrieval-benchmark` `pr_smoke` run [`28832634252`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28832634252) 已在 `c2961d6` 上以 `max_repos=1`、`enable_remote_models=false` 通过。更新后的 guard self-test 和默认 scan 在 plan job 中通过，bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 按预期 skipped。这只验证 nested-loop function-exit guard 的 CI wiring，不是 retrieval-method、runtime/default、provider/network expansion 或 route-reopening signal。

@@ -513,12 +513,7 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 return False
             return cls._block_guarantees_exit(node.body) and cls._block_guarantees_exit(node.orelse)
         if isinstance(node, ast.While):
-            test_truth = cls._literal_truth_value(node.test)
-            if test_truth is True:
-                return not cls._block_may_reach_loop_break(node.body)
-            if test_truth is False:
-                return cls._block_guarantees_exit(node.orelse)
-            return False
+            return cls._while_statement_guarantees_exit(node)
         if isinstance(node, (ast.For, ast.AsyncFor)):
             return cls._for_statement_guarantees_exit(node)
         if isinstance(node, (ast.With, ast.AsyncWith)):
@@ -547,6 +542,15 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     @classmethod
     def _block_guarantees_exit(cls, statements: list[ast.stmt]) -> bool:
         return any(cls._statement_guarantees_exit(statement) for statement in statements)
+
+    @classmethod
+    def _while_statement_guarantees_exit(cls, node: ast.While) -> bool:
+        test_truth = cls._literal_truth_value(node.test)
+        if test_truth is True:
+            return not cls._block_may_reach_loop_break(node.body)
+        if test_truth is False:
+            return cls._block_guarantees_exit(node.orelse)
+        return not cls._block_may_reach_loop_break(node.body) and cls._block_guarantees_exit(node.orelse)
 
     @classmethod
     def _for_statement_guarantees_exit(cls, node: ast.For | ast.AsyncFor) -> bool:
@@ -1911,6 +1915,21 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_unknown_while_else_return_then_check_rejected",
+            "def run_self_tests(flag):\n    while flag:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_unknown_while_return_else_return_then_check_rejected",
+            "def run_self_tests(flag):\n    while flag:\n        return\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_unknown_while_continue_else_return_then_check_rejected",
+            "def run_self_tests(flag):\n    while flag:\n        continue\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_empty_for_only_rejected",
             "def run_self_tests():\n    for value in []:\n        check('ok', value is True)\n",
             ["missing_selftest_checks"],
@@ -2281,6 +2300,16 @@ def run_self_test() -> list[str]:
             [],
         ),
         (
+            "target_with_unknown_while_no_else_check_allowed",
+            "def run_self_tests(value, flag):\n    while flag:\n        pass\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
+            "target_with_unknown_while_possible_break_else_return_then_check_allowed",
+            "def run_self_tests(value, flag, stop):\n    while flag:\n        if stop:\n            break\n    else:\n        return\n    check('ok', value is True)\n",
+            [],
+        ),
+        (
             "target_with_for_continue_else_check_allowed",
             "def run_self_tests(value):\n    for item in [1]:\n        continue\n    else:\n        check('ok', value is True)\n",
             [],
@@ -2379,7 +2408,7 @@ def main(argv: list[str]) -> int:
             "literal-range, literal-match, literal-bool, literal-compare, literal-comprehension, "
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
-            "for-else exit, nested-loop function-exit, "
+            "for-else exit, nested-loop function-exit, unknown-while else-exit, "
             "and missing-check cases"
         )
         return 0
