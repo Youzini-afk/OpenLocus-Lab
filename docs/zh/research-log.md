@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Assignment/Delete Target Sequencing
+
+Assignment 和 delete target sequencing 现在更贴近 Python 的 target evaluation/store/delete 边界。唯一 recognized check 位于 statically failing earlier assignment 或 `del` target 之后的 later target 中时，例如 `[][0] = items[check(...)] = 1` 或 `del [][0], items[check(...)]`，synthetic files 现在会以 `missing_selftest_checks` 失败。`a, items[check(...)] = (1,)` 这类 static unpack shape mismatch、first unpack target 在 later element target 之前失败的情况，以及 `[][0] = 1`、`del [][0]` 或 `del {}['x']` 之后的 post-statement checks 也会失败。位于 store/delete failure 之前会被求值的 target-index checks、`a = items[check(...)] = 1` 这类 safe multi-target assignments，以及 dynamic/unknown targets 仍保持 active。
+
+加入 assignment/delete target sequencing change 后，本地验证已通过 `python scripts\validate_selftest_quality.py --self-test`、默认 allowlist scan、使用 isolated pycache 的 `python -m py_compile scripts\validate_selftest_quality.py`、`python scripts\validate_docs_i18n.py`，以及只有既有 CRLF warning 的 `git diff --check`。手动 `retrieval-benchmark` `pr_smoke` run [`28853304498`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28853304498) 已在 `a8e52e9` 上以 `max_repos=1`、`enable_remote_models=false` 通过。这只在 CI 中验证 evaluator-chain guard，不是 retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+
 ## 2026-07-07 - Self-Test Quality Guard Augmented Assignment / With Reachability
 
 Augmented assignment 和 `with` reachability 现在更贴近 Python evaluation boundaries。唯一 recognized check 位于 `[][0] += check(...)` 或 `{}['x'] += check(...)` 这类 statically failing augmented-assignment target load 之后的 RHS 中时，synthetic files 现在会以 `missing_selftest_checks` 失败。`with [][0]: ...` 下的 body/post checks、statically failing context expression 之后的 optional-vars checks，以及 statically failing optional-var store targets 之后的 body checks 也会失败。位于 augmented-assignment target load failure 之前会被求值的 target-index checks、`{}['x']: check(...) = 1` 这类 dict store-target annotations、dynamic/safe `with` contexts，以及 suppressible optional-var target failures 之后的 post-`with` checks 仍保持 active。
