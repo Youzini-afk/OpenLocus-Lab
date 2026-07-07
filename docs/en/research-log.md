@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Literal-BinOp No-Raise
+
+Literal-binop no-raise coverage now carries bounded static literal binary expression facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `1 + 2`, `'a' + 'b'`, or `(1,) + (2,)` now fail with `missing_selftest_checks`, and a post-try check after a statically non-raising binop body whose `else` returns also fails as unreachable. Division by zero, type-error binops, oversized/static-unsafe results, and dynamic operands remain conservative and active.
+
+After the literal-binop no-raise guard was added, local validation passed `python scripts\validate_selftest_quality.py --self-test`, the focused probe, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py`, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28836850236`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28836850236) passed on `c2f4689` with `max_repos=1` and `enable_remote_models=false`. This validates the guard in CI only; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Literal-Container No-Raise
 
 Literal-container no-raise coverage now carries static hashable dict/set literal facts into try-body no-raise analysis. Synthetic files where the only active-looking check lived in an except handler after `{}`, `{'a': 1}`, or `{1, 2}` now fail with `missing_selftest_checks`, and a post-try check after a statically non-raising container body whose `else` returns also fails as unreachable. Dict literals with unhashable keys such as `{[]: 1}`, dict/set unpacking, and container literals with risky values remain conservative and active.
