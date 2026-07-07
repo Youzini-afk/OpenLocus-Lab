@@ -644,6 +644,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._expression_cannot_raise(node.body) and cls._expression_cannot_raise(node.orelse)
         if isinstance(node, ast.Compare):
             return cls._literal_compare_truth_value(node) is not None
+        if isinstance(node, ast.Subscript):
+            return cls._subscript_expression_cannot_raise(node)
         return False
 
     @classmethod
@@ -673,6 +675,22 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return False
         known, _value = cls._static_binop_value(node)
         return known
+
+    @classmethod
+    def _subscript_expression_cannot_raise(cls, node: ast.Subscript) -> bool:
+        if not cls._expression_cannot_raise(node.value) or not cls._slice_expression_cannot_raise(node.slice):
+            return False
+        known, _value = cls._static_subscript_value(node)
+        return known
+
+    @classmethod
+    def _slice_expression_cannot_raise(cls, node: ast.AST) -> bool:
+        if isinstance(node, ast.Slice):
+            return all(
+                part is None or cls._expression_cannot_raise(part)
+                for part in (node.lower, node.upper, node.step)
+            )
+        return cls._expression_cannot_raise(node)
 
     @classmethod
     def _dict_expression_cannot_raise(cls, node: ast.Dict) -> bool:
@@ -1340,6 +1358,40 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return False, None
         return True, value
 
+    @classmethod
+    def _static_slice_part_value(cls, node: ast.AST | None) -> tuple[bool, int | None]:
+        if node is None:
+            return True, None
+        value = cls._integer_literal_value(node)
+        if value is None:
+            return False, None
+        return True, value
+
+    @classmethod
+    def _static_slice_value(cls, node: ast.AST) -> tuple[bool, object]:
+        if isinstance(node, ast.Slice):
+            known_lower, lower = cls._static_slice_part_value(node.lower)
+            known_upper, upper = cls._static_slice_part_value(node.upper)
+            known_step, step = cls._static_slice_part_value(node.step)
+            if not known_lower or not known_upper or not known_step:
+                return False, None
+            return True, slice(lower, upper, step)
+        return cls._static_comparison_value(node)
+
+    @classmethod
+    def _static_subscript_value(cls, node: ast.Subscript) -> tuple[bool, object]:
+        known_value, value = cls._static_comparison_value(node.value)
+        known_slice, slice_value = cls._static_slice_value(node.slice)
+        if not known_value or not known_slice:
+            return False, None
+        try:
+            result = value[slice_value]  # type: ignore[index]
+        except (LookupError, TypeError, ValueError, OverflowError):
+            return False, None
+        if not cls._static_value_is_small(result):
+            return False, None
+        return True, result
+
     @staticmethod
     def _static_values_are_numbers(left: object, right: object) -> bool:
         number_types = (int, float, complex)
@@ -1381,6 +1433,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._static_unaryop_value(node)
         if isinstance(node, ast.BinOp):
             return cls._static_binop_value(node)
+        if isinstance(node, ast.Subscript):
+            return cls._static_subscript_value(node)
         if isinstance(node, ast.Tuple):
             values = []
             for element in node.elts:
@@ -2382,6 +2436,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_literal_tuple_subscript_except_check_rejected",
+            "def run_self_tests():\n    try:\n        (1, 2)[0]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_string_subscript_except_check_rejected",
+            "def run_self_tests():\n    try:\n        'abc'[1]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_slice_except_check_rejected",
+            "def run_self_tests():\n    try:\n        (1, 2, 3)[1:]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_dict_subscript_except_check_rejected",
+            "def run_self_tests():\n    try:\n        {'a': 1}['a']\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_true_or_risky_except_check_rejected",
             "def run_self_tests():\n    try:\n        True or risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2429,6 +2503,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_literal_add_else_return_then_check_rejected",
             "def run_self_tests(value):\n    try:\n        1 + 2\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_literal_subscript_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        (1, 2)[0]\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -2494,6 +2573,26 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_risky_unary_except_check_allowed",
             "def run_self_tests():\n    try:\n        -risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_subscript_oob_except_check_allowed",
+            "def run_self_tests():\n    try:\n        (1, 2)[9]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_subscript_missing_key_except_check_allowed",
+            "def run_self_tests():\n    try:\n        {'a': 1}['b']\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_literal_subscript_type_error_except_check_allowed",
+            "def run_self_tests():\n    try:\n        1[0]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_dynamic_subscript_except_check_allowed",
+            "def run_self_tests(value):\n    try:\n        value[0]\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -2866,7 +2965,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, literal-container/binop/unary no-raise, "
+            "boolop no-raise, literal-container/binop/unary/subscript no-raise, "
             "and missing-check cases"
         )
         return 0
