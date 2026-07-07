@@ -2675,6 +2675,12 @@ def _validate_runtime_result(path: Path, function_name: str, result: object) -> 
     if not isinstance(result, dict):
         return RuntimeIssue(path, function_name, "self-test entrypoint must return a dict result")
     if result.get("status") != "passed":
+        failed_checks = result.get("failed_checks")
+        if isinstance(failed_checks, list) and failed_checks:
+            failed_summary = ", ".join(str(item) for item in failed_checks[:10])
+            if len(failed_checks) > 10:
+                failed_summary += f", ... ({len(failed_checks)} total)"
+            return RuntimeIssue(path, function_name, f"self-test result status is not 'passed'; failed_checks: {failed_summary}")
         return RuntimeIssue(path, function_name, "self-test result status is not 'passed'")
     failed_checks = result.get("failed_checks")
     if failed_checks:
@@ -2783,6 +2789,7 @@ def run_self_test() -> list[str]:
         ("runtime_result_with_counts_passed", {"status": "passed", "checks_passed": 1, "checks_total": 1, "failed_checks": []}, False),
         ("runtime_result_nondict_rejected", None, True),
         ("runtime_result_bad_status_rejected", {"status": "failed"}, True),
+        ("runtime_result_bad_status_names_failed_checks", {"status": "failed", "failed_checks": ["bad"]}, True),
         ("runtime_result_failed_checks_rejected", {"status": "passed", "failed_checks": ["bad"]}, True),
         ("runtime_result_zero_total_rejected", {"status": "passed", "checks_total": 0}, True),
         ("runtime_result_count_mismatch_rejected", {"status": "passed", "checks_passed": 1, "checks_total": 2}, True),
@@ -2791,6 +2798,8 @@ def run_self_test() -> list[str]:
         issue = _validate_runtime_result(REPO / "selftest.py", "run_self_tests", result)
         if (issue is not None) is not should_fail:
             failures.append(f"{name}: expected failure={should_fail}, got {issue}")
+        if name == "runtime_result_bad_status_names_failed_checks" and (issue is None or "bad" not in issue.message):
+            failures.append(f"{name}: expected failed check name in runtime issue, got {issue}")
 
     def no_args() -> None:
         return None

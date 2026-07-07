@@ -408,9 +408,9 @@ def run_prototype_task(binary: Path, private_root: Path, task: benchmark.Workflo
 
 
 def run_executable_prototype(confirm_private_input: bool, confirm_private_output: bool, trace_jsonl: Path | None = None) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
-    previous_rows, previous_labels, previous_manifest = load_previous_private_inputs(confirm_private_input, trace_jsonl)
     if not confirm_private_output:
         raise PrototypeError("--confirm-private-output is required before writing private bounded repair prototype rows")
+    previous_rows, previous_labels, previous_manifest = load_previous_private_inputs(confirm_private_input, trace_jsonl)
     binary = benchmark.ensure_openlocus()
     private_root = REPO / "runs" / f"{PRIVATE_PREFIX}{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}"
     private_root.mkdir(parents=True, exist_ok=True)
