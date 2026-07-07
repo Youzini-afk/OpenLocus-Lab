@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4B Tiny Local Learning Screen
+
+Added `eval/interventional_evidence_acquisition_phase4b_tiny_local_learning_screen.py` and generated the aggregate-only report [`phase4b_tiny_local_learning_screen_report.json`](../../artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json). Status is `learning_screen_positive_no_claim`.
+
+The script reads existing ignored Phase 2/3 private rows only after `--confirm-private-input` and only if the Phase 4A public gate is ready. It uses a deterministic stdlib-only smoothed categorical table for heldout bucket screens and negative controls. It does not collect data, read source, train, fit, create a reusable model artifact, change CI, use provider/network/LLM, change runtime/default behavior, add retrieval families, or make a method/default claim.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4A Feature Precheck
 
 Added `eval/interventional_evidence_acquisition_phase4a_action_outcome_learning_precheck.py` and generated the aggregate-only report [`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json). Status is `feature_balance_precheck_ready_no_training`.

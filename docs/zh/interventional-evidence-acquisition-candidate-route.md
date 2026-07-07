@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-Status: `feature_balance_precheck_ready_no_training`
+Status: `learning_screen_positive_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 4A private-row feature/leakage/class-balance precheck。参见 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) 和 `artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json`。Status 为 `feature_balance_precheck_ready_no_training`。它在显式确认后本地读取既有 ignored Phase 2/3 private rows，并只发布 aggregate buckets；它不训练，也不授权 training。
+最新 checkpoint：Phase 4B tiny local learning screen。参见 [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) 和 `artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json`。Status 为 `learning_screen_positive_no_claim`。它在显式确认后本地读取既有 ignored Phase 2/3 private rows，要求 Phase 4A public gate 通过，并只发布 aggregate buckets；它不授权 training 或 runtime/default changes。
 
 ## Phase 2 small fair local comparison status
 
@@ -39,6 +39,10 @@ Phase 4 写下 possible future action-outcome learning precheck 的 feature、la
 ## Phase 4A feature/leakage/class-balance precheck status
 
 Phase 4A 检查 pre-action feature contract 是否足够 non-leaky，能否作为 future learning precheck input 保留。它拒绝 evidence-success-as-feature、target path/range/hash/content features、post-action read/currentness/materialization fields、leak-shaped public strings 和 exact singleton public buckets。它报告 `feature_balance_precheck_ready_no_training`，这不是 training、scoring、ranking 或 predictive-performance evidence。
+
+## Phase 4B tiny local learning screen status
+
+Phase 4B 在既有 ignored Phase 2/3 private rows 上运行 stdlib-only deterministic heldout bucket screen。它只使用 allowed pre-action categorical features，检查 negative controls，拒绝 ignored `runs/` 之外的 private inputs，并输出 aggregate-only public report。它不创建 reusable model artifact，也不提出 method/default claim。
 
 ## 边界
 

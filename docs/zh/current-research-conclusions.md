@@ -2,7 +2,7 @@
 
 日期：2026-07-07
 
-最新 interventional evidence-acquisition candidate-route checkpoint：Phase 4A private-row feature/leakage/class-balance precheck 已完成，status 为 `feature_balance_precheck_ready_no_training`。Public report：[`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json)。它在显式确认后本地读取既有 ignored Phase 2/3 private rows，并只发布 aggregate buckets。它不训练、不拟合、不评分、不排序、不读取 source、不收集新 data、不改变 CI、不使用 provider/network/LLM、不改变 runtime/default，也不提出 method/product claim。
+最新 interventional evidence-acquisition candidate-route checkpoint：Phase 4B tiny local learning screen 已完成，status 为 `learning_screen_positive_no_claim`。Public report：[`phase4b_tiny_local_learning_screen_report.json`](../../artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json)。它在显式确认后本地读取既有 ignored Phase 2/3 private rows，并要求 Phase 4A public gate 通过。Public output 只包含 aggregate buckets。它不训练、不拟合、不创建 reusable model artifact、不读取 source、不收集新 data、不改变 CI、不使用 provider/network/LLM、不改变 runtime/default，也不提出 method/default claim。
 
 最新 bounded one-shot public artifact/privacy audit checkpoint：`scripts/public_artifact_privacy_audit.py` 已作为 manual local audit helper 通过；它不是 CI gate。该 audit 只扫描 `git ls-files` 中已提交的 public files（`artifacts/**/*.json`、public artifact `.md`/`.txt`、`docs/**/*.md` 和 `README.md`），不扫描 ignored runs、private trace roots、untracked files 或 historical git contents。当前结果：`files_scanned=1447`（`.json=475`，`.md=972`），`issues_total=0`。这只是 bounded public-surface hygiene evidence；不是 retrieval lift、provider expansion、runtime/default promotion、route reopening，也不是关于 private/historical artifacts 的证明。
 

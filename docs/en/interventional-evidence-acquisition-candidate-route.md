@@ -2,7 +2,7 @@
 
 Date: 2026-07-07
 
-Status: `feature_balance_precheck_ready_no_training`
+Status: `learning_screen_positive_no_claim`
 
 Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
 
@@ -10,7 +10,7 @@ Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 4A private-row feature/leakage/class-balance precheck. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) and `artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json`. Status is `feature_balance_precheck_ready_no_training`. It reads existing ignored Phase 2/3 private rows locally with explicit confirmation and publishes aggregate buckets only; it does not train or authorize training.
+Latest checkpoint: Phase 4B tiny local learning screen. See [`interventional-evidence-acquisition-phase4-learning-precheck-design.md`](./interventional-evidence-acquisition-phase4-learning-precheck-design.md) and `artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json`. Status is `learning_screen_positive_no_claim`. It reads existing ignored Phase 2/3 private rows locally with explicit confirmation, requires the Phase 4A public gate, and publishes aggregate buckets only; it does not authorize training or runtime/default changes.
 
 ## Phase 2 small fair local comparison status
 
@@ -39,6 +39,10 @@ This is not authorization to train. Stop/go outcomes are limited to `stop_no_lea
 ## Phase 4A feature/leakage/class-balance precheck status
 
 Phase 4A checks whether the pre-action feature contract is non-leaky enough to preserve as a future learning precheck input. It rejects evidence-success-as-feature, target path/range/hash/content features, post-action read/currentness/materialization fields, leak-shaped public strings, and exact singleton public buckets. It reports `feature_balance_precheck_ready_no_training`, which is not training, scoring, ranking, or predictive-performance evidence.
+
+## Phase 4B tiny local learning screen status
+
+Phase 4B runs a stdlib-only deterministic heldout bucket screen over existing ignored Phase 2/3 private rows. It uses only allowed pre-action categorical features, checks negative controls, refuses private inputs outside ignored `runs/`, and emits an aggregate-only public report. It creates no reusable model artifact and makes no method/default claim.
 
 ## Boundary
 

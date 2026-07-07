@@ -10,6 +10,8 @@ Status: `phase4_action_outcome_learning_precheck_design_only_no_training_no_clai
 
 Phase 4A non-training precheck 现已在既有 ignored Phase 2/3 private rows 上本地运行。Public report：[`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json)，status 为 `feature_balance_precheck_ready_no_training`。它只检查 feature contract、leakage rules 和 class balance。不训练、不拟合、不评分、不排序，也不声称 predictive performance。
 
+Phase 4B tiny local screen 现已在同一批既有 ignored Phase 2/3 private rows 上本地运行，并以 Phase 4A report 作为 gate。Public report：[`phase4b_tiny_local_learning_screen_report.json`](../../artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json)，status 为 `learning_screen_positive_no_claim`。这是 stdlib-only heldout bucket screen，带 negative controls，且没有 reusable model artifact。它不训练、不拟合、不收集新 data、不读取 source、不改变 CI、不使用 provider/network/LLM、不改变 runtime/default behavior，也不提出 method/default claim。
+
 ## Phase 2、Phase 3 和 Phase 3B 说明了什么
 
 Phase 2 和 Phase 3 说明 small local comparison protocol 可以在 hard current-source tasks 上运行，并在 bucket level 复现同类 pattern：

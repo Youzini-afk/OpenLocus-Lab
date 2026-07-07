@@ -1,0 +1,100 @@
+{
+  "authorization_attestation": {
+    "ci_changed": false,
+    "confirm_private_input_required": true,
+    "disposable_screen_table_fit_executed": true,
+    "effect_claim": "no_effect_claim",
+    "llm_used": false,
+    "local_only": true,
+    "method_claimed": false,
+    "model_training_executed": false,
+    "new_data_collected": false,
+    "new_retrieval_channel_family_added": false,
+    "phase4a_gate_passed": true,
+    "phase4a_gate_required": true,
+    "private_rows_published": false,
+    "private_rows_read_locally": true,
+    "provider_network_used": false,
+    "reusable_model_artifact_created": false,
+    "reusable_model_fitting_executed": false,
+    "rpm_d2_or_model_scaling_used": false,
+    "runtime_default_changed": false,
+    "source_files_read": false,
+    "stdlib_only_heldout_screen_executed": true,
+    "training_executed": false
+  },
+  "conservative_recommendation": "learning_screen_positive_no_claim",
+  "control_summary": {
+    "action_only_control_bucket": "count_gt_50",
+    "majority_non_success_control_bucket": "count_0",
+    "shuffled_control_comparison_bucket": "above_control_6_to_20",
+    "shuffled_target_control_bucket": "count_gt_50",
+    "stop_abstain_positive_bucket": "count_0"
+  },
+  "feature_summary": {
+    "allowed_pre_action_categorical_features_only": true,
+    "forbidden_feature_errors_bucket": "count_0",
+    "phase_used_only_for_split_bookkeeping": true,
+    "target_used_only_as_target": true,
+    "used_feature_buckets": {
+      "action_label": "present",
+      "availability_bucket": "present",
+      "budget_bucket": "present",
+      "task_family_bucket": "present"
+    }
+  },
+  "input_summary": {
+    "action_coverage_buckets": {
+      "abstain": "count_gt_50",
+      "bm25_then_read_next_unique_file": "count_gt_50",
+      "bm25_then_read_top1": "count_gt_50",
+      "read_related_test_when_available": "count_gt_50",
+      "stop": "count_gt_50",
+      "symbol_regex_then_read_next_unique_file": "count_gt_50",
+      "symbol_regex_then_read_top1": "count_gt_50"
+    },
+    "phase2_row_count_bucket": "count_gt_50",
+    "phase3_row_count_bucket": "count_gt_50",
+    "row_count_bucket": "count_gt_50"
+  },
+  "phase": "phase4b_tiny_local_learning_screen",
+  "privacy_summary": {
+    "gold_labels_public": false,
+    "model_artifact_public": false,
+    "private_content_public": false,
+    "private_hashes_public": false,
+    "private_manifests_public": false,
+    "private_paths_public": false,
+    "private_ranges_public": false,
+    "private_rows_published": false,
+    "private_run_dirs_public": false,
+    "private_snippets_public": false,
+    "private_task_ids_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "raw_feature_rows_public": false,
+    "row_outputs_public": false
+  },
+  "schema_version": "phase4b_tiny_local_learning_screen_public_report_v1",
+  "split_screen_summary": {
+    "no_tuning_after_holdout": true,
+    "phase2_to_phase3_heldout_screen_bucket": "count_gt_50",
+    "phase3_to_phase2_consistency_bucket": "count_gt_50",
+    "primary_split": "phase2_to_phase3",
+    "sensitivity_split": "phase3_to_phase2"
+  },
+  "status": "learning_screen_positive_no_claim",
+  "target_balance_summary": {
+    "candidate_found_alone_is_not_evidence": true,
+    "target_non_positive_bucket": "count_gt_50",
+    "target_positive_bucket": "count_gt_50"
+  },
+  "validation_summary": {
+    "forbidden_feature_rejection_self_test": true,
+    "no_count_1_values": true,
+    "public_leak_scan": "passed",
+    "route_specific_phase4b_validation": "passed",
+    "self_test_available": true,
+    "shuffled_target_control_path_checked": true
+  }
+}

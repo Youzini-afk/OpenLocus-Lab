@@ -10,6 +10,8 @@ This is design only. It does not train a model, authorize training, read private
 
 Phase 4A non-training precheck has now run locally over existing ignored Phase 2/3 private rows. Public report: [`phase4a_private_row_feature_leakage_balance_precheck_report.json`](../../artifacts/phase4a_private_row_feature_leakage_balance_precheck/phase4a_private_row_feature_leakage_balance_precheck_report.json), status `feature_balance_precheck_ready_no_training`. It checks feature contract, leakage rules, and class balance only. It does not train, fit, score, rank, or claim predictive performance.
 
+Phase 4B tiny local screen has now run locally over the same existing ignored Phase 2/3 private rows, gated by the Phase 4A report. Public report: [`phase4b_tiny_local_learning_screen_report.json`](../../artifacts/phase4b_tiny_local_learning_screen/phase4b_tiny_local_learning_screen_report.json), status `learning_screen_positive_no_claim`. It is a stdlib-only heldout bucket screen with negative controls and no reusable model artifact. It does not train, fit, collect new data, read source, change CI, use provider/network/LLM, change runtime/default behavior, or make a method/default claim.
+
 ## What Phase 2, Phase 3, and Phase 3B showed
 
 Phase 2 and Phase 3 showed that the small local comparison protocol can run and replicate a bucket-level pattern on hard current-source tasks:
