@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Candidate Route Design
+
+已添加 paired Phase 0 documentation：[`interventional-evidence-acquisition-candidate-route.md`](./interventional-evidence-acquisition-candidate-route.md)。Status 为 `candidate_route_design_only`，authorization 为 `design_only_not_implementation`，route relation 为 `new_candidate_route_not_reopening_closed_v2_lines`。
+
+这只是 new candidate route 的 design-only documentation。不创建 artifacts、scripts、validators、private rows、reports、trace capture、retrieval implementation、provider/LLM/network plumbing、runtime/default changes、CI gates、model training、source scans、README changes、OpenLocus v3 branding，也不重启已关闭路线。任何 Phase 1 pilot 都需要单独 explicit route decision。
+
 ## 2026-07-07 - CI Report/Privacy Validator Self-Test Gate
 
 `eval/ci_validate_report.py` 现在为既有 CI report validator 新增 narrow `--self-test` mode。该 mode 只使用 synthetic in-process/tempdir fixtures，调用既有 `validate_report()` function，并复用既有 report object 与 run-dir JSONL artifacts private-field scans。它不新增 artifact discovery、historical scanning、schema changes、configuration knobs 或 dependencies。
