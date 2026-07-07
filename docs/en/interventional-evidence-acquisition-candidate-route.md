@@ -40,6 +40,12 @@ The same script now supports `--aggregate-private-rows`. It reads existing ignor
 
 This screen is public aggregate-only and diagnostic. It publishes buckets for row/action/family coverage, candidate-found, materialized, evidence-success, materialized-but-not-success, baseline/randomized screen, and conservative recommendation `maybe_expand_with_new_explicit_decision`. It publishes no raw rows, private paths, symbols, queries, ranges, snippets, hashes, run paths, prompts, responses, provider payloads, or labels, and it makes no method-winner or signal claim.
 
+## Phase 1B micro-policy status
+
+The same script now supports `--run-phase1b-micro-policy --confirm-private-output`. It ran a tiny local micro-policy collection over the existing hard synthetic task source and wrote private rows only under ignored `runs/`. The public report is `artifacts/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json` with status `phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim`.
+
+Phase 1B uses only the seven local micro-policy/control labels: `bm25_then_read_top1`, `bm25_then_read_next_unique_file`, `symbol_regex_then_read_top1`, `symbol_regex_then_read_next_unique_file`, `read_related_test_when_available`, `stop`, and `abstain`. Standalone retrieval is not a top-level Phase 1B policy. Because the source still simulates materialization instead of reading real current files/ranges/content, this is synthetic preflight only, not real EvidenceCore evidence. Public output uses buckets for synthetic success labels only, recommendation `maybe_expand_with_new_explicit_decision`, and no method-winner or signal claim.
+
 ## Candidate question
 
 Can a tiny, local, randomized intervention over existing evidence-acquisition actions produce clearer product-workflow evidence than passive trace review, while preserving EvidenceCore and privacy invariants?

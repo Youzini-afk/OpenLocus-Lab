@@ -30,6 +30,11 @@ AGGREGATE_SCREEN_PHASE = "interventional_evidence_acquisition_phase1_hard_source
 AGGREGATE_SCREEN_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_v1"
 AGGREGATE_SCREEN_STATUS = "phase1_hard_source_private_row_aggregate_screen_no_claim"
 DEFAULT_AGGREGATE_SCREEN_REPORT = REPO / "artifacts" / AGGREGATE_SCREEN_PHASE / f"{AGGREGATE_SCREEN_PHASE}_report.json"
+PHASE1B_PHASE = "interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection"
+PHASE1B_SCHEMA_VERSION = "interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_public_report_v1"
+PHASE1B_STATUS = "phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim"
+DEFAULT_PHASE1B_REPORT = REPO / "artifacts" / PHASE1B_PHASE / f"{PHASE1B_PHASE}_report.json"
+PHASE1B_PRIVATE_RUN_ROOT = REPO / "runs" / PHASE1B_PHASE
 STATUS_PREFLIGHT = "phase1_hard_source_preflight_no_private_rows"
 STATUS_COMPLETE = "phase1_hard_source_private_pilot_complete_no_claim"
 NEXT_ACTION = "stop/request explicit decision before any follow-up experiment"
@@ -81,6 +86,30 @@ AGGREGATE_SCREEN_KEYS = {
     "authorization_attestation",
     "coverage_summary",
     "action_outcome_summary",
+    "baseline_screen",
+    "evidencecore_summary",
+    "privacy_summary",
+    "validation_summary",
+    "conservative_recommendation",
+}
+PHASE1B_MICRO_POLICIES = (
+    "bm25_then_read_top1",
+    "bm25_then_read_next_unique_file",
+    "symbol_regex_then_read_top1",
+    "symbol_regex_then_read_next_unique_file",
+    "read_related_test_when_available",
+    "stop",
+    "abstain",
+)
+PHASE1B_ACQUISITION_POLICIES = PHASE1B_MICRO_POLICIES[:5]
+PHASE1B_REPORT_KEYS = {
+    "schema_version",
+    "phase",
+    "status",
+    "authorization_attestation",
+    "source_summary",
+    "coverage_summary",
+    "policy_outcome_summary",
     "baseline_screen",
     "evidencecore_summary",
     "privacy_summary",
@@ -434,6 +463,14 @@ def _row_bool(row: dict[str, Any], key: str) -> bool:
     return row.get(key) is True
 
 
+def contains_singleton_bucket(value: Any) -> bool:
+    if isinstance(value, dict):
+        return any(contains_singleton_bucket(child) for child in value.values())
+    if isinstance(value, list):
+        return any(contains_singleton_bucket(child) for child in value)
+    return value == "count_1"
+
+
 def build_aggregate_screen(rows: list[dict[str, Any]]) -> dict[str, Any]:
     row_actions = Counter(str(row.get("action", "")) for row in rows)
     row_families = Counter(str(row.get("family_bucket", "")) for row in rows)
@@ -613,6 +650,372 @@ def run_aggregate_private_rows(private_rows_path: Path | None, output: Path) -> 
         "private_rows_read_locally": True,
         "private_rows_published": False,
         "public_report": str(output),
+    }
+
+
+def phase1b_tasks() -> list[HardTaskShape]:
+    return build_hard_task_source()[:32]
+
+
+def phase1b_policy_eligible(task: HardTaskShape, policy: str) -> bool:
+    if policy in {"stop", "abstain"}:
+        return True
+    if policy == "read_related_test_when_available":
+        return task.has_related_test
+    return policy in PHASE1B_ACQUISITION_POLICIES
+
+
+def phase1b_subactions(policy: str) -> tuple[str, ...]:
+    if policy == "bm25_then_read_top1":
+        return ("retrieve_bm25", "read_top1")
+    if policy == "bm25_then_read_next_unique_file":
+        return ("retrieve_bm25", "read_next_unique_file")
+    if policy == "symbol_regex_then_read_top1":
+        return ("retrieve_symbol_regex", "read_top1")
+    if policy == "symbol_regex_then_read_next_unique_file":
+        return ("retrieve_symbol_regex", "read_next_unique_file")
+    if policy == "read_related_test_when_available":
+        return ("read_related_test",)
+    return (policy,)
+
+
+def phase1b_policy_observation(task: HardTaskShape, policy: str) -> dict[str, Any]:
+    subactions = phase1b_subactions(policy)
+    candidate_found = any(action_candidate_found(task, action) for action in subactions)
+    materialized = any(action_materializes(task, action) for action in subactions)
+    synthetic_success = any(action_success(task, action) for action in subactions if action in EVIDENCE_SUCCESS_ACTIONS)
+    if not materialized and policy not in {"stop", "abstain"}:
+        reason = "no_current_source_materialized"
+    elif materialized and not synthetic_success:
+        reason = "materialized_but_not_acceptable_label"
+    elif synthetic_success:
+        reason = "synthetic_success_label_with_materialization"
+    else:
+        reason = "control_no_acquisition"
+    return {
+        "candidate_found": candidate_found,
+        "read_attempted": any(action.startswith("read_") for action in subactions),
+        "materialized_current_source": materialized,
+        "synthetic_success": synthetic_success,
+        "failure_safe_reason_bucket": reason,
+        "subactions": subactions,
+    }
+
+
+def build_phase1b_private_rows(tasks: list[HardTaskShape] | None = None) -> list[dict[str, Any]]:
+    tasks = tasks or phase1b_tasks()
+    rows: list[dict[str, Any]] = []
+    row_index = 0
+    for task in tasks:
+        eligible = [policy for policy in PHASE1B_MICRO_POLICIES if phase1b_policy_eligible(task, policy)]
+        for policy in PHASE1B_ACQUISITION_POLICIES:
+            if not phase1b_policy_eligible(task, policy):
+                continue
+            observation = phase1b_policy_observation(task, policy)
+            rows.append(build_phase1b_private_row(task, policy, eligible, observation, row_index, "deterministic_full_panel_acquisition"))
+            row_index += 1
+    for policy in ("stop", "abstain"):
+        for task in tasks[:8]:
+            eligible = [candidate for candidate in PHASE1B_MICRO_POLICIES if phase1b_policy_eligible(task, candidate)]
+            observation = phase1b_policy_observation(task, policy)
+            rows.append(build_phase1b_private_row(task, policy, eligible, observation, row_index, "sparse_control_panel"))
+            row_index += 1
+    if len(rows) > 176:
+        raise PreflightError("Phase 1B private row cap exceeded")
+    return rows
+
+
+def build_phase1b_private_row(task: HardTaskShape, policy: str, eligible: list[str], observation: dict[str, Any], row_index: int, assignment_mode: str) -> dict[str, Any]:
+    synthetic_success = observation["synthetic_success"] is True
+    return {
+        "schema_version": "interventional_evidence_acquisition_phase1b_micro_policy_private_row_v1",
+        "phase": PHASE1B_PHASE,
+        "row_index": row_index,
+        "private_task_id": task.private_id,
+        "family_bucket": task.family_bucket,
+        "micro_policy_id": policy,
+        "micro_policy_version": "v1",
+        "assignment_mode": assignment_mode,
+        "eligible_micro_policies": eligible,
+        "pre_policy_state_buckets": {
+            "candidate_count_bucket": bucket_count(task.candidate_count),
+            "unique_file_candidate_bucket": bucket_count(task.unique_file_candidates),
+            "related_test_available": task.has_related_test,
+        },
+        "primitive_subaction_trace_labels": list(observation["subactions"]),
+        "private_exact_refs": {
+            "private_path": task.private_path,
+            "private_symbol": task.private_symbol,
+            "private_query": task.private_query,
+            "private_range": task.private_range,
+        },
+        "candidate_found": observation["candidate_found"],
+        "read_attempted": observation["read_attempted"],
+        "materialized_current_source": observation["materialized_current_source"],
+        "real_current_source_materialization": False,
+        "synthetic_success": synthetic_success,
+        "failure_safe_reason_bucket": observation["failure_safe_reason_bucket"],
+        "evidencecore": {
+            "candidate_is_fact": False,
+            "counted_evidence_requires_current_source": True,
+            "synthetic_materialization_only": True,
+            "real_evidence_success": False,
+        },
+        "privacy": {
+            "private_row": True,
+            "public_artifact_allowed": False,
+            "provider_network_used": False,
+            "model_training_executed": False,
+        },
+    }
+
+
+def validate_phase1b_private_rows(rows: list[dict[str, Any]]) -> list[str]:
+    errors: list[str] = []
+    if not rows or len(rows) > 176:
+        errors.append("Phase 1B row count outside allowed range")
+    for index, row in enumerate(rows):
+        policy = str(row.get("micro_policy_id", ""))
+        if policy not in PHASE1B_MICRO_POLICIES:
+            errors.append(f"unknown Phase 1B policy at row {index}")
+        if policy in {"retrieve_bm25", "retrieve_symbol_regex"}:
+            errors.append(f"standalone retrieval policy at row {index}")
+        if str(row.get("family_bucket", "")) not in FAMILY_BUCKETS:
+            errors.append(f"unknown Phase 1B family at row {index}")
+        if row.get("privacy", {}).get("provider_network_used") is not False or row.get("privacy", {}).get("model_training_executed") is not False:
+            errors.append(f"provider/training boundary failure at row {index}")
+        if row.get("real_current_source_materialization") is not False:
+            errors.append(f"unexpected real current-source materialization at row {index}")
+        if "evidence_success" in row:
+            errors.append(f"unqualified Phase 1B evidence_success field at row {index}")
+        synthetic_success = row.get("synthetic_success") is True
+        materialized = row.get("materialized_current_source") is True
+        if synthetic_success and not materialized:
+            errors.append(f"Phase 1B synthetic success without materialization at row {index}")
+        if row.get("evidencecore", {}).get("candidate_is_fact") is not False:
+            errors.append(f"Phase 1B synthetic row claims candidate_is_fact at row {index}")
+        if row.get("evidencecore", {}).get("real_evidence_success") is not False:
+            errors.append(f"Phase 1B synthetic row claims real evidence success at row {index}")
+        subactions = set(row.get("primitive_subaction_trace_labels", []))
+        if subactions <= {"retrieve_bm25", "retrieve_symbol_regex"} and synthetic_success:
+            errors.append(f"Phase 1B retrieval-only synthetic success at row {index}")
+    return errors
+
+
+def write_phase1b_private_outputs(rows: list[dict[str, Any]], private_root: Path = PHASE1B_PRIVATE_RUN_ROOT) -> dict[str, Any]:
+    errors = validate_phase1b_private_rows(rows)
+    if errors:
+        raise PreflightError("Phase 1B private row validation failed: " + "; ".join(errors[:8]))
+    run_dir = private_root / time.strftime("%Y%m%d-%H%M%S")
+    row_path = run_dir / "phase1b_micro_policy_private_rows.jsonl"
+    manifest_path = run_dir / "phase1b_micro_policy_private_manifest.json"
+    write_jsonl(row_path, rows)
+    manifest = {
+        "schema_version": "interventional_evidence_acquisition_phase1b_micro_policy_private_manifest_v1",
+        "storage_class": "ignored_runs_private",
+        "row_count_bucket": bucket_count(len(rows)),
+        "private_rows_path": str(row_path),
+        "private_manifest_path": str(manifest_path),
+        "public_report_must_not_include_private_paths": True,
+    }
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return manifest
+
+
+def build_phase1b_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    errors = validate_phase1b_private_rows(rows)
+    if errors:
+        raise PreflightError("Phase 1B report input invalid: " + "; ".join(errors[:8]))
+    policies = Counter(str(row["micro_policy_id"]) for row in rows)
+    families = Counter(str(row["family_bucket"]) for row in rows)
+    candidate_found = Counter(str(row["micro_policy_id"]) for row in rows if row.get("candidate_found") is True)
+    read_attempted = Counter(str(row["micro_policy_id"]) for row in rows if row.get("read_attempted") is True)
+    materialized = Counter(str(row["micro_policy_id"]) for row in rows if row.get("materialized_current_source") is True)
+    synthetic_success = Counter(str(row["micro_policy_id"]) for row in rows if row.get("synthetic_success") is True)
+    materialized_not_synthetic_success = sum(1 for row in rows if row.get("materialized_current_source") is True and row.get("synthetic_success") is not True)
+    best_micro = max((synthetic_success[policy] for policy in PHASE1B_ACQUISITION_POLICIES), default=0)
+    controls = synthetic_success["stop"] + synthetic_success["abstain"]
+    missing_policy = sum(1 for policy in PHASE1B_MICRO_POLICIES if policies[policy] == 0)
+    missing_family = sum(1 for family in FAMILY_BUCKETS if families[family] == 0)
+    recommendation = "maybe_expand_with_new_explicit_decision" if missing_policy == 0 and missing_family == 0 and best_micro > controls else "redesign_before_expansion"
+    report = {
+        "schema_version": PHASE1B_SCHEMA_VERSION,
+        "phase": PHASE1B_PHASE,
+        "status": PHASE1B_STATUS,
+        "authorization_attestation": {
+            "local_only": True,
+            "private_rows_written": True,
+            "private_rows_published": False,
+            "provider_network_authorized": False,
+            "provider_network_used": False,
+            "training_authorized": False,
+            "model_training_executed": False,
+            "runtime_default_change_authorized": False,
+            "runtime_default_changed": False,
+            "new_retrieval_channel_family_added": False,
+            "method_winner_claimed": False,
+            "signal_claim": "no_signal_claim",
+        },
+        "source_summary": {
+            "source_kind": "synthetic_local_hard_task_shapes",
+            "task_count_bucket": bucket_count(len({row["private_task_id"] for row in rows})),
+            "real_current_source_materialization_performed": False,
+            "evidencecore_status": "synthetic_materialization_preflight_no_real_current_source_reads",
+        },
+        "coverage_summary": {
+            "row_count_bucket": bucket_count(len(rows)),
+            "family_coverage_buckets": {family: bucket_count(families[family]) for family in FAMILY_BUCKETS},
+            "policy_coverage_buckets": {policy: bucket_count(policies[policy]) for policy in PHASE1B_MICRO_POLICIES},
+            "missing_policy_coverage_bucket": bucket_count(missing_policy),
+            "missing_family_coverage_bucket": bucket_count(missing_family),
+        },
+        "policy_outcome_summary": {
+            "candidate_found_buckets": {policy: bucket_count(candidate_found[policy]) for policy in PHASE1B_MICRO_POLICIES},
+            "read_attempted_buckets": {policy: bucket_count(read_attempted[policy]) for policy in PHASE1B_MICRO_POLICIES},
+            "materialized_buckets": {policy: bucket_count(materialized[policy]) for policy in PHASE1B_MICRO_POLICIES},
+            "synthetic_success_buckets": {policy: bucket_count(synthetic_success[policy]) for policy in PHASE1B_MICRO_POLICIES},
+            "materialized_but_not_synthetic_success_bucket": bucket_count(materialized_not_synthetic_success),
+        },
+        "baseline_screen": {
+            "best_fixed_micro_policy_synthetic_success_rate_bucket": bucket_rate(best_micro, len(rows)),
+            "stop_abstain_control_success_bucket": bucket_count(controls),
+            "primitive_phase1_comparison": "retrieval_only_success_not_applicable",
+            "method_winner_claimed": False,
+            "signal_claim": "no_signal_claim",
+        },
+        "evidencecore_summary": {
+            "real_evidence_success_bucket": "not_applicable",
+            "synthetic_success_requires_materialization": True,
+            "retrieval_only_synthetic_success_bucket": "not_applicable",
+            "real_current_source_materialization_performed": False,
+            "synthetic_materialization_only": True,
+            "candidate_is_fact_bucket": "count_0",
+            "candidate_is_not_fact_without_real_evidence": True,
+        },
+        "privacy_summary": {
+            "publication_level": "aggregate_only",
+            "private_rows_written": True,
+            "private_rows_published": False,
+            "raw_rows_public": False,
+            "private_task_ids_public": False,
+            "private_paths_public": False,
+            "private_symbols_public": False,
+            "private_queries_public": False,
+            "private_ranges_public": False,
+            "private_hashes_public": False,
+            "private_run_paths_public": False,
+            "provider_payloads_public": False,
+        },
+        "validation_summary": {
+            "route_specific_phase1b_validation": "passed",
+            "singleton_private_count_buckets_avoided": True,
+            "self_test_available": True,
+        },
+        "conservative_recommendation": recommendation,
+    }
+    report_errors = validate_phase1b_report(report)
+    if report_errors:
+        raise PreflightError("generated invalid Phase 1B report: " + "; ".join(report_errors[:8]))
+    return report
+
+
+def validate_phase1b_report(report: Any) -> list[str]:
+    if not isinstance(report, dict):
+        return ["Phase 1B report must be an object"]
+    errors: list[str] = []
+    if set(report) != PHASE1B_REPORT_KEYS:
+        errors.append("Phase 1B report top-level shape drift")
+    if report.get("schema_version") != PHASE1B_SCHEMA_VERSION or report.get("phase") != PHASE1B_PHASE or report.get("status") != PHASE1B_STATUS:
+        errors.append("Phase 1B identity/status drift")
+    auth = report.get("authorization_attestation", {})
+    if auth.get("local_only") is not True or auth.get("private_rows_written") is not True or auth.get("private_rows_published") is not False:
+        errors.append("Phase 1B authorization/private row attestation failed")
+    for key in ("provider_network_authorized", "provider_network_used", "training_authorized", "model_training_executed", "runtime_default_change_authorized", "runtime_default_changed", "new_retrieval_channel_family_added", "method_winner_claimed"):
+        if auth.get(key) is not False:
+            errors.append(f"Phase 1B overclaim: {key}")
+    if auth.get("signal_claim") != "no_signal_claim":
+        errors.append("Phase 1B signal claim overclaim")
+    source = report.get("source_summary", {})
+    if source.get("real_current_source_materialization_performed") is not False or source.get("evidencecore_status") != "synthetic_materialization_preflight_no_real_current_source_reads":
+        errors.append("Phase 1B real EvidenceCore status overclaim")
+    coverage = report.get("coverage_summary", {})
+    if set(coverage.get("policy_coverage_buckets", {})) != set(PHASE1B_MICRO_POLICIES) or set(coverage.get("family_coverage_buckets", {})) != set(FAMILY_BUCKETS):
+        errors.append("Phase 1B coverage shape drift")
+    outcomes = report.get("policy_outcome_summary", {})
+    if "evidence_success_buckets" in outcomes:
+        errors.append("Phase 1B unqualified evidence_success_buckets published")
+    for key in ("candidate_found_buckets", "read_attempted_buckets", "materialized_buckets", "synthetic_success_buckets"):
+        if set(outcomes.get(key, {})) != set(PHASE1B_MICRO_POLICIES):
+            errors.append(f"Phase 1B outcome shape drift: {key}")
+        if "count_1" in set(outcomes.get(key, {}).values()):
+            errors.append(f"Phase 1B singleton private count bucket published: {key}")
+    success = outcomes.get("synthetic_success_buckets", {})
+    materialized = outcomes.get("materialized_buckets", {})
+    for policy in PHASE1B_MICRO_POLICIES:
+        if materialized.get(policy) == "count_0" and success.get(policy) != "count_0":
+            errors.append(f"Phase 1B synthetic success without materialization: {policy}")
+    if success.get("stop") != "count_0" or success.get("abstain") != "count_0":
+        errors.append("Phase 1B control synthetic success overclaim")
+    baseline = report.get("baseline_screen", {})
+    if "best_fixed_micro_policy_success_rate_bucket" in baseline:
+        errors.append("Phase 1B unqualified best fixed success bucket published")
+    if baseline.get("method_winner_claimed") is not False or baseline.get("signal_claim") != "no_signal_claim":
+        errors.append("Phase 1B baseline overclaim")
+    evidence = report.get("evidencecore_summary", {})
+    if "success_requires_materialization" in evidence or "retrieval_only_success_bucket" in evidence or "candidate_is_not_fact_without_evidence_success" in evidence:
+        errors.append("Phase 1B unqualified EvidenceCore success/fact terminology published")
+    if evidence.get("real_evidence_success_bucket") != "not_applicable" or evidence.get("candidate_is_fact_bucket") != "count_0":
+        errors.append("Phase 1B real EvidenceCore success/fact overclaim")
+    if evidence.get("synthetic_success_requires_materialization") is not True or evidence.get("retrieval_only_synthetic_success_bucket") != "not_applicable":
+        errors.append("Phase 1B synthetic success boundary failed")
+    if evidence.get("real_current_source_materialization_performed") is not False or evidence.get("synthetic_materialization_only") is not True:
+        errors.append("Phase 1B synthetic/real materialization boundary failed")
+    privacy = report.get("privacy_summary", {})
+    if privacy.get("publication_level") != "aggregate_only" or privacy.get("private_rows_published") is not False:
+        errors.append("Phase 1B privacy level failed")
+    for key in ("raw_rows_public", "private_task_ids_public", "private_paths_public", "private_symbols_public", "private_queries_public", "private_ranges_public", "private_hashes_public", "private_run_paths_public", "provider_payloads_public"):
+        if privacy.get(key) is not False:
+            errors.append(f"Phase 1B privacy boundary failed: {key}")
+    if report.get("validation_summary", {}).get("singleton_private_count_buckets_avoided") is not True:
+        errors.append("Phase 1B singleton bucket guard missing")
+    if contains_singleton_bucket(report):
+        errors.append("Phase 1B singleton private count bucket published")
+    if report.get("conservative_recommendation") not in {"stop_no_expansion", "redesign_before_expansion", "maybe_expand_with_new_explicit_decision"}:
+        errors.append("Phase 1B recommendation drift")
+    errors.extend(public_leak_errors(report))
+    return errors
+
+
+def write_phase1b_report(report: dict[str, Any], output: Path) -> None:
+    errors = validate_phase1b_report(report)
+    if errors:
+        raise PreflightError("Phase 1B report validation failed: " + "; ".join(errors[:8]))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def validate_phase1b_report_file(path: Path) -> list[str]:
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"cannot load Phase 1B report: {exc}"]
+    return validate_phase1b_report(report)
+
+
+def run_phase1b_micro_policy(*, confirm_private_output: bool, output: Path, private_root: Path = PHASE1B_PRIVATE_RUN_ROOT) -> dict[str, Any]:
+    if not confirm_private_output:
+        raise PreflightError("Phase 1B private output requires --confirm-private-output")
+    rows = build_phase1b_private_rows()
+    manifest = write_phase1b_private_outputs(rows, private_root)
+    report = build_phase1b_report(rows)
+    write_phase1b_report(report, output)
+    return {
+        "status": report["status"],
+        "conservative_recommendation": report["conservative_recommendation"],
+        "real_current_source_materialization_performed": False,
+        "private_rows_location": "runs/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection/.../phase1b_micro_policy_private_rows.jsonl",
+        "public_report": str(output),
+        "_private_manifest": manifest,
     }
 
 
@@ -936,6 +1339,12 @@ def run_self_test() -> dict[str, Any]:
         aggregate_report = json.loads(aggregate_output.read_text(encoding="utf-8"))
         checks.append(("aggregate_private_rows_generates_screen", aggregate_result["status"] == AGGREGATE_SCREEN_STATUS and aggregate_report["privacy_summary"]["private_rows_published"] is False))
         checks.append(("aggregate_screen_valid", not validate_aggregate_screen(aggregate_report)))
+        phase1b_output = Path(temp_dir) / "phase1b_report.json"
+        phase1b_result = run_phase1b_micro_policy(confirm_private_output=True, output=phase1b_output, private_root=Path(temp_dir) / "phase1b_runs")
+        phase1b_report = json.loads(phase1b_output.read_text(encoding="utf-8"))
+        checks.append(("phase1b_generates_report", phase1b_result["status"] == PHASE1B_STATUS and phase1b_report["privacy_summary"]["private_rows_published"] is False))
+        checks.append(("phase1b_report_valid", not validate_phase1b_report(phase1b_report)))
+        checks.append(("phase1b_private_rows_written_under_temp_runs", Path((phase1b_result.get("_private_manifest") or {}).get("private_rows_path", "")).is_file()))
     bad_report = copy.deepcopy(report)
     bad_report["source_summary"]["leaky_value_bucket"] = "src/private/example.py"
     checks.append(("privacy_leak_rejected", bool(validate_report(bad_report))))
@@ -975,6 +1384,46 @@ def run_self_test() -> dict[str, Any]:
     bad_screen = build_aggregate_screen(rows)
     bad_screen["privacy_summary"]["private_run_paths_public"] = True
     checks.append(("aggregate_privacy_overclaim_rejected", bool(validate_aggregate_screen(bad_screen))))
+    phase1b_rows = build_phase1b_private_rows(tasks)
+    phase1b_report = build_phase1b_report(phase1b_rows)
+    checks.append(("phase1b_private_rows_valid", not validate_phase1b_private_rows(phase1b_rows)))
+    checks.append(("phase1b_no_singleton_public_buckets", not contains_singleton_bucket(phase1b_report)))
+    checks.append(("phase1b_private_rows_no_candidate_fact", all(row["evidencecore"]["candidate_is_fact"] is False and row["evidencecore"]["real_evidence_success"] is False for row in phase1b_rows)))
+    checks.append(("phase1b_public_uses_synthetic_terms", "evidence_success_buckets" not in phase1b_report["policy_outcome_summary"] and "synthetic_success_buckets" in phase1b_report["policy_outcome_summary"] and "best_fixed_micro_policy_success_rate_bucket" not in phase1b_report["baseline_screen"]))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["authorization_attestation"]["provider_network_used"] = True
+    checks.append(("phase1b_provider_overclaim_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["authorization_attestation"]["model_training_executed"] = True
+    checks.append(("phase1b_training_overclaim_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["authorization_attestation"]["runtime_default_changed"] = True
+    checks.append(("phase1b_runtime_overclaim_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["policy_outcome_summary"]["synthetic_success_buckets"]["stop"] = "count_2_to_5"
+    checks.append(("phase1b_control_synthetic_success_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["policy_outcome_summary"]["synthetic_success_buckets"]["bm25_then_read_top1"] = "count_1"
+    checks.append(("phase1b_singleton_bucket_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["coverage_summary"]["missing_policy_coverage_bucket"] = "count_1"
+    checks.append(("phase1b_global_singleton_bucket_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["policy_outcome_summary"]["evidence_success_buckets"] = bad_phase1b_report["policy_outcome_summary"].pop("synthetic_success_buckets")
+    checks.append(("phase1b_unqualified_success_bucket_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_report = copy.deepcopy(phase1b_report)
+    bad_phase1b_report["baseline_screen"]["best_fixed_micro_policy_success_rate_bucket"] = bad_phase1b_report["baseline_screen"].pop("best_fixed_micro_policy_synthetic_success_rate_bucket")
+    checks.append(("phase1b_unqualified_baseline_success_rejected", bool(validate_phase1b_report(bad_phase1b_report))))
+    bad_phase1b_rows = copy.deepcopy(phase1b_rows)
+    bad_phase1b_rows[0]["synthetic_success"] = True
+    bad_phase1b_rows[0]["materialized_current_source"] = False
+    checks.append(("phase1b_synthetic_success_without_materialization_rejected", bool(validate_phase1b_private_rows(bad_phase1b_rows))))
+    bad_phase1b_rows = copy.deepcopy(phase1b_rows)
+    bad_phase1b_rows[0]["evidencecore"]["candidate_is_fact"] = True
+    checks.append(("phase1b_candidate_fact_rejected", bool(validate_phase1b_private_rows(bad_phase1b_rows))))
+    bad_phase1b_rows = copy.deepcopy(phase1b_rows)
+    bad_phase1b_rows[0]["evidence_success"] = True
+    checks.append(("phase1b_unqualified_private_evidence_success_rejected", bool(validate_phase1b_private_rows(bad_phase1b_rows))))
     bad_report = copy.deepcopy(confirmed_report)
     bad_report["action_summary"]["confirmed_action_coverage_buckets"]["stop"] = "count_0"
     checks.append(("confirmed_missing_action_coverage_rejected", bool(validate_report(bad_report))))
@@ -988,11 +1437,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true", help="write aggregate-only dry-run report")
     parser.add_argument("--confirm-private-output", action="store_true", help="write ignored private rows under runs/ and aggregate-only public report")
     parser.add_argument("--aggregate-private-rows", action="store_true", help="read ignored private rows locally and write aggregate-only outcome screen")
+    parser.add_argument("--run-phase1b-micro-policy", action="store_true", help="run Phase 1B tiny local micro-policy collection; requires --confirm-private-output")
     parser.add_argument("--private-rows-path", type=Path, help="local ignored private rows JSONL path for aggregate screen; never published")
     parser.add_argument("--validate-report", type=Path, help="validate an existing aggregate report")
     parser.add_argument("--validate-aggregate-screen", type=Path, help="validate an existing aggregate-only private row outcome screen")
+    parser.add_argument("--validate-phase1b-report", type=Path, help="validate an existing Phase 1B public report")
     parser.add_argument("--output", type=Path, default=DEFAULT_REPORT, help="dry-run report output path")
     parser.add_argument("--aggregate-output", type=Path, default=DEFAULT_AGGREGATE_SCREEN_REPORT, help="aggregate screen output path")
+    parser.add_argument("--phase1b-output", type=Path, default=DEFAULT_PHASE1B_REPORT, help="Phase 1B public report output path")
     args = parser.parse_args(argv)
 
     if args.self_test:
@@ -1012,6 +1464,22 @@ def main(argv: list[str] | None = None) -> int:
             print("Aggregate screen validation failed: " + "; ".join(errors[:8]), file=sys.stderr)
             return 1
         print(f"Aggregate screen validation passed: {args.validate_aggregate_screen}")
+        return 0
+    if args.validate_phase1b_report:
+        errors = validate_phase1b_report_file(args.validate_phase1b_report)
+        if errors:
+            print("Phase 1B report validation failed: " + "; ".join(errors[:8]), file=sys.stderr)
+            return 1
+        print(f"Phase 1B report validation passed: {args.validate_phase1b_report}")
+        return 0
+    if args.run_phase1b_micro_policy:
+        try:
+            result = run_phase1b_micro_policy(confirm_private_output=args.confirm_private_output, output=args.phase1b_output)
+        except PreflightError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        result.pop("_private_manifest", None)
+        print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     if args.dry_run or args.confirm_private_output:
         result = run_capture(confirm_private_output=args.confirm_private_output, dry_run=args.dry_run, output=args.output)

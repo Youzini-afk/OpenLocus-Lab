@@ -40,6 +40,12 @@ Public report 仍然只包含 aggregate 信息：task/action/family count bucket
 
 该 screen 是 public aggregate-only diagnostic。它只公开 row/action/family coverage、candidate-found、materialized、evidence-success、materialized-but-not-success、baseline/randomized screen 和 conservative recommendation `maybe_expand_with_new_explicit_decision` 的 buckets。它不公开 raw rows、private paths、symbols、queries、ranges、snippets、hashes、run paths、prompts、responses、provider payloads 或 labels，也不提出 method-winner 或 signal claim。
 
+## Phase 1B micro-policy status
+
+同一 script 现在支持 `--run-phase1b-micro-policy --confirm-private-output`。它在既有 hard synthetic task source 上运行 tiny local micro-policy collection，并且只向 ignored `runs/` 写入 private rows。Public report 为 `artifacts/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json`，status 为 `phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim`。
+
+Phase 1B 只使用 7 个 local micro-policy/control labels：`bm25_then_read_top1`、`bm25_then_read_next_unique_file`、`symbol_regex_then_read_top1`、`symbol_regex_then_read_next_unique_file`、`read_related_test_when_available`、`stop` 和 `abstain`。Standalone retrieval 不是 Phase 1B top-level policy。由于当前 source 仍是模拟 materialization，而不是读取真实 current files/ranges/content，因此这只是 synthetic preflight，不是真实 EvidenceCore evidence。Public output 只包含 synthetic success labels 的 buckets，recommendation 为 `maybe_expand_with_new_explicit_decision`，且不提出 method-winner 或 signal claim。
+
 ## 候选问题
 
 在 hard product-workflow episodes 上，使用极小的本地 randomized intervention 来选择既有 evidence-acquisition actions，是否比 passive trace review 更能产生清晰的 workflow evidence，同时保持 EvidenceCore 与 privacy invariants？

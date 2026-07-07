@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 1B Micro-Policy Collection
+
+Extended `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py` with `--run-phase1b-micro-policy --confirm-private-output`. The run writes private rows only under ignored `runs/` and publishes the aggregate-only report [`interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json`](../../artifacts/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection/interventional_evidence_acquisition_phase1b_micro_policy_tiny_collection_report.json), status `phase1b_micro_policy_tiny_collection_synthetic_preflight_no_real_evidencecore_no_claim`.
+
+Phase 1B uses seven local micro-policy/control labels and existing hard synthetic task shapes. It bundles retrieval with read/materialization labels and reports only synthetic success labels, but no real current-source reads/ranges/content were performed; therefore it is synthetic preflight only, not completed EvidenceCore evidence. Public output is buckets only, recommendation `maybe_expand_with_new_explicit_decision`, and no claim: no provider/network, no model/training, no runtime/default change, no new retrieval family, no method winner.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Private-Row Aggregate Screen
 
 Added a local-only aggregate screen mode to `eval/interventional_evidence_acquisition_phase1_hard_source_preflight.py`. It reads existing ignored hard-source private rows under `runs/` and writes only the public diagnostic screen [`interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json`](../../artifacts/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen/interventional_evidence_acquisition_phase1_hard_source_private_row_aggregate_screen_report.json), status `phase1_hard_source_private_row_aggregate_screen_no_claim`.
