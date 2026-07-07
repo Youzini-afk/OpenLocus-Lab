@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Self-Test Quality Guard Loop/Comprehension Target Reachability
+
+Loop/comprehension target reachability now follows Python's iterable-before-target evaluation order. Synthetic files where the only recognized check is hidden in a subscript target of `for ... in []`, `for ... in range(0)`, or an empty list comprehension now fail with `missing_selftest_checks`, while the same target checks remain active for nonempty `[1]` iterables.
+
+After the loop/comprehension target reachability change, local validation passed `python scripts\validate_selftest_quality.py --self-test`, focused loop/comprehension target probes, the default allowlist scan, `python -m py_compile scripts\validate_selftest_quality.py` with an isolated pycache, `python scripts\validate_docs_i18n.py`, and `git diff --check` with only the existing CRLF warning. Manual `retrieval-benchmark` `pr_smoke` run [`28848734633`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28848734633) passed on `e9a48cc` with `max_repos=1` and `enable_remote_models=false`. This validates only the evaluator-chain guard in CI; it is not retrieval-method, runtime/default, provider/network, or route-reopening evidence.
+
 ## 2026-07-07 - Self-Test Quality Guard Risky Match-Guard Exit
 
 Risky match-guard exit analysis now separates match fallthrough from no-raise selected-body selection. Synthetic files where `case 1 if risky() or True:` exits with `return`, where `case 1 if risky() and False:` can only fall through to an exiting wildcard, or where risky unknown guard true/false paths both exit now fail with `missing_selftest_checks`. A risky truthy guard whose selected body can fall through remains active, and suppressible exceptions inside `with` remain conservative.
