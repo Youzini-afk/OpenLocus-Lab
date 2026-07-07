@@ -6,7 +6,9 @@
 
 Self-test 覆盖 clean positive fixture，以及 citation validity、run/score separation、labels-used、`promotion_ready`、`default_should_change`、unavailable-strategy extra metric keys、report 内 nested private fields、run-dir JSONL evidence 内 private fields 的 negative fixtures。`retrieval-benchmark` plan job 现在会在 evaluator runtime self-test quality guard 之后运行 `python3 eval/ci_validate_report.py --self-test`。
 
-这只是 CI report/privacy validator quality gating。它不是新的 artifact audit framework、historical artifact audit、retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
+CI evidence：手动 `retrieval-benchmark` `pr_smoke` run [`28865005942`](https://github.com/Youzini-afk/OpenLocus-Lab/actions/runs/28865005942) 已在 `5edae52` 上以 `max_repos=1`、`enable_remote_models=false` 通过。plan job 已成功，包括新的 `Run CI report validator self-test` step 以及既有 evaluator runtime self-test quality guard；bounded `py_flask` benchmark job 成功完成，`remote-provider-policy` 已 skipped。
+
+这只验证 CI report/privacy validator self-test wiring。它不是 public artifact audit、historical artifact scan、retrieval-method、runtime/default、provider/network 或 route-reopening evidence。
 
 ## 2026-07-07 - Runtime Self-Test Quality Gate
 
