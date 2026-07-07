@@ -714,6 +714,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
             return cls._class_for_statement_cannot_raise(node)
         if isinstance(node, ast.Match):
             return cls._class_match_statement_cannot_raise(node)
+        if isinstance(node, TRY_STATEMENT_TYPES):
+            return cls._class_try_statement_cannot_raise(node)
         return False
 
     @classmethod
@@ -765,6 +767,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                     return False
             return cls._class_block_cannot_raise(case.body)
         return True
+
+    @classmethod
+    def _class_try_statement_cannot_raise(cls, node: ast.Try) -> bool:
+        if not cls._class_block_cannot_raise(node.body):
+            return False
+        return cls._class_block_cannot_raise(node.orelse) and cls._class_block_cannot_raise(node.finalbody)
 
     @classmethod
     def _function_definition_statement_cannot_raise(cls, node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
@@ -2869,6 +2877,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_classdef_body_try_pass_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                pass\n            except Error:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_finally_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value = 1\n            finally:\n                other = 2\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_else_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value = 1\n            except Error:\n                pass\n            else:\n                other = 2\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_unreachable_handler_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                pass\n            except Error:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_while_false_except_check_rejected",
             "def run_self_tests():\n    try:\n        while False:\n            risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -3096,6 +3124,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_classdef_body_match_else_return_then_check_rejected",
             "def run_self_tests(value):\n    try:\n        class Helper:\n            match 1:\n                case 1:\n                    value = 1\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_classdef_body_try_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        class Helper:\n            try:\n                value = 1\n            finally:\n                other = 2\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
             ["missing_selftest_checks"],
         ),
         (
@@ -3386,6 +3419,26 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_classdef_body_match_risky_guard_except_check_allowed",
             "def run_self_tests():\n    try:\n        class Helper:\n            match 1:\n                case 1 if risky() and False:\n                    value = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_risky_body_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                risky()\n            except Error:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_annassign_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value: risky() = 1\n            except Error:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_finally_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value = 1\n            finally:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_else_risky_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value = 1\n            except Error:\n                pass\n            else:\n                risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -3923,7 +3976,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, declaration/function/classdef/class-body loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
+            "boolop no-raise, declaration/function/classdef/class-body try/loop/match no-raise, annassign no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
