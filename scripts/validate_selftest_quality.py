@@ -615,6 +615,8 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _assignment_target_cannot_raise(cls, node: ast.AST) -> bool:
         if isinstance(node, ast.Name):
             return True
+        if isinstance(node, ast.Starred):
+            return isinstance(node.value, ast.Name)
         if isinstance(node, (ast.Tuple, ast.List)):
             return all(cls._assignment_target_cannot_raise(element) for element in node.elts)
         return False
@@ -632,15 +634,38 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
     def _unpack_assignment_target_matches_value(cls, target: ast.AST, value: object) -> bool:
         if isinstance(target, ast.Name):
             return True
+        if isinstance(target, ast.Starred):
+            return isinstance(target.value, ast.Name)
         if not isinstance(target, (ast.Tuple, ast.List)):
             return False
         if not isinstance(value, (tuple, list)):
             return False
-        if len(target.elts) != len(value):
+        starred_indexes = [index for index, element in enumerate(target.elts) if isinstance(element, ast.Starred)]
+        if len(starred_indexes) > 1:
             return False
+        if not starred_indexes:
+            if len(target.elts) != len(value):
+                return False
+            return all(
+                cls._unpack_assignment_target_matches_value(element, item)
+                for element, item in zip(target.elts, value)
+            )
+
+        starred_index = starred_indexes[0]
+        starred_target = target.elts[starred_index]
+        if not isinstance(starred_target, ast.Starred) or not isinstance(starred_target.value, ast.Name):
+            return False
+        prefix_targets = target.elts[:starred_index]
+        suffix_targets = target.elts[starred_index + 1 :]
+        if len(value) < len(prefix_targets) + len(suffix_targets):
+            return False
+        suffix_offset = len(value) - len(suffix_targets)
         return all(
             cls._unpack_assignment_target_matches_value(element, item)
-            for element, item in zip(target.elts, value)
+            for element, item in zip(prefix_targets, value[: len(prefix_targets)])
+        ) and all(
+            cls._unpack_assignment_target_matches_value(element, item)
+            for element, item in zip(suffix_targets, value[suffix_offset:])
         )
 
     @classmethod
@@ -2627,6 +2652,26 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_star_tail_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        a, *rest = (1, 2)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_star_only_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        *rest, = ()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_star_middle_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        a, *rest, b = (1, 2, 3)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
+            "target_with_try_nested_star_unpack_except_check_rejected",
+            "def run_self_tests():\n    try:\n        a, (*mid, z) = (1, (2, 3))\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_empty_dict_except_check_rejected",
             "def run_self_tests():\n    try:\n        {}\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2797,6 +2842,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_star_unpack_else_return_then_check_rejected",
+            "def run_self_tests(value):\n    try:\n        a, *rest = (1, 2)\n    except Error:\n        pass\n    else:\n        return\n    check('ok', value is True)\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_namedexpr_literal_except_check_rejected",
             "def run_self_tests():\n    try:\n        (value := 1)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -2954,6 +3004,26 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_dynamic_unpack_except_check_allowed",
             "def run_self_tests(items):\n    try:\n        a, b = items\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_star_unpack_noniterable_except_check_allowed",
+            "def run_self_tests():\n    try:\n        *rest, = 1\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_star_middle_too_short_except_check_allowed",
+            "def run_self_tests():\n    try:\n        a, *rest, b = (1,)\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_nested_star_unpack_mismatch_except_check_allowed",
+            "def run_self_tests():\n    try:\n        a, (*mid, z) = (1, ())\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_dynamic_star_unpack_except_check_allowed",
+            "def run_self_tests(items):\n    try:\n        a, *rest = items\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
@@ -3371,7 +3441,7 @@ def main(argv: list[str]) -> int:
             "lazy-generator, definition-time/annotation expression, async/generator entrypoint, no-raise try handler/fallthrough, "
             "known-exception try handler/fallthrough, with-control-flow, try-star, assert-statement, no-break infinite-loop, "
             "for-else exit, nested-loop function-exit, unknown-while else-exit, irrefutable-match exit, sequence/mapping-match exit, "
-            "boolop no-raise, assignment-unpack boundaries, "
+            "boolop no-raise, assignment-unpack/starred-unpack boundaries, "
             "literal-container/binop/unary/subscript/namedexpr/literal-fstring/lambda/comprehension-expression no-raise, "
             "and missing-check cases"
         )
