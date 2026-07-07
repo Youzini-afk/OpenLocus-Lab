@@ -1528,7 +1528,12 @@ class SelfTestQualityVisitor(ast.NodeVisitor):
                 continue
             if pattern_match is None:
                 return None
-            guard_truth = True if case.guard is None else cls._literal_truth_value(case.guard)
+            if case.guard is None:
+                guard_truth = True
+            else:
+                if not cls._expression_cannot_raise(case.guard):
+                    return None
+                guard_truth = cls._literal_truth_value(case.guard)
             if guard_truth is False:
                 continue
             if guard_truth is True:
@@ -2953,6 +2958,11 @@ def run_self_test() -> list[str]:
             ["missing_selftest_checks"],
         ),
         (
+            "target_with_try_classdef_body_try_match_guard_true_caught_except_check_rejected",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                match 1:\n                    case 1 if True:\n                        raise ValueError('x')\n            except ValueError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            ["missing_selftest_checks"],
+        ),
+        (
             "target_with_try_while_false_except_check_rejected",
             "def run_self_tests():\n    try:\n        while False:\n            risky()\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             ["missing_selftest_checks"],
@@ -3525,6 +3535,11 @@ def run_self_test() -> list[str]:
         (
             "target_with_try_classdef_body_try_annassign_before_caught_except_check_allowed",
             "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                value: risky() = 1\n                raise ValueError('x')\n            except ValueError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
+            [],
+        ),
+        (
+            "target_with_try_classdef_body_try_match_risky_guard_caught_except_check_allowed",
+            "def run_self_tests():\n    try:\n        class Helper:\n            try:\n                match 1:\n                    case 1 if risky() or True:\n                        raise ValueError('x')\n            except ValueError:\n                pass\n    except Error as exc:\n        check('ok', 'needle' in str(exc))\n",
             [],
         ),
         (
