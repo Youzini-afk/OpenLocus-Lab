@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 4E Closeout
+
+已新增 [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) 和 public summary [`phase4e_fresh_holdout_closeout_no_claim_report.json`](../../artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json)。Status 为 `phase4e_fresh_holdout_closeout_no_claim`。
+
+该 closeout 只使用 public Phase 4B/4C/4D reports/docs。它记录 Phase 4B 是 tiny local screen，Phase 4C 冻结 fresh-check rules，Phase 4D 在 fresh ignored private holdout rows 上运行 frozen rules，并得到 public result `fresh_holdout_screen_positive_no_claim`。路线作为 research candidate 保留，但没有证明 working model 或 selected method。我们在这里停止，因为继续做更多 small checks 会有 result-shopping 风险；任何下一步 empirical work 都需要单独框定为 larger validation decision 或 independent replication protocol。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4D Frozen Fresh Holdout
 
 已新增 `eval/interventional_evidence_acquisition_phase4d_frozen_fresh_holdout.py`，并生成 aggregate-only report：[`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json)。Status 为 `fresh_holdout_screen_positive_no_claim`。

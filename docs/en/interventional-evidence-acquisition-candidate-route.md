@@ -2,15 +2,15 @@
 
 Date: 2026-07-07
 
-Status: `fresh_holdout_screen_positive_no_claim`
+Status: `phase4e_fresh_holdout_closeout_no_claim`
 
-Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
+Authorization: `public_closeout_only_no_private_input`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 4D frozen fresh-holdout local screen. See [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) and `artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json`. Status is `fresh_holdout_screen_positive_no_claim`. It followed the Phase 4C frozen protocol with explicit private input/output confirmations, private rows under ignored `runs/`, and aggregate-only public output. It does not authorize product/default changes or a method claim.
+Latest checkpoint: Phase 4E closeout. See [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) and `artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json`. Status is `phase4e_fresh_holdout_closeout_no_claim`. It uses only public Phase 4B/4C/4D reports/docs, keeps the route as a research candidate, and stops further small checks until a separately framed larger validation decision or independent replication protocol exists.
 
 ## Phase 2 small fair local comparison status
 
@@ -55,6 +55,12 @@ Future Phase 4D statuses would be limited to `stop_no_learning_claim`, `repair_h
 Phase 4D ran as a standalone local script, `eval/interventional_evidence_acquisition_phase4d_frozen_fresh_holdout.py`. It required the Phase 4C public gate, used a fresh ignored private manifest, fit only from frozen Phase 2 private training rows, and did not fit or tune on the holdout rows. Private manifest and private rows stayed under ignored `runs/phase4d_frozen_fresh_holdout/...`; public output is aggregate-only.
 
 The public status is `fresh_holdout_screen_positive_no_claim`. This is a screen result only. It is not a method selection, not a reusable model artifact, and not a runtime/default/product claim.
+
+## Phase 4E closeout status
+
+Phase 4E is a public closeout only. It reads no private rows, creates no manifests, reads no source for new evidence, collects no data, and changes no scripts or CI.
+
+The closeout records the sequence: Phase 4B ran a tiny local screen, Phase 4C froze the rules before the fresh check, and Phase 4D ran the frozen rules on fresh ignored private holdout rows. The route remains worth preserving as a research candidate, but the correct next state is stop. More small checks would risk result-shopping; any next empirical step needs a separate larger validation decision or independent replication protocol.
 
 ## Boundary
 

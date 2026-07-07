@@ -2,15 +2,15 @@
 
 日期：2026-07-07
 
-Status: `fresh_holdout_screen_positive_no_claim`
+Status: `phase4e_fresh_holdout_closeout_no_claim`
 
-Authorization: `low_resource_local_private_output_confirmed_ignored_runs_only`
+Authorization: `public_closeout_only_no_private_input`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 4D frozen fresh-holdout local screen。参见 [`interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md`](./interventional-evidence-acquisition-phase4c-frozen-fresh-holdout-protocol.md) 和 `artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json`。Status 为 `fresh_holdout_screen_positive_no_claim`。它在显式 private input/output confirmations 下遵循 Phase 4C frozen protocol，private rows 保存在 ignored `runs/` 下，public output 仅为 aggregate-only。它不授权 product/default changes 或 method claim。
+最新 checkpoint：Phase 4E closeout。参见 [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) 和 `artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json`。Status 为 `phase4e_fresh_holdout_closeout_no_claim`。它只使用 public Phase 4B/4C/4D reports/docs，将路线保留为 research candidate，并停止继续做 small checks，直到另行框定 larger validation decision 或 independent replication protocol。
 
 ## Phase 2 small fair local comparison status
 
@@ -55,6 +55,12 @@ Future Phase 4D statuses 仅限 `stop_no_learning_claim`、`repair_holdout_contr
 Phase 4D 作为 standalone local script `eval/interventional_evidence_acquisition_phase4d_frozen_fresh_holdout.py` 运行。它要求 Phase 4C public gate，使用 fresh ignored private manifest，只从 frozen Phase 2 private training rows fit，并且不在 holdout rows 上 fit/tune。Private manifest 和 private rows 保留在 ignored `runs/phase4d_frozen_fresh_holdout/...`；public output 仅为 aggregate-only。
 
 Public status 为 `fresh_holdout_screen_positive_no_claim`。这只是 screen result；不是 method selection，不是 reusable model artifact，也不是 runtime/default/product claim。
+
+## Phase 4E closeout status
+
+Phase 4E 只是 public closeout。它不读取 private rows，不创建 manifests，不为新 evidence 读取 source，不收集 data，也不改变 scripts 或 CI。
+
+该 closeout 记录这一路径：Phase 4B 运行 tiny local screen，Phase 4C 在 fresh check 前冻结规则，Phase 4D 在 fresh ignored private holdout rows 上运行 frozen rules。路线仍值得作为 research candidate 保留，但正确的下一状态是停止。继续做更多 small checks 会有 result-shopping 风险；任何下一步 empirical work 都需要单独的 larger validation decision 或 independent replication protocol。
 
 ## 边界
 

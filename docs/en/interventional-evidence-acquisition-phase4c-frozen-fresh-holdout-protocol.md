@@ -99,3 +99,7 @@ Phase 4C freezes the design for a possible future Phase 4D. It does not authoriz
 Phase 4D was later run as a standalone local screen using this frozen protocol. Public report: [`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json). Status is `fresh_holdout_screen_positive_no_claim`.
 
 The Phase 4D result remains no-claim. It used ignored private input/output, published aggregate buckets only, created no reusable model artifact, and does not support winner, lift, product, default, provider/network, or runtime claims.
+
+## Phase 4E closeout pointer
+
+Phase 4E closes this small-check sequence using only public Phase 4B/4C/4D reports/docs. See [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md). It keeps the route as a research candidate but stops here to avoid result-shopping; any next empirical step needs a separate larger validation decision or independent replication protocol.

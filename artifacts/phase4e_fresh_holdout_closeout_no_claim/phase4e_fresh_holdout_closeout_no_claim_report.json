@@ -1,0 +1,38 @@
+{
+  "schema_version": "phase4e_fresh_holdout_closeout_public_report_v1",
+  "phase": "phase4e_fresh_holdout_closeout_no_claim",
+  "status": "phase4e_fresh_holdout_closeout_no_claim",
+  "public_inputs_only": true,
+  "input_public_reports": {
+    "phase4b_status": "learning_screen_positive_no_claim",
+    "phase4c_status": "phase4c_frozen_fresh_holdout_protocol_design_only_no_execution",
+    "phase4d_status": "fresh_holdout_screen_positive_no_claim"
+  },
+  "closeout_summary": {
+    "phase4b": "tiny_local_screen_existing_private_rows_public_buckets_only",
+    "phase4c": "frozen_rules_before_fresh_check",
+    "phase4d": "frozen_rules_fresh_private_holdout_public_buckets_only",
+    "research_candidate_preserved": true,
+    "working_model_proven": false,
+    "selected_method_proven": false,
+    "release_readiness_claimed": false,
+    "runtime_preset_change_supported": false,
+    "reusable_model_artifact_created": false,
+    "rpm_d2_model_scaling_used": false,
+    "llm_provider_network_route_opened": false,
+    "new_retrieval_family_added": false
+  },
+  "stop_reason": "avoid_result_shopping_from_repeated_small_checks",
+  "next_empirical_step_requires_separate_decision": true,
+  "allowed_next_shapes": [
+    "larger_validation_decision_with_prewritten_rules",
+    "independent_replication_protocol_with_fresh_inputs_fixed_thresholds"
+  ],
+  "privacy_summary": {
+    "private_rows_read": false,
+    "source_read_for_new_evidence": false,
+    "new_data_collected": false,
+    "private_refs_public": false,
+    "publication_level": "aggregate_only"
+  }
+}

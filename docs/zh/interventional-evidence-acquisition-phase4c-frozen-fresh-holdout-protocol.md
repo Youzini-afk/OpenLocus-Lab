@@ -99,3 +99,7 @@ Phase 4C 只冻结 possible future Phase 4D 的设计。它本身不授权 Phase
 Phase 4D 后续已按该 frozen protocol 作为 standalone local screen 运行。Public report：[`phase4d_frozen_fresh_holdout_report.json`](../../artifacts/phase4d_frozen_fresh_holdout/phase4d_frozen_fresh_holdout_report.json)。Status 为 `fresh_holdout_screen_positive_no_claim`。
 
 Phase 4D result 仍是 no-claim。它使用 ignored private input/output，只发布 aggregate buckets，不创建 reusable model artifact，也不支持 winner、lift、product、default、provider/network 或 runtime claims。
+
+## Phase 4E closeout pointer
+
+Phase 4E 只使用 public Phase 4B/4C/4D reports/docs 来关闭这一 small-check sequence。参见 [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md)。它将路线保留为 research candidate，但在这里停止以避免 result-shopping；任何下一步 empirical work 都需要单独的 larger validation decision 或 independent replication protocol。
