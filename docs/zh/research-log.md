@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 6B Repo-Heldout Strategy Screen
+
+已新增 `eval/interventional_evidence_acquisition_phase6b_repo_heldout_strategy_screen.py`，在显式确认 private input 后运行，并生成 aggregate-only public report [`phase6b_repo_heldout_strategy_selection_screen_report.json`](../../artifacts/phase6b_repo_heldout_strategy_selection_screen/phase6b_repo_heldout_strategy_selection_screen_report.json)。Status 为 `strategy_selection_screen_positive_no_claim`。参见 [`interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md`](./interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md)。
+
+该 screen 只使用 existing ignored Phase 5B rows、repo-heldout grouped folds、同 7 个 labels，并且只用 `action_label`。Controls 包括 fixed-label、shuffled-target，以及 `stop`/`abstain` zero-success control requirement。Public buckets 包括 main screen success `bucket_twenty_one_to_fifty`、shuffled-target control `bucket_two_to_five`、main-minus-shuffled `delta_over_twenty`、stop/abstain success `bucket_zero`。这只是 no-claim stability screen。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 6A Strategy-Selection Screen Protocol Freeze
 
 已新增 [`interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md`](./interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md)、route-specific validator `eval/interventional_evidence_acquisition_phase6a_strategy_selection_screen_protocol_freeze.py`，以及 public design report [`phase6a_strategy_selection_screen_protocol_freeze_report.json`](../../artifacts/phase6a_strategy_selection_screen_protocol_freeze/phase6a_strategy_selection_screen_protocol_freeze_report.json)。Status 为 `phase6a_strategy_selection_screen_protocol_freeze_no_claim`。

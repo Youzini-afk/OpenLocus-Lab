@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 6B Repo-Heldout Strategy Screen
+
+Added `eval/interventional_evidence_acquisition_phase6b_repo_heldout_strategy_screen.py`, ran it with explicit private-input confirmation, and generated aggregate-only public report [`phase6b_repo_heldout_strategy_selection_screen_report.json`](../../artifacts/phase6b_repo_heldout_strategy_selection_screen/phase6b_repo_heldout_strategy_selection_screen_report.json). Status is `strategy_selection_screen_positive_no_claim`. See [`interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md`](./interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md).
+
+The screen used existing ignored Phase 5B rows only, repo-heldout grouped folds, the same seven labels, and `action_label` only. Controls included fixed-label and shuffled-target controls plus a zero-success control requirement for `stop`/`abstain`. Public buckets include main screen success `bucket_twenty_one_to_fifty`, shuffled-target control `bucket_two_to_five`, main-minus-shuffled `delta_over_twenty`, and stop/abstain success `bucket_zero`. This is a no-claim stability screen only.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 6A Strategy-Selection Screen Protocol Freeze
 
 Added [`interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md`](./interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md), a route-specific validator `eval/interventional_evidence_acquisition_phase6a_strategy_selection_screen_protocol_freeze.py`, and public design report [`phase6a_strategy_selection_screen_protocol_freeze_report.json`](../../artifacts/phase6a_strategy_selection_screen_protocol_freeze/phase6a_strategy_selection_screen_protocol_freeze_report.json). Status is `phase6a_strategy_selection_screen_protocol_freeze_no_claim`.

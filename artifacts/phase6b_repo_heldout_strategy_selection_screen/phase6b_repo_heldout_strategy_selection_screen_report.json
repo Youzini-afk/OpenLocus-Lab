@@ -1,0 +1,81 @@
+{
+  "aggregate_buckets": {
+    "fixed_label_control_success_bucket": "bucket_twenty_one_to_fifty",
+    "fold_count_bucket": "bucket_six_to_twenty",
+    "main_screen_rate_bucket": "rate_quarter_to_half",
+    "main_screen_success_bucket": "bucket_twenty_one_to_fifty",
+    "private_row_count_bucket": "bucket_task_cap_to_row_cap",
+    "private_row_validation_error_bucket": "bucket_zero",
+    "repo_group_count_bucket": "bucket_six_to_twenty",
+    "shuffled_control_comparison_bucket": "above_shuffled_control_over_twenty",
+    "shuffled_target_control_success_bucket": "bucket_nonzero_to_five",
+    "stop_abstain_success_bucket": "bucket_zero",
+    "task_count_bucket": "bucket_hundred_to_task_cap"
+  },
+  "authorization_attestation": {
+    "claim_made": false,
+    "confirm_private_input_required": true,
+    "confirm_private_input_used": true,
+    "model_fit_persisted": false,
+    "network_used": false,
+    "new_retrieval_family_added": false,
+    "new_tasks_or_repos_created": false,
+    "phase6a_gate_passed": true,
+    "phase6a_gate_required": true,
+    "private_rows_published": false,
+    "private_rows_read_locally": true,
+    "provider_or_remote_call_used": false,
+    "release_setting_changed": false,
+    "source_reads_executed": false
+  },
+  "controls_summary": {
+    "action_only_control_same_as_main": true,
+    "fixed_label_control_included": true,
+    "shuffled_target_control_included": true,
+    "stop_abstain_control_zero_required": true
+  },
+  "frozen_boundary_summary": {
+    "feature_set": "action_label_only",
+    "private_input_source": "existing_ignored_phase5b_rows_only",
+    "repo_heldout": true,
+    "reusable_artifact_written": false,
+    "same_seven_labels_exact": [
+      "bm25_then_read_top1",
+      "bm25_then_read_next_unique_file",
+      "symbol_regex_then_read_top1",
+      "symbol_regex_then_read_next_unique_file",
+      "read_related_test_when_available",
+      "stop",
+      "abstain"
+    ],
+    "stdlib_only": true
+  },
+  "interpretation": {
+    "candidate_found_alone_counted": false,
+    "next_step": "write_phase6b_closeout_no_claim_summary_before_any_new_empirical_step",
+    "no_claim_boundary": true,
+    "repo_heldout_screen_above_shuffled_control": true,
+    "requires_phase5b_evidencecore_success": true
+  },
+  "phase": "phase6b_repo_heldout_strategy_selection_screen",
+  "privacy_summary": {
+    "hashes_public": false,
+    "manifests_public": false,
+    "paths_public": false,
+    "per_repo_or_fold_details_public": false,
+    "publication_level": "aggregate_only",
+    "ranges_public": false,
+    "raw_private_rows_public": false,
+    "raw_task_ids_public": false,
+    "repo_names_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "snippets_public": false
+  },
+  "schema_version": "phase6b_repo_heldout_strategy_selection_screen_public_report_v1",
+  "status": "strategy_selection_screen_positive_no_claim",
+  "validation_summary": {
+    "route_specific_validation": "passed",
+    "self_test_available": true
+  }
+}
