@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9C Task Construction/Materialization Protocol Freeze
+
+- **Checkpoint**：Phase 9C 已记录为 `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim`，并新增 narrow validator/report generator、paired EN/ZH docs 与 aggregate-only public protocol report。
+- **Scope**：docs/report/validator only，并 gate 于 Phase 9B commit `cfb25cd`、CI run `28967621378`、status `phase9b_clean_room_source_construction_audit_no_scoring_no_claim`。Phase 9C 不读取 ignored Phase 9B private accepted source registry。
+- **Protocol**：future Phase 9D 可以 reference 该 ignored private registry，但只能在 later boundary 下进行。Frozen protocol 要求 deterministic Phase 9B private-registry source order、no random shuffle、aggregate bucketed task caps、per-source caps、minimum source diversity、currentness/hash/license/access/default-branch prechecks、private-only exact paths/ranges/hashes/snippets、labels/outcomes/scoring 前的 rejection/replacement，以及仅限 evidence-finding file-localizable code tasks。它禁止 Phase 8B/Phase 7/Phase 5 private-material derivation 与 provider/LLM tasks。
+- **Boundary**：未发生 task generation、source materialization、source reads、private registry reads、labels、outcomes、scoring、evidence-success evaluation、model fitting、provider/LLM calls、runtime/default/product changes 或 product action。Phase 9D execution 需要 Phase 9C commit 且 CI green 之后的 later boundary；strategy scoring 需要另一个 frozen boundary。不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## Interventional Evidence Acquisition Phase 9B Clean-Room Source Construction Audit
 
 - **Checkpoint**：Phase 9B 已记录为 `phase9b_clean_room_source_construction_audit_no_scoring_no_claim`，并新增 narrow runner、paired EN/ZH docs 与 aggregate-only public audit report。

@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9C Task Construction/Materialization Protocol Freeze
+
+- **Checkpoint**: Phase 9C is recorded as `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim` with a narrow validator/report generator, paired EN/ZH docs, and an aggregate-only public protocol report.
+- **Scope**: docs/report/validator only, gated on Phase 9B commit `cfb25cd`, CI run `28967621378`, and status `phase9b_clean_room_source_construction_audit_no_scoring_no_claim`. Phase 9C does not read the ignored Phase 9B private accepted source registry.
+- **Protocol**: future Phase 9D may reference that ignored private registry, but only under a later boundary. The frozen protocol requires deterministic Phase 9B private-registry source order, no random shuffle, aggregate bucketed task caps, per-source caps, minimum source diversity, currentness/hash/license/access/default-branch prechecks, private-only exact paths/ranges/hashes/snippets, rejection/replacement before labels/outcomes/scoring, and evidence-finding file-localizable code tasks only. It forbids Phase 8B/Phase 7/Phase 5 private-material derivation and provider/LLM tasks.
+- **Boundary**: no task generation, source materialization, source reads, private registry reads, labels, outcomes, scoring, evidence-success evaluation, model fitting, provider/LLM calls, runtime/default/product changes, or product action occurred. Phase 9D execution requires a later boundary after Phase 9C commit and CI green; strategy scoring requires another frozen boundary. No method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim is made.
+
 ## Interventional Evidence Acquisition Phase 9B Clean-Room Source Construction Audit
 
 - **Checkpoint**: Phase 9B is recorded as `phase9b_clean_room_source_construction_audit_no_scoring_no_claim` with a narrow runner, paired EN/ZH docs, and an aggregate-only public audit report.
