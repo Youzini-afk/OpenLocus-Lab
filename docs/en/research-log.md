@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 7B Fresh Public-Repo Validation Canary
+
+Added `eval/interventional_evidence_acquisition_phase7b_fresh_public_repo_validation_canary.py`, ran the canary with explicit private input/output confirmation, and generated aggregate-only public report [`phase7b_fresh_public_repo_validation_canary_report.json`](../../artifacts/phase7b_fresh_public_repo_validation_canary/phase7b_fresh_public_repo_validation_canary_report.json). Status is `phase7b_canary_pipeline_check_passed_no_claim`. See [`interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md`](./interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md).
+
+This is a pipeline canary only, deliberately smaller than the Phase 7A formal-validation target/caps. It gated on Phase 7A, read Phase 5B private rows only for overlap rejection, wrote private canary manifest/rows only under ignored `runs/`, used full seven-label rows, enforced EvidenceCore materialization checks, and published only coarse buckets. Public repository fetch was used under explicit confirmation for fresh canary inputs. This is not formal validation and makes no method/product/default/runtime/deployment/training claim.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 7A Fresh Public-Repo Validation Protocol Freeze
 
 Added [`interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md`](./interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md), route-specific validator `eval/interventional_evidence_acquisition_phase7a_fresh_public_repo_validation_protocol_freeze.py`, and public protocol report [`phase7a_fresh_public_repo_validation_protocol_freeze_report.json`](../../artifacts/phase7a_fresh_public_repo_validation_protocol_freeze/phase7a_fresh_public_repo_validation_protocol_freeze_report.json). Status is `phase7a_protocol_freeze_no_execution_no_claim`.

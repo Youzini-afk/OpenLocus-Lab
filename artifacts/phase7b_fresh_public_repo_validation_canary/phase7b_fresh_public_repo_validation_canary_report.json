@@ -1,0 +1,98 @@
+{
+  "aggregate_buckets": {
+    "materialization_pass_bucket": "bucket_above_task_cap_to_row_cap",
+    "overlap_error_bucket": "bucket_zero",
+    "private_row_error_bucket": "bucket_zero",
+    "replacement_count_bucket": "bucket_zero",
+    "repo_count_bucket": "bucket_nonzero_to_three",
+    "row_count_bucket": "bucket_above_task_cap_to_row_cap",
+    "stop_abstain_success_bucket": "bucket_zero",
+    "task_count_bucket": "bucket_six_to_eight"
+  },
+  "authorization_attestation": {
+    "confirm_private_input_used": true,
+    "confirm_private_output_used": true,
+    "fresh_public_repo_inputs_used": true,
+    "local_generated_canary_sources_used": false,
+    "model_update_executed": false,
+    "new_retrieval_family_added": false,
+    "phase7a_gate_passed": true,
+    "provider_network_llm_used": false,
+    "public_repo_fetch_used": true,
+    "runtime_or_release_setting_changed": false,
+    "source_reads_limited_to_canary_materialization": true
+  },
+  "canary_scope": {
+    "formal_validation": false,
+    "hard_repo_cap_bucket": "bucket_nonzero_to_three",
+    "hard_row_cap_bucket": "bucket_above_task_cap_to_row_cap",
+    "hard_task_cap_bucket": "bucket_nine_to_twelve",
+    "phase7a_formal_validation_protocol_unchanged": true,
+    "phase7a_formal_validation_scale_executed": false,
+    "pipeline_check_only": true,
+    "route_conclusion": false,
+    "smaller_than_phase7a_formal_validation_scale": true,
+    "target_repo_bucket": "bucket_nonzero_to_three",
+    "target_task_bucket": "bucket_six_to_eight"
+  },
+  "conservative_recommendation": "stop_after_canary_pipeline_check_no_claim",
+  "evidence_success_buckets": {
+    "abstain": "bucket_zero",
+    "bm25_then_read_next_unique_file": "bucket_six_to_eight",
+    "bm25_then_read_top1": "bucket_six_to_eight",
+    "read_related_test_when_available": "bucket_nonzero_to_three",
+    "stop": "bucket_zero",
+    "symbol_regex_then_read_next_unique_file": "bucket_six_to_eight",
+    "symbol_regex_then_read_top1": "bucket_six_to_eight"
+  },
+  "evidencecore_summary": {
+    "candidate_found_alone_is_evidence": false,
+    "stop_abstain_success_zero": true,
+    "success_requires_content_digest": true,
+    "success_requires_current_source_read": true,
+    "success_requires_currentness_reread": true,
+    "success_requires_materialization": true,
+    "success_requires_range_content_match": true,
+    "success_requires_task_tie": true
+  },
+  "freshness_overlap_summary": {
+    "fresh_public_repo_inputs_used": true,
+    "local_generated_canary_sources_used": false,
+    "overlap_check_passed": true,
+    "phase5b_overlap_rejection_executed": true,
+    "public_detail_level": "boolean_and_bucket_only"
+  },
+  "full_panel_summary": {
+    "full_panel_per_task": true,
+    "row_hard_cap_preserved": true,
+    "seven_labels_exact": true
+  },
+  "label_coverage_buckets": {
+    "abstain": "bucket_six_to_eight",
+    "bm25_then_read_next_unique_file": "bucket_six_to_eight",
+    "bm25_then_read_top1": "bucket_six_to_eight",
+    "read_related_test_when_available": "bucket_six_to_eight",
+    "stop": "bucket_six_to_eight",
+    "symbol_regex_then_read_next_unique_file": "bucket_six_to_eight",
+    "symbol_regex_then_read_top1": "bucket_six_to_eight"
+  },
+  "phase": "phase7b_fresh_public_repo_validation_canary",
+  "privacy_summary": {
+    "commits_shas_public": false,
+    "manifests_public": false,
+    "paths_ranges_hashes_snippets_public": false,
+    "per_repo_per_task_details_public": false,
+    "private_rows_public": false,
+    "publication_level": "aggregate_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "schema_version": "phase7b_fresh_public_repo_validation_canary_report_v1",
+  "status": "phase7b_canary_pipeline_check_passed_no_claim",
+  "validation_summary": {
+    "route_specific_validation": "passed",
+    "self_test_available": true
+  }
+}

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 7B Fresh Public-Repo Validation Canary
+
+已新增 `eval/interventional_evidence_acquisition_phase7b_fresh_public_repo_validation_canary.py`，在显式 private input/output confirmation 下运行 canary，并生成 aggregate-only public report [`phase7b_fresh_public_repo_validation_canary_report.json`](../../artifacts/phase7b_fresh_public_repo_validation_canary/phase7b_fresh_public_repo_validation_canary_report.json)。Status 为 `phase7b_canary_pipeline_check_passed_no_claim`。参见 [`interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md`](./interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md)。
+
+这只是 pipeline canary，刻意小于 Phase 7A formal-validation target/caps。它 gate Phase 7A，只为 overlap rejection 读取 Phase 5B private rows，只在 ignored `runs/` 下写 private canary manifest/rows，使用完整 7-label rows，执行 EvidenceCore materialization checks，并且只发布 coarse buckets。本次在显式确认下使用 public repository fetch 取得 fresh canary inputs。这不是 formal validation，也不提出 method/product/default/runtime/deployment/training claim。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 7A Fresh Public-Repo Validation Protocol Freeze
 
 已新增 [`interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md`](./interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md)、route-specific validator `eval/interventional_evidence_acquisition_phase7a_fresh_public_repo_validation_protocol_freeze.py`，以及 public protocol report [`phase7a_fresh_public_repo_validation_protocol_freeze_report.json`](../../artifacts/phase7a_fresh_public_repo_validation_protocol_freeze/phase7a_fresh_public_repo_validation_protocol_freeze_report.json)。Status 为 `phase7a_protocol_freeze_no_execution_no_claim`。
