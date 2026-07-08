@@ -8,7 +8,7 @@ Authorization: `docs_report_only_no_execution`
 
 ## 范围
 
-Phase 7D 在 Phase 7C repair/no-claim checkpoint 之后，冻结 possible later Phase 7E run 的 input-repair protocol。它只是 docs/report-only：不读取 private rows、manifest、provenance 或 `runs/`；不 fetch 或 clone public repository；不生成 benchmark rows；不执行 outcome scoring；不读取 source；不进行 model fit/training；不使用 provider/network/LLM；不改变 runtime/default/deployment；也不新增 retrieval family。
+Phase 7D 在 Phase 7C repair_formal_pipeline_no_claim checkpoint 之后，冻结 possible later Phase 7E run 的 input-repair protocol。它只是 docs/report-only：不读取 private rows、manifest、provenance 或 `runs/`；不 fetch 或 clone public repository；不生成 benchmark rows；不执行 outcome scoring；不读取 source；不进行 model fit/training；不使用 provider/network/LLM；不改变 runtime/default/deployment；也不新增 retrieval family。
 
 Public report：[`phase7d_input_repair_protocol_freeze_report.json`](../../artifacts/phase7d_input_repair_protocol_freeze/phase7d_input_repair_protocol_freeze_report.json)。
 

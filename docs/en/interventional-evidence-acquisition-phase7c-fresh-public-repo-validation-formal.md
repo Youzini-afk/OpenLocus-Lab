@@ -16,7 +16,7 @@ Public report: [`phase7c_fresh_public_repo_validation_formal_report.json`](../..
 
 ## Validation boundaries
 
-The runner gated on the Phase 7A public report, rejected manifest-supplied execution, required private input/output and public-repo-fetch confirmations, rejected local-clone/synthetic sources, checked overlap against prior Phase 5B and Phase 7B private material only for freshness rejection, and stopped with a repair/no-claim status when overlap rejection found nonzero prior overlap. The public artifact remains aggregate-only and publishes no private overlap details.
+The runner gated on the Phase 7A public report, rejected manifest-supplied execution, required private input/output and public-repo-fetch confirmations, rejected local-clone/synthetic sources, checked overlap against prior Phase 5B and Phase 7B private material only for freshness rejection, and stopped with a repair_formal_pipeline_no_claim status when overlap rejection found nonzero prior overlap. The public artifact remains aggregate-only and publishes no private overlap details.
 
 ## Interpretation
 

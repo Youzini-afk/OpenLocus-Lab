@@ -16,7 +16,7 @@ Public report：[`phase7c_fresh_public_repo_validation_formal_report.json`](../.
 
 ## Validation boundaries
 
-Runner gate Phase 7A public report，拒绝 manifest-supplied execution，要求 private input/output 和 public-repo-fetch confirmations，拒绝 local-clone/synthetic sources，只为 freshness rejection 读取 prior Phase 5B 与 Phase 7B private material；当 overlap rejection 发现 nonzero prior overlap 时，以 repair/no-claim status 停止。Public artifact 仍为 aggregate-only，不发布 private overlap details。
+Runner gate Phase 7A public report，拒绝 manifest-supplied execution，要求 private input/output 和 public-repo-fetch confirmations，拒绝 local-clone/synthetic sources，只为 freshness rejection 读取 prior Phase 5B 与 Phase 7B private material；当 overlap rejection 发现 nonzero prior overlap 时，以 repair_formal_pipeline_no_claim status 停止。Public artifact 仍为 aggregate-only，不发布 private overlap details。
 
 ## Interpretation
 

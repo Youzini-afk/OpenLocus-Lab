@@ -8,7 +8,7 @@ Authorization: `docs_report_only_no_execution`
 
 ## Scope
 
-Phase 7D freezes the input-repair protocol for a possible later Phase 7E run after the Phase 7C repair/no-claim checkpoint. It is docs/report-only: no private row, manifest, provenance, or `runs/` reads; no public repository fetch or clone; no benchmark rows; no outcome scoring; no source reads; no model fit/training; no provider/network/LLM use; no runtime/default/deployment change; and no new retrieval family.
+Phase 7D freezes the input-repair protocol for a possible later Phase 7E run after the Phase 7C repair_formal_pipeline_no_claim checkpoint. It is docs/report-only: no private row, manifest, provenance, or `runs/` reads; no public repository fetch or clone; no benchmark rows; no outcome scoring; no source reads; no model fit/training; no provider/network/LLM use; no runtime/default/deployment change; and no new retrieval family.
 
 Public report: [`phase7d_input_repair_protocol_freeze_report.json`](../../artifacts/phase7d_input_repair_protocol_freeze/phase7d_input_repair_protocol_freeze_report.json).
 

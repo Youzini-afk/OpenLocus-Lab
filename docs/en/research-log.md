@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 7F Phase 7 Closeout
+
+Added paired EN/ZH docs and aggregate-only public closeout report [`phase7f_phase7_closeout_report.json`](../../artifacts/phase7f_phase7_closeout/phase7f_phase7_closeout_report.json). Status is `phase7f_docs_only_closeout_no_execution_no_claim`. See [`interventional-evidence-acquisition-phase7f-phase7-closeout.md`](./interventional-evidence-acquisition-phase7f-phase7-closeout.md).
+
+This was docs/report-only. It performed no private repository or private artifact reads, no new runner, no benchmark rerun, no new public repository fetch, no data collection, no deterministic input repair, no overlap-logic change, no row-count bucket change, no outcome scoring, no new experiment, and no new claim. It records that Phase 7E closed as `repair_formal_pipeline_no_claim`: deterministic input repair was attempted in Phase 7E, but prior overlap remained nonzero and row-count bucket remained zero, leaving no outcome scoring basis. Future empirical work requires a new phase with independent predeclared inputs and an attempt budget, not another Phase 7E repair loop.
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 7E Input-Repaired Formal Validation
 
 Added `eval/interventional_evidence_acquisition_phase7e_input_repaired_formal_validation.py`, paired EN/ZH docs, and aggregate-only public report [`phase7e_input_repaired_formal_validation_report.json`](../../artifacts/phase7e_input_repaired_formal_validation/phase7e_input_repaired_formal_validation_report.json). Status is `repair_formal_pipeline_no_claim`. See [`interventional-evidence-acquisition-phase7e-input-repaired-formal-validation.md`](./interventional-evidence-acquisition-phase7e-input-repaired-formal-validation.md).

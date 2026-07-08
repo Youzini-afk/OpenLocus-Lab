@@ -1,0 +1,50 @@
+{
+  "claim_boundary": {
+    "data_usage_claim": false,
+    "default_claim": false,
+    "deployment_claim": false,
+    "method_claim": false,
+    "method_winner_claim": false,
+    "outcome_score_claim": false,
+    "performance_or_lift_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "training_claim": false
+  },
+  "closeout_conclusion": {
+    "deterministic_input_repair_attempted_in_phase7e": true,
+    "future_empirical_work_boundary": "new_phase_requires_independent_predeclared_inputs_and_attempt_budget_not_another_phase7e_repair_loop",
+    "outcome_scoring_basis_exists": false,
+    "phase7e_closed_status": "repair_formal_pipeline_no_claim",
+    "prior_overlap_after_repair_bucket": "bucket_nonzero_to_three",
+    "row_count_bucket_after_repair": "bucket_zero"
+  },
+  "execution_boundary": {
+    "altered_overlap_logic": false,
+    "benchmark_reruns": false,
+    "data_collection": false,
+    "deterministic_input_repair_executed": false,
+    "experiment_execution": false,
+    "new_public_repo_fetch": false,
+    "new_runners": false,
+    "outcome_scoring_executed": false,
+    "private_artifact_reads": false,
+    "private_repo_reads": false,
+    "row_count_bucket_changes": false
+  },
+  "phase": "phase7f_phase7_closeout",
+  "privacy_summary": {
+    "publication_level": "aggregate_docs_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "schema_version": "phase7f_phase7_closeout_report_v1",
+  "status": "phase7f_docs_only_closeout_no_execution_no_claim",
+  "wording_normalization": {
+    "canonical_status": "repair_formal_pipeline_no_claim",
+    "normalized_old_slash_form_to_canonical": true
+  }
+}
