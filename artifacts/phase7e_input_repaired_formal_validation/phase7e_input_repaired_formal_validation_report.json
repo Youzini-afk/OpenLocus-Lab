@@ -1,0 +1,112 @@
+{
+  "aggregate_buckets": {
+    "materialization_pass_bucket": "bucket_zero",
+    "overlap_error_bucket": "bucket_nonzero_to_three",
+    "private_row_error_bucket": "bucket_zero",
+    "replacement_count_bucket": "bucket_six_to_eight",
+    "repo_count_bucket": "bucket_formal_repo_target",
+    "row_count_bucket": "bucket_zero",
+    "stop_abstain_success_bucket": "bucket_zero",
+    "task_count_bucket": "bucket_formal_task_target"
+  },
+  "authorization_attestation": {
+    "confirm_private_input_used": true,
+    "confirm_private_output_used": true,
+    "fresh_public_repo_inputs_used": true,
+    "local_generated_canary_sources_used": false,
+    "model_update_executed": false,
+    "new_retrieval_family_added": false,
+    "phase7a_gate_passed": true,
+    "provider_network_llm_used": false,
+    "public_repo_fetch_used": true,
+    "runtime_or_release_setting_changed": false,
+    "source_reads_limited_to_formal_materialization": true
+  },
+  "conservative_recommendation": "formal_result_recorded_continue_only_with_separate_review_no_claim",
+  "evidence_success_buckets": {
+    "abstain": "bucket_zero",
+    "bm25_then_read_next_unique_file": "bucket_zero",
+    "bm25_then_read_top1": "bucket_zero",
+    "read_related_test_when_available": "bucket_zero",
+    "stop": "bucket_zero",
+    "symbol_regex_then_read_next_unique_file": "bucket_zero",
+    "symbol_regex_then_read_top1": "bucket_zero"
+  },
+  "evidencecore_summary": {
+    "candidate_found_alone_is_evidence": false,
+    "stop_abstain_success_zero": true,
+    "success_requires_content_digest": true,
+    "success_requires_current_source_read": true,
+    "success_requires_currentness_reread": true,
+    "success_requires_materialization": true,
+    "success_requires_range_content_match": true,
+    "success_requires_task_tie": true
+  },
+  "formal_scope": {
+    "formal_validation": true,
+    "max_tasks_per_repo_bucket": "bucket_phase7a_per_repo_cap",
+    "no_claim_status": true,
+    "phase7a_formal_validation_protocol_unchanged": true,
+    "phase7a_formal_validation_scale_executed": true,
+    "repo_hard_cap_bucket": "bucket_phase7a_repo_hard_cap",
+    "repo_target_bucket": "bucket_formal_repo_target",
+    "route_conclusion": false,
+    "task_hard_cap_bucket": "bucket_phase7a_task_hard_cap",
+    "task_target_bucket": "bucket_formal_task_target"
+  },
+  "freshness_overlap_summary": {
+    "current_run_public_fetch_attested": true,
+    "fresh_public_repo_inputs_used": true,
+    "local_generated_canary_sources_used": false,
+    "overlap_check_passed": false,
+    "phase5b_overlap_rejection_executed": true,
+    "phase7b_overlap_rejection_executed": true,
+    "phase7c_overlap_rejection_executed": true,
+    "public_detail_level": "boolean_and_bucket_only"
+  },
+  "full_panel_summary": {
+    "full_panel_per_task": false,
+    "row_hard_cap_preserved": true,
+    "seven_labels_exact": false
+  },
+  "label_coverage_buckets": {
+    "abstain": "bucket_zero",
+    "bm25_then_read_next_unique_file": "bucket_zero",
+    "bm25_then_read_top1": "bucket_zero",
+    "read_related_test_when_available": "bucket_zero",
+    "stop": "bucket_zero",
+    "symbol_regex_then_read_next_unique_file": "bucket_zero",
+    "symbol_regex_then_read_top1": "bucket_zero"
+  },
+  "phase": "phase7e_input_repaired_formal_validation",
+  "privacy_summary": {
+    "commits_shas_public": false,
+    "manifests_public": false,
+    "paths_ranges_hashes_snippets_public": false,
+    "per_repo_per_task_details_public": false,
+    "private_rows_public": false,
+    "publication_level": "aggregate_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "replacement_summary": {
+    "clone_failure_bucket": "bucket_zero",
+    "impossible_materialization_bucket": "bucket_zero",
+    "insufficient_eligible_files_bucket": "bucket_zero",
+    "performance_based_replacement_bucket": "bucket_zero",
+    "pinned_commit_unavailable_bucket": "bucket_zero",
+    "prior_overlap_input_ineligibility_bucket": "bucket_six_to_eight",
+    "replacement_after_outcome_observation_bucket": "bucket_zero",
+    "replacement_only_before_outcome_scoring": true,
+    "replacement_rule_bucket": "bucket_deterministic_non_performance_stable_order",
+    "total_replacement_bucket": "bucket_six_to_eight"
+  },
+  "schema_version": "phase7e_input_repaired_formal_validation_report_v1",
+  "status": "repair_formal_pipeline_no_claim",
+  "validation_summary": {
+    "route_specific_validation": "passed",
+    "self_test_available": true
+  }
+}
