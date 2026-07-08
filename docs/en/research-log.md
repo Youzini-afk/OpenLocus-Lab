@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 7D Input-Repair Protocol Freeze
+
+Added `eval/interventional_evidence_acquisition_phase7d_input_repair_protocol_freeze.py`, paired EN/ZH docs, and aggregate-only public protocol report [`phase7d_input_repair_protocol_freeze_report.json`](../../artifacts/phase7d_input_repair_protocol_freeze/phase7d_input_repair_protocol_freeze_report.json). Status is `phase7d_input_repair_protocol_freeze_no_execution_no_claim`. See [`interventional-evidence-acquisition-phase7d-input-repair-protocol-freeze.md`](./interventional-evidence-acquisition-phase7d-input-repair-protocol-freeze.md).
+
+This is docs/report-only after the Phase 7C repair/no-claim checkpoint. It performed no private row/manifest/provenance or `runs/` reads, no public repo fetch/clone, no benchmark row generation, no outcome scoring, and no fresh validation execution. The frozen protocol records prior-overlap as input ineligibility, allows replacement only before row generation and outcome scoring, requires deterministic auditable non-performance replacement selection, keeps Phase 7A/7C labels/caps/EvidenceCore/privacy/no-claim posture unchanged, and limits replacement/overlap reporting to aggregate buckets. Phase 7E may execute only after Phase 7D is committed/CI-green and the Phase 7E boundary is explicitly invoked under low-resource/no-claim constraints.
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 7C Formal Fresh Public-Repo Validation
 
 Added `eval/interventional_evidence_acquisition_phase7c_fresh_public_repo_validation_formal.py`, ran formal execution with explicit private input/output and public-repo-fetch confirmation, and generated aggregate-only public report [`phase7c_fresh_public_repo_validation_formal_report.json`](../../artifacts/phase7c_fresh_public_repo_validation_formal/phase7c_fresh_public_repo_validation_formal_report.json). Status is `repair_formal_pipeline_no_claim`. See [`interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md`](./interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md).

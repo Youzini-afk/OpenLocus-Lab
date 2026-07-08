@@ -1,0 +1,113 @@
+{
+  "claim_boundary": {
+    "default_claim": false,
+    "deployment_claim": false,
+    "method_comparison_claim": false,
+    "method_winner_claim": false,
+    "performance_increase_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "training_claim": false
+  },
+  "forbidden_operations": {
+    "benchmark_rows_generated": false,
+    "caps_changed": false,
+    "default_setting_changed": false,
+    "deployment_setting_changed": false,
+    "evidencecore_semantics_changed": false,
+    "labels_changed": false,
+    "model_fit_or_training_executed": false,
+    "no_claim_posture_changed": false,
+    "outcome_rows_scored": false,
+    "outcome_scoring_executed": false,
+    "privacy_boundary_changed": false,
+    "private_manifests_read": false,
+    "private_provenance_read": false,
+    "private_rows_read": false,
+    "provider_network_llm_used": false,
+    "public_repo_fetch_or_clone_executed": false,
+    "replacement_logic_tuned_after_row_or_outcome_effects": false,
+    "row_generation_executed": false,
+    "runs_directory_read": false,
+    "runtime_setting_changed": false,
+    "source_reads_executed": false,
+    "source_repo_clone_or_fetch_executed": false,
+    "training_executed": false
+  },
+  "frozen_phase7a_7c_protocol": {
+    "evidencecore_rule": {
+      "candidate_found_alone_is_evidence": false,
+      "stop_abstain_success_required_bucket": "bucket_zero",
+      "success_requires_content_digest": true,
+      "success_requires_current_source_read": true,
+      "success_requires_currentness_reread": true,
+      "success_requires_materialization": true,
+      "success_requires_span_match": true,
+      "success_requires_task_tie": true
+    },
+    "full_panel_per_task": true,
+    "max_tasks_per_repo": 20,
+    "no_claim_posture_frozen": true,
+    "phase7c_statuses_exact": [
+      "stop_formal_no_claim",
+      "repair_formal_pipeline_no_claim",
+      "phase7c_formal_fresh_public_repo_validation_passed_no_claim"
+    ],
+    "privacy_boundary_frozen": true,
+    "repo_hard_max": 16,
+    "repo_target_max": 12,
+    "repo_target_min": 8,
+    "same_seven_labels_exact": [
+      "bm25_then_read_top1",
+      "bm25_then_read_next_unique_file",
+      "symbol_regex_then_read_top1",
+      "symbol_regex_then_read_next_unique_file",
+      "read_related_test_when_available",
+      "stop",
+      "abstain"
+    ],
+    "task_hard_max": 150,
+    "task_target_max": 120,
+    "task_target_min": 80
+  },
+  "input_repair_freeze": {
+    "pre_outcome_scoring_only": true,
+    "pre_row_generation_only": true,
+    "prior_overlap_as_input_ineligibility": true,
+    "replacement_after_rows_or_outcomes_allowed": false,
+    "replacement_before_rows_and_outcomes_required": true,
+    "selection_rule_deterministic_auditable": true,
+    "selection_rule_frozen_before_effects": true,
+    "selection_rule_not_performance_based": true,
+    "selection_rule_summary": "stable_public_candidate_order_then_first_eligible_bucket_only"
+  },
+  "next_authorized_action": "phase7e_may_execute_only_after_phase7d_committed_ci_green_and_phase7e_boundary_explicitly_invoked_under_low_resource_no_claim_constraints",
+  "phase": "phase7d_input_repair_protocol_freeze",
+  "public_reporting_contract": {
+    "claim_wording_public": false,
+    "exact_commits_shas_public": false,
+    "exact_paths_ranges_hashes_snippets_public": false,
+    "manifests_provenance_run_dirs_public": false,
+    "overlap_reporting_level": "aggregate_bucket_only",
+    "per_repo_per_task_per_fold_public": false,
+    "private_details_public": false,
+    "publication_level": "aggregate_bucket_only",
+    "replacement_reporting_level": "aggregate_bucket_only",
+    "repo_names_urls_owners_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "public_scope": {
+    "aggregate_protocol_report_only": true,
+    "docs_report_only": true,
+    "private_row_manifest_provenance_reads_public": false
+  },
+  "schema_version": "phase7d_input_repair_protocol_freeze_report_v1",
+  "status": "phase7d_input_repair_protocol_freeze_no_execution_no_claim",
+  "validation_summary": {
+    "private_inputs_accessed_by_validator": false,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}

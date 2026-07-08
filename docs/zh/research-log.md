@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 7D Input-Repair Protocol Freeze
+
+已新增 `eval/interventional_evidence_acquisition_phase7d_input_repair_protocol_freeze.py`、EN/ZH paired docs，以及 aggregate-only public protocol report [`phase7d_input_repair_protocol_freeze_report.json`](../../artifacts/phase7d_input_repair_protocol_freeze/phase7d_input_repair_protocol_freeze_report.json)。Status 为 `phase7d_input_repair_protocol_freeze_no_execution_no_claim`。参见 [`interventional-evidence-acquisition-phase7d-input-repair-protocol-freeze.md`](./interventional-evidence-acquisition-phase7d-input-repair-protocol-freeze.md)。
+
+这是 Phase 7C repair/no-claim checkpoint 之后的 docs/report-only。未读取 private row/manifest/provenance 或 `runs/`，未 public repo fetch/clone，未生成 benchmark rows，未执行 outcome scoring，也未进行 fresh validation execution。Frozen protocol 记录 prior-overlap 为 input ineligibility；replacement 只允许在 row generation 和 outcome scoring 前进行；replacement selection 必须 deterministic、auditable 且 non-performance；Phase 7A/7C labels/caps/EvidenceCore/privacy/no-claim posture 保持不变；replacement/overlap reporting 限于 aggregate buckets。Phase 7E 只有在 Phase 7D 已提交且 CI-green，并且在 low-resource/no-claim constraints 下显式进入 Phase 7E boundary 后才可以执行。
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 7C Formal Fresh Public-Repo Validation
 
 已新增 `eval/interventional_evidence_acquisition_phase7c_fresh_public_repo_validation_formal.py`，在显式 private input/output 与 public-repo-fetch confirmation 下运行 formal execution，并生成 aggregate-only public report [`phase7c_fresh_public_repo_validation_formal_report.json`](../../artifacts/phase7c_fresh_public_repo_validation_formal/phase7c_fresh_public_repo_validation_formal_report.json)。Status 为 `repair_formal_pipeline_no_claim`。参见 [`interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md`](./interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md)。
