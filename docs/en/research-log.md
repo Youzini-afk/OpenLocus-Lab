@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 8B Fresh-Input Independence Audit
+
+Added `eval/interventional_evidence_acquisition_phase8b_fresh_input_independence_audit.py`, paired EN/ZH docs, and aggregate-only public audit report [`phase8b_fresh_input_independence_audit_report.json`](../../artifacts/phase8b_fresh_input_independence_audit/phase8b_fresh_input_independence_audit_report.json). Status is `repair_input_independence_contract_no_claim`. See [`interventional-evidence-acquisition-phase8b-fresh-input-independence-audit.md`](./interventional-evidence-acquisition-phase8b-fresh-input-independence-audit.md).
+
+This is input-construction/audit only under the Phase 8A contract. It used explicit private-output, public-repo-fetch, and prior-private-provenance-read confirmations; wrote private candidate registry/manifest material only under ignored `runs/`; and published only aggregate buckets. The audited registry reports zero overlap and zero comparable-identity misses, but the accepted-repo target was missed, so the checkpoint remains repair/no-claim. No scoring, labels, result values, evidence-strategy comparison, seven-label panel execution, route-success assertion, or method/product/default/runtime/provider/training claim occurred.
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 8A Fresh-Input Independence Protocol Freeze
 
 Added `eval/interventional_evidence_acquisition_phase8a_fresh_input_independence_protocol_freeze.py`, paired EN/ZH docs, and aggregate-only public protocol report [`phase8a_fresh_input_independence_protocol_freeze_report.json`](../../artifacts/phase8a_fresh_input_independence_protocol_freeze/phase8a_fresh_input_independence_protocol_freeze_report.json). Status is `phase8a_protocol_freeze_no_execution_no_claim`. See [`interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md`](./interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md).

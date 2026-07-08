@@ -1,0 +1,75 @@
+{
+  "attempt_budget_summary": {
+    "candidate_repo_inspection_bucket": "bucket_thirteen_to_sixteen",
+    "candidate_repo_inspection_cap_bucket": "bucket_thirteen_to_sixteen",
+    "candidate_repo_inspection_cap_preserved": true,
+    "construction_attempt_bucket": "bucket_nonzero_to_three",
+    "construction_attempt_budget_preserved": true,
+    "future_task_candidate_bucket": "bucket_above_repo_cap_to_future_task_cap",
+    "future_task_candidate_hard_cap_preserved": true
+  },
+  "authorization_attestation": {
+    "confirm_private_output_used": true,
+    "confirm_private_prior_index_read_used": true,
+    "confirm_public_repo_fetch_used": true,
+    "llm_provider_calls_used": false,
+    "model_fit_or_training_executed": false,
+    "new_retrieval_family_added": false,
+    "phase7e_repair_loop_used": false,
+    "runtime_default_product_deployment_change_executed": false
+  },
+  "conservative_recommendation": "stop_after_phase8b_input_audit_no_scoring_no_claim",
+  "fresh_input_registry_summary": {
+    "accepted_repo_bucket": "bucket_four_to_seven",
+    "accepted_repo_hard_cap_preserved": true,
+    "accepted_repo_target_met": false,
+    "future_task_candidate_hard_cap_preserved": true,
+    "private_candidate_pool_public": false,
+    "private_registry_written": true,
+    "registry_contains_labels_or_result_values": false,
+    "registry_contains_scoring_rows": false
+  },
+  "independence_audit_summary": {
+    "clone_origin_checked": true,
+    "commit_sha_checked": true,
+    "comparable_identity_available_for_all_accepted": true,
+    "comparable_identity_missing_bucket": "bucket_zero",
+    "exact_paths_ranges_hashes_checked_private_only": true,
+    "file_family_closeness_checked_private_only": true,
+    "fork_source_checked_if_api_free_detectable": true,
+    "no_labels_or_result_values": true,
+    "no_scoring_rows": true,
+    "no_success_metric_field": true,
+    "normalized_url_forms_checked": true,
+    "overlap_bucket": "bucket_zero",
+    "overlap_zero_for_pass": true,
+    "owner_name_checked": true,
+    "package_module_identity_checked_where_available": true,
+    "prior_phase_exclusion_checked": true,
+    "task_ids_checked_private_only": true
+  },
+  "phase": "phase8b_fresh_input_independence_audit",
+  "phase8a_gate_summary": {
+    "phase8a_gate_checked": true,
+    "phase8a_gate_passed": true,
+    "phase8b_contract_intact": true
+  },
+  "privacy_summary": {
+    "commits_shas_public": false,
+    "paths_ranges_hashes_snippets_public": false,
+    "per_repo_per_task_details_public": false,
+    "private_manifest_paths_public": false,
+    "publication_level": "aggregate_bucket_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "schema_version": "phase8b_fresh_input_independence_audit_report_v1",
+  "status": "repair_input_independence_contract_no_claim",
+  "validation_summary": {
+    "dry_validation_reads_private_inputs": false,
+    "route_specific_validation": "passed",
+    "self_test_available": true
+  }
+}
