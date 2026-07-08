@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 6A Strategy-Selection Screen Protocol Freeze
+
+已新增 [`interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md`](./interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md)、route-specific validator `eval/interventional_evidence_acquisition_phase6a_strategy_selection_screen_protocol_freeze.py`，以及 public design report [`phase6a_strategy_selection_screen_protocol_freeze_report.json`](../../artifacts/phase6a_strategy_selection_screen_protocol_freeze/phase6a_strategy_selection_screen_protocol_freeze_report.json)。Status 为 `phase6a_strategy_selection_screen_protocol_freeze_no_claim`。
+
+这只是 design-only。它冻结 possible later tiny stdlib-only repo-heldout screen：只在未来单独确认后使用 existing ignored Phase 5B rows、同 7 个 labels、action-only/shuffled/fixed baselines、aggregate-only reporting，并保持 no claims。未读取 private rows 或 source，未创建 tasks/repos，未拟合 model，也未执行 screen。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Public-Repo Formal Validation
 
 Phase 5B public-repo formal validation 已完成，aggregate-only public report 为 [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json)。Status 为 `phase5b_public_repo_formal_validation_complete_no_claim`。参见 closeout note [`interventional-evidence-acquisition-phase5b-closeout.md`](./interventional-evidence-acquisition-phase5b-closeout.md)。

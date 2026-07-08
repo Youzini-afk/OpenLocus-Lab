@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 6A Strategy-Selection Screen Protocol Freeze
+
+Added [`interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md`](./interventional-evidence-acquisition-phase6a-strategy-selection-screen-protocol-freeze.md), a route-specific validator `eval/interventional_evidence_acquisition_phase6a_strategy_selection_screen_protocol_freeze.py`, and public design report [`phase6a_strategy_selection_screen_protocol_freeze_report.json`](../../artifacts/phase6a_strategy_selection_screen_protocol_freeze/phase6a_strategy_selection_screen_protocol_freeze_report.json). Status is `phase6a_strategy_selection_screen_protocol_freeze_no_claim`.
+
+This is design-only. It freezes a possible later tiny stdlib-only repo-heldout screen using existing ignored Phase 5B rows only after a separate future confirmation, the same seven labels, action-only/shuffled/fixed baselines, aggregate-only reporting, and no claims. No private rows or source were read, no tasks/repos were created, no model was fit, and no screen was executed.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Public-Repo Formal Validation
 
 Phase 5B public-repo formal validation completed and the aggregate-only public report is [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json). Status is `phase5b_public_repo_formal_validation_complete_no_claim`. See closeout note [`interventional-evidence-acquisition-phase5b-closeout.md`](./interventional-evidence-acquisition-phase5b-closeout.md).
