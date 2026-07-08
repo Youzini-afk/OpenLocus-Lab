@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9E Public Source Fetch/Clone Materialization Protocol Freeze
+
+- **Checkpoint**：Phase 9E 已记录为 `phase9e_public_source_fetch_clone_materialization_protocol_freeze_no_execution_no_scoring_no_claim`，并新增 narrow validator/report generator、paired EN/ZH docs 与 aggregate-only public protocol report。
+- **Scope**：docs/report/validator-only protocol freeze，gate 于 Phase 9D status `repair_task_materialization_no_claim`、zero rows 以及 public fetch/clone false。它不 fetch、clone、read 或 materialize 任何 repository 或 source，不读取 ignored `runs/` 或 private registries/manifests，也不生成 task rows、labels、outcomes、scoring rows 或 evidence_success。Future execution 在 Phase 9E protocol 下需要 Phase 9E commit 与 CI green。
+- **Protocol**：frozen future protocol 要求 public-only fetch/clone 在显式 confirmation 下只进入 ignored workspace、license/access/default-branch/currentness/hash checks 在任何 task row acceptance 之前、deterministic source order、conservative caps（target 48-72、hard cap 96、per-source cap 8、minimum 8 distinct sources）、对 zero/diversity/privacy/singleton 执行 stop/repair、replacement 只能在 scoring 之前、仅限 evidence-finding file-localizable code tasks，且不公开 per-source/per-task reporting。
+- **Boundary**：no execution、no private reads、no scoring、no labels/outcomes、no evidence_success、no model fitting/training、no provider/LLM calls、no runtime/default/product changes。不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## Interventional Evidence Acquisition Phase 9D Task-Candidate Materialization
 
 - **Checkpoint**：Phase 9D 已记录为 `repair_task_materialization_no_claim`，并新增 bounded runner、paired EN/ZH docs 与 aggregate-only public materialization report。

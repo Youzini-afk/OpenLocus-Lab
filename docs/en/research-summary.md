@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9E Public Source Fetch/Clone Materialization Protocol Freeze
+
+- **Checkpoint**: Phase 9E is recorded as `phase9e_public_source_fetch_clone_materialization_protocol_freeze_no_execution_no_scoring_no_claim` with a narrow validator/report generator, paired EN/ZH docs, and an aggregate-only public protocol report.
+- **Scope**: docs/report/validator-only protocol freeze, gated on Phase 9D status `repair_task_materialization_no_claim`, zero rows, and public fetch/clone false. It does not fetch, clone, read, or materialize any repository or source, does not read ignored `runs/` or private registries/manifests, and does not generate task rows, labels, outcomes, scoring rows, or evidence_success. Future execution under the Phase 9E protocol requires Phase 9E commit and CI green.
+- **Protocol**: the frozen future protocol requires public-only fetch/clone under explicit confirmation into ignored workspace only, license/access/default-branch/currentness/hash checks before any task row acceptance, deterministic source order, conservative caps (target 48-72, hard cap 96, per-source cap 8, minimum 8 distinct sources), stop/repair on zero/diversity/privacy/singleton, replacement before scoring only, evidence-finding file-localizable code tasks only, and no per-source/per-task public reporting.
+- **Boundary**: no execution, no private reads, no scoring, no labels/outcomes, no evidence_success, no model fitting/training, no provider/LLM calls, no runtime/default/product changes. No method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim is made.
+
 ## Interventional Evidence Acquisition Phase 9D Task-Candidate Materialization
 
 - **Checkpoint**: Phase 9D is recorded as `repair_task_materialization_no_claim` with a bounded runner, paired EN/ZH docs, and an aggregate-only public materialization report.
