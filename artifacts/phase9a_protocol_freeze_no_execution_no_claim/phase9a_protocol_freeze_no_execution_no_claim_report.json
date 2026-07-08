@@ -1,0 +1,186 @@
+{
+  "claim_boundary": {
+    "default_claim": false,
+    "evidence_success_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "outcome_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "scoring_claim": false,
+    "training_claim": false
+  },
+  "clean_room_protocol": {
+    "anti_laundering_rule": {
+      "excludes_all_phase8b_private_material_rather_than_claiming_checked_safe_reuse": true,
+      "phase9a_does_not_read_phase8b_registry": true,
+      "reuse_of_phase8b_private_candidates_near_misses_rejects_manifests_logs_provenance_forbidden": true
+    },
+    "availability_first_gate": {
+      "availability_checked_before_scoring": true,
+      "availability_gate_is_not_outcome_scoring": true,
+      "license_access_and_materialization_precheck_before_scoring": true,
+      "unavailable_sources_replaced_before_scoring": true
+    },
+    "candidate_source_universe": {
+      "clean_room_operator_must_not_use_memory_of_private_phase8b_material": true,
+      "future_phase9b_source_list_generated_without_phase8b_private_pool_or_manifest_reads": true,
+      "phase8b_private_material_reuse_allowed": false,
+      "prior_private_candidates_near_misses_rejects_manifests_logs_provenance_reuse_allowed": false
+    },
+    "eligibility_filter_before_inspection": {
+      "eligibility_criteria": [
+        "publicly_accessible_without_authentication",
+        "source_archive_materializable_before_scoring",
+        "declared_or_publicly_auditable_license_present",
+        "default_branch_or_equivalent_revision_resolvable",
+        "in_scope_language_or_file_mix_detectable_from_public_metadata",
+        "not_private_prior_phase_or_manual_named_seed_material"
+      ],
+      "eligibility_decided_before_scoring": true,
+      "eligibility_drift_is_hard_stop": true,
+      "exclusion_criteria": [
+        "requires_authentication_or_private_access",
+        "cannot_materialize_source_archive_before_scoring",
+        "license_absent_or_not_publicly_auditable",
+        "identity_collides_with_earlier_clean_room_candidate",
+        "fork_or_mirror_duplicate_of_already_accepted_identity",
+        "would_require_public_reporting_of_exact_identifiers"
+      ]
+    },
+    "hard_stops": {
+      "any_scoring_before_later_audit_passes": true,
+      "availability_gate_not_completed_before_scoring": true,
+      "channel_order_or_sort_key_drift": true,
+      "eligibility_or_replacement_algorithm_drift": true,
+      "identity_normalization_not_completed_before_inspection": true,
+      "phase8b_private_material_read_attempt": true,
+      "public_report_would_require_private_or_exact_identifiers": true,
+      "quota_or_ordering_rule_drift": true
+    },
+    "identity_normalization_before_inspection": {
+      "deduplicate_before_inspection": true,
+      "fork_or_mirror_equivalence_checked_before_inspection_where_publicly_available": true,
+      "identity_checks_use_public_metadata_only": true,
+      "normalize_public_project_identity_before_source_inspection": true,
+      "public_metadata_fields_used_for_ordering": [
+        "normalized_public_project_identity_ascending",
+        "public_metadata_stable_rank_ascending",
+        "default_branch_name_ascending",
+        "channel_local_index_ascending"
+      ]
+    },
+    "neutral_acquisition_channels": {
+      "channel_order": [
+        "public_language_registry_top_projects_index",
+        "public_ecosystem_topic_index",
+        "public_package_metadata_dependents_index"
+      ],
+      "manual_named_seed_repositories_allowed": false,
+      "private_or_prior_phase_candidate_sources_allowed": false,
+      "public_package_or_project_metadata_allowed": true,
+      "public_registry_lists_allowed": true,
+      "public_topic_or_ecosystem_indexes_allowed": true
+    },
+    "ordering_quota_replacement_rules": {
+      "deterministic_sort_keys": [
+        "normalized_public_project_identity_ascending",
+        "public_metadata_stable_rank_ascending",
+        "default_branch_name_ascending",
+        "channel_local_index_ascending"
+      ],
+      "performance_based_replacement_allowed": false,
+      "predeclared_seed_label": "phase9a_clean_room_public_seed_v1",
+      "quota_balance_before_inspection": true,
+      "quota_numbers": {
+        "accepted_source_minimum_for_audit_pass": 8,
+        "accepted_source_target": 12,
+        "candidate_inspection_cap_per_channel": 16,
+        "candidate_inspection_cap_total": 48,
+        "initial_channel_quota_each": 16
+      },
+      "randomness_policy": "forbidden_no_random_shuffle_no_posthoc_resampling",
+      "replacement_algorithm": [
+        "replace_unavailable_or_ineligible_source_with_next_uninspected_item_from_same_frozen_channel_stream",
+        "if_channel_stream_exhausted_continue_round_robin_to_next_channel_in_frozen_channel_order",
+        "replacement_must_happen_before_any_scoring_labels_or_outcomes",
+        "replacement_must_not_use_performance_outcome_evidence_success_or_phase8b_private_feedback"
+      ],
+      "replacement_before_scoring_only": true,
+      "replacement_reasons_limited_to_availability_or_eligibility": true,
+      "seed_semantics": "version_label_only_randomness_forbidden",
+      "stable_channel_then_stable_public_metadata_order": true
+    },
+    "privacy_contract": {
+      "candidate_registry_public": false,
+      "per_source_or_per_task_public_details_allowed": false,
+      "private_or_exact_identifiers_public": false,
+      "public_output_aggregate_only": true
+    }
+  },
+  "forbidden_operations": {
+    "candidate_pool_construction": false,
+    "candidate_registry_population": false,
+    "data_collection": false,
+    "direct_phase9_execution": false,
+    "evidence_success_evaluation": false,
+    "ignored_runs_reads": false,
+    "labels_generated": false,
+    "manifest_reads": false,
+    "model_fitting": false,
+    "phase8b_accepted_or_rejected_repo_inspection": false,
+    "phase8b_accepted_repo_count_repair": false,
+    "phase8b_private_registry_or_pool_reads": false,
+    "private_reads": false,
+    "provider_or_llm_calls": false,
+    "repo_fetch_or_clone": false,
+    "row_or_outcome_scoring": false,
+    "runtime_default_or_product_changes": false,
+    "source_reads": false,
+    "task_generation": false
+  },
+  "future_phase9b_boundary": {
+    "candidate_population_allowed_only_in_future_phase9b": true,
+    "may_only_construct_and_audit_under_frozen_protocol": true,
+    "phase9a_direct_execution_authorized": false,
+    "scoring_forbidden_until_later_audit_passes": true
+  },
+  "motivation_public_aggregate_only": {
+    "phase8b_accepted_repo_target_met": false,
+    "phase8b_scoring_eligibility": "not_eligible_under_frozen_cap",
+    "phase8c_ci_status_public_aggregate": "success",
+    "private_or_per_repo_details_used": false
+  },
+  "phase": "phase9a_protocol_freeze_no_execution_no_claim",
+  "public_privacy_contract": {
+    "commits_or_hashes_public": false,
+    "manifest_paths_public": false,
+    "owners_public": false,
+    "paths_public": false,
+    "per_repo_or_per_task_facts_public": false,
+    "publication_level": "aggregate_protocol_only",
+    "repo_names_public": false,
+    "repo_urls_public": false,
+    "row_ids_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "snippets_public": false,
+    "task_ids_public": false
+  },
+  "public_scope": {
+    "docs_report_only": true,
+    "future_execution_authorized": false,
+    "not_continuation_or_repair_of_phase8b": true,
+    "protocol_freeze_only": true,
+    "uses_only_public_aggregate_phase8b_phase8c_motivation": true
+  },
+  "schema_version": "phase9a_protocol_freeze_no_execution_no_claim_report_v1",
+  "status": "phase9a_protocol_freeze_no_execution_no_claim",
+  "validation_summary": {
+    "private_inputs_accessed_by_validator": false,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}

@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9A Protocol Freeze
+
+- **Checkpoint**: Phase 9A is recorded as `phase9a_protocol_freeze_no_execution_no_claim` with paired EN/ZH docs and an aggregate-only public protocol report.
+- **Scope**: docs/report-only and protocol-freeze-only. No private reads, ignored `runs/` reads, manifest reads, Phase 8B private registry/pool reads, accepted/rejected repository inspection, repo fetch/clone, source reads, task generation, candidate registry population, candidate pool construction, data collection, scoring, labels, evidence-success evaluation, model fitting, provider/LLM calls, runtime/default/product changes, direct Phase 9 execution, or Phase 8B accepted-repository count repair occurred.
+- **Protocol**: Phase 9A is not continuation or repair of Phase 8B. It freezes future clean-room Phase 9B candidate-source construction: source lists are generated without Phase 8B private pool/manifests/material; neutral acquisition channels, ordering, quotas, replacement rules, and seed are predeclared; identity normalization precedes inspection; availability gates precede scoring; public reporting remains aggregate-only; hard stops are explicit; and anti-laundering excludes all Phase 8B private material rather than claiming checked-safe reuse.
+- **Boundary**: Future Phase 9B may only construct and audit under this frozen protocol. Scoring remains forbidden until a later audit passes. No method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim is made.
+
 ## TraceV2 evaluator self-test hardening
 
 - **Checkpoint**: the current TraceV2 bootstrap/capture/repair/replay self-tests no longer contain vacuous `check(..., True)` literals.

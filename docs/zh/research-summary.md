@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9A Protocol Freeze
+
+- **Checkpoint**：Phase 9A 已记录为 `phase9a_protocol_freeze_no_execution_no_claim`，并新增 paired EN/ZH docs 与 aggregate-only public protocol report。
+- **Scope**：这是 docs/report-only 且 protocol-freeze-only。未发生 private reads、ignored `runs/` reads、manifest reads、Phase 8B private registry/pool reads、accepted/rejected repository inspection、repo fetch/clone、source reads、task generation、candidate registry population、candidate pool construction、data collection、scoring、labels、evidence-success evaluation、model fitting、provider/LLM calls、runtime/default/product changes、direct Phase 9 execution 或 Phase 8B accepted-repository count repair。
+- **Protocol**：Phase 9A 不是 Phase 8B 的 continuation 或 repair。它冻结 future clean-room Phase 9B candidate-source construction：source list 在不读取 Phase 8B private pool/manifests/material 的情况下生成；neutral acquisition channels、ordering、quotas、replacement rules 与 seed 均预声明；identity normalization 先于 inspection；availability gate 先于 scoring；public reporting 保持 aggregate-only；hard stops 显式定义；anti-laundering 排除所有 Phase 8B private material，而不是声称 checked-safe reuse。
+- **Boundary**：Future Phase 9B 只能在该 frozen protocol 下 construct 与 audit。Scoring 在 later audit passes 前仍被禁止。不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## TraceV2 evaluator self-test hardening
 
 - **Checkpoint**：当前 TraceV2 bootstrap/capture/repair/replay self-tests 不再包含 vacuous `check(..., True)` literals。
