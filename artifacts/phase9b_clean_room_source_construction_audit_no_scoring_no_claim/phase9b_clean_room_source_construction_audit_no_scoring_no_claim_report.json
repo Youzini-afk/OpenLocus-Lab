@@ -1,0 +1,151 @@
+{
+  "claim_boundary": {
+    "default_claim": false,
+    "evidence_success_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "outcome_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "scoring_claim": false,
+    "training_claim": false
+  },
+  "frozen_phase9a_rules": {
+    "channel_order": [
+      "public_language_registry_top_projects_index",
+      "public_ecosystem_topic_index",
+      "public_package_metadata_dependents_index"
+    ],
+    "eligibility_criteria": [
+      "publicly_accessible_without_authentication",
+      "source_archive_materializable_before_scoring",
+      "declared_or_publicly_auditable_license_present",
+      "default_branch_or_equivalent_revision_resolvable",
+      "in_scope_language_or_file_mix_detectable_from_public_metadata",
+      "not_private_prior_phase_or_manual_named_seed_material"
+    ],
+    "exclusion_criteria": [
+      "requires_authentication_or_private_access",
+      "cannot_materialize_source_archive_before_scoring",
+      "license_absent_or_not_publicly_auditable",
+      "identity_collides_with_earlier_clean_room_candidate",
+      "fork_or_mirror_duplicate_of_already_accepted_identity",
+      "would_require_public_reporting_of_exact_identifiers"
+    ],
+    "quotas": {
+      "accepted_source_minimum_for_audit_pass": 8,
+      "accepted_source_target": 12,
+      "candidate_inspection_cap_per_channel": 16,
+      "candidate_inspection_cap_total": 48,
+      "initial_channel_quota_each": 16
+    },
+    "randomness_forbidden": true,
+    "replacement_algorithm": [
+      "replace_unavailable_or_ineligible_source_with_next_uninspected_item_from_same_frozen_channel_stream",
+      "if_channel_stream_exhausted_continue_round_robin_to_next_channel_in_frozen_channel_order",
+      "replacement_must_happen_before_any_scoring_labels_or_outcomes",
+      "replacement_must_not_use_performance_outcome_evidence_success_or_phase8b_private_feedback"
+    ],
+    "seed_label": "phase9a_clean_room_public_seed_v1",
+    "sort_keys": [
+      "normalized_public_project_identity_ascending",
+      "public_metadata_stable_rank_ascending",
+      "default_branch_name_ascending",
+      "channel_local_index_ascending"
+    ]
+  },
+  "phase": "phase9b_clean_room_source_construction_audit_no_scoring_no_claim",
+  "phase9a_gate": {
+    "phase9a_ci_run": "28964719920",
+    "phase9a_commit": "a479e48",
+    "phase9a_public_report_validated": true,
+    "phase9a_status": "phase9a_protocol_freeze_no_execution_no_claim"
+  },
+  "privacy_confirmation": {
+    "candidate_details_public": false,
+    "private_output_confirmed": true,
+    "public_metadata_channel_fetch_buckets": {
+      "public_ecosystem_topic_index": "bucket_thirteen_to_sixteen",
+      "public_language_registry_top_projects_index": "bucket_thirteen_to_sixteen",
+      "public_package_metadata_dependents_index": "bucket_nonzero_to_three"
+    },
+    "public_metadata_fetch_attempted": true,
+    "public_metadata_fetch_error_type_buckets": {},
+    "public_metadata_fetch_succeeded": true,
+    "public_metadata_mode": "live_public_metadata_api_fetch",
+    "public_output_aggregate_only": true
+  },
+  "public_aggregate_audit": {
+    "accepted_bucket": {
+      "bucket": "bucket_eight_to_twelve"
+    },
+    "availability_gate_completed_before_scoring": true,
+    "caps_respected": true,
+    "channel_inspected_buckets": {
+      "public_ecosystem_topic_index": {
+        "bucket": "bucket_thirteen_to_sixteen"
+      },
+      "public_language_registry_top_projects_index": {
+        "bucket": "bucket_thirteen_to_sixteen"
+      },
+      "public_package_metadata_dependents_index": {
+        "bucket": "bucket_nonzero_to_three"
+      }
+    },
+    "exclusion_reason_buckets": {
+      "license_absent_or_not_publicly_auditable": {
+        "bucket": "bucket_four_to_seven"
+      }
+    },
+    "hard_stops_occurred": false,
+    "identity_normalization_completed_before_inspection": true,
+    "ineligible_bucket": {
+      "bucket": "bucket_four_to_seven"
+    },
+    "minimum_acceptance_threshold_bucket": {
+      "bucket": "bucket_eight_to_twelve"
+    },
+    "pre_inspection_duplicate_collision_buckets": {
+      "public_ecosystem_topic_index": "bucket_zero",
+      "public_language_registry_top_projects_index": "bucket_zero",
+      "public_package_metadata_dependents_index": "bucket_zero"
+    },
+    "quota_balance_before_inspection": true,
+    "rejected_bucket": {
+      "bucket": "bucket_four_to_seven"
+    },
+    "replacement_bucket": {
+      "bucket": "bucket_four_to_seven"
+    },
+    "unavailable_bucket": {
+      "bucket": "bucket_zero"
+    }
+  },
+  "required_public_booleans": {
+    "candidate_details_public": false,
+    "clean_room_source_construction_executed": true,
+    "evidence_success_evaluated": false,
+    "labels_generated": false,
+    "model_fitting": false,
+    "outcomes_generated": false,
+    "phase8b_accepted_or_rejected_identities_read": false,
+    "phase8b_manifests_read": false,
+    "phase8b_private_material_reuse_allowed": false,
+    "phase8b_private_pool_read": false,
+    "phase8b_provenance_read": false,
+    "provider_or_llm_calls": false,
+    "public_output_aggregate_only": true,
+    "runtime_default_or_product_changes": false,
+    "scoring_executed": false,
+    "source_audit_executed": true
+  },
+  "schema_version": "phase9b_clean_room_source_construction_audit_no_scoring_no_claim_report_v1",
+  "status": "phase9b_clean_room_source_construction_audit_no_scoring_no_claim",
+  "validation_summary": {
+    "public_artifact_privacy_scan_expected": true,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}

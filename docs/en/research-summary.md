@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9B Clean-Room Source Construction Audit
+
+- **Checkpoint**: Phase 9B is recorded as `phase9b_clean_room_source_construction_audit_no_scoring_no_claim` with a narrow runner, paired EN/ZH docs, and an aggregate-only public audit report.
+- **Scope**: clean-room candidate-source construction/audit only under the frozen Phase 9A rules, gated on Phase 9A commit `a479e48`, CI `28964719920`, and status `phase9a_protocol_freeze_no_execution_no_claim`.
+- **Private/public boundary**: explicit private-output and public-metadata-fetch confirmations were required. Live public metadata acquisition constructed candidates from frozen neutral channel classes; private candidate/source details and accepted registry remain only in ignored private storage. The public report is aggregate-only and excludes exact identifiers, exact public count fields, and singleton buckets.
+- **Boundary**: exact Phase 9A public rule vocabulary was preserved, public identities were normalized/deduplicated before inspection, and frozen quota-balance inspection was applied across channels. The accepted bucket met the frozen minimum audit-pass threshold and caps were respected; this passes only the construction/audit gate. No Phase 8B private material was read or reused. No scoring, labels, outcomes, evidence-success evaluation, model fitting, provider/LLM calls, runtime/default/product changes, task generation, or product action occurred; no method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim is made.
+
 ## Interventional Evidence Acquisition Phase 9A Protocol Freeze
 
 - **Checkpoint**: Phase 9A is recorded as `phase9a_protocol_freeze_no_execution_no_claim` with paired EN/ZH docs and an aggregate-only public protocol report.

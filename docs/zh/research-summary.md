@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9B Clean-Room Source Construction Audit
+
+- **Checkpoint**：Phase 9B 已记录为 `phase9b_clean_room_source_construction_audit_no_scoring_no_claim`，并新增 narrow runner、paired EN/ZH docs 与 aggregate-only public audit report。
+- **Scope**：只在 frozen Phase 9A rules 下执行 clean-room candidate-source construction/audit，并 gate 于 Phase 9A commit `a479e48`、CI `28964719920`、status `phase9a_protocol_freeze_no_execution_no_claim`。
+- **Private/public boundary**：需要显式 private-output 与 public-metadata-fetch confirmations。Live public metadata acquisition 从 frozen neutral channel classes 构造 candidates；private candidate/source details 和 accepted registry 只保留在 ignored private storage 中。Public report 仅 aggregate-only，并排除 exact identifiers、exact public count fields 与 singleton buckets。
+- **Boundary**：保留 exact Phase 9A public rule vocabulary，在 inspection 前 normalize/deduplicate public identities，并按 frozen quota-balance inspection 覆盖 channels。Accepted bucket 达到 frozen minimum audit-pass threshold，caps respected；该 status 只通过 construction/audit gate。未读取或 reuse Phase 8B private material。未执行 scoring、生成 labels、生成 outcomes、评估 evidence-success、model fitting、provider/LLM calls、runtime/default/product changes、task generation 或 product action；不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## Interventional Evidence Acquisition Phase 9A Protocol Freeze
 
 - **Checkpoint**：Phase 9A 已记录为 `phase9a_protocol_freeze_no_execution_no_claim`，并新增 paired EN/ZH docs 与 aggregate-only public protocol report。
