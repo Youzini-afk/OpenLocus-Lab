@@ -2,15 +2,21 @@
 
 Date: 2026-07-07
 
-Status: `phase4e_fresh_holdout_closeout_no_claim`
+Status: `phase5a_public_repo_protocol_freeze_no_claim`
 
-Authorization: `public_closeout_only_no_private_input`
+Authorization: `design_protocol_only_no_execution`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 4E closeout. See [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) and `artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json`. Status is `phase4e_fresh_holdout_closeout_no_claim`. It uses only public Phase 4B/4C/4D reports/docs, keeps the route as a research candidate, and stops further small checks until a separately framed larger validation decision or independent replication protocol exists.
+Latest checkpoint: Phase 5A public-repo protocol freeze. See [`interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md`](./interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md) and `artifacts/phase5a_public_repo_protocol_freeze/phase5a_public_repo_protocol_freeze_report.json`. Status is `phase5a_public_repo_protocol_freeze_no_claim`. It freezes rules only; it does not fetch repos, generate tasks, write private rows, read source, add CI/workflow, or implement Phase 5B.
+
+## Phase 5A public-repo protocol freeze status
+
+Phase 5A freezes a possible Phase 5B public-repo validation: target 120 hard tasks, valid 100-150, hard max 150, seven exact labels, max 1050 private rows, 10-12 target repos with hard max 16, and repository URLs/SHAs/strata/replacement rules frozen before execution.
+
+Allowed future Phase 5B network is only public GitHub repo fetch for frozen URLs/SHAs. LLM/provider/search API/remote model calls, training, runtime/default changes, new retrieval families, staged runs, and post-outcome tuning are forbidden. Candidate-found alone is not evidence; counted success requires current-source read, materialization, hash/currentness verification, and task tie. Public reporting remains aggregate-only and no-claim.
 
 ## Phase 2 small fair local comparison status
 

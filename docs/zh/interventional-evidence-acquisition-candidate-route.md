@@ -2,15 +2,21 @@
 
 日期：2026-07-07
 
-Status: `phase4e_fresh_holdout_closeout_no_claim`
+Status: `phase5a_public_repo_protocol_freeze_no_claim`
 
-Authorization: `public_closeout_only_no_private_input`
+Authorization: `design_protocol_only_no_execution`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 4E closeout。参见 [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) 和 `artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json`。Status 为 `phase4e_fresh_holdout_closeout_no_claim`。它只使用 public Phase 4B/4C/4D reports/docs，将路线保留为 research candidate，并停止继续做 small checks，直到另行框定 larger validation decision 或 independent replication protocol。
+最新 checkpoint：Phase 5A public-repo protocol freeze。参见 [`interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md`](./interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md) 和 `artifacts/phase5a_public_repo_protocol_freeze/phase5a_public_repo_protocol_freeze_report.json`。Status 为 `phase5a_public_repo_protocol_freeze_no_claim`。它只冻结规则；不 fetch repos、不生成 tasks、不写 private rows、不读取 source、不新增 CI/workflow，也不实现 Phase 5B。
+
+## Phase 5A public-repo protocol freeze status
+
+Phase 5A 冻结 possible Phase 5B public-repo validation：target 120 个 hard tasks，valid range 100-150，hard max 150，7 个 exact labels，max 1050 private rows，target 10-12 repos 且 hard max 16，并且在 execution 前冻结 repository URLs/SHAs/strata/replacement rules。
+
+Future Phase 5B 允许的 network 只限 frozen URLs/SHAs 的 public GitHub repo fetch。禁止 LLM/provider/search API/remote model calls、training、runtime/default changes、新 retrieval families、staged runs 和 post-outcome tuning。Candidate-found alone 不是 evidence；counted success 需要 current-source read、materialization、hash/currentness verification 和 task tie。Public reporting 仍为 aggregate-only 和 no-claim。
 
 ## Phase 2 small fair local comparison status
 

@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 5A Public-Repo Protocol Freeze
+
+Added [`interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md`](./interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md) and public report [`phase5a_public_repo_protocol_freeze_report.json`](../../artifacts/phase5a_public_repo_protocol_freeze/phase5a_public_repo_protocol_freeze_report.json). Status is `phase5a_public_repo_protocol_freeze_no_claim`.
+
+This is protocol/design only. It freezes a possible Phase 5B public-repo validation envelope: target 120 hard tasks, valid 100-150, hard max 150, seven exact labels, max 1050 private rows, 10-12 target repos with hard max 16, and URLs/SHAs/strata/replacement frozen before execution. It does not fetch repos, generate tasks, write private rows, read source, add CI/workflow, or implement Phase 5B. Public output remains aggregate-only and no-claim.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 4E Closeout
 
 Added [`interventional-evidence-acquisition-phase4e-closeout.md`](./interventional-evidence-acquisition-phase4e-closeout.md) and public summary [`phase4e_fresh_holdout_closeout_no_claim_report.json`](../../artifacts/phase4e_fresh_holdout_closeout_no_claim/phase4e_fresh_holdout_closeout_no_claim_report.json). Status is `phase4e_fresh_holdout_closeout_no_claim`.
