@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 7A Fresh Public-Repo Validation Protocol Freeze
+
+已新增 [`interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md`](./interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md)、route-specific validator `eval/interventional_evidence_acquisition_phase7a_fresh_public_repo_validation_protocol_freeze.py`，以及 public protocol report [`phase7a_fresh_public_repo_validation_protocol_freeze_report.json`](../../artifacts/phase7a_fresh_public_repo_validation_protocol_freeze/phase7a_fresh_public_repo_validation_protocol_freeze_report.json)。Status 为 `phase7a_protocol_freeze_no_execution_no_claim`。
+
+这只是 design-only。它冻结 possible later Phase 7B fresh public-repo validation：使用未在 Phase 5B 中使用过的 fresh repos/tasks、严格 private overlap rejection、repo target 8-12、task target 80-120、每 repo 最多 20 tasks、同 7 个 labels、EvidenceCore success requirements、aggregate-only public reporting，并保持 no claims。未发生 repo fetch/clone、task generation、canary、source read、private 或 `runs/` read、model fit/training、provider/network/LLM、runtime/default/product change 或 retrieval-family addition。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 6C Closeout
 
 已新增 [`interventional-evidence-acquisition-phase6c-closeout.md`](./interventional-evidence-acquisition-phase6c-closeout.md) 和 aggregate-only public closeout report [`phase6c_strategy_screen_closeout_no_claim_report.json`](../../artifacts/phase6c_strategy_screen_closeout_no_claim/phase6c_strategy_screen_closeout_no_claim_report.json)。Status 为 `phase6c_strategy_screen_closeout_no_claim`。

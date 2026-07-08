@@ -1,0 +1,103 @@
+{
+  "claim_boundary": {
+    "chosen_strategy_claim": false,
+    "deployment_claim": false,
+    "method_comparison_claim": false,
+    "model_training_claim": false,
+    "performance_increase_claim": false,
+    "release_readiness_claim": false
+  },
+  "execution_boundary": {
+    "canary_executed": false,
+    "design_only": true,
+    "model_fit_or_training_executed": false,
+    "new_retrieval_family_added": false,
+    "private_rows_read": false,
+    "provider_network_llm_used": false,
+    "repo_fetch_or_clone_executed": false,
+    "runs_directory_read": false,
+    "runtime_or_release_setting_changed": false,
+    "source_reads_executed": false,
+    "task_generation_executed": false
+  },
+  "future_public_report_contract": {
+    "best_fixed_local_or_acquisition_baseline_bucket_included": true,
+    "claim_wording_public": false,
+    "count_buckets_included": true,
+    "evidence_success_buckets_included": true,
+    "evidencecore_validation_included": true,
+    "exact_commits_public": false,
+    "exact_paths_ranges_hashes_snippets_public": false,
+    "label_coverage_buckets_included": true,
+    "manifests_or_run_dirs_public": false,
+    "per_repo_per_task_per_fold_public": false,
+    "privacy_summary_included": true,
+    "publication_level": "aggregate_only",
+    "repo_names_urls_owners_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_or_row_ids_public": false
+  },
+  "next_authorized_action": "phase7b_runner_may_be_written_after_phase7a_is_committed_ci_green_and_phase7b_boundary_is_explicitly_invoked_under_existing_low_resource_no_claim_constraints",
+  "phase": "phase7a_fresh_public_repo_validation_protocol_freeze",
+  "phase7b_frozen_protocol": {
+    "evidencecore_rule": {
+      "candidate_found_alone_is_evidence": false,
+      "stop_abstain_success_required_bucket": "bucket_zero",
+      "success_requires_content_digest": true,
+      "success_requires_current_source_read": true,
+      "success_requires_currentness_reread": true,
+      "success_requires_materialization": true,
+      "success_requires_span_match": true,
+      "success_requires_task_tie": true
+    },
+    "freshness_rule": "fresh_public_repos_and_tasks_not_used_in_phase5b",
+    "full_panel_per_task": true,
+    "max_tasks_per_repo": 20,
+    "positive_status_meaning": "nonzero_aggregate_evidencecore_valid_local_evidence_acquisition_under_frozen_actions_with_privacy_and_controls_held_no_claim",
+    "possible_statuses_exact": [
+      "stop_no_claim",
+      "repair_fresh_validation_contract_no_claim",
+      "fresh_public_repo_validation_positive_no_claim"
+    ],
+    "private_overlap_rejection_rule": {
+      "exact_file_reference_overlap_private_check": true,
+      "pinned_commit_overlap_private_check": true,
+      "public_overlap_detail_level": "boolean_or_bucket_only",
+      "repo_url_name_owner_overlap_private_check": true,
+      "task_identity_overlap_private_check": true,
+      "too_close_file_family_private_check": true
+    },
+    "replacement_rule": {
+      "allowed_reasons": [
+        "clone_failure",
+        "pinned_commit_unavailable",
+        "insufficient_eligible_files",
+        "evidencecore_materialization_impossible_before_scoring"
+      ],
+      "pre_outcome_invalidity_only": true,
+      "replacement_after_outcome_observation_allowed": false
+    },
+    "repo_hard_max": 16,
+    "repo_target_max": 12,
+    "repo_target_min": 8,
+    "same_seven_labels_exact": [
+      "bm25_then_read_top1",
+      "bm25_then_read_next_unique_file",
+      "symbol_regex_then_read_top1",
+      "symbol_regex_then_read_next_unique_file",
+      "read_related_test_when_available",
+      "stop",
+      "abstain"
+    ],
+    "task_hard_max": 150,
+    "task_target_max": 120,
+    "task_target_min": 80
+  },
+  "schema_version": "phase7a_fresh_public_repo_validation_protocol_freeze_report_v1",
+  "status": "phase7a_protocol_freeze_no_execution_no_claim",
+  "validation_summary": {
+    "private_inputs_accessed_by_validator": false,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}

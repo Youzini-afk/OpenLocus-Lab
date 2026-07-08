@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 7A Fresh Public-Repo Validation Protocol Freeze
+
+Added [`interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md`](./interventional-evidence-acquisition-phase7a-fresh-public-repo-validation-protocol-freeze.md), route-specific validator `eval/interventional_evidence_acquisition_phase7a_fresh_public_repo_validation_protocol_freeze.py`, and public protocol report [`phase7a_fresh_public_repo_validation_protocol_freeze_report.json`](../../artifacts/phase7a_fresh_public_repo_validation_protocol_freeze/phase7a_fresh_public_repo_validation_protocol_freeze_report.json). Status is `phase7a_protocol_freeze_no_execution_no_claim`.
+
+This is design-only. It freezes a possible later Phase 7B fresh public-repo validation using fresh repos/tasks not used in Phase 5B, strict private overlap rejection, repo target 8-12, task target 80-120, max 20 tasks per repo, same seven labels, EvidenceCore success requirements, aggregate-only public reporting, and no claims. No repo fetch/clone, task generation, canary, source read, private or `runs/` read, model fit/training, provider/network/LLM, runtime/default/product change, or retrieval-family addition occurred.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 6C Closeout
 
 Added [`interventional-evidence-acquisition-phase6c-closeout.md`](./interventional-evidence-acquisition-phase6c-closeout.md) and aggregate-only public closeout report [`phase6c_strategy_screen_closeout_no_claim_report.json`](../../artifacts/phase6c_strategy_screen_closeout_no_claim/phase6c_strategy_screen_closeout_no_claim_report.json). Status is `phase6c_strategy_screen_closeout_no_claim`.
