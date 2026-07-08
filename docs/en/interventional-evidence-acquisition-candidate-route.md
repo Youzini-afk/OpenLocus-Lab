@@ -2,21 +2,21 @@
 
 Date: 2026-07-07
 
-Status: `phase5b_public_repo_formal_validation_canary_complete_no_claim`
+Status: `phase5b_public_repo_formal_validation_complete_no_claim`
 
-Authorization: `runner_canary_only_formal_validation_not_run`
+Authorization: `formal_phase5b_complete_no_claim_closeout_only`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 This note records a Phase 0 candidate-route design and the later minimal Phase 1 local private pilot for interventional evidence acquisition. It is not OpenLocus v3 branding and does not authorize provider/network work, training, runtime/default changes, or method-winner claims.
 
-Latest checkpoint: Phase 5B runner canary. The runner is `eval/interventional_evidence_acquisition_phase5b_public_repo_formal_validation.py`; public aggregate canary report is `artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json`. Status is `phase5b_public_repo_formal_validation_canary_complete_no_claim`. This is not the 100-150 task formal validation.
+Latest checkpoint: Phase 5B public-repo formal validation completed. The public aggregate report is `artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json`; closeout note is [`interventional-evidence-acquisition-phase5b-closeout.md`](./interventional-evidence-acquisition-phase5b-closeout.md). Status is `phase5b_public_repo_formal_validation_complete_no_claim`.
 
-## Phase 5B runner canary status
+## Phase 5B public-repo formal validation status
 
-The runner uses a safe two-step shape: ingest an already-frozen public task manifest and repo-lock, ingest private labels only for scoring rows, execute exactly the seven frozen local labels, and require current-source materialization/hash/currentness/task tie for counted evidence. Private rows require `--confirm-private-output` and stay under ignored `runs/`.
+Phase 5B used 12 public repos cloned/locked under ignored `runs/`. Public tasks were generated without labels first; 120 hard tasks were selected using only public `task_bucket`; labels were generated after task freeze and filtered by frozen `test_id`.
 
-The tiny local canary passed and wrote only ignored private canary rows after confirmation. The runner itself does not fetch repositories or generate the formal task set; those remain external frozen hooks before a future formal run. The 100-150 task formal validation has not been run and no method/product/default/runtime claim is made.
+The runner executed 120 hard public tasks × seven frozen labels. Private rows stayed only under ignored `runs/`. Result buckets show best fixed local/acquisition `count_21_to_50`, acquisition rate `rate_25_to_50pct`, and stop/abstain success `count_0`. This is nonzero local evidence-acquisition signal under the frozen protocol, not a method winner, lift, product, default, runtime, provider, remote-model, or training claim.
 
 ## Phase 5A public-repo protocol freeze status
 

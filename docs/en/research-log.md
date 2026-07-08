@@ -1,10 +1,10 @@
 # OpenLocus Research Log
 
-## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Runner Canary
+## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Public-Repo Formal Validation
 
-Added `eval/interventional_evidence_acquisition_phase5b_public_repo_formal_validation.py` and generated the aggregate-only canary report [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json). Status is `phase5b_public_repo_formal_validation_canary_complete_no_claim`.
+Phase 5B public-repo formal validation completed and the aggregate-only public report is [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json). Status is `phase5b_public_repo_formal_validation_complete_no_claim`. See closeout note [`interventional-evidence-acquisition-phase5b-closeout.md`](./interventional-evidence-acquisition-phase5b-closeout.md).
 
-This implements a safe two-step Phase 5B runner: validate frozen public task/repo-lock inputs, ingest private labels only for scoring rows, execute the seven frozen local labels, require current-source materialization/hash/currentness/task tie for counted evidence, write private rows only under ignored `runs/` after `--confirm-private-output`, and publish aggregate-only buckets. The tiny canary passed, but the 100-150 task formal validation was not run.
+The run used 12 public repos cloned/locked under ignored `runs/`, generated public tasks without labels first, selected 120 hard tasks using only public `task_bucket`, generated labels after task freeze and filtered by frozen `test_id`, then executed 120 tasks × seven frozen labels. Private rows stayed only under ignored `runs/`. Buckets show best fixed local/acquisition `count_21_to_50`, rate `rate_25_to_50pct`, and stop/abstain success `count_0`; this is nonzero local evidence-acquisition signal under the frozen protocol, not a winner/lift/product/default/runtime/training claim.
 
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 5A Public-Repo Protocol Freeze
 

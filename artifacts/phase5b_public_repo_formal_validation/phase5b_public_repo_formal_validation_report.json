@@ -2,66 +2,68 @@
   "aggregate_buckets": {
     "candidate_found_buckets": {
       "abstain": "count_0",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_nonzero_lt_2",
-      "read_related_test_when_available": "count_nonzero_lt_2",
+      "bm25_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "bm25_then_read_top1": "count_hundred_to_task_cap",
+      "read_related_test_when_available": "count_hundred_to_task_cap",
       "stop": "count_0",
-      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "symbol_regex_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_top1": "count_hundred_to_task_cap"
     },
     "control_success_bucket": "count_0",
     "evidence_success_buckets": {
       "abstain": "count_0",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_0",
-      "read_related_test_when_available": "count_0",
+      "bm25_then_read_next_unique_file": "count_2_to_5",
+      "bm25_then_read_top1": "count_6_to_20",
+      "read_related_test_when_available": "count_6_to_20",
       "stop": "count_0",
-      "symbol_regex_then_read_next_unique_file": "count_0",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "symbol_regex_then_read_next_unique_file": "count_6_to_20",
+      "symbol_regex_then_read_top1": "count_21_to_50"
     },
     "failure_buckets": {
-      "control_no_acquisition": "count_2_to_5",
-      "no_task_tie": "count_2_to_5"
+      "candidate_not_found": "count_21_to_50",
+      "control_no_acquisition": "count_task_cap_to_row_cap",
+      "materialization_failed": "count_nonzero_lt_2",
+      "no_task_tie": "count_task_cap_to_row_cap"
     },
     "hash_currentness_pass_buckets": {
       "abstain": "count_0",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_nonzero_lt_2",
-      "read_related_test_when_available": "count_nonzero_lt_2",
+      "bm25_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "bm25_then_read_top1": "count_hundred_to_task_cap",
+      "read_related_test_when_available": "count_hundred_to_task_cap",
       "stop": "count_0",
-      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "symbol_regex_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_top1": "count_hundred_to_task_cap"
     },
     "label_coverage_buckets": {
-      "abstain": "count_nonzero_lt_2",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_nonzero_lt_2",
-      "read_related_test_when_available": "count_nonzero_lt_2",
-      "stop": "count_nonzero_lt_2",
-      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "abstain": "count_hundred_to_task_cap",
+      "bm25_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "bm25_then_read_top1": "count_hundred_to_task_cap",
+      "read_related_test_when_available": "count_hundred_to_task_cap",
+      "stop": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_top1": "count_hundred_to_task_cap"
     },
     "materialized_current_source_buckets": {
       "abstain": "count_0",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_nonzero_lt_2",
-      "read_related_test_when_available": "count_nonzero_lt_2",
+      "bm25_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "bm25_then_read_top1": "count_hundred_to_task_cap",
+      "read_related_test_when_available": "count_hundred_to_task_cap",
       "stop": "count_0",
-      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "symbol_regex_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_top1": "count_hundred_to_task_cap"
     },
     "read_attempted_buckets": {
       "abstain": "count_0",
-      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
-      "bm25_then_read_top1": "count_nonzero_lt_2",
-      "read_related_test_when_available": "count_nonzero_lt_2",
+      "bm25_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "bm25_then_read_top1": "count_hundred_to_task_cap",
+      "read_related_test_when_available": "count_hundred_to_task_cap",
       "stop": "count_0",
-      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
-      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+      "symbol_regex_then_read_next_unique_file": "count_hundred_to_task_cap",
+      "symbol_regex_then_read_top1": "count_hundred_to_task_cap"
     },
-    "repo_count_bucket": "count_nonzero_lt_2",
-    "row_count_bucket": "count_6_to_20",
-    "task_count_bucket": "count_nonzero_lt_2"
+    "repo_count_bucket": "count_target_repo_range",
+    "row_count_bucket": "count_task_cap_to_row_cap",
+    "task_count_bucket": "count_hundred_to_task_cap"
   },
   "authorization_attestation": {
     "llm_authorized": false,
@@ -79,9 +81,9 @@
     "training_authorized": false
   },
   "baseline_comparison": {
-    "best_fixed_acquisition_baseline_bucket": "count_nonzero_lt_2",
-    "best_fixed_acquisition_rate_bucket": "rate_full",
-    "best_fixed_local_baseline_bucket": "count_nonzero_lt_2",
+    "best_fixed_acquisition_baseline_bucket": "count_21_to_50",
+    "best_fixed_acquisition_rate_bucket": "rate_25_to_50pct",
+    "best_fixed_local_baseline_bucket": "count_21_to_50",
     "comparison_scope": "best_fixed_local_or_acquisition_baseline_aggregate_only",
     "selection_or_promotion_claim": "not_made",
     "signal_claim": "not_made"
@@ -99,7 +101,7 @@
     "task_generation_hook": "external_frozen_ci_helper_not_invoked_by_this_runner"
   },
   "execution_mode": {
-    "canary": true,
+    "canary": false,
     "phase5b_runner_implemented": true,
     "private_rows_written": true,
     "repo_fetch_executed_by_this_runner": false,
@@ -139,7 +141,7 @@
     "task_count_within_protocol": true,
     "task_hard_cap_preserved": true
   },
-  "next_authorized_action": "run_formal_phase5b_only_after_self_test_or_canary_passes_and_private_output_is_confirmed",
+  "next_authorized_action": "write_phase5b_closeout_no_claim_summary_before_any_new_empirical_phase",
   "phase": "interventional_evidence_acquisition_phase5b_public_repo_formal_validation",
   "privacy_summary": {
     "hashes_public": false,
@@ -155,7 +157,7 @@
     "snippets_public": false
   },
   "schema_version": "phase5b_public_repo_formal_validation_report_v1",
-  "status": "phase5b_public_repo_formal_validation_canary_complete_no_claim",
+  "status": "phase5b_public_repo_formal_validation_complete_no_claim",
   "validation_summary": {
     "central_privacy_scan": "passed",
     "private_row_error_bucket": "count_0",

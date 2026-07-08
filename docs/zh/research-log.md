@@ -1,10 +1,10 @@
 # OpenLocus Research Log
 
-## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Runner Canary
+## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Public-Repo Formal Validation
 
-已新增 `eval/interventional_evidence_acquisition_phase5b_public_repo_formal_validation.py`，并生成 aggregate-only canary report：[`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json)。Status 为 `phase5b_public_repo_formal_validation_canary_complete_no_claim`。
+Phase 5B public-repo formal validation 已完成，aggregate-only public report 为 [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json)。Status 为 `phase5b_public_repo_formal_validation_complete_no_claim`。参见 closeout note [`interventional-evidence-acquisition-phase5b-closeout.md`](./interventional-evidence-acquisition-phase5b-closeout.md)。
 
-这实现了安全的 two-step Phase 5B runner：验证 frozen public task/repo-lock inputs，只为 scoring rows ingest private labels，执行 7 个 frozen local labels，counted evidence 必须满足 current-source materialization/hash/currentness/task tie，只有在 `--confirm-private-output` 后才向 ignored `runs/` 写 private rows，并且 public output 只发布 aggregate buckets。Tiny canary 已通过，但未运行 100-150 task formal validation。
+该 run 使用 12 个 public repos，并将 clone/lock 输出保存在 ignored `runs/` 下；先在无 labels 情况下生成 public tasks；只用 public `task_bucket` 选择 120 个 hard tasks；task freeze 后生成 labels，并按 frozen `test_id` 过滤；随后执行 120 tasks × 7 个 frozen labels。Private rows 只保留在 ignored `runs/` 下。Buckets 显示 best fixed local/acquisition `count_21_to_50`、rate `rate_25_to_50pct`、stop/abstain success `count_0`；这是 frozen protocol 下的 nonzero local evidence-acquisition signal，不是 winner/lift/product/default/runtime/training claim。
 
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 5A Public-Repo Protocol Freeze
 
