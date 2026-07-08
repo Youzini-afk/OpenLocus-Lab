@@ -8,6 +8,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9D Task-Candidate Materialization
+
+- **Checkpoint**：Phase 9D 已记录为 `repair_task_materialization_no_claim`，并新增 bounded runner、paired EN/ZH docs 与 aggregate-only public materialization report。
+- **Result**：Phase 9D 保留 zero-materialization repair checkpoint：constructed inventory、materialized references、observed distinct sources 均为 bucket zero；private currentness reread 不可用；没有 public repo fetch/clone。这只是 source-materialization readiness failure，不是 method 成功或失败的证据。未来 public source fetch/clone 需要另开 frozen boundary。
+- **Scope**：仅为 candidate materialization inventory，gate 于 Phase 9C status `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim` 以及 docs/report CI references。Execution 需要 `--confirm-phase9b-private-registry-read` 与 `--confirm-private-output`；self-test 与 report validation 不读取 private registry 或 source repositories。
+- **Boundary**：Phase 9D 只在 confirmed execution 中读取 ignored Phase 9B private accepted-source registry，并且 private materialization rows 只写入 ignored `runs/phase9d_task_candidate_materialization_no_scoring_no_claim/...`。Public output 仅 aggregate-only，不包含 exact repo/source/task/path/hash/snippet/owner/URL/commit/manifest/run-dir/per-source/per-task facts。
+- **Interpretation**：本地 materialization run 保持 repair/no-claim，因为 target task-candidate bucket 与 minimum distinct-source bucket 未满足。Task candidates 只是 inventory，不是 benchmark labels/outcomes/gold/success，也不是 evidence_success。未发生 strategy scoring、model fitting/training、provider/LLM calls、runtime/default/product changes，也不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## Interventional Evidence Acquisition Phase 9C Task Construction/Materialization Protocol Freeze
 
 - **Checkpoint**：Phase 9C 已记录为 `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim`，并新增 narrow validator/report generator、paired EN/ZH docs 与 aggregate-only public protocol report。

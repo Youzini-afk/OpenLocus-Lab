@@ -8,6 +8,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9D Task-Candidate Materialization
+
+- **Checkpoint**: Phase 9D is recorded as `repair_task_materialization_no_claim` with a bounded runner, paired EN/ZH docs, and an aggregate-only public materialization report.
+- **Result**: Phase 9D preserves a zero-materialization repair checkpoint: constructed inventory, materialized references, and observed distinct sources are bucket zero; private currentness reread is unavailable; no public repo fetch/clone occurred. This is source-materialization readiness failure only, not evidence of method success or failure. Future public source fetch/clone requires a separate frozen boundary.
+- **Scope**: candidate materialization inventory only, gated on Phase 9C status `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim` and docs/report CI references. Execution requires `--confirm-phase9b-private-registry-read` and `--confirm-private-output`; self-test and report validation do not read the private registry or source repositories.
+- **Boundary**: Phase 9D reads the ignored Phase 9B private accepted-source registry only during confirmed execution and writes private materialization rows only under ignored `runs/phase9d_task_candidate_materialization_no_scoring_no_claim/...`. Public output is aggregate-only and excludes exact repo/source/task/path/hash/snippet/owner/URL/commit/manifest/run-dir/per-source/per-task facts.
+- **Interpretation**: the local materialization run remained repair/no-claim because the target task-candidate bucket and minimum distinct-source bucket were not met. Task candidates are inventory only, not benchmark labels/outcomes/gold/success and not evidence_success. No strategy scoring, model fitting/training, provider/LLM calls, runtime/default/product changes, or method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim occurred.
+
 ## Interventional Evidence Acquisition Phase 9C Task Construction/Materialization Protocol Freeze
 
 - **Checkpoint**: Phase 9C is recorded as `phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim` with a narrow validator/report generator, paired EN/ZH docs, and an aggregate-only public protocol report.

@@ -1,0 +1,100 @@
+{
+  "conservative_recommendation": "candidate_materialization_inventory_only_no_strategy_evaluation_until_separate_boundary",
+  "diversity_summary": {
+    "diversity_minimum_met": false,
+    "minimum_distinct_sources_bucket": "bucket_at_least_8",
+    "observed_distinct_sources_bucket": "bucket_zero",
+    "stop_or_repair_if_below_minimum_after_caps": true
+  },
+  "forbidden_execution_boundary": {
+    "benchmark_annotation_generated": false,
+    "evidence_result_evaluation_executed": false,
+    "model_fitting_executed": false,
+    "provider_or_llm_calls_executed": false,
+    "result_annotation_generated": false,
+    "runtime_default_or_product_changes_executed": false,
+    "strategy_evaluation_executed": false
+  },
+  "materialization_summary": {
+    "license_access_default_branch_precheck_bucket": "bucket_minimum_met_low",
+    "materialized_reference_bucket": "bucket_zero",
+    "private_materialization_rows_written": true,
+    "source_reference_currentness_reread_available_privately": false,
+    "source_snippets_public": false,
+    "source_snippets_stored_private": false
+  },
+  "no_claim_boundary": {
+    "default_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "training_claim": false
+  },
+  "phase": "phase9d_task_candidate_materialization_no_scoring_no_claim",
+  "phase9c_gate_refs": {
+    "phase9c_bounded_materialization_boundary_present": true,
+    "phase9c_docs_ci_reference_present": true,
+    "phase9c_public_report_status": "phase9c_task_construction_materialization_protocol_freeze_no_execution_no_scoring_no_claim",
+    "phase9c_public_report_validated": true,
+    "phase9c_report_ci_reference_present": true
+  },
+  "privacy_summary": {
+    "commits_public": false,
+    "hashes_public": false,
+    "manifest_locations_public": false,
+    "owners_public": false,
+    "paths_public": false,
+    "private_outputs_under_ignored_runs_only": true,
+    "public_output_aggregate_only": true,
+    "repo_names_public": false,
+    "row_ids_public": false,
+    "run_locations_public": false,
+    "runs_remains_ignored": true,
+    "singleton_buckets_public": false,
+    "snippets_public": false,
+    "source_names_public": false,
+    "task_ids_public": false,
+    "unit_source_facts_public": false,
+    "unit_task_facts_public": false,
+    "urls_public": false
+  },
+  "private_read_authorization_attestation": {
+    "dry_self_test_and_report_validation_read_private_registry": false,
+    "dry_self_test_and_report_validation_read_source_repositories": false,
+    "phase9b_private_registry_read_confirmed": true,
+    "private_output_confirmed": true
+  },
+  "repair_checkpoint_summary": {
+    "direct_private_source_root_materialization_bucket": "bucket_zero",
+    "future_public_source_fetch_requires_separate_frozen_boundary": true,
+    "in_place_public_fetch_repair_after_observed_repair_forbidden": true,
+    "materialization_failure_is_not_route_or_method_evidence": true,
+    "materialization_itself_is_not_result_evidence": true,
+    "phase9d_preserves_observed_repair_state": true,
+    "phase9d_preserves_zero_materialization_repair_checkpoint": true,
+    "public_repo_fetch_or_clone_executed": false
+  },
+  "schema_version": "phase9d_task_candidate_materialization_no_scoring_no_claim_report_v1",
+  "status": "repair_task_materialization_no_claim",
+  "task_candidate_inventory_summary": {
+    "accepted_rows_remain_inventory_only_not_benchmark_annotations": true,
+    "candidate_type": "evidence_finding_file_localizable_code_tasks_only",
+    "constructed_inventory_bucket": "bucket_zero",
+    "hard_cap_bucket": "bucket_up_to_96",
+    "per_source_cap_bucket": "bucket_up_to_8",
+    "publication_level": "aggregate_bucketed_inventory_only",
+    "replacement_before_benchmark_annotations_or_strategy_evaluation_only": true,
+    "replacement_uses_no_performance_evidence_or_downstream_feedback": true,
+    "target_task_candidate_bucket": "bucket_target_48_to_72"
+  },
+  "validation_summary": {
+    "pass_status_requires_target_bucket_and_minimum_diversity": true,
+    "public_artifact_privacy_audit_expected": true,
+    "report_validation_available": true,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}
