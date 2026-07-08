@@ -2,15 +2,21 @@
 
 日期：2026-07-07
 
-Status: `phase5a_public_repo_protocol_freeze_no_claim`
+Status: `phase5b_public_repo_formal_validation_canary_complete_no_claim`
 
-Authorization: `design_protocol_only_no_execution`
+Authorization: `runner_canary_only_formal_validation_not_run`
 
 Route relation: `new_candidate_route_not_reopening_closed_v2_lines`
 
 本文记录 interventional evidence acquisition 的 Phase 0 候选路线设计，以及后续最小 Phase 1 local private pilot。它不是 OpenLocus v3 branding，也不授权 provider/network work、training、runtime/default changes 或 method-winner claims。
 
-最新 checkpoint：Phase 5A public-repo protocol freeze。参见 [`interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md`](./interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md) 和 `artifacts/phase5a_public_repo_protocol_freeze/phase5a_public_repo_protocol_freeze_report.json`。Status 为 `phase5a_public_repo_protocol_freeze_no_claim`。它只冻结规则；不 fetch repos、不生成 tasks、不写 private rows、不读取 source、不新增 CI/workflow，也不实现 Phase 5B。
+最新 checkpoint：Phase 5B runner canary。Runner 为 `eval/interventional_evidence_acquisition_phase5b_public_repo_formal_validation.py`；public aggregate canary report 为 `artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json`。Status 为 `phase5b_public_repo_formal_validation_canary_complete_no_claim`。这不是 100-150 task formal validation。
+
+## Phase 5B runner canary status
+
+该 runner 使用安全的 two-step 形态：ingest 已冻结的 public task manifest 和 repo-lock，只为 scoring rows ingest private labels，精确执行 7 个 frozen local labels，并且 counted evidence 必须满足 current-source materialization/hash/currentness/task tie。Private rows 需要 `--confirm-private-output`，并保留在 ignored `runs/` 下。
+
+Tiny local canary 已通过，并且只在 confirmation 后写入 ignored private canary rows。Runner 本身不 fetch repositories，也不生成 formal task set；这些仍是 future formal run 前的 external frozen hooks。100-150 task formal validation 尚未运行，也不提出 method/product/default/runtime claim。
 
 ## Phase 5A public-repo protocol freeze status
 

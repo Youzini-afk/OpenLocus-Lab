@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 5B Runner Canary
+
+Added `eval/interventional_evidence_acquisition_phase5b_public_repo_formal_validation.py` and generated the aggregate-only canary report [`phase5b_public_repo_formal_validation_report.json`](../../artifacts/phase5b_public_repo_formal_validation/phase5b_public_repo_formal_validation_report.json). Status is `phase5b_public_repo_formal_validation_canary_complete_no_claim`.
+
+This implements a safe two-step Phase 5B runner: validate frozen public task/repo-lock inputs, ingest private labels only for scoring rows, execute the seven frozen local labels, require current-source materialization/hash/currentness/task tie for counted evidence, write private rows only under ignored `runs/` after `--confirm-private-output`, and publish aggregate-only buckets. The tiny canary passed, but the 100-150 task formal validation was not run.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 5A Public-Repo Protocol Freeze
 
 Added [`interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md`](./interventional-evidence-acquisition-phase5a-public-repo-protocol-freeze.md) and public report [`phase5a_public_repo_protocol_freeze_report.json`](../../artifacts/phase5a_public_repo_protocol_freeze/phase5a_public_repo_protocol_freeze_report.json). Status is `phase5a_public_repo_protocol_freeze_no_claim`.

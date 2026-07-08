@@ -1,0 +1,166 @@
+{
+  "aggregate_buckets": {
+    "candidate_found_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_nonzero_lt_2",
+      "read_related_test_when_available": "count_nonzero_lt_2",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "control_success_bucket": "count_0",
+    "evidence_success_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_0",
+      "read_related_test_when_available": "count_0",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_0",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "failure_buckets": {
+      "control_no_acquisition": "count_2_to_5",
+      "no_task_tie": "count_2_to_5"
+    },
+    "hash_currentness_pass_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_nonzero_lt_2",
+      "read_related_test_when_available": "count_nonzero_lt_2",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "label_coverage_buckets": {
+      "abstain": "count_nonzero_lt_2",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_nonzero_lt_2",
+      "read_related_test_when_available": "count_nonzero_lt_2",
+      "stop": "count_nonzero_lt_2",
+      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "materialized_current_source_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_nonzero_lt_2",
+      "read_related_test_when_available": "count_nonzero_lt_2",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "read_attempted_buckets": {
+      "abstain": "count_0",
+      "bm25_then_read_next_unique_file": "count_nonzero_lt_2",
+      "bm25_then_read_top1": "count_nonzero_lt_2",
+      "read_related_test_when_available": "count_nonzero_lt_2",
+      "stop": "count_0",
+      "symbol_regex_then_read_next_unique_file": "count_nonzero_lt_2",
+      "symbol_regex_then_read_top1": "count_nonzero_lt_2"
+    },
+    "repo_count_bucket": "count_nonzero_lt_2",
+    "row_count_bucket": "count_6_to_20",
+    "task_count_bucket": "count_nonzero_lt_2"
+  },
+  "authorization_attestation": {
+    "llm_authorized": false,
+    "method_selection_claimed": false,
+    "model_training_executed": false,
+    "new_retrieval_family_added": false,
+    "new_retrieval_family_authorized": false,
+    "promotion_claimed": false,
+    "provider_network_authorized": false,
+    "public_github_fetch_only_for_external_frozen_hook": true,
+    "remote_model_authorized": false,
+    "runtime_default_change_authorized": false,
+    "runtime_default_changed": false,
+    "search_api_authorized": false,
+    "training_authorized": false
+  },
+  "baseline_comparison": {
+    "best_fixed_acquisition_baseline_bucket": "count_nonzero_lt_2",
+    "best_fixed_acquisition_rate_bucket": "rate_full",
+    "best_fixed_local_baseline_bucket": "count_nonzero_lt_2",
+    "comparison_scope": "best_fixed_local_or_acquisition_baseline_aggregate_only",
+    "selection_or_promotion_claim": "not_made",
+    "signal_claim": "not_made"
+  },
+  "evidencecore_summary": {
+    "candidate_found_alone_is_evidence": false,
+    "stop_and_abstain_are_controls": true,
+    "success_requires_current_source_read": true,
+    "success_requires_hash_currentness_task_tie": true,
+    "success_requires_materialization": true
+  },
+  "execution_hook_limitations": {
+    "formal_execution_requires_confirm_private_output": true,
+    "repository_fetch_hook": "external_frozen_ci_helper_not_invoked_by_this_runner",
+    "task_generation_hook": "external_frozen_ci_helper_not_invoked_by_this_runner"
+  },
+  "execution_mode": {
+    "canary": true,
+    "phase5b_runner_implemented": true,
+    "private_rows_written": true,
+    "repo_fetch_executed_by_this_runner": false,
+    "task_generation_executed_by_this_runner": false,
+    "two_step_manifest_ingestion_runner": true
+  },
+  "frozen_protocol_summary": {
+    "frozen_labels_exact": [
+      "bm25_then_read_top1",
+      "bm25_then_read_next_unique_file",
+      "symbol_regex_then_read_top1",
+      "symbol_regex_then_read_next_unique_file",
+      "read_related_test_when_available",
+      "stop",
+      "abstain"
+    ],
+    "private_row_hard_max": "one_thousand_fifty",
+    "repo_hard_max": "sixteen",
+    "repo_target_range": "ten_to_twelve",
+    "target_task_count": "one_hundred_twenty",
+    "task_hard_max": "one_hundred_fifty",
+    "urls_shas_strata_replacement_frozen_before_execution": true,
+    "valid_task_range": "one_hundred_to_one_hundred_fifty"
+  },
+  "hard_gates": {
+    "current_source_validation_for_success": true,
+    "no_new_retrieval_family": true,
+    "no_provider_llm_search_api_remote_model": true,
+    "no_staged_runs_or_post_outcome_tuning": true,
+    "no_training_or_runtime_default_change": true,
+    "private_rows_schema_valid": true,
+    "public_report_aggregate_only": true,
+    "repo_hard_cap_preserved": true,
+    "row_hard_cap_preserved": true,
+    "seven_labels_exact": true,
+    "stop_abstain_success_zero": true,
+    "task_count_within_protocol": true,
+    "task_hard_cap_preserved": true
+  },
+  "next_authorized_action": "run_formal_phase5b_only_after_self_test_or_canary_passes_and_private_output_is_confirmed",
+  "phase": "interventional_evidence_acquisition_phase5b_public_repo_formal_validation",
+  "privacy_summary": {
+    "hashes_public": false,
+    "manifests_public": false,
+    "paths_public": false,
+    "provider_payloads_public": false,
+    "publication_level": "aggregate_only",
+    "ranges_public": false,
+    "raw_private_rows_public": false,
+    "raw_task_ids_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "snippets_public": false
+  },
+  "schema_version": "phase5b_public_repo_formal_validation_report_v1",
+  "status": "phase5b_public_repo_formal_validation_canary_complete_no_claim",
+  "validation_summary": {
+    "central_privacy_scan": "passed",
+    "private_row_error_bucket": "count_0",
+    "protocol_error_bucket": "count_0",
+    "route_specific_public_report_validation": "passed",
+    "self_test_available": true
+  }
+}
