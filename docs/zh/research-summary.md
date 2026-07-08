@@ -8,6 +8,14 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## Interventional Evidence Acquisition Phase 9F Public Source Fetch/Clone Materialization
+
+- **Checkpoint**：Phase 9F 已记录为 `phase9f_public_source_fetch_clone_materialization_repair_no_claim`，并新增 bounded runner、paired EN/ZH docs 与 aggregate-only public materialization report。
+- **Result**：Phase 9F 保留 zero-materialization repair checkpoint：constructed inventory、materialized references、observed distinct sources 均为 bucket zero；private currentness reread 不可用；在 observed failure 之后没有发生 in-place tuning/cap 或 source selection。这只是 source-materialization readiness failure，不是 method 成功或失败的证据。Future strategy scoring 需要另一个 frozen boundary。
+- **Scope**：仅为 bounded public source fetch/clone materialization inventory，gate 于 frozen Phase 9E protocol 及其 public gate references（remote commit `7f4ad8a`、CI run `28972733319`、CI success、Phase 9E status）。Local same-tree git commits 不被读取或比较；supplied confirmation 值只与 frozen public gate constants 比对。Execution 需要全部六个显式 confirmations；self-test 与 report validation 不 fetch/clone、不读取 ignored `runs/`、不读取 private candidate pools。
+- **Boundary**：Phase 9F 只将 public-only sources fetch/clone 进入 ignored `runs/phase9f_public_source_fetch_clone_materialization_no_scoring_no_claim/...` workspace，并且 private manifests/materialization rows 只写入 ignored `runs/`。Public-source inputs 不嵌入 tracked source/docs/report；candidate source URLs（若有）只从 ignored `runs/` 下的 private candidate pool 读取。Public output 仅 aggregate-only，不包含 exact repo/source/task/path/hash/snippet/owner/URL/commit/manifest/run-dir/per-source/per-task facts 与 singleton buckets；唯一的 commit/CI 值是 Phase 9E public gate references。
+- **Interpretation**：run 保持 repair/no-claim，因为 ignored `runs/` 下没有可用的 private candidate source pool，并且 public fetch/clone 无法在 caps 之下 materialize 任何 source。Task candidates 只是 inventory，不是 benchmark labels/outcomes/gold/success，也不是 evidence_success。未发生 strategy scoring、labels、outcomes、evidence-success evaluation、model fitting/training、provider/LLM calls、runtime/default/product changes、provider/LLM/model/default/runtime change，也不提出 method/product/performance/training/provider/model/scoring/outcome/evidence-success/runtime/default claim。
+
 ## Interventional Evidence Acquisition Phase 9E Public Source Fetch/Clone Materialization Protocol Freeze
 
 - **Checkpoint**：Phase 9E 已记录为 `phase9e_public_source_fetch_clone_materialization_protocol_freeze_no_execution_no_scoring_no_claim`，并新增 narrow validator/report generator、paired EN/ZH docs 与 aggregate-only public protocol report。
