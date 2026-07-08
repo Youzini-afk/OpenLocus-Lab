@@ -1,0 +1,106 @@
+{
+  "claim_boundary": {
+    "data_usage_claim": false,
+    "default_claim": false,
+    "lift_claim": false,
+    "method_selected_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "signal_claim": false,
+    "training_claim": false,
+    "winner_claim": false
+  },
+  "forbidden_operations": {
+    "candidate_registry_population_executed": false,
+    "default_setting_changed": false,
+    "ignored_runs_reads_executed": false,
+    "manifest_reads_executed": false,
+    "model_fit_or_training_executed": false,
+    "private_input_reads_executed": false,
+    "product_or_method_claim_made": false,
+    "provider_network_llm_used": false,
+    "public_repo_fetch_or_clone_executed": false,
+    "row_outcome_scoring_executed": false,
+    "runtime_setting_changed": false,
+    "source_reads_executed": false,
+    "task_generation_executed": false
+  },
+  "next_authorized_action": "phase8b_may_only_construct_and_audit_inputs_first_no_scoring_until_input_independence_audit_passes_no_phase7e_repair_loop",
+  "phase": "phase8a_fresh_input_independence_protocol_freeze",
+  "phase8b_contract": {
+    "attempt_budget": {
+      "future_task_hard_max_if_separately_allowed": 150,
+      "max_candidate_repos_inspected": 16,
+      "max_independent_construction_attempts": 2,
+      "target_accepted_repo_max": 12,
+      "target_accepted_repo_min": 8,
+      "unbounded_attempts_allowed": false
+    },
+    "candidate_registry_public": false,
+    "candidate_source_registry_under_ignored_runs_in_phase8b_only": true,
+    "explicit_prior_phase_exclusion_required": {
+      "phase5b": true,
+      "phase7b": true,
+      "phase7c": true,
+      "phase7e": true
+    },
+    "hard_stops": {
+      "accepted_task_count_cannot_be_reached_without_loosening_freshness": true,
+      "any_scoring_before_input_independence_audit_passes": true,
+      "comparable_identity_cannot_be_established": true,
+      "overlap_nonzero": true,
+      "public_report_would_need_exact_private_details": true
+    },
+    "input_construction_audit_first_not_scoring": true,
+    "replacement_policy": {
+      "after_evidence_outcomes_allowed": false,
+      "allowed_clone_failure": true,
+      "allowed_failed_independence_or_materialization_precheck": true,
+      "allowed_insufficient_eligible_files": true,
+      "allowed_unavailable_sha": true,
+      "only_before_outcome_scoring": true,
+      "performance_based_replacement_allowed": false
+    },
+    "strict_comparable_identity_required": {
+      "clone_origin_required": true,
+      "commit_sha_required": true,
+      "exact_paths_ranges_hashes_required": true,
+      "file_family_closeness_required_if_privately_detectable": true,
+      "fork_source_repo_required_if_detectable": true,
+      "normalized_url_forms_required": true,
+      "owner_name_required": true,
+      "package_module_identity_required_where_available": true,
+      "task_ids_required": true
+    }
+  },
+  "public_reporting_contract": {
+    "commits_shas_public": false,
+    "manifest_paths_public": false,
+    "paths_ranges_hashes_snippets_public": false,
+    "per_repo_per_task_details_public": false,
+    "private_details_public": false,
+    "publication_level": "aggregate_bucket_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_row_ids_public": false
+  },
+  "public_scope": {
+    "aggregate_protocol_report_only": true,
+    "docs_report_only": true,
+    "future_contract_only": true,
+    "independence_achieved": false,
+    "independence_passed": false,
+    "independence_repaired": false,
+    "independence_validated": false,
+    "phase7e_repair_loop_forbidden": true
+  },
+  "schema_version": "phase8a_fresh_input_independence_protocol_freeze_report_v1",
+  "status": "phase8a_protocol_freeze_no_execution_no_claim",
+  "validation_summary": {
+    "private_inputs_accessed_by_validator": false,
+    "route_specific_validator_available": true,
+    "self_test_available": true
+  }
+}

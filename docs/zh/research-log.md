@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 8A Fresh-Input Independence Protocol Freeze
+
+已新增 `eval/interventional_evidence_acquisition_phase8a_fresh_input_independence_protocol_freeze.py`、EN/ZH paired docs，以及 aggregate-only public protocol report [`phase8a_fresh_input_independence_protocol_freeze_report.json`](../../artifacts/phase8a_fresh_input_independence_protocol_freeze/phase8a_fresh_input_independence_protocol_freeze_report.json)。Status 为 `phase8a_protocol_freeze_no_execution_no_claim`。参见 [`interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md`](./interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md)。
+
+这是 docs/report-only。未读取 private inputs，未读取 ignored `runs/`，未读取 manifests，未 fetch/clone public repo，未读取 source，未生成 tasks，未填充 candidate registry，未执行 row/outcome scoring，未执行 runner，未提出 model/training/provider/LLM/runtime/default/product/method claim，也未声明 independence achieved。Frozen future Phase 8B contract 要求 scoring 前先进行 input construction/audit，显式排除 Phase 5B/7B/7C/7E，使用 strict comparable identity，最多 2 次 construction attempts，最多 inspect 16 个 candidate repos，accepted repo target 为 8-12，replacement 只能在 outcome scoring 前，nonzero overlap 与其他 independence failures 为 hard stops，public output 仅 aggregate-only，并禁止继续 Phase 7E repair loop。
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 7F Phase 7 Closeout
 
 已新增 EN/ZH paired docs，以及 aggregate-only public closeout report [`phase7f_phase7_closeout_report.json`](../../artifacts/phase7f_phase7_closeout/phase7f_phase7_closeout_report.json)。Status 为 `phase7f_docs_only_closeout_no_execution_no_claim`。参见 [`interventional-evidence-acquisition-phase7f-phase7-closeout.md`](./interventional-evidence-acquisition-phase7f-phase7-closeout.md)。

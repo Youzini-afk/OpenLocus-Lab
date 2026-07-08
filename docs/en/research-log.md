@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 8A Fresh-Input Independence Protocol Freeze
+
+Added `eval/interventional_evidence_acquisition_phase8a_fresh_input_independence_protocol_freeze.py`, paired EN/ZH docs, and aggregate-only public protocol report [`phase8a_fresh_input_independence_protocol_freeze_report.json`](../../artifacts/phase8a_fresh_input_independence_protocol_freeze/phase8a_fresh_input_independence_protocol_freeze_report.json). Status is `phase8a_protocol_freeze_no_execution_no_claim`. See [`interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md`](./interventional-evidence-acquisition-phase8a-fresh-input-independence-protocol-freeze.md).
+
+This is docs/report-only. It performed no private input reads, ignored `runs/` reads, manifest reads, public repo fetch/clone, source reads, task generation, candidate registry population, row/outcome scoring, runner execution, model/training/provider/LLM/runtime/default/product/method claim, or independence-achieved assertion. The frozen future Phase 8B contract requires input construction/audit before scoring, explicit Phase 5B/7B/7C/7E exclusion, strict comparable identity, max 2 construction attempts, max 16 candidate repos inspected, 8-12 accepted repo target, replacement only before outcome scoring, hard stops for nonzero overlap and other independence failures, aggregate-only public output, and no further Phase 7E repair loop.
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 7F Phase 7 Closeout
 
 Added paired EN/ZH docs and aggregate-only public closeout report [`phase7f_phase7_closeout_report.json`](../../artifacts/phase7f_phase7_closeout/phase7f_phase7_closeout_report.json). Status is `phase7f_docs_only_closeout_no_execution_no_claim`. See [`interventional-evidence-acquisition-phase7f-phase7-closeout.md`](./interventional-evidence-acquisition-phase7f-phase7-closeout.md).
