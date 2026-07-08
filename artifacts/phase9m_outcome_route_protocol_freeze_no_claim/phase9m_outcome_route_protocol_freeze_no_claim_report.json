@@ -1,0 +1,297 @@
+{
+  "claim_boundary": {
+    "adjudication_claim": false,
+    "annotation_truth_claim": false,
+    "correctness_claim": false,
+    "default_claim": false,
+    "evidence_success_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "outcome_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "scoring_claim": false,
+    "training_claim": false
+  },
+  "conservative_recommendation": "phase9m_freezes_outcome_observable_acquisition_route_protocol_only_no_execution_no_scoring_no_adjudication_no_claim_phase9n_may_execute_frozen_route_only_under_separate_boundary_no_method_product_claim",
+  "frozen_denominator_rule": {
+    "acquired_outcomes_may_become_future_denominator_only_under_later_frozen_scoring_phase": true,
+    "denominator_rules": [
+      "acquired_outcomes_may_become_future_denominator_only_under_later_frozen_scoring_phase",
+      "unavailable_outcomes_outside_scoring_or_adjudication_denominators_unless_pre_frozen_missingness_analysis_reports_aggregate_acquisition_availability",
+      "never_count_unavailable_as_failure_or_success_or_partial_or_evidence_success",
+      "no_scoring_denominator_exists_in_phase9m"
+    ],
+    "never_count_unavailable_as_failure_or_success_or_partial_or_evidence_success": true,
+    "unavailable_outcomes_outside_scoring_or_adjudication_denominators_unless_pre_frozen_missingness_analysis_reports_aggregate_acquisition_availability": true
+  },
+  "frozen_future_sequence": {
+    "phase9m_freeze_only": true,
+    "phase9n_execute_frozen_route_only_private_outputs_under_ignored_runs_aggregate_public_availability_report_only": true,
+    "phase9o_scoring_protocol_or_denominator_freeze_only_if_nonzero_valid_acquired_outcomes_exist": true,
+    "phase9p_plus_scoring_or_adjudication_under_separate_frozen_boundaries": true,
+    "sequence_rules": [
+      "phase9m_freeze_only",
+      "phase9n_execute_frozen_route_only_private_outputs_under_ignored_runs_aggregate_public_availability_report_only",
+      "phase9o_scoring_protocol_or_denominator_freeze_only_if_nonzero_valid_acquired_outcomes_exist",
+      "phase9p_plus_scoring_or_adjudication_under_separate_frozen_boundaries",
+      "no_scoring_or_adjudication_execution_in_phase9m"
+    ]
+  },
+  "frozen_no_p_hacking_guardrails": {
+    "guardrail_rules": [
+      "no_private_or_source_inspection_during_phase9m",
+      "no_tuning_definitions_after_observables_visible",
+      "no_denominator_or_inclusion_changes_after_acquisition",
+      "no_subgroup_changes_after_acquisition",
+      "single_route_order_and_failure_transitions_frozen_now_no_drift",
+      "no_trying_routes_until_one_works_unless_pre_frozen"
+    ],
+    "no_denominator_or_inclusion_changes_after_acquisition": true,
+    "no_private_or_source_inspection_during_phase9m": true,
+    "no_subgroup_changes_after_acquisition": true,
+    "no_tuning_definitions_after_observables_visible": true,
+    "single_route_order_and_failure_transitions_frozen_now": true
+  },
+  "frozen_outcome_observable_acquisition_route": {
+    "authorized_derived_artifacts": [
+      "evidence_acquisition_method_outputs_authorized_to_be_generated_and_read_in_phase9n_under_ignored_runs_only",
+      "outcome_observable_packets_authorized_to_be_generated_in_phase9n_under_ignored_runs_only",
+      "no_public_derived_artifacts_except_aggregate_availability_buckets"
+    ],
+    "authorized_private_inputs": [
+      "phase9h_materialized_sources_authorized_to_be_read_in_phase9n_only",
+      "phase9j_annotation_input_rows_authorized_to_be_read_in_phase9n_as_routing_precondition_metadata_only_not_benchmark_truth"
+    ],
+    "extraction_procedure": [
+      "deterministic_manual_extraction_from_phase9h_materialized_sources_only",
+      "no_llm_no_provider_calls_in_phase9n",
+      "no_model_inference_or_judgment_in_outcome_observable_acquisition"
+    ],
+    "future_phase9n_boundary": true,
+    "inherited_phase9h_aggregate_caps": {
+      "hard_cap_bucket": "bucket_up_to_96",
+      "minimum_distinct_sources_bucket": "bucket_at_least_8",
+      "per_source_cap_bucket": "bucket_up_to_8",
+      "target_inventory_bucket": "bucket_48_to_72"
+    },
+    "invalid_criteria": [
+      "acquired_observable_malformed_or_not_source_grounded_is_invalid",
+      "acquired_observable_ambiguous_or_self_contradictory_is_invalid",
+      "acquired_observable_exceeds_whitelisted_evidence_form_is_invalid"
+    ],
+    "no_llm_no_provider_frozen": true,
+    "no_trying_routes_until_one_works_unless_pre_frozen": true,
+    "observable_definition": [
+      "outcome_observable_is_directly_readable_source_grounded_fact_from_authorized_materialized_source_only",
+      "outcome_observable_answers_the_phase9j_outcome_acquisition_precondition_not_an_inference",
+      "outcome_observable_must_match_the_phase9j_expected_evidence_form"
+    ],
+    "publication_level": "aggregate_bucketed_protocol_only",
+    "replacement_rule_if_invalid": [
+      "invalid_outcome_rejected_before_any_scoring_with_replacement_only",
+      "replacement_uses_next_deterministic_source_or_task_candidate_no_retry_no_fallback_route",
+      "replacement_uses_no_performance_evidence_model_or_downstream_feedback"
+    ],
+    "route_form": "single_fixed_route_no_fallback_no_retry",
+    "route_order_and_fallback_rule": [
+      "single_fixed_route_deterministic_manual_extraction_no_route_order_drift",
+      "no_trying_routes_until_one_works",
+      "failure_transition_record_unavailable_or_invalid_and_stop_no_fallback_route"
+    ],
+    "stop_rule": [
+      "stop_per_task_when_outcome_observable_acquired_and_valid_or_single_route_attempt_exhausted",
+      "stop_per_source_at_inherited_phase9h_per_source_cap_bucket",
+      "no_retry_no_fallback_route_after_unavailable_or_invalid"
+    ],
+    "unavailable_criteria": [
+      "materialized_source_absent_or_not_readable_is_unavailable",
+      "materialized_source_does_not_contain_outcome_observable_is_unavailable",
+      "outcome_observable_cannot_be_acquired_from_authorized_reads_alone_is_unavailable"
+    ]
+  },
+  "frozen_privacy": {
+    "no_path_snippet_row_task_manifest_run_locations": true,
+    "no_per_source_or_per_task_facts": true,
+    "no_repo_source_url_owner_commit_beyond_whitelisted_phase_gates": true,
+    "no_singleton_buckets": true,
+    "privacy_rules": [
+      "public_aggregate_or_bucketed_only",
+      "no_repo_source_url_owner_commit_beyond_whitelisted_phase9l_phase9k_gate_refs",
+      "no_path_snippet_row_task_manifest_run_locations_public",
+      "no_per_source_or_per_task_facts_public",
+      "no_singleton_buckets_public"
+    ],
+    "public_aggregate_or_bucketed_only": true
+  },
+  "no_execution_booleans": {
+    "adjudication_executed": false,
+    "annotations_generated": false,
+    "evaluation_rows_generated": false,
+    "evidence_success_evaluated": false,
+    "gold_rows_generated": false,
+    "ignored_runs_read": false,
+    "model_fitting": false,
+    "network_fetch_or_clone_or_source_refresh_executed": false,
+    "outcome_acquisition_method_executed": false,
+    "outcome_observables_acquired": false,
+    "outcome_route_executed": false,
+    "outcomes_acquired": false,
+    "private_candidate_pool_read": false,
+    "private_phase9h_materialized_sources_read": false,
+    "private_phase9j_annotation_input_rows_read": false,
+    "private_phase9l_outcome_packets_read": false,
+    "private_registry_read": false,
+    "provider_or_llm_calls": false,
+    "public_fetch_clone_executed": false,
+    "result_labels_generated": false,
+    "runtime_default_or_product_changes": false,
+    "scoring_executed": false,
+    "source_materialization_executed": false,
+    "task_annotation_generated": false
+  },
+  "phase": "phase9m_outcome_route_protocol_freeze_no_claim",
+  "phase9f_inherited_provenance": {
+    "phase9f_carried_as_inherited_provenance_only": true,
+    "phase9f_public_fetch_or_clone_executed": false,
+    "phase9f_repair_no_claim": true,
+    "phase9f_status": "phase9f_public_source_fetch_clone_materialization_repair_no_claim",
+    "phase9f_zero_buckets": true
+  },
+  "phase9g_inherited_provenance": {
+    "phase9g_carried_as_inherited_provenance_only": true,
+    "phase9g_ci_success": true,
+    "phase9g_protocol_freeze": true,
+    "phase9g_remote_provenance_bucketed": true,
+    "phase9g_status": "phase9g_candidate_source_pool_network_fetch_protocol_freeze_no_execution_no_scoring_no_claim"
+  },
+  "phase9h_inherited_provenance": {
+    "phase9h_carried_as_inherited_provenance_only": true,
+    "phase9h_ci_success": true,
+    "phase9h_remote_provenance_bucketed": true,
+    "phase9h_source_materialization_readiness_only": true,
+    "phase9h_status": "phase9h_candidate_source_pool_public_source_network_fetch_materialization_readiness_no_scoring_no_claim"
+  },
+  "phase9i_inherited_provenance": {
+    "phase9i_carried_as_inherited_provenance_only": true,
+    "phase9i_ci_success": true,
+    "phase9i_protocol_freeze": true,
+    "phase9i_remote_provenance_bucketed": true,
+    "phase9i_status": "phase9i_materialized_inventory_to_task_annotation_protocol_freeze_no_execution_no_scoring_no_claim"
+  },
+  "phase9j_inherited_provenance": {
+    "phase9j_annotation_input_rows_are_routing_precondition_only_not_benchmark_truth": true,
+    "phase9j_annotation_input_rows_generated": true,
+    "phase9j_carried_as_inherited_provenance_only": true,
+    "phase9j_ci_success": true,
+    "phase9j_remote_provenance_bucketed": true,
+    "phase9j_status": "phase9j_annotation_input_rows_generated_no_scoring_no_claim"
+  },
+  "phase9k_gate_references": {
+    "phase9k_ci_run": "28981994749",
+    "phase9k_ci_success": true,
+    "phase9k_commit": "233a16e6672b05b87b09be5b920f8fc9dd72e274",
+    "phase9k_did_not_acquire_outcomes_or_score_or_adjudicate_or_generate_gold_rows": true,
+    "phase9k_gate_required_before_phase9m": true,
+    "phase9k_not_proof_outcome_or_scoring_or_evidence_success_works": true,
+    "phase9k_outcome_acquisition_protocol_frozen": true,
+    "phase9k_protocol_freeze": true,
+    "phase9k_status": "phase9k_outcome_scoring_protocol_freeze_no_claim"
+  },
+  "phase9l_closeout_statement": {
+    "phase9j_rows_alone_cannot_expose_outcome_observables": true,
+    "phase9l_all_unavailable_packets_are_acquisition_state_records_not_failures_or_successes_or_performance_evidence": true,
+    "phase9l_no_scoring_denominator_exists": true,
+    "phase9l_outcome_acquisition_packets_are_acquisition_state_only_not_scoring_not_adjudication_not_evidence_success": true
+  },
+  "phase9l_gate_references": {
+    "phase9l_all_unavailable_only_under_phase9k_missing_outcome_rule": true,
+    "phase9l_ci_run": "28983185765",
+    "phase9l_ci_success": true,
+    "phase9l_commit": "c815a77d4dea3b77efe5dae0abe06006045294e9",
+    "phase9l_did_not_score_or_adjudicate_or_generate_gold_rows": true,
+    "phase9l_gate_required_before_phase9m": true,
+    "phase9l_no_scoring_denominator_exists": true,
+    "phase9l_not_proof_outcome_or_scoring_or_evidence_success_works": true,
+    "phase9l_outcome_acquisition_protocol_frozen": true,
+    "phase9l_outcome_packets_are_acquisition_state_only_not_scoring_not_adjudication": true,
+    "phase9l_status": "phase9l_outcome_acquisition_executed_unavailable_only_no_scoring_no_adjudication_no_claim"
+  },
+  "phase9m_scope": {
+    "adjudication_executed": false,
+    "annotations_generated": false,
+    "docs_report_validator_only": true,
+    "evaluation_rows_generated": false,
+    "evidence_success_evaluated": false,
+    "future_execution_requires_phase9m_commit_and_ci_green": true,
+    "gold_rows_generated": false,
+    "ignored_runs_read": false,
+    "model_fitting": false,
+    "network_fetch_or_clone_or_source_refresh_executed": false,
+    "outcome_acquisition_method_executed": false,
+    "outcome_observables_acquired": false,
+    "outcome_route_executed": false,
+    "outcomes_acquired": false,
+    "private_candidate_pool_read": false,
+    "private_phase9h_materialized_sources_read": false,
+    "private_phase9j_annotation_input_rows_read": false,
+    "private_phase9l_outcome_packets_read": false,
+    "private_registry_read": false,
+    "protocol_freeze_only": true,
+    "provider_or_llm_calls": false,
+    "public_fetch_clone_executed": false,
+    "result_labels_generated": false,
+    "runtime_default_or_product_changes": false,
+    "scoring_executed": false,
+    "source_materialization_executed": false,
+    "task_annotation_generated": false
+  },
+  "privacy_contract": {
+    "commits_public": false,
+    "hashes_public": false,
+    "manifest_locations_public": false,
+    "outcome_observables_public": false,
+    "outcome_packets_public": false,
+    "owners_public": false,
+    "paths_public": false,
+    "per_source_public_facts": false,
+    "per_task_public_facts": false,
+    "private_future_manifests_only_under_ignored_runs": true,
+    "public_output_aggregate_only": true,
+    "repo_names_public": false,
+    "row_ids_public": false,
+    "run_locations_public": false,
+    "runs_remains_ignored": true,
+    "singleton_buckets_public": false,
+    "snippets_public": false,
+    "source_names_public": false,
+    "task_ids_public": false,
+    "urls_public": false
+  },
+  "schema_version": "phase9m_outcome_route_protocol_freeze_no_claim_report_v1",
+  "status": "phase9m_outcome_observable_acquisition_route_protocol_freeze_no_execution_no_scoring_no_adjudication_no_claim",
+  "truth_boundary": {
+    "authorized_input_is_not_outcome_observable": true,
+    "denominator_rule_is_not_a_scoring_denominator": true,
+    "extraction_procedure_is_not_acquired_outcome": true,
+    "frozen_route_is_protocol_not_executed_acquisition": true,
+    "observable_definition_is_not_gold_evidence": true,
+    "route_fallback_rule_is_not_trying_routes_until_one_works": true
+  },
+  "validation_summary": {
+    "public_artifact_privacy_audit_expected": true,
+    "report_validation_available": true,
+    "route_specific_validator_available": true,
+    "self_test_available": true,
+    "validator_does_not_fetch_or_read_private": true,
+    "validator_does_not_read_phase9h_materialized_sources": true,
+    "validator_does_not_read_phase9j_annotation_input_rows": true,
+    "validator_does_not_read_phase9l_outcome_packets": true,
+    "validator_executes_tasks": false,
+    "validator_reads_ignored_runs": false,
+    "validator_reads_private_registry": false,
+    "validator_reads_sources": false
+  }
+}
