@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 7C Formal Fresh Public-Repo Validation
+
+已新增 `eval/interventional_evidence_acquisition_phase7c_fresh_public_repo_validation_formal.py`，在显式 private input/output 与 public-repo-fetch confirmation 下运行 formal execution，并生成 aggregate-only public report [`phase7c_fresh_public_repo_validation_formal_report.json`](../../artifacts/phase7c_fresh_public_repo_validation_formal/phase7c_fresh_public_repo_validation_formal_report.json)。Status 为 `repair_formal_pipeline_no_claim`。参见 [`interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md`](./interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md)。
+
+本次运行使用 frozen Phase 7A formal target buckets，拒绝 manifest-supplied execution 与 local/synthetic sources，只为 overlap rejection 读取 prior Phase 5B/7B private material，只在 ignored `runs/` 下写 private manifest/rows，并且只发布 coarse buckets。修复后的 prior-overlap indexing 在 row scoring 前发现 nonzero prior overlap，因此 formal artifact 保持 repair/no-claim，而不是 passed validation。本次在显式确认下使用 public repository fetch。该结果保持 no-claim，不提出 method/product/default/runtime/deployment/provider/training claim。
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 7B Fresh Public-Repo Validation Canary
 
 已新增 `eval/interventional_evidence_acquisition_phase7b_fresh_public_repo_validation_canary.py`，在显式 private input/output confirmation 下运行 canary，并生成 aggregate-only public report [`phase7b_fresh_public_repo_validation_canary_report.json`](../../artifacts/phase7b_fresh_public_repo_validation_canary/phase7b_fresh_public_repo_validation_canary_report.json)。Status 为 `phase7b_canary_pipeline_check_passed_no_claim`。参见 [`interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md`](./interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md)。

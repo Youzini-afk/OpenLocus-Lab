@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-08 - Interventional Evidence Acquisition Phase 7C Formal Fresh Public-Repo Validation
+
+Added `eval/interventional_evidence_acquisition_phase7c_fresh_public_repo_validation_formal.py`, ran formal execution with explicit private input/output and public-repo-fetch confirmation, and generated aggregate-only public report [`phase7c_fresh_public_repo_validation_formal_report.json`](../../artifacts/phase7c_fresh_public_repo_validation_formal/phase7c_fresh_public_repo_validation_formal_report.json). Status is `repair_formal_pipeline_no_claim`. See [`interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md`](./interventional-evidence-acquisition-phase7c-fresh-public-repo-validation-formal.md).
+
+The run used the frozen Phase 7A formal target buckets, rejected manifest-supplied execution and local/synthetic sources, read prior Phase 5B/7B private material only for overlap rejection, wrote private manifest/rows only under ignored `runs/`, and published only coarse buckets. The repaired prior-overlap indexing found nonzero prior overlap before row scoring, so the formal artifact remains repair/no-claim rather than a passed validation. Public repository fetch was used under explicit confirmation. This remains no-claim and makes no method/product/default/runtime/deployment/provider/training claim.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 7B Fresh Public-Repo Validation Canary
 
 Added `eval/interventional_evidence_acquisition_phase7b_fresh_public_repo_validation_canary.py`, ran the canary with explicit private input/output confirmation, and generated aggregate-only public report [`phase7b_fresh_public_repo_validation_canary_report.json`](../../artifacts/phase7b_fresh_public_repo_validation_canary/phase7b_fresh_public_repo_validation_canary_report.json). Status is `phase7b_canary_pipeline_check_passed_no_claim`. See [`interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md`](./interventional-evidence-acquisition-phase7b-fresh-public-repo-validation-canary.md).
