@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-07 - Interventional Evidence Acquisition Phase 6C Closeout
+
+Added [`interventional-evidence-acquisition-phase6c-closeout.md`](./interventional-evidence-acquisition-phase6c-closeout.md) and aggregate-only public closeout report [`phase6c_strategy_screen_closeout_no_claim_report.json`](../../artifacts/phase6c_strategy_screen_closeout_no_claim/phase6c_strategy_screen_closeout_no_claim_report.json). Status is `phase6c_strategy_screen_closeout_no_claim`.
+
+This closeout uses only already-public Phase 6A/6B reports/docs. It records that Phase 6A froze the boundary and Phase 6B ran under confirmation, but Phase 6B was action-label-only with `action_only_control_same_as_main=true`, so it is a repo-heldout stability sanity check rather than strong strategy-selection evidence. The route remains research machinery only. Stop here to avoid repeated analysis on Phase 5B rows and p-hacking/result-shopping; any future empirical work needs fresh separately frozen validation inputs.
+
 ## 2026-07-07 - Interventional Evidence Acquisition Phase 6B Repo-Heldout Strategy Screen
 
 Added `eval/interventional_evidence_acquisition_phase6b_repo_heldout_strategy_screen.py`, ran it with explicit private-input confirmation, and generated aggregate-only public report [`phase6b_repo_heldout_strategy_selection_screen_report.json`](../../artifacts/phase6b_repo_heldout_strategy_selection_screen/phase6b_repo_heldout_strategy_selection_screen_report.json). Status is `strategy_selection_screen_positive_no_claim`. See [`interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md`](./interventional-evidence-acquisition-phase6b-repo-heldout-strategy-screen.md).

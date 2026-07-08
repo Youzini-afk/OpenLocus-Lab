@@ -1,0 +1,51 @@
+{
+  "schema_version": "phase6c_strategy_screen_closeout_no_claim_report_v1",
+  "phase": "interventional_evidence_acquisition_phase6c_strategy_screen_closeout_no_claim",
+  "status": "phase6c_strategy_screen_closeout_no_claim",
+  "source_basis": {
+    "derived_only_from_public_phase6a_phase6b_reports_and_docs": true,
+    "private_rows_read": false,
+    "source_reads_executed": false,
+    "new_tasks_or_repos_created": false,
+    "model_fit_or_training_executed": false,
+    "provider_network_llm_used": false,
+    "scripts_or_evaluators_changed": false
+  },
+  "phase6_summary": {
+    "phase6a_boundary_frozen": true,
+    "phase6b_public_status": "strategy_selection_screen_positive_no_claim",
+    "phase6b_screen_shape": "repo_heldout_stdlib_existing_phase5b_rows_under_confirm",
+    "phase6b_action_label_only": true,
+    "phase6b_action_only_control_same_as_main": true,
+    "interpretation": "repo_heldout_stability_sanity_check_only",
+    "research_machinery_preserved_only": true
+  },
+  "claim_denials": {
+    "winner_claimed": false,
+    "lift_claimed": false,
+    "selected_method_claimed": false,
+    "product_claimed": false,
+    "default_claimed": false,
+    "runtime_claimed": false,
+    "deployment_claimed": false,
+    "training_claimed": false
+  },
+  "privacy_contract": {
+    "publication_level": "aggregate_public_closeout_only",
+    "private_paths_included": false,
+    "repo_names_included": false,
+    "task_ids_included": false,
+    "hashes_included": false,
+    "snippets_included": false,
+    "run_directories_included": false,
+    "per_fold_or_per_repo_details_included": false,
+    "singleton_buckets_included": false
+  },
+  "stop_reason": {
+    "avoid_repeated_analysis_on_phase5b_rows": true,
+    "avoid_p_hacking_or_result_shopping": true,
+    "future_empirical_work_requires_fresh_separately_frozen_validation_inputs": true,
+    "future_empirical_work_requires_new_frozen_boundary_before_execution": true
+  },
+  "next_authorized_action": "stop_until_fresh_separately_frozen_validation_inputs_and_next_boundary_are_defined_under_existing_low_resource_no_claim_constraints"
+}
