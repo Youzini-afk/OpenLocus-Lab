@@ -1,0 +1,51 @@
+{
+  "claim_boundary": {
+    "default_claim": false,
+    "deployment_claim": false,
+    "evidence_success_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "outcome_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "scoring_claim": false,
+    "training_claim": false
+  },
+  "closeout_conclusion": {
+    "current_phase8_construction_attempt_stopped": true,
+    "phase8b_accepted_repo_target_met": false,
+    "phase8b_comparable_identity_missing_bucket": "bucket_zero",
+    "phase8b_did_not_pass_into_scoring_eligibility": true,
+    "phase8b_overlap_bucket": "bucket_zero",
+    "phase8b_status": "repair_input_independence_contract_no_claim",
+    "phase9a_boundary": "may_be_considered_only_after_phase8c_as_new_protocol_redesign_not_continuation_or_repair_of_phase8b_private_pool"
+  },
+  "execution_boundary": {
+    "data_collection": false,
+    "direct_phase9_entry": false,
+    "new_public_repo_fetch": false,
+    "outcome_scoring_executed": false,
+    "private_artifact_reads": false,
+    "private_repo_reads": false,
+    "repo_clone_or_fetch": false,
+    "scoring_execution": false,
+    "source_reads": false,
+    "task_generation": false
+  },
+  "phase": "phase8c_closeout_stop_current_construction_no_execution_no_claim",
+  "privacy_summary": {
+    "commits_shas_public": false,
+    "manifest_paths_public": false,
+    "paths_ranges_hashes_public": false,
+    "per_repo_per_task_details_public": false,
+    "publication_level": "aggregate_docs_report_only",
+    "repo_names_urls_owners_public": false,
+    "run_dirs_public": false,
+    "singleton_buckets_public": false,
+    "task_ids_public": false
+  },
+  "schema_version": "phase8c_closeout_stop_current_construction_no_execution_no_claim_report_v1",
+  "status": "phase8c_closeout_stop_current_construction_no_execution_no_claim"
+}

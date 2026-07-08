@@ -1,5 +1,11 @@
 # OpenLocus Research Log
 
+## 2026-07-09 - Interventional Evidence Acquisition Phase 8C Closeout
+
+已新增 EN/ZH paired docs，以及 aggregate-only public closeout report [`phase8c_closeout_stop_current_construction_no_execution_no_claim_report.json`](../../artifacts/phase8c_closeout_stop_current_construction_no_execution_no_claim/phase8c_closeout_stop_current_construction_no_execution_no_claim_report.json)。Status 为 `phase8c_closeout_stop_current_construction_no_execution_no_claim`。参见 [`interventional-evidence-acquisition-phase8c-closeout.md`](./interventional-evidence-acquisition-phase8c-closeout.md)。
+
+这是 docs/report-only。未发生 private reads、repository fetch/clone、source reads、task generation、data collection、scoring、labels、outcomes、evidence-success evaluation、model fitting、provider calls、runtime/default/product changes 或 direct Phase 9 entry。它记录 Phase 8B did not pass into scoring eligibility：overlap 与 comparable-identity missing buckets 为 zero，但 accepted-repo target missed。Current Phase 8 construction attempt 已停止。Phase 9A 只有在 Phase 8C 之后，才可作为 new protocol redesign 被考虑；它不是 Phase 8B private pool 的 continuation 或 repair。该结果保持 aggregate-only，且不提出 method/product/default/runtime/provider/training/model/scoring/outcome/evidence-success/performance claim。
+
 ## 2026-07-08 - Interventional Evidence Acquisition Phase 8B Fresh-Input Independence Audit
 
 已新增 `eval/interventional_evidence_acquisition_phase8b_fresh_input_independence_audit.py`、EN/ZH paired docs，以及 aggregate-only public audit report [`phase8b_fresh_input_independence_audit_report.json`](../../artifacts/phase8b_fresh_input_independence_audit/phase8b_fresh_input_independence_audit_report.json)。Status 为 `repair_input_independence_contract_no_claim`。参见 [`interventional-evidence-acquisition-phase8b-fresh-input-independence-audit.md`](./interventional-evidence-acquisition-phase8b-fresh-input-independence-audit.md)。
