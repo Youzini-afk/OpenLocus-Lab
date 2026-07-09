@@ -1,5 +1,15 @@
 # OpenLocus Research Log
 
+## 2026-07-09 - 干预式证据获取 第 9N 阶段 冻结路由结果可观察量获取（仅 availability）
+
+已新增 `eval/interventional_evidence_acquisition_phase9n_frozen_route_outcome_acquisition.py`、paired EN/ZH docs，以及 aggregate-only public availability report [`phase9n_frozen_route_outcome_acquisition_no_scoring_no_claim_report.json`](../../artifacts/phase9n_frozen_route_outcome_acquisition_no_scoring_no_claim/phase9n_frozen_route_outcome_acquisition_no_scoring_no_claim_report.json)。Status 为 `phase9n_frozen_route_executed_valid_acquired_nonzero_aggregate_availability_no_scoring_no_adjudication_no_claim`。参见 [`interventional-evidence-acquisition-phase9n-frozen-route-outcome-acquisition.md`](./interventional-evidence-acquisition-phase9n-frozen-route-outcome-acquisition.md)。
+
+Phase 9N 只执行由 Phase 9M 冻结的单一路由（无 fallback、无 retry、无 trying-routes-until-one-works、无 route-order drift）。在 ignored `runs/` 之下读取 Phase 9H private materialized sources（实际 source 内容），在 ignored `runs/` 之下读取 Phase 9J private annotation-input rows（仅作为 routing/precondition metadata，NOT benchmark truth），只从 Phase 9H materialized sources 进行 deterministic manual extraction（无 LLM、无 provider、无 model inference/judgment），只在 ignored `runs/` 之下生成 private outcome-observable packets/manifests，并只发布 aggregate/bucketed public availability report。冻结路由的 closed vocabulary 与 Phase 9M 公开报告进行 set-equality 验证。Availability buckets 为 `bucket_zero` 或 `bucket_nonzero_redacted`。
+
+它不进行 scoring、adjudication、gold labels、benchmark labels、evidence_success、correctness、precision/recall、pass/fail、result labels、provider/LLM/model/network/fetch/clone/source refresh、model fitting/training 或 runtime/default/product changes，不读取 Phase 9L private outcome packets，不将 Phase 9J annotation-input rows 作为 benchmark truth，也不提出 method/product/performance/model/provider/training/runtime/default/scoring/outcome/evidence-success/annotation-truth/adjudication/correctness claim。Phase 9N 中不存在 scoring denominator。Unavailable 与 invalid outcomes 不被计为 failure、success 或 partial。
+
+gate 于 Phase 9M remote commit `0b0356b43d98edad0a3483132bdfae12ed520bb9`、CI run `28983935272`、CI success、Phase 9M status `phase9m_outcome_observable_acquisition_route_protocol_freeze_no_execution_no_scoring_no_adjudication_no_claim` 以及 Phase 9M protocol freeze；Phase 9L 与 Phase 9K gate references 从 Phase 9M 公开报告 carry forward。Execution 需要全部十六个显式 confirmations。Self-test 通过 153/153。`py_compile` 通过。公开报告 validated。Privacy audit clean（0 errors）。Private outputs 只在 ignored `runs/` 之下。
+
 ## 2026-07-09 - 干预式证据获取 第 9M 阶段 结果可观察量获取路线协议冻结
 
 已新增 `eval/interventional_evidence_acquisition_phase9m_outcome_route_protocol_freeze.py`、paired EN/ZH docs，以及 aggregate-only public route-protocol report [`phase9m_outcome_route_protocol_freeze_no_claim_report.json`](../../artifacts/phase9m_outcome_route_protocol_freeze_no_claim/phase9m_outcome_route_protocol_freeze_no_claim_report.json)。Status 为 `phase9m_outcome_observable_acquisition_route_protocol_freeze_no_execution_no_scoring_no_adjudication_no_claim`。参见 [`interventional-evidence-acquisition-phase9m-outcome-route-protocol-freeze.md`](./interventional-evidence-acquisition-phase9m-outcome-route-protocol-freeze.md)。
