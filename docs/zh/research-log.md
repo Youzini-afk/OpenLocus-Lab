@@ -1,5 +1,12 @@
 # OpenLocus Research Log
 
+## 2026-07-09 - 干预式证据获取 Phase 10B 全新/围栏化输入构造协议冻结（无执行，无物化，无声明）
+
+新增 `eval/interventional_evidence_acquisition_phase10b_input_protocol_freeze.py`、配套 EN/ZH 文档，以及 aggregate-only 公开协议冻结报告 [`phase10b_input_protocol_freeze_no_execution_no_materialization_no_claim_report.json`](../../artifacts/phase10b_input_protocol_freeze_no_execution_no_materialization_no_claim/phase10b_input_protocol_freeze_no_execution_no_materialization_no_claim_report.json)。Status 为 `phase10b_fresh_fenced_input_construction_protocol_freeze_no_execution_no_materialization_no_claim`。参见 [`interventional-evidence-acquisition-phase10b-input-protocol-freeze-no-claim.md`](./interventional-evidence-acquisition-phase10b-input-protocol-freeze-no-claim.md)。
+
+此为全新独立 Phase 10 校验线的全新/围栏化输入构造的 docs/report/validator-only。Phase 10 独立于 Phase 9，不是 Phase 9R/9S 的延续、重新解释、修复、重跑、重算或加强。Phase 9 已关闭于 commit `1d71f6a`、CI run `28999245247`；Phase 10A 已提交于 `67e8d984601d82a2a97992bb83fda06b09e06be0`、CI run `29002587099` 成功；较旧的 Phase 9 精确 commit/CI 引用被 Phase 10B 刻意不重新发布（更紧的隐私）；本地同树 git commits 不被读取或比较；只有门常量是精确引用。它不执行、不发现、不 fetch、不 clone、不采样、不生成真实 packets/tasks、不评分、不裁决、不评估 correctness/evidence_success、不读取私有/源 artifacts，不读取 ignored `runs/` 或任何 Phase 9 或 Phase 10A 私有 artifacts，不发起任何 provider/LLM/model 调用，不引入超出 coarse fixed status/boundary fields 的 metrics/thresholds/rates/counts，且不提出 method/product/performance/training/provider/model/runtime/default/scoring/outcome/evidence-success/correctness/generalization/validation claim。它冻结具体的输入构造协议（源资格、新鲜度/围栏化、独立于 Phase 9、确定性排序/选择、上限/中止限制、私有/公开 artifact 分割、复现包模式、隐私扫描器规则）但不实例化其中任何内容。Phase 10C 需要 Phase 10B commit + CI green + 独立边界审查后才能进行任何发现/fetch/物化。Self-test 通过（207/207）。`py_compile` 通过。`--write-report` 与 `--validate-report` 通过。Phase 10B 仅为协议冻结，而非 evidence/method/product/correctness/validation 成功。
+
+
 ## 2026-07-09 - 干预式证据获取 Phase 10A 独立校验协议冻结（无执行，无声明）
 
 新增 `eval/interventional_evidence_acquisition_phase10a_independent_validation_protocol_freeze.py`、配套 EN/ZH 文档，以及 aggregate-only 公开协议冻结报告 [`phase10a_independent_validation_protocol_freeze_no_execution_no_claim_report.json`](../../artifacts/phase10a_independent_validation_protocol_freeze_no_execution_no_claim/phase10a_independent_validation_protocol_freeze_no_execution_no_claim_report.json)。Status 为 `phase10a_independent_validation_protocol_freeze_no_execution_no_claim`。参见 [`interventional-evidence-acquisition-phase10a-independent-validation-protocol-freeze-no-claim.md`](./interventional-evidence-acquisition-phase10a-independent-validation-protocol-freeze-no-claim.md)。
