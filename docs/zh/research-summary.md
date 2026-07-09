@@ -1,3 +1,7 @@
+## Phase 10P1 operator-package 生成（sealed，不执行 Phase 10 校验，无主张）
+
+Phase 10P1 在冻结的 Phase 10P0 协议下生成并封存一个 operator 预备的离线 registry-input package，写入忽略/私有路径 `runs/`，使用冻结的 10P0 布局与 sha256 校验和。该包含零符合条件的具体源（禁止 fetch 下离线不可用；无发明/捏造），不是 Phase 10 校验证据。Phase 10P1 不运行 Phase 10H intake validation，不评分/裁决/评估 correctness/evidence_success，不 fetch/clone/read/scrape/inspect/sample/download 或选择具体源。冻结的 Phase 10P0 协议常量被精确导入（无漂移、集合相等性校验）。只有直接 Phase 10P0 gate commit/CI-green 事实是精确引用；较旧 Phase 9 / 10A-G 事实仅为 status/bucket/scope。包溯源为：“operator-prepared package, produced by the current agent/operator preparation line under the frozen Phase 10P0 protocol; external to the Phase 10 validation pipeline, but not independent external-human generated.”
+
 ## Phase 10P0 operator-package 协议冻结（不生成包，不执行 Phase 10 校验，无主张）
 
 Phase 10P0 记录一个仅协议/规格说明的检查点，用于后续 operator 预备的离线 registry-input package。它冻结包布局、manifest schema、必需元数据、sha256 校验和、审计日志格式、隐私脱敏、溯源措辞、源获取规则、纳入/排除标准、不可变性规则、operator 工作流与反调优守卫栏。它不生成包内容，不选择具体 repo/source，不 fetch/clone/scrape/inspect，不运行 Phase 10H intake validation，也不评分/裁决/评估 correctness/evidence_success。只有直接 Phase 10G gate commit/CI-green 事实是精确引用；较旧 Phase 9 / 10A-F / hygiene 事实仅为 status/bucket/scope。未来包必须描述为：“operator-prepared package, produced by the current agent/operator preparation line under the frozen Phase 10P0 protocol; external to the Phase 10 validation pipeline, but not independent external-human generated.”
