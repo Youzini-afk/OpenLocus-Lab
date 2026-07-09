@@ -8,6 +8,13 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## 干预式证据获取 Phase 10A 独立校验协议冻结（无执行，无声明）
+
+- **Checkpoint**：Phase 10A 记录为 `phase10a_independent_validation_protocol_freeze_no_execution_no_claim`，配有 compact validator/report generator、配套 EN/ZH 文档，以及 aggregate-only 公开协议冻结报告。
+- **Scope**：为一条全新独立校验线设立的 docs/report/validator-only 协议冻结检查点，gate 于 Phase 9 已关闭于 commit `1d71f6a`、CI run `28999245247`、CI 成功、Phase 9 closed；较旧的 Phase 9 精确 commit/CI 引用被 Phase 10A 刻意不重新发布（更紧的隐私）；本地同树 git commits 不被读取或比较；只有 Phase 9 收尾门常量是精确门引用。它不 fetch、clone、read 或 materialize 任何 repository 或 source，不读取 ignored `runs/` 或任何 Phase 9 私有 artifacts，不执行、不评分、不裁决、不评估 correctness/evidence_success、不生成 tasks/samples、不 fetch/clone/source refresh、不发起任何 provider/LLM/model 调用，不引入超出 coarse fixed status/boundary fields 的 metrics/thresholds/rates/counts，不使用低资源自主启动经验性工作，且不提出 method/product/performance/training/provider/model/runtime/default/scoring/outcome/evidence-success/correctness/generalization claim。Phase 10A 不做任何新的证据声明。
+- **Phase 9 分离**：Phase 10 独立于 Phase 9，不是 Phase 9R/9S 的延续、重新解释、修复、重跑、重算或加强。Phase 10A 不解释、不扩展、不加强、不修复、不重跑、不重算 Phase 9R 或 Phase 9S。Phase 9 artifacts 不能作为新独立校验线的校验证据。
+- **未来线需求（仅定义）**：任何未来执行都需要全新/围栏化输入、独立的复现包生成、aggregate-only 公开报告、在任何未来执行前预冻结的协议，以及在 10A commit + CI green 之后、Phase 10B+ 之前的独立边界审查；Phase 10A 不冻结或运行任何未来执行。Phase 10A 仅为协议冻结，而非 evidence/method/product/correctness 成功。
+
 ## 干预式证据获取 第 9R 阶段 冻结 Adjudication/Correctness/Evidence_Success 执行（Bucketed Aggregate Only, No Claim）
 
 - **Checkpoint**：Phase 9R 记录为 `phase9r_frozen_adjudication_correctness_evidence_success_executed_bucketed_aggregate_no_private_publication_no_claim`，配有 compact runner/validator/report generator、paired EN/ZH docs 以及 aggregate-only public adjudication report。
