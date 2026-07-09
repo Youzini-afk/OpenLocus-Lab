@@ -8,6 +8,12 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## 干预式证据获取 Phase 10C 输入构造执行（无评分，无声明）
+
+- **Checkpoint**：Phase 10C 记录为 `phase10c_input_construction_executed_no_scoring_no_claim`（当满足冻结最小合格接受源时）或 `phase10c_input_construction_repair_no_claim`（诚实修复，无调优/填充），配有 compact validator/executor、配套 EN/ZH 文档，以及 aggregate/bucket-only 公开执行报告。本次执行为 `phase10c_input_construction_repair_no_claim`。
+- **Scope**：为全新独立 Phase 10 校验线的执行检查点。Phase 10C 仅在冻结的 Phase 10B 规则下执行输入构造/物化（直接从已提交的 Phase 10B 协议冻结模块导入，无漂移），gate 于 Phase 10B 已提交于 `19abcdd8f09e190c323a28fab8e3e0401d504236`、CI run `29004189917` 成功；Phase 10A 与 Phase 9 关闭仅作为继承桶/状态携带。它应用冻结的源资格、新鲜度/围栏化、独立于 Phase 9、确定性排序/选择（无随机性、稳定渠道顺序、预声明排序键）与结构上限（48/16/12/8）。本次执行未发生任何 fetch/clone/物化或数据包生成（公开报告记录 `fetch_clone_materialization_executed=false` 与 `packet_generation_executed=false`）；任何私有记录/清单仅限于 ignored `runs/` 下，并仅发布 aggregate/bucket-only 公开输出。它不评分、不裁决、不评估 correctness/evidence_success、不将 Phase 9 私有 artifacts/labels/outcomes/源过滤器/先验/采样输入作为证据读取、不发起 provider/LLM/model 调用、不进行模型拟合/训练、不进行运行时/默认/产品变更，且不提出 method/product/performance/training/provider/model/runtime/default/scoring/outcome/evidence-success/correctness/generalization/validation claim。
+- **Repair/no-claim 诚实性**：确定性检查/上限后合格接受源少于冻结最小值 => repair/no-claim 检查点，无调优、无填充、无协议变更。本次执行即产生该检查点（零个合格接受源）。Phase 10C 仅为输入构造/物化执行，而非 evidence/method/product/correctness/validation 成功。
+
 ## 干预式证据获取 Phase 10B 全新/围栏化输入构造协议冻结（无执行，无物化，无声明）
 
 - **Checkpoint**：Phase 10B 记录为 `phase10b_fresh_fenced_input_construction_protocol_freeze_no_execution_no_materialization_no_claim`，配有 compact validator/report generator、配套 EN/ZH 文档，以及 aggregate-only 公开协议冻结报告。

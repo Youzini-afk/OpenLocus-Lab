@@ -1,0 +1,295 @@
+{
+  "claim_boundary": {
+    "correctness_claim": false,
+    "default_claim": false,
+    "evidence_success_claim": false,
+    "generalization_claim": false,
+    "method_claim": false,
+    "model_claim": false,
+    "outcome_claim": false,
+    "performance_claim": false,
+    "product_claim": false,
+    "provider_claim": false,
+    "runtime_claim": false,
+    "scoring_claim": false,
+    "training_claim": false,
+    "validation_claim": false
+  },
+  "confirmation_summary": {
+    "aggregate_public_report_only_confirmed": true,
+    "all_required_confirmations_present": true,
+    "dry_self_test_and_report_validation_fetch_or_clone": false,
+    "dry_self_test_and_report_validation_read_private_runs": false,
+    "frozen_phase10b_protocol_applied_exactly_confirmed": true,
+    "ignored_runs_workspace_confirmed": true,
+    "no_phase9_artifacts_as_evidence_confirmed": true,
+    "no_provider_llm_model_runtime_default_product_confirmed": true,
+    "no_scoring_adjudication_correctness_evidence_success_confirmed": true,
+    "phase10b_ci_confirmed": true,
+    "phase10b_commit_confirmed": true,
+    "phase10b_protocol_freeze_confirmed": true,
+    "phase10b_status_confirmed": true,
+    "private_output_confirmed": true,
+    "public_source_fetch_confirmed": true
+  },
+  "conservative_recommendation": "phase10c_input_construction_execution_only_under_frozen_phase10b_protocol_phase9_closed_inherited_phase10a_gate_inherited_phase10b_gate_passed_at_recorded_commit_and_ci_phase10c_applies_frozen_phase10b_protocol_exactly_no_drift_phase10c_is_separate_from_phase9_not_continuation_phase10c_does_not_reuse_phase9_artifacts_as_evidence_source_eligibility_freshness_fencing_independence_from_phase9_frozen_deterministic_ordering_selection_no_randomness_stable_channel_order_caps_frozen_as_structural_protocol_limits_not_success_metrics_private_material_and_packets_under_ignored_runs_only_public_output_aggregate_bucket_only_no_source_specific_disclosure_no_scoring_adjudication_correctness_evidence_success_provider_model_no_runtime_default_product_method_performance_correctness_claim_repair_no_claim_below_frozen_minimum_no_tuning_no_padding",
+  "execution_summary": {
+    "accepted_source_bucket": "bucket_zero",
+    "caps_respected": true,
+    "deterministic_ordering_applied": true,
+    "discovery_bucket": "bucket_zero",
+    "fetch_clone_materialization_executed": false,
+    "materialization_bucket": "bucket_zero",
+    "no_randomness": true,
+    "packet_generation_bucket": "bucket_zero",
+    "packet_generation_executed": false,
+    "publication_level": "aggregate_input_construction_execution_boundary_only",
+    "repair_reason_bucket": "bucket_no_eligible_channel_registry",
+    "replacement_before_packet_generation_only": true,
+    "source_discovery_executed": true
+  },
+  "frozen_caps_and_abort_limits": {
+    "abort_limits": [
+      "abort_on_quota_or_ordering_drift",
+      "abort_on_eligibility_drift",
+      "abort_on_fencing_violation",
+      "abort_on_phase9_contamination",
+      "abort_on_privacy_violation"
+    ],
+    "caps": {
+      "accepted_source_minimum_cap": 8,
+      "accepted_source_target_cap": 12,
+      "candidate_inspection_cap_per_channel": 16,
+      "candidate_inspection_cap_total": 48
+    },
+    "caps_and_abort_limits_rules": [
+      "caps_are_structural_protocol_limits_not_success_metrics",
+      "caps_are_coarse_fixed_boundary_fields_not_measured_counts",
+      "abort_on_quota_or_ordering_drift",
+      "abort_on_eligibility_drift",
+      "abort_on_fencing_violation",
+      "abort_on_phase9_contamination",
+      "abort_on_privacy_violation"
+    ],
+    "caps_are_structural_protocol_limits_not_success_metrics": true
+  },
+  "frozen_deterministic_ordering_selection": {
+    "channel_order": [
+      "public_registry_lists",
+      "public_ecosystem_topic_indexes",
+      "public_package_or_project_metadata"
+    ],
+    "deterministic_ordering_selection_rules": [
+      "predeclared_seed_label_version_only_randomness_forbidden",
+      "stable_channel_then_stable_public_metadata_order",
+      "deterministic_sort_keys_predeclared",
+      "replacement_before_sampling_only",
+      "replacement_reasons_limited_to_availability_or_eligibility",
+      "performance_based_replacement_forbidden",
+      "no_actual_sampling_draw_in_phase10b"
+    ],
+    "deterministic_sort_keys": [
+      "normalized_public_project_identity_ascending",
+      "public_metadata_stable_rank_ascending",
+      "default_branch_name_ascending",
+      "channel_local_index_ascending"
+    ],
+    "predeclared_seed_label": "phase10b_fresh_fenced_public_seed_v1",
+    "randomness_policy": "forbidden_no_random_shuffle_no_posthoc_resampling",
+    "seed_semantics": "version_label_only_randomness_forbidden"
+  },
+  "frozen_freshness_fencing": {
+    "fencing_violation_is_hard_stop": true,
+    "freshness_fencing_rules": [
+      "inputs_must_be_fresh_not_reused_from_phase9",
+      "inputs_must_be_fenced_from_phase9_private_artifacts",
+      "fencing_requires_independent_replication_packet_generation",
+      "no_phase9_priors_sources_labels_outcomes_as_input",
+      "freshness_verified_before_any_sampling_or_packet_generation",
+      "fencing_violation_is_hard_stop"
+    ],
+    "freshness_verified_before_packet_generation": true
+  },
+  "frozen_independence_from_phase9": {
+    "clean_room_operator_must_not_use_memory_of_phase9_private_material": true,
+    "independence_from_phase9_rules": [
+      "phase9_artifacts_cannot_be_used_as_validation_evidence",
+      "phase9_source_filters_or_priors_cannot_be_reused",
+      "phase9_labels_or_outcomes_cannot_be_reused_as_inputs",
+      "phase9_sampling_inputs_cannot_be_reused",
+      "clean_room_operator_must_not_use_memory_of_phase9_private_material",
+      "independent_replication_packet_generation_required"
+    ],
+    "phase9_artifacts_cannot_be_used_as_validation_evidence": true
+  },
+  "frozen_privacy_scanner": {
+    "gate_exact_values_allowed_only_at_exact_gate_paths": true,
+    "privacy_scanner_rules": [
+      "reject_private_shaped_keys_and_values",
+      "reject_singleton_buckets",
+      "reject_claim_wording",
+      "reject_placeholder_wording",
+      "reject_user_approval_wording",
+      "reject_exact_count_fields",
+      "reject_long_unapproved_numeric_run_ids",
+      "gate_exact_values_allowed_only_at_exact_gate_paths"
+    ],
+    "reject_exact_count_fields": true
+  },
+  "frozen_private_public_artifact_split": {
+    "no_singleton_buckets": true,
+    "private_material_under_ignored_runs_only": true,
+    "private_public_artifact_split_rules": [
+      "public_output_aggregate_or_boundary_only",
+      "private_material_under_ignored_runs_only",
+      "no_repo_source_url_owner_commit_beyond_whitelisted_gate_refs",
+      "no_paths_snippets_line_ranges_or_identifier_or_run_location_facts",
+      "no_per_source_per_task_or_per_packet_facts",
+      "no_singleton_buckets",
+      "no_phase9_or_phase10a_private_artifacts_published"
+    ],
+    "public_output_aggregate_or_boundary_only": true
+  },
+  "frozen_replication_packet_schema": {
+    "packet_schema_independently_generated_in_phase10c": true,
+    "replication_packet_schema_rules": [
+      "packet_schema_definition_only_no_packets_generated_in_phase10b",
+      "packet_must_contain_public_source_identity_only",
+      "packet_must_contain_fenced_acquisition_metadata_only",
+      "packet_must_not_contain_phase9_artifacts",
+      "packet_must_not_contain_private_rows_or_observables",
+      "packet_must_be_independently_generated_in_future_phase10c",
+      "packet_schema_must_support_aggregate_only_public_reporting"
+    ]
+  },
+  "frozen_source_eligibility": {
+    "source_eligibility_decided_before_any_use": true,
+    "source_eligibility_drift_is_hard_stop": true,
+    "source_eligibility_rules": [
+      "publicly_accessible_without_authentication",
+      "source_archive_materializable_before_use",
+      "declared_or_publicly_auditable_license_present",
+      "default_branch_or_equivalent_revision_resolvable",
+      "in_scope_language_or_file_mix_detectable_from_public_metadata",
+      "not_phase9_artifact_or_phase9_derived_material",
+      "not_private_prior_phase_or_manual_named_seed_material"
+    ]
+  },
+  "inherited_gates": {
+    "older_phase9_exact_refs_not_republished_by_phase10c": true,
+    "phase10a_gate_inherited": true,
+    "phase9_closure_inherited": true
+  },
+  "no_execution_booleans": {
+    "adjudication_executed": false,
+    "caps_changed_after_observation": false,
+    "clean_room_operator_used_phase9_private_material_memory": false,
+    "correctness_evaluated": false,
+    "eligibility_changed_after_observation": false,
+    "evidence_success_evaluated": false,
+    "model_fitting": false,
+    "padding_or_tuning_below_minimum": false,
+    "phase9_artifacts_read_or_reused": false,
+    "phase9_labels_or_outcomes_reused_as_input": false,
+    "phase9_sampling_inputs_reused": false,
+    "phase9_source_filters_or_priors_reused": false,
+    "protocol_edited_after_observation": false,
+    "provider_calls_executed": false,
+    "randomness_used": false,
+    "runtime_default_or_product_changes": false,
+    "scoring_executed": false
+  },
+  "phase": "phase10c_input_construction_execution_no_scoring_no_claim",
+  "phase10b_gate": {
+    "phase10b_ci_run": "29004189917",
+    "phase10b_ci_success": true,
+    "phase10b_commit": "19abcdd8f09e190c323a28fab8e3e0401d504236",
+    "phase10b_gate_required_before_phase10c": true,
+    "phase10b_protocol_freeze_only": true,
+    "phase10b_status": "phase10b_fresh_fenced_input_construction_protocol_freeze_no_execution_no_materialization_no_claim"
+  },
+  "phase10c_scope": {
+    "adjudication_executed": false,
+    "caps_changed_after_observation": false,
+    "clean_room_operator_used_phase9_private_material_memory": false,
+    "correctness_evaluated": false,
+    "eligibility_changed_after_observation": false,
+    "evidence_success_evaluated": false,
+    "frozen_phase10b_protocol_applied_exactly": true,
+    "input_construction_execution_only": true,
+    "model_fitting": false,
+    "padding_or_tuning_below_minimum": false,
+    "phase9_artifacts_read_or_reused": false,
+    "phase9_labels_or_outcomes_reused_as_input": false,
+    "phase9_sampling_inputs_reused": false,
+    "phase9_source_filters_or_priors_reused": false,
+    "protocol_edited_after_observation": false,
+    "provider_calls_executed": false,
+    "randomness_used": false,
+    "runtime_default_or_product_changes": false,
+    "scoring_executed": false,
+    "separate_from_phase9_not_continuation": true
+  },
+  "privacy_contract": {
+    "candidate_repo_names_public": false,
+    "exact_counts_or_rates_public": false,
+    "hashes_public": false,
+    "manifest_locations_public": false,
+    "non_gate_commits_public": false,
+    "owners_public": false,
+    "packet_ids_public": false,
+    "paths_public": false,
+    "per_packet_public_facts": false,
+    "per_source_public_facts": false,
+    "per_task_public_facts": false,
+    "phase10a_private_artifacts_public": false,
+    "phase10b_private_artifacts_public": false,
+    "phase9_private_artifacts_public": false,
+    "public_output_aggregate_only": true,
+    "repo_names_public": false,
+    "row_ids_public": false,
+    "run_locations_public": false,
+    "runs_remains_ignored": true,
+    "singleton_buckets_public": false,
+    "snippets_public": false,
+    "source_names_public": false,
+    "source_urls_public": false,
+    "task_ids_public": false,
+    "urls_public": false
+  },
+  "schema_version": "phase10c_input_construction_execution_no_scoring_no_claim_report_v1",
+  "status": "phase10c_input_construction_repair_no_claim",
+  "truth_boundary": {
+    "phase10a_gate_inherited": true,
+    "phase10b_gate_passed_at_recorded_commit_and_ci": true,
+    "phase10c_applies_frozen_phase10b_protocol_exactly_no_drift": true,
+    "phase10c_does_not_make_provider_llm_model_runtime_default_product_claims": true,
+    "phase10c_does_not_reuse_phase9_artifacts_as_evidence": true,
+    "phase10c_is_separate_from_phase9_not_continuation": true,
+    "phase10c_makes_no_scoring_adjudication_correctness_evidence_success_claim": true,
+    "phase9_closed_inherited": true
+  },
+  "validation_summary": {
+    "phase10c_specific_validator_available": true,
+    "public_artifact_privacy_audit_expected": true,
+    "report_validation_available": true,
+    "self_test_available": true,
+    "validator_discovers_sources": false,
+    "validator_does_not_discover_sources": true,
+    "validator_does_not_fetch_or_read_private": true,
+    "validator_does_not_generate_packets": true,
+    "validator_does_not_materialize_sources": true,
+    "validator_does_not_read_ignored_runs": true,
+    "validator_does_not_read_phase9_artifacts": true,
+    "validator_does_not_read_sources": true,
+    "validator_does_not_score_adjudicate_or_evaluate": true,
+    "validator_executes_tasks": false,
+    "validator_generates_packets": false,
+    "validator_materializes_sources": false,
+    "validator_reads_ignored_runs": false,
+    "validator_reads_private_registry": false,
+    "validator_reads_sources": false,
+    "validator_scores_or_adjudicates": false,
+    "validator_starts_empirical_work": false
+  }
+}
