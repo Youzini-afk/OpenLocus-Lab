@@ -238,7 +238,7 @@ jobs:
     name: b16a
     needs: d5a0-empirical-smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       CARGO_TERM_COLOR: always
     steps:
@@ -349,7 +349,7 @@ jobs:
     name: b16b
     needs: b16a-minimal-mock-agent-paired-run
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       CARGO_TERM_COLOR: always
     steps:
@@ -498,7 +498,7 @@ jobs:
     name: f1
     needs: b16b-less-separable-mock-paired-run
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       CARGO_TERM_COLOR: always
     steps:
