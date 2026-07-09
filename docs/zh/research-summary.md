@@ -8,6 +8,12 @@ or the index page [`docs/current-research-conclusions.md`](../current-research-c
 [`docs/zh/current-research-conclusions.md`](../zh/current-research-conclusions.md)，
 入口索引见 [`docs/current-research-conclusions.md`](../current-research-conclusions.md)。
 
+## 干预式证据获取 Phase 10D 10C 修复收尾守卫（仅文档，无主张）
+
+- **Checkpoint**：Phase 10D 记录为 `phase10d_10c_repair_closeout_guard_no_claim`（仅文档收尾/无主张守卫），配有 compact validator/report generator、配套 EN/ZH 文档，以及 aggregate/boundary-only 公开收尾守卫报告。
+- **Scope**：Phase 10C 的仅文档收尾 / 边界守卫。Phase 10D 关闭 10C：它声明 10C 结果是对冻结的 Phase 10B 路线的有效执行（Phase 10C 研究 commit `0be627d` 执行了冻结的 10B 输入构造/物化路线一次），但产生零个接受源且无验证证据（无合格候选源注册表可用；接受源桶为 `bucket_zero`）。Phase 10D 本身不执行任何操作，不提出新的证据主张；它不构造/编辑/选择/过滤/提供候选注册表，不 fetch/clone/读取源材料，不重跑物化，不变更冻结的 Phase 10B 协议，不评分/裁决/运行 correctness/evidence_success，不增加阈值/回退/例外。Phase 10C oracle 阻塞已修复，未变更冻结的 10B 协议。Phase 10 独立于 Phase 9，不是 Phase 9R/9S 的延续、重新解释、修复、重跑、重算或加强。Phase 9 已关闭于 commit `1d71f6a`；Phase 10A 仅协议冻结检查点 commit `67e8d98`、CI `29002587099` green；Phase 10B 全新/围栏化输入构造仅协议冻结检查点 commit `19abcdd`、CI `29004189917` green。独立的 CI 卫生 commit `dad6049` 仅修改了 `.github/workflows/empirical-research.yml`（b16a/b16b/f1 超时从 15 分钟改为 30 分钟）；该提交未变更任何 eval/protocol/report/docs/results；后卫生 CI 运行 `29015062502` 在 `dad6049` 上通过；此卫生提交仅为 CI 基础设施，不属于经验证据/结果。较旧的 Phase 9 精确 commit/CI 引用被 Phase 10D 刻意不重新发布（更紧的隐私），仅作为 Phase 10 边界上下文携带的已关闭 Phase 9 门 `1d71f6a` 除外。本地同树 git 提交不被读取或比较；只有门常数是精确引用。
+- **下一阶段**：下一个可能的阶段仅为 Phase 10E 候选源注册表构造协议冻结（仅协议冻结，非注册表构造/执行），需在 Phase 10D commit + CI green 后进行独立的边界审查；不使用用户批准措辞。Phase 10D 不提出 method/product/performance/training/provider/model/runtime/default/scoring/outcome/evidence-success/correctness/generalization/validation 主张。Phase 10D 仅为仅文档收尾，而非 evidence/method/product/correctness/validation 成功。
+
 ## 干预式证据获取 Phase 10C 输入构造执行（无评分，无声明）
 
 - **Checkpoint**：Phase 10C 记录为 `phase10c_input_construction_executed_no_scoring_no_claim`（当满足冻结最小合格接受源时）或 `phase10c_input_construction_repair_no_claim`（诚实修复，无调优/填充），配有 compact validator/executor、配套 EN/ZH 文档，以及 aggregate/bucket-only 公开执行报告。本次执行为 `phase10c_input_construction_repair_no_claim`。
