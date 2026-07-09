@@ -1,3 +1,7 @@
+## Phase 10P0 operator-package protocol freeze (no package generation, no Phase 10 validation, no claim)
+
+Phase 10P0 records a protocol/specification-only checkpoint for a later operator-prepared offline registry-input package. It freezes package layout, manifest schema, required metadata, sha256 checksums, audit-log format, privacy redaction, provenance wording, source-acquisition rules, inclusion/exclusion criteria, immutability rules, operator workflow, and anti-tuning guardrails. It generates no package contents, selects no concrete repos/sources, performs no fetch/clone/scrape/inspect, runs no Phase 10H intake validation, and performs no scoring/adjudication/correctness/evidence_success. Only the immediate Phase 10G gate commit/CI-green fact is exact; older Phase 9 / 10A-F / hygiene facts are status/bucket/scope only. Future packages must be described as: "operator-prepared package, produced by the current agent/operator preparation line under the frozen Phase 10P0 protocol; external to the Phase 10 validation pipeline, but not independent external-human generated."
+
 # OpenLocus Research Summary
 
 For the current research-conclusion synthesis, see
