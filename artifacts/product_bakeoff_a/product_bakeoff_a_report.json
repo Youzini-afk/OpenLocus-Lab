@@ -1,0 +1,152 @@
+{
+  "accepted_count": 29,
+  "adapter_identity_binding_enforced": true,
+  "aggregate_only_public_artifact": true,
+  "budget_estimator": {
+    "ceiling_estimate": true,
+    "name": "char_div_4_ceil",
+    "version": "v4"
+  },
+  "by_conformance_category": {
+    "cat1_request_oracle_isolation": {
+      "accepted": 1,
+      "rejected": 0
+    },
+    "cat2_snapshot_visibility_isolation": {
+      "accepted": 2,
+      "rejected": 10
+    },
+    "cat3_candidate_validity": {
+      "accepted": 1,
+      "rejected": 14
+    },
+    "cat4_common_materialization_currentness": {
+      "accepted": 1,
+      "rejected": 2
+    },
+    "cat5_budget_equality": {
+      "accepted": 1,
+      "rejected": 5
+    },
+    "cat6_pack_semantics": {
+      "accepted": 5,
+      "rejected": 13
+    },
+    "cat7_determinism_cells": {
+      "accepted": 9,
+      "rejected": 0
+    },
+    "cat8_no_silent_degeneration": {
+      "accepted": 8,
+      "rejected": 13
+    },
+    "cat9_aggregate_only_reporting": {
+      "accepted": 1,
+      "rejected": 0
+    }
+  },
+  "candidate_not_fact": true,
+  "canonical_contract_surface": [
+    "validate_request",
+    "run_adapter",
+    "validate_adapter_result",
+    "validate_capability_ledger_honesty",
+    "materialize_candidates",
+    "build_context_pack",
+    "validate_context_pack",
+    "aggregate_public_report",
+    "validate_comparison_matrix",
+    "validate_execution_root_binding",
+    "validate_descriptor_hooks",
+    "validate_run_record",
+    "stable_target_id"
+  ],
+  "capability_ledger_entry_count": 141,
+  "capability_status_counts": {
+    "executed": 73,
+    "legitimate_skip": 24,
+    "unsupported": 44
+  },
+  "claim_level": "synthetic_adapter_conformance_readiness_only",
+  "comparison_matrix_validated": true,
+  "conformance_categories_exercised": [
+    "cat1_request_oracle_isolation",
+    "cat2_snapshot_visibility_isolation",
+    "cat3_candidate_validity",
+    "cat4_common_materialization_currentness",
+    "cat5_budget_equality",
+    "cat6_pack_semantics",
+    "cat7_determinism_cells",
+    "cat8_no_silent_degeneration",
+    "cat9_aggregate_only_reporting"
+  ],
+  "default_should_change": false,
+  "evidencecore_semantics_changed": false,
+  "external_adapter_ready": false,
+  "external_clones_performed": 0,
+  "failure_category_counts": {
+    "adapter_exception:FailedResult": 1,
+    "capability_honesty:ContractError": 1,
+    "lifecycle_exception:index:RuntimeError": 1,
+    "lifecycle_exception:prepare:RuntimeError": 1,
+    "lifecycle_timeout:index": 1,
+    "lifecycle_timeout:prepare": 1,
+    "lineage:altered_caps": 2,
+    "lineage:cross_episode": 1,
+    "lineage:cross_snapshot": 1,
+    "lineage:cross_task": 1,
+    "lineage:repeated_step": 1,
+    "lineage:unknown_parent_target": 1,
+    "lineage:unknown_target": 1,
+    "non_adapter_result": 3,
+    "pack_validation:ContractError": 1,
+    "prevalidation:ContractError": 1,
+    "result_validation:ContractError": 33,
+    "snapshot_mutation:ContractError": 5
+  },
+  "generated_by": "eval/product_bakeoff_conformance.py",
+  "lifecycle_hooks_exercised": true,
+  "materializer_version": "harness_common_v4",
+  "not_evidence": true,
+  "operational_acceptance_claimed": false,
+  "outcome_runs": 0,
+  "pack_status_counts": {
+    "no_evidence": 2,
+    "ready": 26,
+    "uncertain": 1
+  },
+  "phase_a_limitations": [
+    "synthetic temporary repositories only; no real-repository robustness",
+    "no external clones; no provider calls; no real algorithm comparisons",
+    "no outcome runs; no S0-S5 conformance; no product/default/winner claim",
+    "accidental contract leakage protection only, not host containment"
+  ],
+  "product_default_claimed": false,
+  "promotion_ready": false,
+  "provider_calls_performed": 0,
+  "readiness_status": "phase_a_synthetic_adapter_conformance_ready_no_product_default_winner_or_real_fairness_claim",
+  "real_algorithm_comparisons": 0,
+  "real_fairness_claimed": false,
+  "rejected_by_privacy_count": 0,
+  "rejected_by_validation_count": 57,
+  "rejected_count": 57,
+  "renderer_version": "harness_renderer_v4",
+  "resource_sample_present_count": 76,
+  "result_status_counts": {
+    "failed": 18,
+    "malformed": 7,
+    "ok": 56,
+    "partial": 1,
+    "timeout": 4
+  },
+  "root_binding_enforced": true,
+  "s0_s5_conformance_claimed": false,
+  "schema_version": "product_bakeoff_a_report.v12",
+  "self_test_only": true,
+  "symlink_confinement_enforced": true,
+  "threat_model_note": "v12: strict JSON wire (no pickle); child EOF/send/recv OSError + parser exc (Recursion/Value/Overflow/dup-key/depth/schema) adapter-scoped malformed; only parent setup/cleanup infra; full-run continuation after hostile child exit",
+  "total_validated_runs": 86,
+  "totals_reconciled": true,
+  "two_step_episode_exercised": true,
+  "winner_declared": false
+}

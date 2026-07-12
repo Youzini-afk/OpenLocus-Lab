@@ -56,6 +56,8 @@ python scripts/validate_selftest_quality.py --self-test
 python scripts/validate_selftest_quality.py
 python scripts/validate_selftest_quality.py --runtime-check
 python eval/ci_validate_report.py --self-test
+python eval/product_bakeoff_conformance.py --self-test
+python eval/product_bakeoff_conformance.py --check-drift artifacts/product_bakeoff_a/product_bakeoff_a_report.json
 python scripts/public_artifact_privacy_audit.py --self-test
 python scripts/public_artifact_privacy_audit.py
 python scripts/validate_docs_i18n.py
@@ -74,6 +76,12 @@ cargo build --workspace
 Run only the checks relevant to the change. Remote-provider experiments require explicit opt-in and should not be triggered implicitly by local scripts.
 
 ## Documentation links
+
+Product stack bakeoff (Phase A — canonical comparison surface, synthetic-only):
+
+- [EN Phase A design](docs/en/product-bakeoff-phase-a.md)
+- [ZH Phase A 设计](docs/zh/product-bakeoff-phase-a.md)
+- [Phase A conformance report](artifacts/product_bakeoff_a/product_bakeoff_a_report.json)
 
 Current conclusions:
 

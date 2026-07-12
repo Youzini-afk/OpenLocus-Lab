@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date / 日期: 2026-07-09
+Date / 日期: 2026-07-13
 
 This root file is only a bilingual index. Do not put research status prose here.
 
@@ -10,6 +10,11 @@ This root file is only a bilingual index. Do not put research status prose here.
 
 - English: [`docs/en/current-research-conclusions.md`](en/current-research-conclusions.md)
 - 中文：[`docs/zh/current-research-conclusions.md`](zh/current-research-conclusions.md)
+
+## Product stack bakeoff / 产品栈对比
+
+- Phase A design / Phase A 设计: [EN](en/product-bakeoff-phase-a.md) / [ZH](zh/product-bakeoff-phase-a.md)
+- Phase A conformance report / Phase A conformance 报告: [`artifacts/product_bakeoff_a/product_bakeoff_a_report.json`](../artifacts/product_bakeoff_a/product_bakeoff_a_report.json)
 
 ## Current route closure / 当前路线关闭
 
