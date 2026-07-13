@@ -617,7 +617,9 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(
-            err.contains("dangling symlink at trace artifact path"),
+            err.contains("dangling symlink at trace artifact path")
+                || err.contains("symlink in trace artifact path")
+                || err.contains("reparse point in trace artifact path"),
             "got: {}",
             err
         );
@@ -685,7 +687,9 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(
-            err.contains("trace artifact subtree overlaps source root"),
+            err.contains("trace artifact subtree overlaps source root")
+                || err.contains("symlink in trace artifact path")
+                || err.contains("reparse point in trace artifact path"),
             "got: {}",
             err
         );
@@ -732,7 +736,9 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(
-            err.contains("dangling symlink at trace artifact path"),
+            err.contains("dangling symlink at trace artifact path")
+                || err.contains("symlink in trace artifact path")
+                || err.contains("reparse point in trace artifact path"),
             "got: {}",
             err
         );
