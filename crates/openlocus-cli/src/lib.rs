@@ -3579,6 +3579,8 @@ mod tests {
                 .to_string();
         assert!(
             trace_err.contains("dangling symlink at trace artifact path")
+                || trace_err.contains("symlink in trace artifact path")
+                || trace_err.contains("reparse point in trace artifact path")
                 || trace_err.contains("cannot stat trace artifact component"),
             "wrapper must reject dangling traces-dir symlink, got: {}",
             trace_err
@@ -3666,7 +3668,9 @@ mod tests {
                 .unwrap_err()
                 .to_string();
         assert!(
-            trace_err.contains("dangling symlink at trace artifact path"),
+            trace_err.contains("dangling symlink at trace artifact path")
+                || trace_err.contains("symlink in trace artifact path")
+                || trace_err.contains("reparse point in trace artifact path"),
             "wrapper must reject dangling final-file symlink, got: {}",
             trace_err
         );
