@@ -13,6 +13,8 @@ use openlocus_core::Policy;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
+use crate::path_safety;
+
 /// Current schema version for R8 persistent BM25 index.
 pub const SCHEMA_VERSION: &str = "r8-bm25-v2";
 
@@ -138,12 +140,35 @@ impl IndexManifest {
 
     /// Load manifest from the repo's .openlocus/index/manifest.json.
     /// Validates schema version and chunk strategy; refuses unrecognized.
+    ///
+    /// Legacy entry point: assumes colocated mode where `repo_root` is both
+    /// source root and state root. Delegates to [`Self::load_at_state_root`].
     pub fn load(repo_root: &Path) -> Result<Self> {
-        let path = repo_root.join(MANIFEST_PATH_RELATIVE);
+        Self::load_at_state_root(repo_root)
+    }
+
+    /// Load manifest from `state_root/.openlocus/index/manifest.json`.
+    ///
+    /// In separated mode `state_root` is the persistent state location and
+    /// differs from the source root. The manifest is a state artifact: it is
+    /// always read from the state root, never from the source root.
+    ///
+    /// B0 safety closure: rejects unsafe manifest paths (symlink/reparse/
+    /// special-file/non-directory ancestor) before reading. Fail-closed on
+    /// every metadata/traversal error except genuine `NotFound`.
+    ///
+    /// B0 API-surface closure: this is `pub(crate)` — the public entry
+    /// point is the legacy [`Self::load`]. High-level source-aware
+    /// operations in [`crate::persistent`] call this internally; no
+    /// external crate may bypass the legacy entry point to mutate state.
+    pub(crate) fn load_at_state_root(state_root: &Path) -> Result<Self> {
+        let canonical_state = path_safety::canonicalize_state_root(state_root)?;
+        let bytes = path_safety::checked_read_file(&canonical_state, MANIFEST_PATH_RELATIVE)
+            .with_context(|| "failed to read manifest.json")?;
         let content =
-            std::fs::read_to_string(&path).with_context(|| "failed to read manifest.json")?;
+            std::str::from_utf8(&bytes).with_context(|| "manifest.json is not valid UTF-8")?;
         let manifest: IndexManifest =
-            serde_json::from_str(&content).with_context(|| "failed to parse manifest.json")?;
+            serde_json::from_str(content).with_context(|| "failed to parse manifest.json")?;
 
         // Validate schema version
         if manifest.schema_version != SCHEMA_VERSION && manifest.schema_version != SCHEMA_VERSION_R7
@@ -160,20 +185,73 @@ impl IndexManifest {
     }
 
     /// Save manifest to the repo's .openlocus/index/manifest.json.
+    ///
+    /// Legacy entry point: delegates to [`Self::save_at_state_root`].
     pub fn save(&self, repo_root: &Path) -> Result<()> {
-        let path = repo_root.join(MANIFEST_PATH_RELATIVE);
-        if let Some(parent) = path.parent() {
-            std::fs::create_dir_all(parent)?;
-        }
+        self.save_at_state_root(repo_root)
+    }
+
+    /// Save manifest to `state_root/.openlocus/index/manifest.json`.
+    ///
+    /// The manifest is a state artifact: it is always written to the state
+    /// root, never to the source root. No absolute source path is persisted;
+    /// only repo-relative paths are stored in `ManifestFileEntry::path`.
+    ///
+    /// B0 safety closure: routes through [`path_safety::checked_write_file_atomic`]
+    /// — checked tmp-in-same-directory + rename, with preflight of the
+    /// parent dir, final path, and tmp sibling. Rejects links/reparse/
+    /// special-files/non-directory ancestors. Never direct-writes the
+    /// final file.
+    ///
+    /// B0 API-surface closure: this is `pub(crate)` — the public entry
+    /// point is the legacy [`Self::save`]. No external crate may bypass
+    /// the legacy entry point to write state.
+    pub(crate) fn save_at_state_root(&self, state_root: &Path) -> Result<()> {
+        let canonical_state = path_safety::canonicalize_state_root(state_root)?;
         let content =
             serde_json::to_string_pretty(self).with_context(|| "failed to serialize manifest")?;
-        std::fs::write(&path, content).with_context(|| "failed to write manifest.json")?;
+        path_safety::checked_write_file_atomic(
+            &canonical_state,
+            MANIFEST_PATH_RELATIVE,
+            content.as_bytes(),
+        )
+        .with_context(|| "failed to write manifest.json")?;
         Ok(())
     }
 
     /// Check if the manifest exists.
+    ///
+    /// Legacy entry point: delegates to [`Self::exists_at_state_root`].
     pub fn exists(repo_root: &Path) -> bool {
-        repo_root.join(MANIFEST_PATH_RELATIVE).exists()
+        Self::exists_at_state_root(repo_root)
+    }
+
+    /// Check if the manifest exists at `state_root/.openlocus/index/manifest.json`.
+    ///
+    /// Legacy bool entry point: returns `false` when the manifest is
+    /// genuinely absent or when an unsafe path is detected. Mutating
+    /// operations (build/update/purge) must NOT rely on this mapping —
+    /// they must use [`Self::checked_exists_at_state_root`] or
+    /// [`path_safety::preflight_index_artifacts`] instead.
+    ///
+    /// B0 API-surface closure: this is `pub(crate)` — the public entry
+    /// point is the legacy bool [`Self::exists`]. The legacy entry point
+    /// remains behavior-compatible (maps errors to `false`).
+    pub(crate) fn exists_at_state_root(state_root: &Path) -> bool {
+        Self::checked_exists_at_state_root(state_root).unwrap_or(false)
+    }
+
+    /// Checked existence: returns `Ok(true)` only when the manifest is a
+    /// safe regular file; `Ok(false)` when genuinely absent; `Err` when
+    /// the path is unsafe (symlink/reparse/special-file/non-directory
+    /// ancestor) or cannot be stat'd fail-closed.
+    ///
+    /// This is the source of truth mutating operations must consult; the
+    /// legacy bool [`Self::exists_at_state_root`] is a thin wrapper that
+    /// maps errors to `false` for backward compatibility.
+    pub(crate) fn checked_exists_at_state_root(state_root: &Path) -> Result<bool> {
+        let canonical_state = path_safety::canonicalize_state_root(state_root)?;
+        path_safety::checked_exists(&canonical_state, MANIFEST_PATH_RELATIVE)
     }
 }
 
@@ -275,6 +353,32 @@ mod tests {
         manifest.save(root).unwrap();
 
         assert!(IndexManifest::exists(root));
+    }
+
+    #[test]
+    fn manifest_at_state_root_loads_from_state_root_not_caller_cwd() {
+        let source_dir = tempfile::tempdir().unwrap();
+        let state_dir = tempfile::tempdir().unwrap();
+        let source_root = source_dir.path();
+        let state_root = state_dir.path();
+
+        // No manifest anywhere yet
+        assert!(!IndexManifest::exists_at_state_root(state_root));
+        assert!(!IndexManifest::exists_at_state_root(source_root));
+
+        let manifest = IndexManifest::new("policy-hash-state".into(), vec![], 0);
+        manifest.save_at_state_root(state_root).unwrap();
+
+        // State root has the manifest; source root does not
+        assert!(IndexManifest::exists_at_state_root(state_root));
+        assert!(!IndexManifest::exists_at_state_root(source_root));
+
+        // load_at_state_root reads from state_root, not source_root
+        let loaded = IndexManifest::load_at_state_root(state_root).unwrap();
+        assert_eq!(loaded.policy_hash, "policy-hash-state");
+
+        // Legacy load on source_root must fail (no manifest there)
+        assert!(IndexManifest::load_at_state_root(source_root).is_err());
     }
 
     #[test]

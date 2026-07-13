@@ -8,6 +8,7 @@
 //! - Policy hash is recorded; mismatch signals need for rebuild.
 
 pub mod manifest;
+mod path_safety;
 pub mod persistent;
 
 pub use manifest::*;

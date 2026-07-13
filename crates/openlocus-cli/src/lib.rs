@@ -5,7 +5,8 @@ use openlocus_ast::{AstSymbolKind, AstSymbolStatus, extract_ast_symbols};
 use openlocus_context::plan::{FastContextPlan, fast_context};
 use openlocus_core::{
     BudgetUsed, Channel, ContextLitePack, Evidence, EvidencePack, Freshness, JsonOutput, Policy,
-    ScoreParts, Symbol, SymbolKind, TraceEvent, append_trace,
+    ScoreParts, Symbol, SymbolKind, TraceEvent, append_trace, append_trace_at_roots,
+    write_fast_context_trace_at_roots,
 };
 use openlocus_derived::generator;
 use openlocus_derived::model::{DerivedIndexView, DerivedViewKind};
@@ -15,8 +16,10 @@ use openlocus_graph::graph::{self, EdgeKind, GraphEdge};
 use openlocus_graph::materialize::materialize_graph_edges;
 use openlocus_index::manifest::{ChunkStrategy, IndexManifest};
 use openlocus_index::persistent::{
-    PersistentBm25Index, build_index, dirty_index, purge_index, search_persistent_bm25,
-    status_index, update_index, validate_index,
+    PersistentBm25Index, build_index, build_index_at_state_root, dirty_index,
+    dirty_index_at_state_root, purge_index_at_state_root, search_persistent_bm25_at_state_root,
+    status_index, status_index_at_state_root, update_index_at_state_root,
+    validate_index_at_state_root,
 };
 use openlocus_provider::audit;
 use openlocus_provider::dense_store::JsonlEmbeddingStore;
@@ -199,6 +202,15 @@ pub enum SearchCommands {
         /// Index mode: temp (build per-query) or persistent (use pre-built index)
         #[arg(long, default_value = "temp")]
         index: String,
+        /// Source root (persistent index only): where files are scanned and
+        /// current content is re-read. Defaults to discovered repo root.
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (persistent index only): where the BM25 index lives.
+        /// Defaults to `--source-root` when `--source-root` is given.
+        /// Requires `--source-root`; rejected alone.
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -340,24 +352,51 @@ pub enum IndexCommands {
         /// Chunk strategy: line (fixed-size line windows) or ast (AST-bounded, experimental)
         #[arg(long, default_value = "line")]
         chunk_strategy: String,
+        /// Source root: where files are scanned, policy is loaded, and
+        /// current content is re-read. Defaults to discovered repo root.
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root: where the BM25 index and manifest are written.
+        /// Defaults to `--source-root` when `--source-root` is given.
+        /// Requires `--source-root`; rejected alone.
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
     },
     /// Show persistent index status
     Status {
+        /// Source root (see `index build --source-root`).
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (see `index build --state-root`).
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
     },
     /// Show dirty summary (manifest-vs-current scan)
     Dirty {
+        /// Source root (see `index build --source-root`).
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (see `index build --state-root`).
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
     },
     /// Validate persistent index against filesystem
     Validate {
+        /// Source root (see `index build --source-root`).
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (see `index build --state-root`).
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -370,12 +409,24 @@ pub enum IndexCommands {
         /// Update a single file path
         #[arg(long)]
         path: Option<String>,
+        /// Source root (see `index build --source-root`).
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (see `index build --state-root`).
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
     },
     /// Purge persistent index artifacts
     Purge {
+        /// Source root (see `index build --source-root`).
+        #[arg(long)]
+        source_root: Option<String>,
+        /// State root (see `index build --state-root`).
+        #[arg(long)]
+        state_root: Option<String>,
         /// Output as JSON
         #[arg(long)]
         json: bool,
@@ -522,15 +573,27 @@ pub fn run() -> Result<()> {
                 query,
                 limit,
                 index,
+                source_root,
+                state_root,
                 json,
             } => {
                 if index == "persistent" {
-                    let (results, stats) =
-                        search_persistent_bm25(&repo_root, &query, limit, &policy)?;
-                    trace_event(
-                        &repo_root,
+                    let roots =
+                        resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                    // Policy is loaded from SOURCE root in separated mode.
+                    let persistent_policy = Policy::load_from_repo(&roots.source_root);
+                    let (results, stats) = search_persistent_bm25_at_state_root(
+                        &roots.source_root,
+                        &roots.state_root,
+                        &query,
+                        limit,
+                        &persistent_policy,
+                    )?;
+                    trace_event_persistent(
+                        &roots.source_root,
+                        &roots.state_root,
                         "search_bm25_persistent",
-                        serde_json::json!({"query": query, "limit": limit}),
+                        serde_json::json!({"query": query, "limit": limit, "source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                         serde_json::json!({"result_count": results.len(), "stale_hits_skipped": stats.stale_hits_skipped, "invalid_hits_skipped": stats.invalid_hits_skipped}),
                     );
                     let output = serde_json::json!({
@@ -539,7 +602,8 @@ pub fn run() -> Result<()> {
                     });
                     print_output(&output, json)
                 } else {
-                    // Default: temp index (per-query build)
+                    // Default: temp index (per-query build) — colocated only.
+                    // --source-root / --state-root are ignored in temp mode.
                     let records = scan_repo(&repo_root, &policy)?;
                     let results = bm25_search(&repo_root, &records, &query, limit)?;
                     trace_event(
@@ -706,20 +770,20 @@ pub fn run() -> Result<()> {
                 }
             };
 
-            // Write trace file
-            let trace_dir = repo_root.join(".openlocus/traces");
-            let _ = std::fs::create_dir_all(&trace_dir);
-            let trace_file = trace_dir.join(format!("fast-context-{}.json", result.trace_id));
+            // Write trace file (best-effort telemetry: on unsafe/unwritable
+            // trace path warn once and continue returning the core result;
+            // never raw fallback to std::fs::create_dir_all/write).
             let trace_data = serde_json::json!({
                 "trace_id": result.trace_id,
                 "query": result.query,
                 "actions": result.actions,
                 "diagnostics": result.diagnostics,
             });
-            let _ = std::fs::write(
-                &trace_file,
-                serde_json::to_string_pretty(&trace_data).unwrap(),
-            );
+            if let Err(e) =
+                write_fast_context_trace_at_roots(&repo_root, &result.trace_id, &trace_data)
+            {
+                eprintln!("warning: failed to write fast-context trace: {}", e);
+            }
 
             trace_event(
                 &repo_root,
@@ -1012,68 +1076,141 @@ pub fn run() -> Result<()> {
         Commands::Index { index_cmd } => match index_cmd {
             IndexCommands::Build {
                 chunk_strategy,
+                source_root,
+                state_root,
                 json,
             } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                // Policy is loaded from SOURCE root (separated) or repo_root (colocated).
+                let policy = Policy::load_from_repo(&roots.source_root);
                 let strategy = ChunkStrategy::from_cli_str(&chunk_strategy)
                     .unwrap_or(ChunkStrategy::LineWindowV1);
-                let records = scan_repo(&repo_root, &policy)?;
-                let result = build_index(&repo_root, &records, &policy, strategy)?;
-                trace_event(
-                    &repo_root,
+                let records = scan_repo(&roots.source_root, &policy)?;
+                let result = build_index_at_state_root(
+                    &roots.source_root,
+                    &roots.state_root,
+                    &records,
+                    &policy,
+                    strategy,
+                )?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_build",
-                    serde_json::json!({"chunk_strategy": chunk_strategy}),
+                    serde_json::json!({"chunk_strategy": chunk_strategy, "source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"success": result.success, "file_count": result.file_count, "chunk_count": result.chunk_count}),
                 );
                 print_output(&result, json)
             }
-            IndexCommands::Status { json } => {
-                let result = status_index(&repo_root, &policy)?;
-                trace_event(
-                    &repo_root,
+            IndexCommands::Status {
+                source_root,
+                state_root,
+                json,
+            } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                let policy = Policy::load_from_repo(&roots.source_root);
+                let result =
+                    status_index_at_state_root(&roots.source_root, &roots.state_root, &policy)?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_status",
-                    serde_json::json!({}),
+                    serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"exists": result.exists, "requires_rebuild": result.requires_rebuild}),
                 );
                 print_output(&result, json)
             }
-            IndexCommands::Dirty { json } => {
-                let records = scan_repo(&repo_root, &policy)?;
-                let result = dirty_index(&repo_root, &policy, &records)?;
-                trace_event(
-                    &repo_root,
+            IndexCommands::Dirty {
+                source_root,
+                state_root,
+                json,
+            } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                let policy = Policy::load_from_repo(&roots.source_root);
+                let records = scan_repo(&roots.source_root, &policy)?;
+                let result = dirty_index_at_state_root(
+                    &roots.source_root,
+                    &roots.state_root,
+                    &policy,
+                    &records,
+                )?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_dirty",
-                    serde_json::json!({}),
+                    serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"clean": result.clean, "requires_update": result.requires_update, "requires_rebuild": result.requires_rebuild}),
                 );
                 print_output(&result, json)
             }
-            IndexCommands::Validate { json } => {
-                let result = validate_index(&repo_root, &policy)?;
-                trace_event(
-                    &repo_root,
+            IndexCommands::Validate {
+                source_root,
+                state_root,
+                json,
+            } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                let policy = Policy::load_from_repo(&roots.source_root);
+                let result =
+                    validate_index_at_state_root(&roots.source_root, &roots.state_root, &policy)?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_validate",
-                    serde_json::json!({}),
+                    serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"valid": result.valid, "stale_files": result.stale_files.len(), "deleted_files": result.deleted_files.len()}),
                 );
                 print_output(&result, json)
             }
-            IndexCommands::Update { dirty, path, json } => {
-                let records = scan_repo(&repo_root, &policy)?;
-                let result = update_index(&repo_root, &policy, &records, dirty, path.as_deref())?;
-                trace_event(
-                    &repo_root,
+            IndexCommands::Update {
+                dirty,
+                path,
+                source_root,
+                state_root,
+                json,
+            } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                let policy = Policy::load_from_repo(&roots.source_root);
+                let records = scan_repo(&roots.source_root, &policy)?;
+                let result = update_index_at_state_root(
+                    &roots.source_root,
+                    &roots.state_root,
+                    &policy,
+                    &records,
+                    dirty,
+                    path.as_deref(),
+                )?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_update",
-                    serde_json::json!({"dirty": dirty, "path": path}),
+                    serde_json::json!({"dirty": dirty, "path": path, "source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"success": result.success, "added_count": result.added_count, "modified_count": result.modified_count, "deleted_count": result.deleted_count}),
                 );
                 print_output(&result, json)
             }
-            IndexCommands::Purge { json } => {
-                let result = purge_index(&repo_root)?;
-                trace_event(
-                    &repo_root,
+            IndexCommands::Purge {
+                source_root,
+                state_root,
+                json,
+            } => {
+                let roots =
+                    resolve_roots(&repo_root, source_root.as_deref(), state_root.as_deref())?;
+                // Purge is a state-only destructive operation but the
+                // low-level function is now source-aware: it performs the
+                // bidirectional source-vs-actual-artifact overlap validation
+                // itself before any private raw deletion. There is no
+                // public state-only split-root destructive bypass.
+                let result = purge_index_at_state_root(&roots.source_root, &roots.state_root)?;
+                trace_event_persistent(
+                    &roots.source_root,
+                    &roots.state_root,
                     "index_purge",
-                    serde_json::json!({}),
+                    serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
                     serde_json::json!({"purged": result.purged}),
                 );
                 print_output(&result, json)
@@ -1195,9 +1332,106 @@ fn discover_repo_root_from(start: &Path) -> Result<PathBuf> {
     }
 }
 
+/// Resolved source/state roots for persistent BM25 commands.
+///
+/// In colocated mode (no `--source-root` / `--state-root` flags),
+/// `source_root == state_root == repo_root` and behavior is identical to
+/// legacy R7/R8. In separated mode, `source_root` is where files/policy
+/// live and `state_root` is where the persistent index lives. Persistent
+/// trace events are routed through the checked source-aware
+/// `append_trace_at_roots` helper (see `trace_event_persistent`), which
+/// writes under `state_root/.openlocus/traces/` so trace artifacts travel
+/// with the index they describe. Ordinary nonpersistent colocated commands
+/// keep using `trace_event` + legacy `append_trace` against `repo_root`.
+#[derive(Debug, Clone)]
+struct ResolvedRoots {
+    source_root: PathBuf,
+    state_root: PathBuf,
+    /// True when `source_root` and `state_root` are lexically distinct.
+    /// Used to decide whether to re-load policy from `source_root` and
+    /// whether trace writes target the state root.
+    separated: bool,
+}
+
+/// Resolve `--source-root` / `--state-root` flags against the discovered
+/// `repo_root` for persistent BM25 commands.
+///
+/// Rules (fail-closed):
+/// - No flags → colocated mode: `source_root == state_root == repo_root`.
+/// - `--source-root X` alone → `source_root = X`, `state_root = X` (defaults
+///   to source root).
+/// - `--source-root X --state-root Y` → separated mode.
+/// - `--state-root Y` alone → REJECTED. `--state-root` requires
+///   `--source-root` to avoid ambiguity about where the source tree lives.
+fn resolve_roots(
+    repo_root: &Path,
+    source_root: Option<&str>,
+    state_root: Option<&str>,
+) -> Result<ResolvedRoots> {
+    match (source_root, state_root) {
+        (None, None) => Ok(ResolvedRoots {
+            source_root: repo_root.to_path_buf(),
+            state_root: repo_root.to_path_buf(),
+            separated: false,
+        }),
+        (Some(s), None) => {
+            let p = PathBuf::from(s);
+            Ok(ResolvedRoots {
+                source_root: p.clone(),
+                state_root: p,
+                separated: false,
+            })
+        }
+        (Some(s), Some(st)) => {
+            let source = PathBuf::from(s);
+            let state = PathBuf::from(st);
+            // Lexical equality is colocated; distinct is separated.
+            let separated = source != state;
+            Ok(ResolvedRoots {
+                source_root: source,
+                state_root: state,
+                separated,
+            })
+        }
+        (None, Some(_)) => bail!(
+            "--state-root requires --source-root; specify the source tree with --source-root first (e.g. --source-root <repo> --state-root <state>)"
+        ),
+    }
+}
+
+/// Append a nonpersistent colocated trace event under
+/// `root/.openlocus/traces/`. Used by ordinary colocated commands (Read,
+/// Scan, Retrieve, non-persistent Search, etc.) where source and state
+/// roots are the same `repo_root`. Calls the legacy single-root
+/// `append_trace` helper directly.
 fn trace_event(root: &Path, event: &str, input: serde_json::Value, output: serde_json::Value) {
     let ev = TraceEvent::new(event).with_input(input).with_output(output);
     if let Err(e) = append_trace(root, &ev) {
+        eprintln!("warning: failed to append trace: {}", e);
+    }
+}
+
+/// Append a persistent trace event through the checked source-aware
+/// `append_trace_at_roots` helper. In separated mode (`source_root`
+/// lexically distinct from `state_root`) the helper validates
+/// source-vs-trace-artifact overlap and writes the trace under
+/// `state_root/.openlocus/traces/`; in colocated mode it uses the same
+/// checked single-root implementation as the public legacy
+/// `append_trace` (canonical anchor, component-by-component directory
+/// creation, preflight of links/reparse/special-files/wrong-kind, and
+/// final daily-file recheck — only the overlap validation is skipped
+/// because it is trivially satisfied). Best-effort telemetry: on an
+/// unsafe / unwritable trace path warn once and continue after the core
+/// command result; never fall back to the source root or to raw writes.
+fn trace_event_persistent(
+    source_root: &Path,
+    state_root: &Path,
+    event: &str,
+    input: serde_json::Value,
+    output: serde_json::Value,
+) {
+    let ev = TraceEvent::new(event).with_input(input).with_output(output);
+    if let Err(e) = append_trace_at_roots(source_root, state_root, &ev) {
         eprintln!("warning: failed to append trace: {}", e);
     }
 }
@@ -2471,6 +2705,77 @@ mod tests {
         std::os::windows::fs::symlink_dir(src, dst)
     }
 
+    #[cfg(unix)]
+    fn symlink_file(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::unix::fs::symlink(src, dst)
+    }
+
+    #[cfg(windows)]
+    fn symlink_file(src: &Path, dst: &Path) -> std::io::Result<()> {
+        std::os::windows::fs::symlink_file(src, dst)
+    }
+
+    /// Create a dangling file symlink at `dst` for tests. Returns true on
+    /// success, false (with a skip log) if the host cannot create symlinks
+    /// (e.g. Windows without developer mode / admin). The target points at
+    /// a nonexistent path so the symlink is dangling by construction.
+    fn make_dangling_file_symlink_for_test(dst: &Path) -> bool {
+        let target = Path::new("/nonexistent-openlocus-cli-symlink-target-for-test");
+        match symlink_file(target, dst) {
+            Ok(()) => true,
+            Err(err) if symlink_unavailable_for_test(&err) => {
+                eprintln!("skipping dangling-symlink test: symlinks unavailable on this host");
+                false
+            }
+            Err(err) => panic!(
+                "failed to create symlink test fixture at {}: {err}",
+                dst.display()
+            ),
+        }
+    }
+
+    /// Create a dangling dir symlink at `dst` for tests. Returns true on
+    /// success, false (with a skip log) if the host cannot create symlinks.
+    fn make_dangling_dir_symlink_for_test(dst: &Path) -> bool {
+        let target = Path::new("/nonexistent-openlocus-cli-dir-symlink-target-for-test");
+        match symlink_dir(target, dst) {
+            Ok(()) => true,
+            Err(err) if symlink_unavailable_for_test(&err) => {
+                eprintln!("skipping dangling-dir-symlink test: symlinks unavailable on this host");
+                false
+            }
+            Err(err) => panic!(
+                "failed to create dir symlink test fixture at {}: {err}",
+                dst.display()
+            ),
+        }
+    }
+
+    // ── Windows junction fixtures ─────────────────────────────────────
+    //
+    // On Windows, junctions are reparse points that don't require the
+    // SeCreateSymbolicLinkPrivilege. They are created via `cmd /C mklink /J`.
+    // Non-vacuous on windows-latest without admin / developer mode.
+
+    #[cfg(windows)]
+    fn create_junction_for_test(src: &Path, dst: &Path) -> bool {
+        let src_str = src.to_string_lossy();
+        let dst_str = dst.to_string_lossy();
+        match std::process::Command::new("cmd")
+            .args(["/C", "mklink", "/J", &dst_str, &src_str])
+            .output()
+        {
+            Ok(out) => out.status.success(),
+            Err(_) => false,
+        }
+    }
+
+    #[cfg(not(windows))]
+    #[allow(dead_code)]
+    fn create_junction_for_test(_src: &Path, _dst: &Path) -> bool {
+        false
+    }
+
     #[cfg(windows)]
     fn symlink_unavailable_for_test(err: &std::io::Error) -> bool {
         err.raw_os_error() == Some(1314)
@@ -2641,5 +2946,1086 @@ mod tests {
         assert_invalid(root, &evidence);
         let duplicate_evidence = read_file(root, "src/duplicate.rs:2").unwrap();
         assert_valid(root, &duplicate_evidence);
+    }
+
+    // ── B0: source-root/state-root separation CLI tests ────────────────
+
+    #[test]
+    fn resolve_roots_no_flags_is_colocated() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let roots = resolve_roots(root, None, None).unwrap();
+        assert_eq!(roots.source_root, root);
+        assert_eq!(roots.state_root, root);
+        assert!(!roots.separated);
+        // In colocated mode persistent traces target the same root as
+        // source (verified end-to-end by the trace_event_persistent test).
+        assert_eq!(roots.state_root, root);
+    }
+
+    #[test]
+    fn resolve_roots_source_root_alone_defaults_state_to_source() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let src = root.join("src");
+        fs::create_dir_all(&src).unwrap();
+        let roots = resolve_roots(root, Some(src.to_str().unwrap()), None).unwrap();
+        assert_eq!(roots.source_root, src);
+        assert_eq!(roots.state_root, src, "state must default to source");
+        assert!(!roots.separated);
+    }
+
+    #[test]
+    fn resolve_roots_both_explicit_is_separated() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let src = root.join("src");
+        let state = root.join("state");
+        fs::create_dir_all(&src).unwrap();
+        fs::create_dir_all(&state).unwrap();
+        let roots = resolve_roots(
+            root,
+            Some(src.to_str().unwrap()),
+            Some(state.to_str().unwrap()),
+        )
+        .unwrap();
+        assert_eq!(roots.source_root, src);
+        assert_eq!(roots.state_root, state);
+        assert!(roots.separated);
+        // In separated mode persistent traces target the state root (the
+        // source-aware append_trace_at_roots helper writes under
+        // state_root/.openlocus/traces, never under source_root).
+        assert_eq!(roots.state_root, state);
+    }
+
+    #[test]
+    fn resolve_roots_state_root_alone_is_rejected_fail_closed() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let state = root.join("state");
+        fs::create_dir_all(&state).unwrap();
+        let err = resolve_roots(root, None, Some(state.to_str().unwrap()))
+            .unwrap_err()
+            .to_string();
+        assert!(
+            err.contains("--state-root requires --source-root"),
+            "got: {}",
+            err
+        );
+    }
+
+    #[test]
+    fn cli_index_build_accepts_source_and_state_root_flags() {
+        let cli = Cli::parse_from([
+            "openlocus",
+            "index",
+            "build",
+            "--source-root",
+            "/tmp/src",
+            "--state-root",
+            "/tmp/state",
+        ]);
+        match cli.command {
+            Commands::Index {
+                index_cmd:
+                    IndexCommands::Build {
+                        source_root,
+                        state_root,
+                        ..
+                    },
+            } => {
+                assert_eq!(source_root.as_deref(), Some("/tmp/src"));
+                assert_eq!(state_root.as_deref(), Some("/tmp/state"));
+            }
+            _ => panic!("expected Index::Build"),
+        }
+    }
+
+    #[test]
+    fn cli_index_build_legacy_no_flags_still_works() {
+        let cli = Cli::parse_from(["openlocus", "index", "build"]);
+        match cli.command {
+            Commands::Index {
+                index_cmd:
+                    IndexCommands::Build {
+                        source_root,
+                        state_root,
+                        ..
+                    },
+            } => {
+                assert!(
+                    source_root.is_none(),
+                    "legacy build must not require --source-root"
+                );
+                assert!(
+                    state_root.is_none(),
+                    "legacy build must not require --state-root"
+                );
+            }
+            _ => panic!("expected Index::Build"),
+        }
+    }
+
+    #[test]
+    fn cli_search_bm25_persistent_accepts_source_and_state_root_flags() {
+        let cli = Cli::parse_from([
+            "openlocus",
+            "search",
+            "bm25",
+            "--index",
+            "persistent",
+            "--source-root",
+            "/tmp/src",
+            "--state-root",
+            "/tmp/state",
+            "authenticate",
+        ]);
+        match cli.command {
+            Commands::Search {
+                search_cmd:
+                    SearchCommands::Bm25 {
+                        index,
+                        source_root,
+                        state_root,
+                        query,
+                        ..
+                    },
+            } => {
+                assert_eq!(index, "persistent");
+                assert_eq!(source_root.as_deref(), Some("/tmp/src"));
+                assert_eq!(state_root.as_deref(), Some("/tmp/state"));
+                assert_eq!(query, "authenticate");
+            }
+            _ => panic!("expected Search::Bm25"),
+        }
+    }
+
+    #[test]
+    fn cli_index_purge_accepts_state_root_flag() {
+        let cli = Cli::parse_from([
+            "openlocus",
+            "index",
+            "purge",
+            "--source-root",
+            "/tmp/src",
+            "--state-root",
+            "/tmp/state",
+        ]);
+        match cli.command {
+            Commands::Index {
+                index_cmd:
+                    IndexCommands::Purge {
+                        source_root,
+                        state_root,
+                        ..
+                    },
+            } => {
+                assert_eq!(source_root.as_deref(), Some("/tmp/src"));
+                assert_eq!(state_root.as_deref(), Some("/tmp/state"));
+            }
+            _ => panic!("expected Index::Purge"),
+        }
+    }
+
+    /// End-to-end: explicit-root build + persistent query via the same
+    /// library functions the CLI handlers call. Verifies the CLI flow
+    /// (resolve_roots → load policy from source → scan source → build at
+    /// state → persistent search at state) returns current source evidence.
+    #[test]
+    fn cli_flow_explicit_root_build_and_persistent_query_end_to_end() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let source_root = root.join("src-tree");
+        let state_root = root.join("state-tree");
+        fs::create_dir_all(&source_root).unwrap();
+        fs::create_dir_all(&state_root).unwrap();
+
+        write_file(
+            &source_root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        // Mimic CLI handler flow
+        let repo_root = discover_repo_root_from(&source_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+
+        // State has the index; source does not have .openlocus
+        assert!(roots.state_root.join(".openlocus/index").exists());
+        assert!(!roots.source_root.join(".openlocus").exists());
+
+        // Persistent search returns source content, not state-root content
+        let (evidence, stats) = search_persistent_bm25_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            "authenticate",
+            10,
+            &policy,
+        )
+        .unwrap();
+        assert!(!evidence.is_empty());
+        assert_eq!(evidence[0].core.path, "app.rs");
+        assert_eq!(stats.stale_hits_skipped, 0);
+
+        // Trace event written to state root (separated mode) via the
+        // source-aware persistent wrapper used by the CLI handlers.
+        trace_event_persistent(
+            &roots.source_root,
+            &roots.state_root,
+            "test_cli_flow",
+            serde_json::json!({}),
+            serde_json::json!({}),
+        );
+        assert!(
+            roots.state_root.join(".openlocus/traces").exists(),
+            "trace must be written to state root in separated mode"
+        );
+        assert!(
+            !roots.source_root.join(".openlocus/traces").exists(),
+            "trace must NOT be written to source root in separated mode"
+        );
+    }
+
+    /// Legacy fallback: CLI handler flow with no flags uses repo_root for
+    /// both source and state (colocated mode), identical to R7/R8.
+    #[test]
+    fn cli_flow_legacy_no_flags_is_colocated_end_to_end() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+
+        write_file(&root.join("app.rs"), "fn authenticate_user() {}\n");
+
+        let repo_root = discover_repo_root_from(root).unwrap();
+        let roots = resolve_roots(&repo_root, None, None).unwrap();
+        assert!(!roots.separated);
+        assert_eq!(roots.source_root, roots.state_root);
+
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+
+        // Legacy layout: .openlocus/index under repo_root
+        assert!(repo_root.join(".openlocus/index").exists());
+
+        let (evidence, _stats) = search_persistent_bm25_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            "authenticate",
+            10,
+            &policy,
+        )
+        .unwrap();
+        assert!(!evidence.is_empty());
+        assert_eq!(evidence[0].core.path, "app.rs");
+    }
+
+    /// Invalid root combination: state-root inside source-root is rejected
+    /// by the library's validate_separated_roots when build is attempted.
+    #[test]
+    fn cli_flow_state_inside_source_is_rejected_fail_closed() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let source_root = root.join("src-tree");
+        let state_root = source_root.join("nested-state");
+        fs::create_dir_all(&state_root).unwrap();
+
+        write_file(&source_root.join("app.rs"), "fn authenticate_user() {}\n");
+
+        let repo_root = discover_repo_root_from(&source_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        );
+        assert!(
+            build.is_err(),
+            "build must reject state-root inside source-root (fail closed)"
+        );
+        let err = build.unwrap_err().to_string();
+        assert!(
+            err.contains("artifact subtree overlaps source root"),
+            "got: {}",
+            err
+        );
+    }
+
+    // ── B0: CLI purge safety (source-aware purge_index_at_state_root) ───
+    //
+    // The CLI Purge handler delegates directly to the source-aware
+    // `purge_index_at_state_root(source_root, state_root)`, which performs
+    // bidirectional source-vs-actual-artifact overlap validation itself
+    // before any private raw deletion. There is no public state-only
+    // split-root destructive bypass.
+    // "Sentinel intact" = state_root/.openlocus is left in place (only the
+    // index subdir is purged; the .openlocus marker remains).
+
+    /// Test 11: CLI purge rejection for source == artifact and for source
+    /// below artifact — both must fail-closed BEFORE any state is mutated,
+    /// leaving the existing sentinel (state_root/.openlocus) intact.
+    #[test]
+    fn cli_purge_rejects_unsafe_source_index_relation_sentinel_intact() {
+        // Case A: source_root == state_root/.openlocus/index (artifact == source).
+        {
+            let dir = TempDir::new().unwrap();
+            let root = dir.path();
+            let state_root = root.join("state");
+            fs::create_dir_all(&state_root).unwrap();
+            // Pre-create a sentinel .openlocus directory + a sentinel file
+            // so we can verify purge did NOT touch it.
+            let sentinel_dir = state_root.join(".openlocus");
+            fs::create_dir_all(&sentinel_dir).unwrap();
+            fs::write(sentinel_dir.join("policy.toml"), "# sentinel\n").unwrap();
+            // Also pre-create the index subdir + a tantivy artifact so we
+            // can verify they were NOT removed by a half-applied purge.
+            let index_dir = state_root.join(".openlocus").join("index");
+            fs::create_dir_all(&index_dir).unwrap();
+            fs::write(index_dir.join("manifest.json"), "{}").unwrap();
+
+            // source_root is exactly the future artifact subtree.
+            let source_root = state_root.join(".openlocus").join("index");
+            let repo_root = discover_repo_root_from(&state_root).unwrap();
+            let roots = resolve_roots(
+                &repo_root,
+                Some(source_root.to_str().unwrap()),
+                Some(state_root.to_str().unwrap()),
+            )
+            .unwrap();
+            assert!(roots.separated);
+
+            // The low-level purge is now source-aware: it validates
+            // overlap itself and rejects fail-closed.
+            let result = purge_index_at_state_root(&roots.source_root, &roots.state_root);
+            assert!(
+                result.is_err(),
+                "purge must reject source == artifact (fail closed)"
+            );
+            let err = result.unwrap_err().to_string();
+            assert!(
+                err.contains("artifact subtree overlaps source root"),
+                "got: {}",
+                err
+            );
+
+            // Sentinel intact: validation rejected before purge ran.
+            assert!(
+                sentinel_dir.join("policy.toml").exists(),
+                "sentinel must be intact when validation rejects"
+            );
+            assert!(
+                index_dir.join("manifest.json").exists(),
+                "index artifacts must be intact when validation rejects"
+            );
+        }
+
+        // Case B: source_root below state_root/.openlocus/index
+        // (source below artifact — S.starts_with(A)).
+        {
+            let dir = TempDir::new().unwrap();
+            let root = dir.path();
+            let state_root = root.join("state");
+            fs::create_dir_all(&state_root).unwrap();
+            let sentinel_dir = state_root.join(".openlocus");
+            fs::create_dir_all(&sentinel_dir).unwrap();
+            fs::write(sentinel_dir.join("policy.toml"), "# sentinel\n").unwrap();
+            let index_dir = state_root.join(".openlocus").join("index");
+            fs::create_dir_all(&index_dir).unwrap();
+            fs::write(index_dir.join("manifest.json"), "{}").unwrap();
+
+            // source_root is below the future artifact subtree.
+            let source_root = state_root
+                .join(".openlocus")
+                .join("index")
+                .join("nested-source");
+            fs::create_dir_all(&source_root).unwrap();
+            let repo_root = discover_repo_root_from(&state_root).unwrap();
+            let roots = resolve_roots(
+                &repo_root,
+                Some(source_root.to_str().unwrap()),
+                Some(state_root.to_str().unwrap()),
+            )
+            .unwrap();
+            assert!(roots.separated);
+
+            let result = purge_index_at_state_root(&roots.source_root, &roots.state_root);
+            assert!(
+                result.is_err(),
+                "purge must reject source below artifact (fail closed)"
+            );
+            let err = result.unwrap_err().to_string();
+            assert!(
+                err.contains("artifact subtree overlaps source root"),
+                "got: {}",
+                err
+            );
+
+            // Sentinel intact.
+            assert!(sentinel_dir.join("policy.toml").exists());
+            assert!(index_dir.join("manifest.json").exists());
+        }
+    }
+
+    /// Test 12: CLI purge succeeds for source under state but sibling outside
+    /// `.openlocus/index`. The sentinel (state_root/.openlocus) is left
+    /// intact; only the index subdir is removed.
+    #[test]
+    fn cli_purge_succeeds_source_under_state_outside_index_sentinel_intact() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let state_root = root.join("state");
+        let source_root = state_root.join("src");
+        fs::create_dir_all(&source_root).unwrap();
+        write_file(&source_root.join("app.rs"), "fn authenticate_user() {}\n");
+
+        let repo_root = discover_repo_root_from(&state_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        // Build a real index so purge has something to remove.
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            openlocus_index::manifest::ChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+
+        // Index exists; sentinel .openlocus exists.
+        assert!(state_root.join(".openlocus").join("index").exists());
+        assert!(
+            state_root
+                .join(".openlocus")
+                .join("index")
+                .join("manifest.json")
+                .exists()
+        );
+
+        // The low-level purge is source-aware: validates overlap itself.
+        let result = purge_index_at_state_root(&roots.source_root, &roots.state_root).unwrap();
+        assert!(result.purged);
+
+        // Index artifacts removed.
+        assert!(!state_root.join(".openlocus").join("index").exists());
+        // Sentinel .openlocus directory remains intact.
+        assert!(
+            state_root.join(".openlocus").exists(),
+            "sentinel .openlocus must remain after purge"
+        );
+        // Source files untouched.
+        assert!(source_root.join("app.rs").exists());
+    }
+
+    /// Test 13: legacy colocated purge succeeds (no flags).
+    /// validate_separated_roots is a no-op for source_root == state_root.
+    #[test]
+    fn cli_purge_legacy_colocated_succeeds() {
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        write_file(&root.join("app.rs"), "fn authenticate_user() {}\n");
+
+        let repo_root = discover_repo_root_from(root).unwrap();
+        let roots = resolve_roots(&repo_root, None, None).unwrap();
+        assert!(!roots.separated);
+        assert_eq!(roots.source_root, roots.state_root);
+
+        // Build a real colocated index.
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            openlocus_index::manifest::ChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+        assert!(root.join(".openlocus").join("index").exists());
+
+        // The low-level purge is source-aware; colocated mode passes both
+        // roots equal.
+        let result = purge_index_at_state_root(&roots.source_root, &roots.state_root).unwrap();
+        assert!(result.purged);
+        // Index gone; .openlocus may remain (best-effort remove_dir of empty
+        // index dir, but .openlocus itself is never removed by purge).
+        assert!(!root.join(".openlocus").join("index").exists());
+    }
+
+    // ── B0: FastContext / persistent trace routing safety (production chain)
+    //
+    // These tests exercise the exact wrapper the CLI handlers now call
+    // (`write_fast_context_trace_at_roots`, `trace_event_persistent`)
+    // chained to the real command core (`fast_context`,
+    // `build_index_at_state_root`). They verify that on an unsafe trace
+    // path the wrapper rejects, no raw fallback write occurs, the
+    // source/outside sentinel is untouched, and the command core result
+    // still succeeds (best-effort telemetry never blocks the result).
+
+    /// FastContext CLI branch: dangling symlink at the traces dir. The
+    /// command core (`fast_context`) must still succeed and yield a
+    /// `trace_id`; the exact wrapper the CLI handler calls
+    /// (`write_fast_context_trace_at_roots`) must reject the unsafe trace
+    /// path, leave the source sentinel untouched, and never fall back to a
+    /// raw `std::fs::write`. Real Unix symlink; Windows skips when the
+    /// host cannot create symlinks.
+    #[test]
+    fn fast_context_cli_branch_dangling_traces_dir_no_fallback_write() {
+        use openlocus_context::plan::{FastContextPlan, fast_context};
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        write_file(
+            &root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        // Source sentinel: a real file under the repo root that must
+        // survive the rejected trace write untouched.
+        let sentinel_path = root.join("sentinel.txt");
+        let sentinel_bytes = b"source sentinel must remain\n";
+        fs::write(&sentinel_path, sentinel_bytes).unwrap();
+
+        // Outside sentinel: a file at the dangling symlink's nominal
+        // target path that must NOT be created by any fallback write.
+        let outside_target = root.join("outside-trace-target.txt");
+        assert!(!outside_target.exists());
+
+        // Pre-create `.openlocus` so we can install a dangling dir symlink
+        // at `.openlocus/traces` (the traces dir).
+        fs::create_dir_all(root.join(".openlocus")).unwrap();
+        let traces_link = root.join(".openlocus/traces");
+        if !make_dangling_dir_symlink_for_test(&traces_link) {
+            return; // host cannot create symlinks — non-vacuous only where supported
+        }
+
+        // ── Command core: `fast_context` (the same call the CLI handler
+        // makes after scan_repo). Must succeed regardless of trace path.
+        let repo_root = discover_repo_root_from(root).unwrap();
+        let policy = Policy::load_from_repo(&repo_root);
+        let records = scan_repo(&repo_root, &policy).unwrap();
+        let plan = FastContextPlan {
+            query: "authenticate".into(),
+            channels: vec!["regex".into()],
+            max_evidence: 5,
+            budget: 0,
+        };
+        let result = fast_context(&repo_root, &records, &plan).unwrap();
+        assert!(
+            !result.trace_id.is_empty(),
+            "core result must carry trace_id"
+        );
+        // `fast_context(...).unwrap()` above proves the command core
+        // returned Ok — telemetry is best-effort and never blocks the core
+        // result. The trace write below must not interfere with that.
+
+        // ── Exact wrapper the CLI handler now calls (no raw fallback).
+        let trace_data = serde_json::json!({
+            "trace_id": result.trace_id,
+            "query": result.query,
+            "actions": result.actions,
+            "diagnostics": result.diagnostics,
+        });
+        let trace_err =
+            write_fast_context_trace_at_roots(&repo_root, &result.trace_id, &trace_data)
+                .unwrap_err()
+                .to_string();
+        assert!(
+            trace_err.contains("dangling symlink at trace artifact path")
+                || trace_err.contains("cannot stat trace artifact component"),
+            "wrapper must reject dangling traces-dir symlink, got: {}",
+            trace_err
+        );
+
+        // No fallback write: the traces dir is still a dangling symlink
+        // (not a real directory with a written file inside it), and no
+        // fast-context trace file materialized.
+        assert!(
+            root.join(".openlocus/traces").symlink_metadata().is_ok(),
+            "traces dir symlink must still exist (no raw create_dir_all overwrite)"
+        );
+        assert!(
+            !root
+                .join(".openlocus/traces")
+                .join(format!("fast-context-{}.json", result.trace_id))
+                .exists(),
+            "no fast-context trace file must materialize after a rejected write"
+        );
+        // Outside target never created by any fallback.
+        assert!(
+            !outside_target.exists(),
+            "no fallback write at the symlink target"
+        );
+        // Source sentinel untouched.
+        assert_eq!(
+            fs::read(&sentinel_path).unwrap().as_slice(),
+            sentinel_bytes,
+            "source sentinel must remain untouched when trace write rejects"
+        );
+    }
+
+    /// FastContext CLI branch: dangling symlink at the final direct trace
+    /// file path. The exact wrapper (`write_fast_context_trace_at_roots`)
+    /// must reject the dangling final-file symlink and never fall back to a
+    /// raw `std::fs::write` that would clobber/resolve it. Real Unix
+    /// symlink; Windows skips when the host cannot create symlinks.
+    #[test]
+    fn fast_context_cli_branch_dangling_final_trace_file_no_fallback_write() {
+        use openlocus_context::plan::{FastContextPlan, fast_context};
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        write_file(
+            &root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        let sentinel_path = root.join("sentinel.txt");
+        let sentinel_bytes = b"source sentinel must remain\n";
+        fs::write(&sentinel_path, sentinel_bytes).unwrap();
+
+        // Run the command core first so the real `trace_id` is known, then
+        // install a dangling symlink at the exact final trace file path the
+        // CLI handler would write. `.openlocus/traces` must pre-exist.
+        let repo_root = discover_repo_root_from(root).unwrap();
+        let policy = Policy::load_from_repo(&repo_root);
+        let records = scan_repo(&repo_root, &policy).unwrap();
+        let plan = FastContextPlan {
+            query: "authenticate".into(),
+            channels: vec!["regex".into()],
+            max_evidence: 5,
+            budget: 0,
+        };
+        let result = fast_context(&repo_root, &records, &plan).unwrap();
+        assert!(!result.trace_id.is_empty());
+
+        fs::create_dir_all(root.join(".openlocus/traces")).unwrap();
+        let final_path = root
+            .join(".openlocus/traces")
+            .join(format!("fast-context-{}.json", result.trace_id));
+        if !make_dangling_file_symlink_for_test(&final_path) {
+            return; // host cannot create symlinks — non-vacuous only where supported
+        }
+
+        // Exact wrapper the CLI handler now calls.
+        let trace_data = serde_json::json!({
+            "trace_id": result.trace_id,
+            "query": result.query,
+            "actions": result.actions,
+            "diagnostics": result.diagnostics,
+        });
+        let trace_err =
+            write_fast_context_trace_at_roots(&repo_root, &result.trace_id, &trace_data)
+                .unwrap_err()
+                .to_string();
+        assert!(
+            trace_err.contains("dangling symlink at trace artifact path"),
+            "wrapper must reject dangling final-file symlink, got: {}",
+            trace_err
+        );
+
+        // No fallback write: the final path is still a dangling symlink, not
+        // a real file with trace content.
+        let md = final_path.symlink_metadata().unwrap();
+        assert!(
+            md.file_type().is_symlink(),
+            "final trace path must still be a symlink (no raw write clobbered it)"
+        );
+        assert!(
+            !final_path.exists(),
+            "dangling symlink must remain unresolved (no fallback write created the target)"
+        );
+        // Source sentinel untouched.
+        assert_eq!(
+            fs::read(&sentinel_path).unwrap().as_slice(),
+            sentinel_bytes,
+            "source sentinel must remain untouched when trace write rejects"
+        );
+    }
+
+    /// Persistent CLI separated command (`index build`) with a linked
+    /// (dangling) traces dir under the state root: the command core
+    /// (`build_index_at_state_root`) must succeed and build the index in
+    /// state, while the exact persistent wrapper the CLI handler calls
+    /// (`trace_event_persistent`) must reject the unsafe trace target,
+    /// leave the state sentinel untouched, and never write a trace under
+    /// the source root. Real Unix symlink; Windows skips when the host
+    /// cannot create symlinks.
+    #[test]
+    fn persistent_index_build_dangling_traces_dir_no_source_trace() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let source_root = root.join("src-tree");
+        let state_root = root.join("state-tree");
+        fs::create_dir_all(&source_root).unwrap();
+        fs::create_dir_all(&state_root).unwrap();
+        write_file(
+            &source_root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        // State sentinel: a real file in the state root that must survive
+        // the rejected persistent trace write untouched.
+        let sentinel_path = state_root.join("sentinel.txt");
+        let sentinel_bytes = b"state sentinel must remain\n";
+        fs::write(&sentinel_path, sentinel_bytes).unwrap();
+
+        // Install a dangling dir symlink at the state traces dir.
+        fs::create_dir_all(state_root.join(".openlocus")).unwrap();
+        let traces_link = state_root.join(".openlocus/traces");
+        if !make_dangling_dir_symlink_for_test(&traces_link) {
+            return; // host cannot create symlinks — non-vacuous only where supported
+        }
+
+        let repo_root = discover_repo_root_from(&state_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        // ── Command core: build the persistent index at the state root
+        // (the same call the CLI `index build` handler makes). Must
+        // succeed: trace safety is best-effort and never blocks the index
+        // build itself.
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+        // Index lives under state, never under source.
+        assert!(roots.state_root.join(".openlocus/index").exists());
+        assert!(!roots.source_root.join(".openlocus").exists());
+
+        // ── Exact persistent wrapper the CLI handler now calls. Must
+        // reject the dangling traces-dir symlink via the checked
+        // `append_trace_at_roots` helper; warn-once / skip, never fall
+        // back to the source root or to raw writes.
+        trace_event_persistent(
+            &roots.source_root,
+            &roots.state_root,
+            "index_build",
+            serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
+            serde_json::json!({"success": build.success, "file_count": build.file_count, "chunk_count": build.chunk_count}),
+        );
+
+        // No trace under source root (never fall back to source).
+        assert!(
+            !roots.source_root.join(".openlocus").exists(),
+            "persistent trace must never fall back to source root"
+        );
+        // No trajectory trace file materialized under state either: the
+        // wrapper rejected the dangling traces-dir symlink before writing.
+        let date_str = Utc::now().format("%Y%m%d").to_string();
+        assert!(
+            !roots
+                .state_root
+                .join(".openlocus/traces")
+                .join(format!("trajectory-{}.jsonl", date_str))
+                .exists(),
+            "no persistent trace file must materialize after a rejected write"
+        );
+        // State sentinel untouched.
+        assert_eq!(
+            fs::read(&sentinel_path).unwrap().as_slice(),
+            sentinel_bytes,
+            "state sentinel must remain untouched when persistent trace rejects"
+        );
+        // Traces dir still a dangling symlink (no raw overwrite).
+        assert!(
+            traces_link.symlink_metadata().is_ok(),
+            "traces dir symlink must still exist (no raw create_dir_all overwrite)"
+        );
+    }
+
+    /// Ordinary safe persistent separated trace goes only to state; legacy
+    /// nonpersistent colocated trace still works via `trace_event` +
+    /// legacy `append_trace`.
+    #[test]
+    fn persistent_safe_separated_trace_to_state_and_legacy_colocated_trace() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let source_root = root.join("src-tree");
+        let state_root = root.join("state-tree");
+        fs::create_dir_all(&source_root).unwrap();
+        fs::create_dir_all(&state_root).unwrap();
+        write_file(&source_root.join("app.rs"), "fn authenticate_user() {}\n");
+
+        let repo_root = discover_repo_root_from(&state_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        // Build the persistent index at state so the state root exists.
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+
+        // ── Persistent separated trace: routes ONLY to state root via
+        // the source-aware wrapper (no source-root trace).
+        trace_event_persistent(
+            &roots.source_root,
+            &roots.state_root,
+            "persistent_safe",
+            serde_json::json!({"safe": true}),
+            serde_json::json!({"ok": true}),
+        );
+        let date_str = Utc::now().format("%Y%m%d").to_string();
+        assert!(
+            roots
+                .state_root
+                .join(".openlocus/traces")
+                .join(format!("trajectory-{}.jsonl", date_str))
+                .exists(),
+            "persistent trace must be written to state root"
+        );
+        assert!(
+            !roots.source_root.join(".openlocus").exists(),
+            "persistent trace must never touch source root in separated mode"
+        );
+
+        // ── Legacy nonpersistent colocated trace still works: `trace_event`
+        // against the repo_root uses the legacy `append_trace` helper.
+        let colocated_dir = TempDir::new().unwrap();
+        let colocated_root = colocated_dir.path();
+        write_file(&colocated_root.join("app.rs"), "fn legacy() {}\n");
+        let colocated_repo = discover_repo_root_from(colocated_root).unwrap();
+        trace_event(
+            &colocated_repo,
+            "legacy_colocated",
+            serde_json::json!({"legacy": true}),
+            serde_json::json!({"ok": true}),
+        );
+        assert!(
+            colocated_repo
+                .join(".openlocus/traces")
+                .join(format!("trajectory-{}.jsonl", date_str))
+                .exists(),
+            "legacy nonpersistent colocated trace must still work via trace_event"
+        );
+    }
+
+    /// Windows junction at the FastContext traces dir: the exact wrapper
+    /// (`write_fast_context_trace_at_roots`) must reject the reparse point,
+    /// leave the source sentinel untouched, and never fall back to a raw
+    /// write. Non-vacuous on windows-latest without admin privileges.
+    #[cfg(windows)]
+    #[test]
+    fn fast_context_cli_branch_windows_junction_traces_dir_no_fallback_write() {
+        use openlocus_context::plan::{FastContextPlan, fast_context};
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        write_file(
+            &root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        let sentinel_path = root.join("sentinel.txt");
+        let sentinel_bytes = b"source sentinel must remain\n";
+        fs::write(&sentinel_path, sentinel_bytes).unwrap();
+
+        fs::create_dir_all(root.join(".openlocus")).unwrap();
+        let junction_path = root.join(".openlocus/traces");
+        let outside = TempDir::new().unwrap();
+        if !create_junction_for_test(outside.path(), &junction_path) {
+            eprintln!("skipping fast-context windows junction test: mklink /J unavailable");
+            return;
+        }
+
+        let repo_root = discover_repo_root_from(root).unwrap();
+        let policy = Policy::load_from_repo(&repo_root);
+        let records = scan_repo(&repo_root, &policy).unwrap();
+        let plan = FastContextPlan {
+            query: "authenticate".into(),
+            channels: vec!["regex".into()],
+            max_evidence: 5,
+            budget: 0,
+        };
+        let result = fast_context(&repo_root, &records, &plan).unwrap();
+        assert!(!result.trace_id.is_empty());
+
+        let trace_data = serde_json::json!({
+            "trace_id": result.trace_id,
+            "query": result.query,
+            "actions": result.actions,
+            "diagnostics": result.diagnostics,
+        });
+        let trace_err =
+            write_fast_context_trace_at_roots(&repo_root, &result.trace_id, &trace_data)
+                .unwrap_err()
+                .to_string();
+        assert!(
+            trace_err.contains("reparse point in trace artifact path")
+                || trace_err.contains("symlink in trace artifact path")
+                || trace_err.contains("dangling symlink at trace artifact path")
+                || trace_err.contains("cannot stat trace artifact component"),
+            "wrapper must reject windows junction at traces dir, got: {}",
+            trace_err
+        );
+
+        // No fast-context trace file materialized (no fallback write).
+        assert!(
+            !junction_path
+                .join(format!("fast-context-{}.json", result.trace_id))
+                .exists(),
+            "no fast-context trace file must materialize through the junction"
+        );
+        // Source sentinel untouched.
+        assert_eq!(
+            fs::read(&sentinel_path).unwrap().as_slice(),
+            sentinel_bytes,
+            "source sentinel must remain untouched when trace write rejects"
+        );
+        let _ = std::fs::remove_dir(&junction_path);
+    }
+
+    /// Windows junction at the persistent traces dir: the exact wrapper
+    /// (`trace_event_persistent`) must reject the reparse point, leave the
+    /// state sentinel untouched, and never write a trace under the source
+    /// root. Non-vacuous on windows-latest without admin privileges.
+    #[cfg(windows)]
+    #[test]
+    fn persistent_index_build_windows_junction_traces_dir_no_source_trace() {
+        use openlocus_index::manifest::ChunkStrategy as LibChunkStrategy;
+
+        let dir = TempDir::new().unwrap();
+        let root = dir.path();
+        let source_root = root.join("src-tree");
+        let state_root = root.join("state-tree");
+        fs::create_dir_all(&source_root).unwrap();
+        fs::create_dir_all(&state_root).unwrap();
+        write_file(
+            &source_root.join("app.rs"),
+            "fn authenticate_user() {}\nfn process_request() {}\n",
+        );
+
+        let sentinel_path = state_root.join("sentinel.txt");
+        let sentinel_bytes = b"state sentinel must remain\n";
+        fs::write(&sentinel_path, sentinel_bytes).unwrap();
+
+        fs::create_dir_all(state_root.join(".openlocus")).unwrap();
+        let junction_path = state_root.join(".openlocus/traces");
+        let outside = TempDir::new().unwrap();
+        if !create_junction_for_test(outside.path(), &junction_path) {
+            eprintln!("skipping persistent windows junction test: mklink /J unavailable");
+            return;
+        }
+
+        let repo_root = discover_repo_root_from(&state_root).unwrap();
+        let roots = resolve_roots(
+            &repo_root,
+            Some(source_root.to_str().unwrap()),
+            Some(state_root.to_str().unwrap()),
+        )
+        .unwrap();
+        assert!(roots.separated);
+
+        let policy = Policy::load_from_repo(&roots.source_root);
+        let records = scan_repo(&roots.source_root, &policy).unwrap();
+        let build = build_index_at_state_root(
+            &roots.source_root,
+            &roots.state_root,
+            &records,
+            &policy,
+            LibChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        assert!(build.success);
+        assert!(roots.state_root.join(".openlocus/index").exists());
+        assert!(!roots.source_root.join(".openlocus").exists());
+
+        // Exact persistent wrapper the CLI handler now calls.
+        trace_event_persistent(
+            &roots.source_root,
+            &roots.state_root,
+            "index_build",
+            serde_json::json!({"source_root": roots.source_root, "state_root": roots.state_root, "separated": roots.separated}),
+            serde_json::json!({"success": build.success, "file_count": build.file_count, "chunk_count": build.chunk_count}),
+        );
+
+        // No trace under source root (never fall back to source).
+        assert!(
+            !roots.source_root.join(".openlocus").exists(),
+            "persistent trace must never fall back to source root"
+        );
+        // State sentinel untouched.
+        assert_eq!(
+            fs::read(&sentinel_path).unwrap().as_slice(),
+            sentinel_bytes,
+            "state sentinel must remain untouched when persistent trace rejects"
+        );
+        let _ = std::fs::remove_dir(&junction_path);
     }
 }

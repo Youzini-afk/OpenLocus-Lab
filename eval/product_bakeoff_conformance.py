@@ -128,8 +128,10 @@ import tempfile
 import threading
 import time
 import traceback
-from dataclasses import dataclass
+from collections.abc import Mapping
+from dataclasses import dataclass, replace
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, Callable
 
 _FILE_DIR = Path(__file__).resolve().parent
@@ -212,6 +214,18 @@ _STAGE_ENVELOPE_KEYS: frozenset[str] = frozenset(
 _STAGE_ENVELOPE_STATUSES: frozenset[str] = frozenset(
     {"ok", "error", "malformed"}
 )
+
+# B0 (release barrier): fixed parent->child one-way control token. This is
+# a STRICT FIXED control token — NOT adapter-authored JSON, NOT negotiated,
+# NOT child-readable semantics. The child sends its existing strict JSON
+# envelope on the result pipe, then BLOCKS on ``recv_bytes`` of this exact
+# fixed token on a SECOND one-way pipe. The parent receives/strictly
+# validates/reconstructs the envelope under the existing absolute deadline,
+# samples the direct worker CPU/RSS while the worker is GUARANTEED alive
+# (blocked on the release), then sends this fixed token. This eliminates the
+# successful-worker post-exit race (Linux /proc gone, Windows handle race).
+# The token is a short opaque byte string; the child never interprets it.
+_STAGE_RELEASE_TOKEN = b"REL\x00"
 
 # v11: bounded strict JSON primitive wire caps. These are consistent with
 # the existing contract maxima (path<=512, reason/provenance/fc<=128,
@@ -1712,6 +1726,22 @@ def adv_sleep_timeout_mutate_query(request, isolated_root):
     return _single_ok_result((_widget_candidate_adv(),))
 
 
+# B0 Goal 2: bounded busy worker that consumes CPU for slightly longer than
+# the timeout. The parent times out, measures the still-alive child's CPU/RSS
+# before reaping, then terminates. This proves parent-trusted CPU/RSS
+# measurement yields positive RSS and nonnegative CPU on a real available
+# backend. Top-level for spawn-picklability.
+def busy_loop_timeout_query(request, isolated_root):
+    """Bounded busy worker: CPU-bound loop for timeout + 0.5s. The parent
+    times out and measures the still-alive child's CPU/RSS before reaping.
+    Should never return (parent terminates first)."""
+    end = time.perf_counter() + request.run_spec.timeout_seconds + 0.5
+    total = 0
+    while time.perf_counter() < end:
+        total += 1
+    return _single_ok_result((_widget_target_candidate(),))
+
+
 def adv_exception_query(request, isolated_root):
     raise RuntimeError("simulated adapter crash")
 
@@ -2049,7 +2079,848 @@ class HarnessInfrastructureError(Exception):
     bakeoff fails fast rather than masking an infrastructure breakage as an
     adapter defect. Known adapter defects remain prevalidation/ContractError
     rejections.
+
+    B0: capture commit failure is ALSO a ``HarnessInfrastructureError`` (never
+    an adapter rejection). ``PrivateValidatedOutputCapture._commit_accepted()``
+    raises this on duplicate commit attempt, record/output type failure,
+    status/pack_status failure, validate_run_record failure, binding/count/
+    ledger/hash mismatch, or invalid captured pack/result. The commit attempt
+    is BURNED before validation (failed commit cannot retry; successful commit
+    cannot repeat). The collector starts empty; a final-scan rejection that
+    occurs after a tentative accept leaves the collector empty (no commit).
     """
+
+
+# ---------------------------------------------------------------------------
+# B0 Goal 1: PrivateValidatedOutputCapture + require_scoreable
+# (harness-owned, oracle-free, in-memory; NEVER persisted; NEVER part of
+# ValidatedRunRecord or the public report; NEVER imports the oracle)
+# ---------------------------------------------------------------------------
+
+
+# B0: PrivateAcceptedOutput is the harness-private, oracle-free, in-memory
+# capture type held by PrivateValidatedOutputCapture below. It is NOT part of
+# the canonical contract surface (absent from product_bakeoff_contract.__all__)
+# — it lives here, next to its sole consumer. NEVER persisted; NEVER part of
+# the public report; NEVER imported by or referencing product_bakeoff_oracle.
+@dataclass(frozen=True)
+class PrivateAcceptedOutput:
+    """In-memory, harness-only capture of a single ACCEPTED run's fully
+    validated artifacts from ONE execution. NEVER persisted; NEVER part of
+    ValidatedRunRecord or the public report. Oracle-free: contains NO
+    gold/target/label/outcome fields and references nothing from
+    product_bakeoff_oracle.
+
+    Carries:
+      * Binding facts (fingerprint, run_cell_id, adapter_id/version,
+        request_id, episode_id, task_slug, result_status, pack_status,
+        canonical_result_hash, canonical_pack_hash) — these MUST match the
+        final ValidatedRunRecord exactly.
+      * Fully validated AdapterResult (same execution).
+      * Validated candidates tuple (same execution).
+      * Common-source materialized BakeoffVerifiedEvidence tuple (same
+        execution, single source-byte read per evidence).
+      * Fully validated ContextPack (same execution).
+
+    The conformance runner's PrivateValidatedOutputCapture._commit_accepted()
+    verifies the binding facts and recomputes
+    canonical_result_hash/canonical_pack_hash from the captured artifacts
+    before accepting the commit. A mismatch or invalid captured pack/result
+    raises HarnessInfrastructureError (capture commit failure is
+    infrastructure, NEVER an adapter rejection).
+    """
+
+    fingerprint: str
+    run_cell_id: str
+    adapter_id: str
+    adapter_version: str
+    request_id: str
+    episode_id: str
+    task_slug: str
+    result_status: str
+    pack_status: str
+    canonical_result_hash: str
+    canonical_pack_hash: str
+    validated_result: "AdapterResult"
+    validated_candidates: tuple["Candidate", ...]
+    evidence: tuple["BakeoffVerifiedEvidence", ...]
+    pack: "ContextPack"
+
+
+class PrivateValidatedOutputCapture:
+    """In-memory, harness-only collector for the SAME execution's accepted
+    output. At-most-one commit per execution. NEVER persisted; NEVER imports
+    the oracle; NEVER part of ValidatedRunRecord or the public report.
+
+    B0 (release barrier / same-execution capture): the collector binds the
+    EXACT final record object identity. ``_commit_accepted(record, output)``
+    stores a strong private reference to the exact ``ValidatedRunRecord``
+    object passed in; ``run_adapter`` returns that exact object.
+    ``require_scoreable(record, capture)`` enforces ``record is
+    committed_record`` (identity, NOT just equality — a
+    ``dataclasses.replace(record)`` copy with identical values FAILS the
+    identity check).
+
+    The commit attempt is BURNED BEFORE validation: a failed commit cannot
+    retry and a successful commit cannot repeat (both rejected as
+    duplicates). A final-scan rejection that occurs after a tentative accept
+    leaves the collector empty (``run_adapter`` discards the tentative output
+    before calling ``_commit_accepted``).
+
+    There is NO public ``commit()`` and NO ``reset()``. The sole mutator is
+    the private ``_commit_accepted(record, output)``.
+
+    ``require_scoreable(record, capture)`` fail-closes on: nonaccepted
+    record, missing/duplicate capture, status not ok, record-identity
+    mismatch, binding/count/ledger/hash mismatch, or invalid captured
+    pack/result.
+    """
+
+    __slots__ = ("_output", "_committed_record", "_committed_count")
+
+    def __init__(self) -> None:
+        self._output: PrivateAcceptedOutput | None = None
+        self._committed_record: ValidatedRunRecord | None = None
+        self._committed_count: int = 0
+
+    # The set of pack statuses that are valid for an ACCEPTED+ok record
+    # (ready-or-honest: PACK_OK_STATUSES | PACK_STATUSES).
+    _ACCEPTED_PACK_STATUSES = pb.PACK_OK_STATUSES | pb.PACK_STATUSES
+
+    def _commit_accepted(
+        self,
+        record: ValidatedRunRecord,
+        output: PrivateAcceptedOutput,
+    ) -> None:
+        """Private one-shot commit. Binds the EXACT final record object
+        identity. Burns the commit attempt BEFORE validation (failed commit
+        cannot retry; successful commit cannot repeat). Raises
+        ``HarnessInfrastructureError`` on ANY failure (infrastructure, NEVER
+        an adapter rejection).
+
+        Enforces at commit (boundary 1 of 2 — the second is
+        ``require_scoreable``):
+          * record is a ValidatedRunRecord and output is PrivateAcceptedOutput;
+          * record.status == "accepted" and record.result_status == "ok";
+          * pack_status in the accepted ready-or-honest set
+            (PACK_OK_STATUSES | PACK_STATUSES);
+          * validate_run_record(record) == [];
+          * every overlapping/derivable binding: fingerprint, run_cell_id,
+            adapter_id, result_status, pack_status, canonical_result_hash,
+            canonical_pack_hash (record vs output);
+          * candidate/evidence/target/support counts (record vs output's
+            artifacts);
+          * capability_ledger_summary (record) equals detached result ledger
+            (output.validated_result.capability_ledger);
+          * canonical hashes recomputed from the captured artifacts match the
+            record's hashes (transitive immutable output graph — recomputed
+            at BOTH commit and require_scoreable boundaries).
+        """
+        # --- Burn the commit attempt BEFORE validation ---
+        # A duplicate call (the attempt counter is already 1) is rejected as
+        # a duplicate. This covers BOTH "failed commit cannot retry" (the
+        # failed attempt left the counter at 1) and "successful commit cannot
+        # repeat" (the successful attempt also left the counter at 1).
+        if self._committed_count >= 1:
+            raise HarnessInfrastructureError(
+                "capture already commit-attempted for this execution "
+                "(duplicate commit is an infrastructure error, not an "
+                "adapter rejection; failed commit cannot retry, successful "
+                "commit cannot repeat)")
+        # BURN: mark the attempt as consumed BEFORE any validation. If
+        # validation fails below, the counter stays at 1 and a retry is
+        # rejected as a duplicate (defense in depth — the burn is irrevocable).
+        self._committed_count = 1
+
+        failures: list[str] = []
+
+        # --- Type checks ---
+        if not isinstance(record, ValidatedRunRecord):
+            failures.append(
+                f"record must be ValidatedRunRecord, got "
+                f"{type(record).__name__}")
+        if not isinstance(output, PrivateAcceptedOutput):
+            failures.append(
+                f"output must be PrivateAcceptedOutput, got "
+                f"{type(output).__name__}")
+
+        # --- Status + validate_run_record checks (only if record type OK) ---
+        if isinstance(record, ValidatedRunRecord):
+            if record.status != "accepted":
+                failures.append(
+                    f"record.status {record.status!r} != 'accepted'")
+            if record.result_status != "ok":
+                failures.append(
+                    f"record.result_status {record.result_status!r} != 'ok'")
+            # pack_status: accepted records must have pack_status in the
+            # ready-or-honest set (PACK_OK_STATUSES | PACK_STATUSES).
+            if record.pack_status not in self._ACCEPTED_PACK_STATUSES:
+                failures.append(
+                    f"record.pack_status {record.pack_status!r} not in "
+                    f"accepted ready-or-honest set "
+                    f"{self._ACCEPTED_PACK_STATUSES}")
+            # validate_run_record(record) == [] (fail-closed, never raises).
+            try:
+                rec_failures = validate_run_record(record)
+            except Exception as exc:  # noqa: BLE001
+                rec_failures = [
+                    f"validate_run_record raised: "
+                    f"{type(exc).__name__}: {exc}"]
+            if rec_failures:
+                failures.append(
+                    f"validate_run_record returned {len(rec_failures)} "
+                    f"failure(s): {'; '.join(rec_failures)}")
+
+        # --- Transitive capture immutability: detach + immutable-wrap ledger ---
+        # A mutable dict ledger is canonical-copied (fresh dict ->
+        # MappingProxyType); the caller's original dict is detached. A
+        # hostile Mapping subclass (not dict, not MappingProxyType) is
+        # rejected (could override __getitem__/items). An already-immutable
+        # MappingProxyType ledger (from canonical JSON reconstruction) is
+        # left as-is.
+        if isinstance(output, PrivateAcceptedOutput) and isinstance(
+                output.validated_result, AdapterResult):
+            ledger = output.validated_result.capability_ledger
+            if type(ledger) is MappingProxyType:
+                pass  # already immutable — no alias possible
+            elif type(ledger) is dict:
+                new_ledger = MappingProxyType(dict(ledger))  # fresh + immutable
+                new_result = replace(
+                    output.validated_result, capability_ledger=new_ledger)
+                output = replace(output, validated_result=new_result)
+            else:
+                failures.append(
+                    "validated_result.capability_ledger must be dict or "
+                    "immutable mapping (hostile Mapping subclass rejected)")
+
+        # --- Binding facts (record vs output) ---
+        # Only if both types are correct.
+        if (isinstance(record, ValidatedRunRecord)
+                and isinstance(output, PrivateAcceptedOutput)):
+            # Overlapping bindings.
+            if output.fingerprint != record.fingerprint:
+                failures.append(
+                    f"fingerprint mismatch: output "
+                    f"{output.fingerprint!r} != record "
+                    f"{record.fingerprint!r}")
+            if output.run_cell_id != record.run_cell_id:
+                failures.append(
+                    f"run_cell_id mismatch: output "
+                    f"{output.run_cell_id!r} != record "
+                    f"{record.run_cell_id!r}")
+            if output.adapter_id != record.adapter_id:
+                failures.append(
+                    f"adapter_id mismatch: output "
+                    f"{output.adapter_id!r} != record "
+                    f"{record.adapter_id!r}")
+            if output.result_status != record.result_status:
+                failures.append(
+                    f"result_status mismatch: output "
+                    f"{output.result_status!r} != record "
+                    f"{record.result_status!r}")
+            # pack_status: output.pack_status is a str; record.pack_status
+            # may be None (but accepted records have non-None). Only compare
+            # when record.pack_status is not None.
+            if (record.pack_status is not None
+                    and output.pack_status != record.pack_status):
+                failures.append(
+                    f"pack_status mismatch: output "
+                    f"{output.pack_status!r} != record "
+                    f"{record.pack_status!r}")
+            # Canonical hashes (binding facts).
+            if output.canonical_result_hash != record.canonical_result_hash:
+                failures.append(
+                    f"canonical_result_hash binding mismatch: output "
+                    f"{output.canonical_result_hash!r} != record "
+                    f"{record.canonical_result_hash!r}")
+            if output.canonical_pack_hash != record.canonical_pack_hash:
+                failures.append(
+                    f"canonical_pack_hash binding mismatch: output "
+                    f"{output.canonical_pack_hash!r} != record "
+                    f"{record.canonical_pack_hash!r}")
+            # Counts (record vs output's artifacts).
+            if isinstance(output.validated_candidates, tuple):
+                if len(output.validated_candidates) != record.candidate_count:
+                    failures.append(
+                        f"candidate_count mismatch: output has "
+                        f"{len(output.validated_candidates)} != record "
+                        f"{record.candidate_count}")
+            else:
+                failures.append("validated_candidates must be tuple")
+            if isinstance(output.evidence, tuple):
+                if len(output.evidence) != record.evidence_count:
+                    failures.append(
+                        f"evidence_count mismatch: output has "
+                        f"{len(output.evidence)} != record "
+                        f"{record.evidence_count}")
+            else:
+                failures.append("evidence must be tuple")
+            if isinstance(output.pack, ContextPack):
+                if len(output.pack.targets) != record.target_count:
+                    failures.append(
+                        f"target_count mismatch: output has "
+                        f"{len(output.pack.targets)} != record "
+                        f"{record.target_count}")
+                if len(output.pack.support) != record.support_count:
+                    failures.append(
+                        f"support_count mismatch: output has "
+                        f"{len(output.pack.support)} != record "
+                        f"{record.support_count}")
+            else:
+                failures.append("pack must be ContextPack")
+            # Capability ledger summary (record) equals detached result
+            # ledger (output.validated_result.capability_ledger).
+            if isinstance(output.validated_result, AdapterResult):
+                out_ledger = output.validated_result.capability_ledger
+                if type(out_ledger) in (dict, MappingProxyType):
+                    rec_summary = record.capability_ledger_summary
+                    if isinstance(rec_summary, dict):
+                        if dict(rec_summary) != dict(out_ledger):
+                            failures.append(
+                                f"capability_ledger_summary mismatch: "
+                                f"record {dict(rec_summary)} != detached "
+                                f"result ledger {dict(out_ledger)}")
+                    else:
+                        failures.append(
+                            "record.capability_ledger_summary must be dict")
+
+        # --- Format checks on binding facts ---
+        if isinstance(output, PrivateAcceptedOutput):
+            if not (isinstance(output.fingerprint, str)
+                    and output.fingerprint.startswith("fp_")):
+                failures.append("fingerprint must be fp_-prefixed str")
+            if not (isinstance(output.canonical_result_hash, str)
+                    and output.canonical_result_hash.startswith("crh_")):
+                failures.append(
+                    "canonical_result_hash must be crh_-prefixed str")
+            if not (isinstance(output.canonical_pack_hash, str)
+                    and output.canonical_pack_hash.startswith("cph_")):
+                failures.append(
+                    "canonical_pack_hash must be cph_-prefixed str")
+
+        # --- Recompute canonical hashes from captured artifacts (boundary 1) ---
+        # Transitive immutable output graph: recomputed at BOTH commit and
+        # require_scoreable boundaries.
+        if (isinstance(output, PrivateAcceptedOutput)
+                and isinstance(output.validated_result, AdapterResult)
+                and isinstance(output.validated_candidates, tuple)):
+            try:
+                crh = canonical_result_hash(
+                    output.validated_result, output.validated_candidates)
+            except Exception as exc:  # noqa: BLE001
+                failures.append(
+                    f"canonical_result_hash recomputation failed: "
+                    f"{type(exc).__name__}: {exc}")
+            else:
+                if crh != output.canonical_result_hash:
+                    failures.append(
+                        f"canonical_result_hash recompute mismatch: "
+                        f"captured artifacts recompute to {crh} != binding "
+                        f"{output.canonical_result_hash}")
+                if (isinstance(record, ValidatedRunRecord)
+                        and crh != record.canonical_result_hash):
+                    failures.append(
+                        f"canonical_result_hash recompute mismatch: "
+                        f"captured artifacts recompute to {crh} != record "
+                        f"{record.canonical_result_hash}")
+        if (isinstance(output, PrivateAcceptedOutput)
+                and isinstance(output.pack, ContextPack)):
+            try:
+                cph = canonical_pack_hash(output.pack)
+            except Exception as exc:  # noqa: BLE001
+                failures.append(
+                    f"canonical_pack_hash recomputation failed: "
+                    f"{type(exc).__name__}: {exc}")
+            else:
+                if cph != output.canonical_pack_hash:
+                    failures.append(
+                        f"canonical_pack_hash recompute mismatch: captured "
+                        f"pack recomputes to {cph} != binding "
+                        f"{output.canonical_pack_hash}")
+                if (isinstance(record, ValidatedRunRecord)
+                        and cph != record.canonical_pack_hash):
+                    failures.append(
+                        f"canonical_pack_hash recompute mismatch: captured "
+                        f"pack recomputes to {cph} != record "
+                        f"{record.canonical_pack_hash}")
+
+        if failures:
+            raise HarnessInfrastructureError(
+                "capture commit failed validation: " + "; ".join(failures))
+        # Store the EXACT record object identity + the (possibly detached)
+        # output. run_adapter returns this exact record object.
+        self._output = output
+        self._committed_record = record
+
+    @property
+    def output(self) -> PrivateAcceptedOutput | None:
+        return self._output
+
+    @property
+    def committed_record(self) -> ValidatedRunRecord | None:
+        """The exact committed ValidatedRunRecord object (identity bound at
+        commit). None if no successful commit. ``require_scoreable`` enforces
+        ``record is committed_record`` (identity, NOT just equality)."""
+        return self._committed_record
+
+    @property
+    def committed(self) -> bool:
+        return self._output is not None
+
+    @property
+    def committed_count(self) -> int:
+        """Number of commit attempts (0 = no attempt, 1 = one successful or
+        failed attempt). >1 is impossible (the attempt is burned BEFORE
+        validation, so a failed commit cannot retry and a successful commit
+        cannot repeat)."""
+        return self._committed_count
+
+
+def require_scoreable(
+    record: ValidatedRunRecord,
+    capture: PrivateValidatedOutputCapture | None = None,
+) -> None:
+    """Fail closed if the record is not scoreable. Raises ``ContractError``
+    on any failure. NEVER imports the oracle; NEVER raises on a record that
+    did not request capture (capture=None is only valid when the caller did
+    not pass a collector; if a collector is provided, it MUST be committed).
+
+    B0 (same-execution capture): enforces ``record is committed_record``
+    (EXACT object identity, NOT just equality). A ``dataclasses.replace(
+    record)`` copy with identical values FAILS the identity check. An
+    equal-valued record from a separate execution/copy also FAILS identity.
+
+    A record is scoreable ONLY if ALL hold:
+      * record is a ValidatedRunRecord;
+      * record.status == "accepted" and record.result_status == "ok";
+      * pack_status in the accepted ready-or-honest set;
+      * validate_run_record(record) returns [] (zero failures);
+      * accepted ok records require non-None cpu_seconds AND rss_bytes
+        (missing metrics fail scoreability; never zero-fill, never drop arm);
+      * capture is provided AND has exactly one committed output (not None,
+        not duplicate);
+      * record IS capture.committed_record (identity);
+      * every overlapping/derivable binding: fingerprint, run_cell_id,
+        adapter_id, result_status, pack_status, canonical_result_hash,
+        canonical_pack_hash (record vs output);
+      * candidate/evidence/target/support counts (record vs output's
+        artifacts);
+      * capability_ledger_summary (record) equals detached result ledger;
+      * canonical hashes recomputed from the captured artifacts match the
+        record's hashes (boundary 2 of 2 — boundary 1 is _commit_accepted).
+
+    No oracle/gold import or fields. Capture commit failure is
+    ``HarnessInfrastructureError`` (raised by _commit_accepted), not adapter
+    rejection. This function does NOT call _commit_accepted — it inspects
+    the already-committed capture.
+    """
+    failures: list[str] = []
+    if not isinstance(record, ValidatedRunRecord):
+        raise ContractError(
+            f"require_scoreable: record must be ValidatedRunRecord, got "
+            f"{type(record).__name__}")
+    if record.status != "accepted":
+        failures.append(
+            f"record status {record.status!r} != 'accepted' (nonaccepted "
+            "record is not scoreable)")
+    if record.result_status != "ok":
+        failures.append(
+            f"result_status {record.result_status!r} != 'ok' (status not ok "
+            "is not scoreable)")
+    # pack_status: accepted records must have pack_status in the
+    # ready-or-honest set (PACK_OK_STATUSES | PACK_STATUSES).
+    _accepted_pack_statuses = pb.PACK_OK_STATUSES | pb.PACK_STATUSES
+    if record.pack_status not in _accepted_pack_statuses:
+        failures.append(
+            f"pack_status {record.pack_status!r} not in accepted "
+            f"ready-or-honest set {_accepted_pack_statuses}")
+    # B0: accepted scoreability REQUIRES non-None cpu_seconds AND rss_bytes.
+    # Missing metrics fail scoreability (never zero-fill, never drop one arm).
+    # Rejected crashed runs may remain unavailable (they are not scoreable
+    # anyway — status != accepted already fails above). Both arms are
+    # required independently: a missing CPU => not scoreable; a missing RSS
+    # => not scoreable. ALL-ATTEMPTED aggregation is preserved upstream
+    # (one missing per-stage CPU => run CPU None; one missing per-stage RSS
+    # => run RSS None).
+    if record.status == "accepted" and record.result_status == "ok":
+        rs = record.resource_sample
+        if rs is None:
+            failures.append(
+                "accepted ok record has no resource_sample (a scoreable "
+                "record requires cpu_seconds and rss_bytes)")
+        else:
+            if rs.cpu_seconds is None:
+                failures.append(
+                    "accepted ok record resource_sample.cpu_seconds is None "
+                    "(missing CPU metric fails scoreability; never zero-fill)")
+            if rs.rss_bytes is None:
+                failures.append(
+                    "accepted ok record resource_sample.rss_bytes is None "
+                    "(missing RSS metric fails scoreability; never zero-fill)")
+    # validate_run_record is fail-closed and never raises.
+    rec_failures = validate_run_record(record)
+    if rec_failures:
+        failures.append(
+            f"validate_run_record returned {len(rec_failures)} failure(s): "
+            f"{'; '.join(rec_failures)}")
+    if capture is None:
+        failures.append(
+            "capture is missing (no collector provided); a scoreable record "
+            "requires a committed capture")
+    else:
+        if not isinstance(capture, PrivateValidatedOutputCapture):
+            failures.append(
+                f"capture must be PrivateValidatedOutputCapture, got "
+                f"{type(capture).__name__}")
+        else:
+            out = capture.output
+            if out is None:
+                if capture.committed_count == 0:
+                    failures.append(
+                        "capture is empty (no committed output); a scoreable "
+                        "record requires a committed capture")
+                else:
+                    failures.append(
+                        "capture has no output but committed_count>0 (commit "
+                        "failed); record is not scoreable")
+            elif capture.committed_count > 1:
+                # Impossible (commit burns before validation) but defense.
+                failures.append(
+                    f"capture has duplicate commit (committed_count="
+                    f"{capture.committed_count}); record is not scoreable")
+            else:
+                # B0: EXACT object identity check. record MUST BE the exact
+                # same object the capture committed (not just equal-valued).
+                # A dataclasses.replace(record) copy FAILS here; an
+                # equal-valued record from a separate execution FAILS here.
+                committed_rec = capture.committed_record
+                if committed_rec is None:
+                    failures.append(
+                        "capture has output but no committed_record "
+                        "(internal inconsistency)")
+                elif record is not committed_rec:
+                    failures.append(
+                        f"record is not the committed record object "
+                        f"(identity mismatch: record id={id(record)} != "
+                        f"committed_record id={id(committed_rec)}; an "
+                        f"equal-valued copy from dataclasses.replace or a "
+                        f"separate execution is NOT scoreable — the exact "
+                        f"same final record object identity is required)")
+                # Binding facts must match the record exactly.
+                if out.fingerprint != record.fingerprint:
+                    failures.append(
+                        f"capture fingerprint {out.fingerprint!r} != record "
+                        f"fingerprint {record.fingerprint!r}")
+                if out.run_cell_id != record.run_cell_id:
+                    failures.append(
+                        f"capture run_cell_id {out.run_cell_id!r} != "
+                        f"record run_cell_id {record.run_cell_id!r}")
+                if out.adapter_id != record.adapter_id:
+                    failures.append(
+                        f"capture adapter_id {out.adapter_id!r} != record "
+                        f"adapter_id {record.adapter_id!r}")
+                if out.result_status != record.result_status:
+                    failures.append(
+                        f"capture result_status {out.result_status!r} != "
+                        f"record result_status {record.result_status!r}")
+                if (record.pack_status is not None
+                        and out.pack_status != record.pack_status):
+                    failures.append(
+                        f"capture pack_status {out.pack_status!r} != record "
+                        f"pack_status {record.pack_status!r}")
+                if out.canonical_result_hash != record.canonical_result_hash:
+                    failures.append(
+                        f"capture canonical_result_hash "
+                        f"{out.canonical_result_hash!r} != record "
+                        f"{record.canonical_result_hash!r}")
+                if out.canonical_pack_hash != record.canonical_pack_hash:
+                    failures.append(
+                        f"capture canonical_pack_hash "
+                        f"{out.canonical_pack_hash!r} != record "
+                        f"{record.canonical_pack_hash!r}")
+                # Counts (record vs output's artifacts).
+                if isinstance(out.validated_candidates, tuple):
+                    if len(out.validated_candidates) != record.candidate_count:
+                        failures.append(
+                            f"candidate_count mismatch: capture has "
+                            f"{len(out.validated_candidates)} != record "
+                            f"{record.candidate_count}")
+                if isinstance(out.evidence, tuple):
+                    if len(out.evidence) != record.evidence_count:
+                        failures.append(
+                            f"evidence_count mismatch: capture has "
+                            f"{len(out.evidence)} != record "
+                            f"{record.evidence_count}")
+                if isinstance(out.pack, ContextPack):
+                    if len(out.pack.targets) != record.target_count:
+                        failures.append(
+                            f"target_count mismatch: capture has "
+                            f"{len(out.pack.targets)} != record "
+                            f"{record.target_count}")
+                    if len(out.pack.support) != record.support_count:
+                        failures.append(
+                            f"support_count mismatch: capture has "
+                            f"{len(out.pack.support)} != record "
+                            f"{record.support_count}")
+                # Capability ledger summary (record) equals detached result
+                # ledger (output.validated_result.capability_ledger).
+                if isinstance(out.validated_result, AdapterResult):
+                    out_ledger = out.validated_result.capability_ledger
+                    if type(out_ledger) in (dict, MappingProxyType):
+                        rec_summary = record.capability_ledger_summary
+                        if isinstance(rec_summary, dict):
+                            if dict(rec_summary) != dict(out_ledger):
+                                failures.append(
+                                    f"capability_ledger_summary mismatch: "
+                                    f"record {dict(rec_summary)} != capture "
+                                    f"ledger {dict(out_ledger)}")
+                # Validate captured pack/result by recomputing hashes
+                # (boundary 2 of 2 — boundary 1 is _commit_accepted).
+                try:
+                    crh = canonical_result_hash(
+                        out.validated_result, out.validated_candidates)
+                except Exception as exc:  # noqa: BLE001
+                    failures.append(
+                        f"captured result invalid: {type(exc).__name__}: {exc}")
+                else:
+                    if crh != record.canonical_result_hash:
+                        failures.append(
+                            f"captured result hash {crh!r} != record "
+                            f"{record.canonical_result_hash!r}")
+                try:
+                    cph = canonical_pack_hash(out.pack)
+                except Exception as exc:  # noqa: BLE001
+                    failures.append(
+                        f"captured pack invalid: {type(exc).__name__}: {exc}")
+                else:
+                    if cph != record.canonical_pack_hash:
+                        failures.append(
+                            f"captured pack hash {cph!r} != record "
+                            f"{record.canonical_pack_hash!r}")
+    if failures:
+        raise ContractError(
+            "record is not scoreable: " + "; ".join(failures))
+
+
+# ---------------------------------------------------------------------------
+# B0 Goal 2: parent-trusted worker CPU/RSS measurement (no psutil/dependency)
+# ---------------------------------------------------------------------------
+
+# Per-stage internal usage measured by the PARENT on the direct spawned
+# worker only. NEVER sent on the child wire; the child cannot forge these.
+# Measurement failure / unavailable platform returns None (NEVER synthetic
+# zero). Genuine measured zero CPU is okay.
+
+
+def _measure_stage_cpu_rss_windows(
+    proc: Any,
+) -> tuple[float | None, int | None]:
+    """Windows: prefer the parent-owned multiprocessing process handle
+    (``proc._handle``) — bound to the specific spawned process instance (NO
+    PID-reuse ambiguity) and NOT closed here (the ``Process`` object owns it;
+    it is closed in ``_reap_process``/``proc.close()`` AFTER the sampler
+    returns, so the handle stays valid for the in-flight measurement). Falls
+    back to ``OpenProcess(pid)`` ONLY when ``proc._handle`` is unavailable
+    (a non-multiprocessing proc object, e.g. the self-probe). The fallback is
+    documented: the sampler is invoked BEFORE reap (the child is the direct
+    spawned worker, still alive or just-exited) so the PID-reuse window is
+    negligible, and a failed query returns None (NEVER synthetic zero).
+    GetProcessTimes (kernel + user time, in 100-ns intervals) for CPU;
+    GetProcessMemoryInfo / PROCESS_MEMORY_COUNTERS PeakWorkingSetSize for
+    peak RSS. Returns (cpu_seconds, peak_rss_bytes) or (None, None) on
+    failure.
+    """
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        psapi = ctypes.WinDLL("psapi", use_last_error=True)
+
+        # Prefer the parent-owned handle (bound to THIS process instance —
+        # no PID-reuse ambiguity). Do NOT close it (Process owns it).
+        h = 0
+        owns_handle = False
+        proc_handle = getattr(proc, "_handle", 0)
+        if proc_handle:
+            h = proc_handle
+            owns_handle = False
+        else:
+            # Fallback: OpenProcess by PID. Only reached when proc has no
+            # _handle (non-multiprocessing object, e.g. the self-probe).
+            # Sample before reap so the PID-reuse window is negligible;
+            # caller guarantees the child is the direct spawned worker.
+            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+            PROCESS_VM_READ = 0x0010
+            pid = proc.pid
+            h = kernel32.OpenProcess(
+                PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ,
+                False, pid)
+            if not h:
+                return (None, None)
+            owns_handle = True
+        try:
+            class FILETIME(ctypes.Structure):
+                _fields_ = [
+                    ("dwLowDateTime", wintypes.DWORD),
+                    ("dwHighDateTime", wintypes.DWORD),
+                ]
+
+            cpu_seconds: float | None = None
+            peak_rss: int | None = None
+
+            creation = FILETIME()
+            exit_time = FILETIME()
+            kernel = FILETIME()
+            user = FILETIME()
+            if kernel32.GetProcessTimes(
+                h,
+                ctypes.byref(creation),
+                ctypes.byref(exit_time),
+                ctypes.byref(kernel),
+                ctypes.byref(user),
+            ):
+                def _ft_to_100ns(ft: FILETIME) -> int:
+                    return (ft.dwHighDateTime << 32) | ft.dwLowDateTime
+                cpu_100ns = _ft_to_100ns(kernel) + _ft_to_100ns(user)
+                cpu_seconds = cpu_100ns / 1e7
+
+            class PROCESS_MEMORY_COUNTERS(ctypes.Structure):
+                _fields_ = [
+                    ("cb", wintypes.DWORD),
+                    ("PageFaultCount", wintypes.DWORD),
+                    ("PeakWorkingSetSize", ctypes.c_size_t),
+                    ("WorkingSetSize", ctypes.c_size_t),
+                    ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                    ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                    ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                    ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                    ("PagefileUsage", ctypes.c_size_t),
+                    ("PeakPagefileUsage", ctypes.c_size_t),
+                ]
+
+            pmc = PROCESS_MEMORY_COUNTERS()
+            pmc.cb = ctypes.sizeof(PROCESS_MEMORY_COUNTERS)
+            if psapi.GetProcessMemoryInfo(
+                h, ctypes.byref(pmc), pmc.cb
+            ):
+                peak_rss = int(pmc.PeakWorkingSetSize)
+
+            return (cpu_seconds, peak_rss)
+        finally:
+            if owns_handle:
+                kernel32.CloseHandle(h)
+            # If !owns_handle, do NOT close proc._handle (Process owns it).
+    except Exception:  # noqa: BLE001
+        return (None, None)
+
+
+def _measure_stage_cpu_rss_linux(
+    proc: Any,
+) -> tuple[float | None, int | None]:
+    """Linux: parent reads /proc/<pid>/stat (user+system ticks) and
+    /proc/<pid>/status (VmHWM) before reap/disappearance. Returns
+    (cpu_seconds, peak_rss_bytes) or (None, None) on failure.
+    """
+    try:
+        pid = proc.pid
+        cpu_seconds: float | None = None
+        peak_rss: int | None = None
+
+        # /proc/<pid>/stat: fields after comm include utime (field 14,
+        # 1-indexed) and stime (field 15). After rfind(')'), the remaining
+        # fields start at state (field 3), so utime is at index 11 and
+        # stime at index 12 in the post-comm split.
+        try:
+            with open(f"/proc/{pid}/stat", "r", encoding="utf-8") as f:
+                stat_line = f.read()
+            rparen = stat_line.rfind(")")
+            if rparen != -1:
+                fields = stat_line[rparen + 2:].split()
+                # state(0) ppid(1) pgrp(2) session(3) tty_nr(4) tpgid(5)
+                # flags(6) minflt(7) cminflt(8) majflt(9) cmajflt(10)
+                # utime(11) stime(12) ...
+                if len(fields) >= 13:
+                    utime_ticks = int(fields[11])
+                    stime_ticks = int(fields[12])
+                    ticks_per_sec = os.sysconf(
+                        os.sysconf_names["SC_CLK_TCK"])
+                    cpu_seconds = (
+                        utime_ticks + stime_ticks) / ticks_per_sec
+        except (OSError, ValueError, KeyError, IndexError):
+            cpu_seconds = None
+
+        # /proc/<pid>/status: VmHWM (peak resident set size in kB).
+        try:
+            with open(f"/proc/{pid}/status", "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.startswith("VmHWM:"):
+                        parts = line.split()
+                        if len(parts) >= 2:
+                            peak_rss = int(parts[1]) * 1024  # kB to bytes
+                        break
+        except (OSError, ValueError, IndexError):
+            peak_rss = None
+
+        return (cpu_seconds, peak_rss)
+    except Exception:  # noqa: BLE001
+        return (None, None)
+
+
+def _measure_stage_cpu_rss(proc: Any) -> tuple[float | None, int | None]:
+    """Measure the direct spawned worker's CPU seconds and peak RSS bytes
+    using the parent-held process handle. Returns (cpu_seconds,
+    peak_rss_bytes) or (None, None) on measurement failure / unavailable
+    platform. NEVER returns synthetic zero. Genuine measured zero CPU is
+    okay (e.g., a sleeping worker may have ~0 user CPU).
+
+    Windows: stdlib ctypes (GetProcessTimes; GetProcessMemoryInfo
+    PeakWorkingSetSize) before Process.close().
+    Linux: /proc/<pid>/stat user+system ticks and /proc/<pid>/status VmHWM
+    before reap/disappearance.
+    Other platforms: (None, None).
+    """
+    if sys.platform == "win32":
+        return _measure_stage_cpu_rss_windows(proc)
+    if sys.platform.startswith("linux"):
+        return _measure_stage_cpu_rss_linux(proc)
+    return (None, None)
+
+
+def _probe_measurement_backend() -> tuple[bool, bool]:
+    """Probe whether CPU and RSS measurement are available on this platform
+    by measuring the current process. Returns (cpu_available, rss_available).
+    Used by self-tests to feature-detect unavailable backends honestly."""
+    class _SelfProbe:
+        @property
+        def pid(self) -> int:
+            return os.getpid()
+    cpu, rss = _measure_stage_cpu_rss(_SelfProbe())
+    return (cpu is not None, rss is not None)
+
+
+def _aggregate_stage_metrics(
+    stages: list[tuple[float | None, int | None]],
+) -> tuple[float | None, int | None]:
+    """Aggregate per-stage CPU/RSS into run-level values.
+
+    cpu_seconds = sum(stage.cpu_seconds) ONLY if every attempted stage has
+    CPU data; otherwise None. rss_bytes = max(stage.peak_rss_bytes) ONLY if
+    every attempted stage has RSS data; otherwise None. Rejected runs
+    aggregate attempted stages only. NEVER mixes parent materialize/render
+    usage (those are not spawned workers and have no CPU/RSS measurement).
+    """
+    if not stages:
+        return (None, None)
+    cpus = [c for c, _ in stages]
+    rsss = [r for _, r in stages]
+    agg_cpu: float | None = None
+    agg_rss: int | None = None
+    if all(c is not None for c in cpus):
+        agg_cpu = float(sum(cpus))  # type: ignore[arg-type]
+    if all(r is not None for r in rsss):
+        agg_rss = max(rsss)  # type: ignore[type-var]
+    return (agg_cpu, agg_rss)
 
 
 def _close_pipe_endpoint(conn: Any) -> None:
@@ -2366,11 +3237,16 @@ def _wire_normalize_adapter_result(result: Any) -> dict:
         result.candidates, max_count=_MAX_STAGE_CANDIDATES,
         err_label="candidates")
     candidates_list = [_wire_normalize_candidate(c) for c in cand_tuple]
-    # capability_ledger: EXACT dict (reject Mapping subclasses that could
-    # override __getitem__/items); bounded keys; exact str keys/values.
+    # capability_ledger: accept ONLY builtin dict OR MappingProxyType (both
+    # are C-level types that cannot be subclassed to override
+    # __getitem__/items — safe under the EXACT-type wire boundary). Reject
+    # arbitrary Mapping subclasses (hostile __getitem__/items). This supports
+    # the immutable Mapping from canonical JSON reconstruction (B0) so strict
+    # wire serialization accepts a reconstructed AdapterResult whose ledger is
+    # a MappingProxyType. Bounded keys; exact str keys/values.
     ledger = result.capability_ledger
-    if type(ledger) is not dict:
-        raise _WireError("capability_ledger not dict")
+    if type(ledger) is not dict and type(ledger) is not MappingProxyType:
+        raise _WireError("capability_ledger not dict/immutable mapping")
     if len(ledger) > _MAX_STAGE_LEDGER_KEYS:
         raise _WireError("capability_ledger too many keys")
     ledger_out: dict = {}
@@ -2666,6 +3542,18 @@ def _wire_reconstruct_adapter_result(payload: dict) -> AdapterResult:
         if type(v) is not str or len(v) > 64:
             raise _WireError("ledger value not str")
         ledger_out[k] = v
+    # B0 (transitive capture immutability): detach and immutable-wrap the
+    # reconstructed capability_ledger as a MappingProxyType. The wire payload
+    # is a fresh JSON-decoded dict (no alias to caller state), so this wrap
+    # makes the reconstructed AdapterResult's ledger immutable: downstream
+    # canonical_result_hash / validate_adapter_result /
+    # validate_capability_ledger_honesty all copy via dict(...) / .items()
+    # and support the immutable Mapping; the capture cannot retain a mutable
+    # alias, and exposing capture.output after require_scoreable cannot permit
+    # score-visible mutation. MappingProxyType is a C-level Mapping (cannot be
+    # subclassed to override __getitem__/items — safe under the EXACT-type
+    # wire-normalization boundary too).
+    immutable_ledger = MappingProxyType(ledger_out)
     fb_list = payload["fallback_provenance"]
     if type(fb_list) is not list:
         raise _WireError("payload fallback_provenance not list")
@@ -2679,7 +3567,7 @@ def _wire_reconstruct_adapter_result(payload: dict) -> AdapterResult:
         else _wire_reconstruct_binding_proposal(bp_payload))
     return AdapterResult(
         status=status, failure_category=fc, candidates=candidates,
-        capability_ledger=ledger_out, fallback_provenance=fallback,
+        capability_ledger=immutable_ledger, fallback_provenance=fallback,
         resource_sample=None, binding_proposal=binding_proposal,
     )
 
@@ -2838,6 +3726,7 @@ def _isolated_stage_worker(
     request: AdapterRequest,
     isolated_root_str: str,
     conn: Any,
+    release_conn: Any,
 ) -> None:
     """Run a single adapter hook (prepare/index/query) in a spawned subprocess
     and return its result via a unidirectional Pipe using ``send_bytes``.
@@ -2864,12 +3753,27 @@ def _isolated_stage_worker(
       * The exception envelope carries ONLY ``type(e).__name__`` (itself
         bounded/validated); the adapter exception MESSAGE text NEVER
         crosses the wire.
-      * On ``send_bytes`` failure, the worker closes the pipe and exits
+      * On ``send_bytes`` failure, the worker closes BOTH pipes and exits
         nonzero via ``os._exit(1)`` (NO dedicated exit code, NO fallback
         ``transport_failure`` envelope). The parent sees EOF/process death
         and classifies adapter-scoped ``process_died`` (never
         ``HarnessInfrastructureError``). An adapter may call any
         ``os._exit(code)``; every child EOF/exit code is adapter-scoped.
+
+    B0 (release barrier): after the existing strict JSON envelope is sent
+    successfully on ``conn``, the worker BLOCKS on ``release_conn.recv_bytes``
+    waiting for the fixed ``_STAGE_RELEASE_TOKEN``. This guarantees the worker
+    is still alive when the parent samples its direct CPU/RSS (eliminating the
+    successful-worker post-exit race on Linux /proc and the Windows handle
+    race). The token is a STRICT FIXED control token — NOT adapter-authored
+    JSON, NOT negotiated, NOT interpreted. The child NEVER sends anything on
+    ``release_conn`` (parent->child one-way). If the parent closes the
+    release pipe (parent died / parent chose not to release), ``recv_bytes``
+    raises ``EOFError``/``OSError`` and the worker exits cleanly (return);
+    the parent has already classified the outcome from the result-pipe
+    envelope. Resource fields NEVER enter the child result wire: the envelope
+    key set is unchanged. The child cannot forge a whole-bakeoff abort (a
+    child EOF/os._exit on the release pipe remains adapter-scoped).
     """
     try:
         result = hook(request, Path(isolated_root_str))
@@ -2939,8 +3843,37 @@ def _isolated_stage_worker(
         # death and classifies adapter-scoped process_died (no whole-
         # bakeoff abort, no infra classification). os._exit bypasses
         # Python cleanup so the closed pipe is not mutated after the
-        # failed send.
+        # failed send. Close the release pipe too (leak-free).
+        try:
+            release_conn.close()
+        except Exception:  # noqa: BLE001
+            pass
         os._exit(1)
+    # B0 (release barrier): the strict JSON envelope was sent successfully.
+    # BLOCK on the fixed parent->child release token so the parent can sample
+    # this worker's direct CPU/RSS while it is GUARANTEED alive (eliminating
+    # the successful-worker post-exit race). The token is a STRICT FIXED
+    # control token — NOT adapter-authored JSON, NOT interpreted. The child
+    # NEVER sends on release_conn (parent->child one-way). If the parent
+    # closes/dies the release pipe, recv_bytes raises EOFError/OSError and
+    # the worker exits cleanly (return) — the parent has already classified
+    # the outcome from the result-pipe envelope. A child EOF/os._exit on the
+    # release pipe remains adapter-scoped (never a whole-bakeoff abort).
+    try:
+        release_conn.recv_bytes()
+    except Exception:  # noqa: BLE001
+        # Parent closed the release pipe (parent chose not to release, e.g.
+        # on a timeout/eof/error path where the child reached the release
+        # wait after sending) OR the parent died. Either way, exit cleanly;
+        # the parent has already classified the outcome. This is NOT a
+        # whole-bakeoff abort signal (adapter-scoped at most).
+        pass
+    finally:
+        try:
+            release_conn.close()
+        except Exception:  # noqa: BLE001
+            pass
+    # Return cleanly; the Process exits normally.
 
 
 # Stage name -> canonical failure_category prefix on exception.
@@ -2956,9 +3889,10 @@ def _execute_stage_isolated(
     isolated_root: Path,
     descriptor: AdapterDescriptor,
     stage: str,
-) -> tuple[str, AdapterResult | None, str, float]:
+) -> tuple[str, AdapterResult | None, str, float, float | None, int | None]:
     """Execute ONE adapter hook in a process-isolated subprocess with an
-    ENFORCED absolute deadline. Returns ``(status, result, exc_type, wall_seconds)``.
+    ENFORCED absolute deadline. Returns
+    ``(status, result, exc_type, wall_seconds, cpu_seconds, peak_rss_bytes)``.
 
     * ``status`` is one of ``"ok"`` / ``"timeout"`` / ``"error"`` / ``"malformed"``;
     * ``result`` is the AdapterResult (query) or None (prepare/index);
@@ -3043,6 +3977,8 @@ def _execute_stage_isolated(
     ctx = multiprocessing.get_context("spawn")
     parent_conn: Any = None
     child_conn: Any = None
+    release_send: Any = None
+    release_recv: Any = None
     proc: Any = None
     started = False
     t0 = time.perf_counter()
@@ -3052,10 +3988,26 @@ def _execute_stage_isolated(
     result: AdapterResult | None = None
     err = "RuntimeError"  # canonical default type name
     try:
+        # Result pipe: child sends, parent receives (parent holds child_conn's
+        # peer = parent_conn). ctx.Pipe(duplex=False) -> (sender, receiver).
         parent_conn, child_conn = ctx.Pipe(duplex=False)
+        # B0 (release barrier): second parent->child one-way Pipe for the
+        # STRICT FIXED control token (NOT adapter-authored JSON). Parent
+        # sends the fixed token; child receives and exits. This guarantees the
+        # worker is alive when the parent samples CPU/RSS. Setup failure here
+        # is demonstrably parent-local (occurs before the child runs) => infra.
+        # NOTE: multiprocessing.Pipe(duplex=False) returns (conn1, conn2) where
+        # conn1 can only RECEIVE and conn2 can only SEND. The parent SENDS the
+        # release token (needs conn2) and the child RECEIVES it (needs conn1),
+        # so assign: release_recv=conn1 (child, receive), release_send=conn2
+        # (parent, send). Swapping these silently breaks the barrier (child
+        # recv on a send-only end fails immediately -> child exits -> Linux
+        # /proc post-exit race).
+        release_recv, release_send = ctx.Pipe(duplex=False)
         proc = ctx.Process(
             target=_isolated_stage_worker,
-            args=(stage, hook, request, str(isolated_root), child_conn),
+            args=(stage, hook, request, str(isolated_root),
+                  child_conn, release_recv),
             daemon=True,
         )
         proc.start()
@@ -3066,16 +4018,19 @@ def _execute_stage_isolated(
         # as a harness infrastructure failure — NEVER one adapter's
         # ValidatedRunRecord. This is demonstrably parent-local (it
         # occurred before the child was started, so no child-authored data
-        # is involved).
+        # is involved). Includes the release-pipe setup failure.
         _close_pipe_endpoint(child_conn)
         _close_pipe_endpoint(parent_conn)
+        _close_pipe_endpoint(release_recv)
+        _close_pipe_endpoint(release_send)
         if started and proc is not None:
             _reap_process(proc, terminate_if_alive=True)
         raise HarnessInfrastructureError(
             f"spawn setup for stage {stage!r} failed: {type(exc).__name__}"
         ) from exc
-    # Close the child end in the parent immediately; the child holds its copy.
+    # Close the child ends in the parent immediately; the child holds its copy.
     _close_pipe_endpoint(child_conn)
+    _close_pipe_endpoint(release_recv)
 
     # ONE dedicated receiver thread + one-slot queue.
     outcome_q: queue.Queue = queue.Queue(maxsize=1)
@@ -3259,7 +4214,40 @@ def _execute_stage_isolated(
     except queue.Empty:
         outcome = ("timeout", None, "timeout_exceeded")
 
-    # Cleanup: terminate/kill/reap child, close pipe, join receiver, verify.
+    # B0 (release barrier): Measure the direct spawned worker's CPU/RSS WHILE
+    # THE WORKER IS GUARANTEED ALIVE. On the ok/malformed paths the child sent
+    # its strict JSON envelope and is now BLOCKED on the release pipe waiting
+    # for the fixed token — so it is alive and the parent samples it directly
+    # (Linux /proc/<pid>/stat + VmHWM still present; NO post-exit race; Windows
+    # handle valid). On timeout the child is still in the hook (alive); on
+    # eof/error the child may have died (measurement may return None).
+    # Measurement failure / unavailable platform returns None (NEVER synthetic
+    # zero). Genuine measured zero CPU is okay. This is the PARENT measuring
+    # the direct spawned worker only — no child wire fields, no psutil/
+    # dependency. Resource fields NEVER enter the child result wire.
+    stage_cpu, stage_rss = _measure_stage_cpu_rss(proc)
+
+    # B0 (release barrier): Release the worker. On ok/malformed the child is
+    # blocked on the release pipe; sending the fixed token lets it exit
+    # cleanly. On timeout/eof/error the child is either still in the hook or
+    # already dead; the release send may succeed (token buffered, unread) or
+    # fail (BrokenPipe — child gone). Either way the child is reaped below
+    # (leak-free). Classification: a release-pipe SETUP failure is
+    # demonstrably parent-local => infra (caught above). A runtime release-
+    # send failure (BrokenPipe/OSError) CANNOT be proven parent-local at this
+    # point (the child may have exited/closed the pipe) => adapter-scoped
+    # (swallow; the outcome is already determined by the result-pipe envelope;
+    # the child is reaped regardless). child EOF/os._exit on the release pipe
+    # remains adapter-scoped (NEVER a whole-bakeoff abort). The child cannot
+    # forge a whole-bakeoff abort.
+    try:
+        release_send.send_bytes(_STAGE_RELEASE_TOKEN)
+    except Exception:  # noqa: BLE001
+        # BrokenPipe (child gone) or OSError — adapter-scoped; swallow.
+        # The child is reaped below regardless (fail-closed, leak-free).
+        pass
+
+    # Cleanup: terminate/kill/reap child, close pipes, join receiver, verify.
     # v11: only the genuine parent-local failure paths (pipe_error from
     # poll OSError, unreaped child, receiver thread leak) raise
     # HarnessInfrastructureError. EOF / recv OSError / malformed are
@@ -3275,6 +4263,7 @@ def _execute_stage_isolated(
     # Close pipe endpoints (owned handles, exactly once).
     _close_pipe_endpoint(parent_conn)
     _close_pipe_endpoint(child_conn)
+    _close_pipe_endpoint(release_send)
     # Join the receiver thread (bounded cleanup allowance, not extra
     # execution time). The thread should have exited: it either published
     # an outcome or hit the deadline in its poll loop.
@@ -3316,7 +4305,7 @@ def _execute_stage_isolated(
     else:
         status, result, err = "error", None, "process_died"
     wall_seconds = time.perf_counter() - t0
-    return status, result, err, wall_seconds
+    return status, result, err, wall_seconds, stage_cpu, stage_rss
 
 
 def _stage_result_to_adapter_result(
@@ -3361,12 +4350,13 @@ def _execute_isolated(
     request: AdapterRequest,
     isolated_root: Path,
     descriptor: AdapterDescriptor,
-) -> tuple[AdapterResult, float]:
-    """Back-compat shim for the query stage. Returns (result, query_seconds)."""
-    status, result, err, wall = _execute_stage_isolated(
+) -> tuple[AdapterResult, float, float | None, int | None]:
+    """Back-compat shim for the query stage. Returns
+    (result, query_seconds, cpu_seconds, peak_rss_bytes)."""
+    status, result, err, wall, cpu, rss = _execute_stage_isolated(
         query_hook, request, isolated_root, descriptor, "query")
     ar = _stage_result_to_adapter_result(status, result, err, descriptor, "query")
-    return ar, wall
+    return ar, wall, cpu, rss
 
 
 # ---------------------------------------------------------------------------
@@ -3449,6 +4439,8 @@ def run_adapter(
     conformance_category: str = "live_run",
     episode_registry: EpisodeRegistry | None = None,
     materialize_step: int = 1,
+    *,
+    capture: PrivateValidatedOutputCapture | None = None,
 ) -> ValidatedRunRecord:
     """Run adapter hooks (prepare/index/query) with lifecycle timing, then
     validate, common-materialize, build+validate a context pack, and record a
@@ -3457,6 +4449,30 @@ def run_adapter(
     adapter exit path so mutate->restore cannot pass.
 
     Cross-validates descriptor + hooks via ``validate_descriptor_hooks`` (v4).
+
+    B0 Goal 1: if ``capture`` (a ``PrivateValidatedOutputCapture``) is
+    provided, the harness commits the SAME execution's fully validated
+    ``AdapterResult``, validated candidates, common-source materialized
+    ``BakeoffVerifiedEvidence``, fully validated ``ContextPack``, and
+    request/task/fingerprint/result-hash/pack-hash binding facts to the
+    collector ONLY AFTER the final source scan has completed, the final
+    record is still accepted, and ``validate_run_record(final_record)``
+    returns zero failures. A final-scan rejection leaves the collector
+    empty. Rejected/partial/timeout/malformed/result-validation/capability/
+    materialization/pack failures NEVER produce a scoreable capture.
+    Capture commit failure raises ``HarnessInfrastructureError`` (NOT an
+    adapter rejection). The capture is NEVER persisted and NEVER added to
+    the ``ValidatedRunRecord`` or the public report.
+
+    B0 Goal 2: per-stage CPU/RSS is measured by the PARENT on the direct
+    spawned worker only (no child wire fields, no psutil/dependency). The
+    run-level ``ResourceSample.cpu_seconds`` is the sum of per-stage CPU
+    ONLY if every attempted stage has CPU data; otherwise None.
+    ``ResourceSample.rss_bytes`` is the max of per-stage peak RSS ONLY if
+    every attempted stage has RSS data; otherwise None. Rejected runs
+    aggregate attempted stages only. Measurement failure / unavailable
+    platform returns None (NEVER synthetic zero). Genuine measured zero CPU
+    is okay. Parent materialize/render usage is NEVER mixed in.
     """
     hooks.validate()
     # Pre-execution validation.
@@ -3541,19 +4557,30 @@ def run_adapter(
     record: ValidatedRunRecord | None = None
     validated_cands: tuple[Candidate, ...] = ()
     evidence: tuple = ()
+    # B0: per-stage CPU/RSS tracking. One entry per ATTEMPTED spawned stage
+    # (prepare/index/query). The aggregate is computed at each rejection
+    # point and at acceptance. Rejected runs aggregate attempted stages only.
+    attempted_stages: list[tuple[float | None, int | None]] = []
+    # B0: tentative capture. Built on the accepted path; discarded by the
+    # finally block if the final scan rejects. Committed only AFTER the
+    # finally block if the final record is still accepted + validate_run_record
+    # returns zero failures + binding facts match.
+    tentative_capture: PrivateAcceptedOutput | None = None
 
     try:
         # -- Prepare hook (v7: spawned in a fresh child) --
         if attempt_prepare:
-            p_status, p_result, p_err, setup_s = _execute_stage_isolated(
+            p_status, p_result, p_err, setup_s, p_cpu, p_rss = _execute_stage_isolated(
                 hooks.prepare, request, isolated_root, descriptor, "prepare")  # type: ignore[misc]
+            attempted_stages.append((p_cpu, p_rss))
             if p_status != "ok":
                 # prepare timed out or raised — canonical category.
                 par = _stage_result_to_adapter_result(
                     p_status, p_result, p_err, descriptor, "prepare")
+                agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
                 rs = ResourceSample(setup_seconds=setup_s, index_seconds=None,
                     query_seconds=None, materialize_seconds=None,
-                    render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                    render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
                 record = _rejected_record(
                     request, descriptor, par,
                     par.failure_category, conformance_category, resource_sample=rs,
@@ -3565,9 +4592,10 @@ def run_adapter(
             try:
                 pb.assert_snapshot_unchanged(snapshot)
             except ContractError:
+                agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
                 rs = ResourceSample(setup_seconds=setup_s, index_seconds=None,
                     query_seconds=None, materialize_seconds=None,
-                    render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                    render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
                 record = _rejected_record(
                     request, descriptor,
                     AdapterResult("failed", "snapshot_mutation:ContractError", (),
@@ -3578,14 +4606,16 @@ def run_adapter(
 
         # -- Index hook (v7: spawned in a fresh child) --
         if attempt_index:
-            i_status, i_result, i_err, index_s = _execute_stage_isolated(
+            i_status, i_result, i_err, index_s, i_cpu, i_rss = _execute_stage_isolated(
                 hooks.index, request, isolated_root, descriptor, "index")  # type: ignore[misc]
+            attempted_stages.append((i_cpu, i_rss))
             if i_status != "ok":
                 iar = _stage_result_to_adapter_result(
                     i_status, i_result, i_err, descriptor, "index")
+                agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
                 rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                     query_seconds=None, materialize_seconds=None,
-                    render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                    render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
                 record = _rejected_record(
                     request, descriptor, iar,
                     iar.failure_category, conformance_category, resource_sample=rs,
@@ -3596,9 +4626,10 @@ def run_adapter(
             try:
                 pb.assert_snapshot_unchanged(snapshot)
             except ContractError:
+                agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
                 rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                     query_seconds=None, materialize_seconds=None,
-                    render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                    render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
                 record = _rejected_record(
                     request, descriptor,
                     AdapterResult("failed", "snapshot_mutation:ContractError", (),
@@ -3608,16 +4639,18 @@ def run_adapter(
                 raise _StopProcessing()
 
         # -- Query hook in subprocess (v7: stage-aware) --
-        result, qs = _execute_isolated(hooks.query, request, isolated_root, descriptor)
+        result, qs, q_cpu, q_rss = _execute_isolated(hooks.query, request, isolated_root, descriptor)
         query_s = qs
+        attempted_stages.append((q_cpu, q_rss))
         # Intermediate scan: immutable source must be unchanged after query.
         # Catches post-query mutations before materialization.
         try:
             pb.assert_snapshot_unchanged(snapshot)
         except ContractError:
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=None,
-                render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             record = _rejected_record(
                 request, descriptor,
                 AdapterResult("failed", "snapshot_mutation:ContractError", (),
@@ -3630,9 +4663,10 @@ def run_adapter(
             result, validated_cands = validate_adapter_result(
                 result, request, descriptor, snapshot)
         except ContractError as exc:
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=None,
-                render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             crh = None
             try:
                 crh = canonical_result_hash(result, ())
@@ -3644,9 +4678,10 @@ def run_adapter(
             raise _StopProcessing()
 
         if result.status not in pb.PACK_OK_STATUSES:
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=None,
-                render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             crh = None
             try:
                 crh = canonical_result_hash(result, ())
@@ -3673,9 +4708,10 @@ def run_adapter(
                 attempt_prepare=attempt_prepare,
                 attempt_index=attempt_index)
         except ContractError as exc:
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=None,
-                render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             crh = None
             try:
                 crh = canonical_result_hash(result, validated_cands)
@@ -3694,9 +4730,10 @@ def run_adapter(
                 validated_cands, snapshot, step=materialize_step)
         except ContractError as exc:
             mat_s = time.perf_counter() - t_m0
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=mat_s,
-                render_seconds=None, rss_bytes=None, cpu_seconds=None)
+                render_seconds=None, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             record = _rejected_record(request, descriptor, result,
                 f"materialization:{exc.__class__.__name__}",
                 conformance_category, validated_cands=validated_cands,
@@ -3721,9 +4758,10 @@ def run_adapter(
                 materialize_step, parent_episode_estimate)
         except ContractError as exc:
             render_s = time.perf_counter() - t_r0
+            agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
             rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
                 query_seconds=query_s, materialize_seconds=mat_s,
-                render_seconds=render_s, rss_bytes=None, cpu_seconds=None)
+                render_seconds=render_s, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
             record = _rejected_record(request, descriptor, result,
                 f"pack_validation:{exc.__class__.__name__}",
                 conformance_category, validated_cands=validated_cands,
@@ -3731,9 +4769,10 @@ def run_adapter(
             raise _StopProcessing()
         render_s = time.perf_counter() - t_r0
 
+        agg_cpu, agg_rss = _aggregate_stage_metrics(attempted_stages)
         rs = ResourceSample(setup_seconds=setup_s, index_seconds=index_s,
             query_seconds=query_s, materialize_seconds=mat_s,
-            render_seconds=render_s, rss_bytes=None, cpu_seconds=None)
+            render_seconds=render_s, rss_bytes=agg_rss, cpu_seconds=agg_cpu)
 
         # Register target for context steps.
         if (request.run_spec.operation == "context"
@@ -3746,6 +4785,8 @@ def run_adapter(
                 episode_estimate_used=pack.budget_usage.episode_estimate_used,
                 parent_step=materialize_step)
 
+        final_crh = canonical_result_hash(result, validated_cands)
+        final_cph = canonical_pack_hash(pack)
         record = ValidatedRunRecord(
             fingerprint=fairness_fingerprint(request.run_spec),
             run_cell_id=request.run_spec.run_cell_id,
@@ -3754,14 +4795,37 @@ def run_adapter(
             candidate_count=len(validated_cands), evidence_count=len(evidence),
             target_count=len(pack.targets), support_count=len(pack.support),
             capability_ledger_summary=dict(result.capability_ledger),
-            canonical_result_hash=canonical_result_hash(result, validated_cands),
-            canonical_pack_hash=canonical_pack_hash(pack),
+            canonical_result_hash=final_crh,
+            canonical_pack_hash=final_cph,
             conformance_category=conformance_category,
             cache_state=request.run_spec.cache_state,
             interaction_mode=request.run_spec.interaction_mode,
             operation=request.run_spec.operation,
             adapter_repetition=request.run_spec.adapter_repetition,
             resource_sample=rs)
+
+        # B0: build the TENTATIVE capture (same execution's fully validated
+        # artifacts + binding facts). NOT committed yet — the finally block's
+        # final scan may still reject. If the final scan rejects, the finally
+        # block discards this tentative capture (sets it to None) and replaces
+        # the record with a rejected one.
+        tentative_capture = PrivateAcceptedOutput(
+            fingerprint=record.fingerprint,
+            run_cell_id=record.run_cell_id,
+            adapter_id=record.adapter_id,
+            adapter_version=request.adapter_version,
+            request_id=request.run_spec.request_id,
+            episode_id=request.run_spec.episode_id,
+            task_slug=request.run_spec.task.task_slug,
+            result_status=record.result_status,
+            pack_status=record.pack_status or "",
+            canonical_result_hash=final_crh,
+            canonical_pack_hash=final_cph,
+            validated_result=result,
+            validated_candidates=validated_cands,
+            evidence=tuple(evidence),
+            pack=pack,
+        )
     except _StopProcessing:
         pass
     finally:
@@ -3776,11 +4840,72 @@ def run_adapter(
                 AdapterResult("failed", "snapshot_mutation:ContractError", (), {}, ()),
                 "snapshot_mutation:ContractError", conformance_category,
                 resource_sample=existing_rs)
+            # B0: CRITICAL ordering — a final-scan rejection MUST leave the
+            # collector empty. Discard any tentative capture built on the
+            # accepted path. The commit (below) will not fire because the
+            # record is now rejected.
+            tentative_capture = None
     if record is None:
         record = _rejected_record(
             request, descriptor,
             AdapterResult("failed", "unhandled:no_record", (), {}, ()),
             "unhandled:no_record", conformance_category, resource_sample=None)
+        tentative_capture = None
+
+    # B0: commit the capture ONLY if ALL hold:
+    #   * a collector was provided (capture is not None);
+    #   * tentative_capture is not None (final scan did not discard it);
+    #   * record.status == "accepted" (final scan did not replace it);
+    #   * record.result_status == "ok" (status not ok is not scoreable);
+    #   * validate_run_record(record) returns zero failures;
+    #   * tentative_capture's binding facts match the final record exactly;
+    #   * tentative_capture's adapter_version/request_id/episode_id/task_slug
+    #     match the execution's request (checked here where the request is
+    #     available; _commit_accepted checks record-vs-output bindings only).
+    # A commit failure (duplicate commit, binding/count/ledger/hash mismatch,
+    # invalid captured pack/result) raises HarnessInfrastructureError (NEVER
+    # an adapter rejection). Rejected runs NEVER reach this commit path.
+    # _commit_accepted burns the attempt before validation (failed commit
+    # cannot retry; successful commit cannot repeat).
+    if capture is not None and tentative_capture is not None:
+        rec_failures: list[str] = []
+        try:
+            rec_failures = validate_run_record(record)
+        except Exception:  # noqa: BLE001
+            rec_failures = ["validate_run_record raised unexpectedly"]
+        # Check adapter_version/request_id/episode_id/task_slug against the
+        # execution's request where available (these bindings are NOT in the
+        # record — only in the output and the request).
+        request_binding_ok = (
+            tentative_capture.adapter_version == request.adapter_version
+            and tentative_capture.request_id == request.run_spec.request_id
+            and tentative_capture.episode_id == request.run_spec.episode_id
+            and tentative_capture.task_slug == request.run_spec.task.task_slug
+        )
+        binding_ok = (
+            record.status == "accepted"
+            and record.result_status == "ok"
+            and not rec_failures
+            and request_binding_ok
+            and tentative_capture.fingerprint == record.fingerprint
+            and tentative_capture.run_cell_id == record.run_cell_id
+            and tentative_capture.adapter_id == record.adapter_id
+            and tentative_capture.result_status == record.result_status
+            and (record.pack_status is None
+                 or tentative_capture.pack_status == record.pack_status)
+            and tentative_capture.canonical_result_hash == record.canonical_result_hash
+            and tentative_capture.canonical_pack_hash == record.canonical_pack_hash
+        )
+        if binding_ok:
+            # Commit the SAME execution's accepted output. _commit_accepted
+            # burns the attempt before validation, re-validates all binding
+            # facts + counts + ledger, recomputes canonical hashes from the
+            # captured artifacts, and stores the EXACT record object identity.
+            # A mismatch raises HarnessInfrastructureError (infrastructure,
+            # NEVER an adapter rejection).
+            capture._commit_accepted(record, tentative_capture)
+        # If binding_ok is False, leave the collector empty (silent; the record
+        # is rejected or invalid, so no scoreable capture should exist).
     return record
 
 
@@ -4442,11 +5567,13 @@ def _ctx_run(
     snapshot: FrozenSnapshot, root: Path,
     episode_registry: EpisodeRegistry | None = None,
     materialize_step: int = 1,
+    capture: PrivateValidatedOutputCapture | None = None,
 ) -> ValidatedRunRecord:
     bound_req = _bind_request(request, snapshot)
     return run_adapter(
         hooks, bound_req, root, descriptor, snapshot, cat,
-        episode_registry=episode_registry, materialize_step=materialize_step)
+        episode_registry=episode_registry, materialize_step=materialize_step,
+        capture=capture)
 
 
 def _repo_one_run(
@@ -4454,13 +5581,15 @@ def _repo_one_run(
     descriptor: AdapterDescriptor | None = None, cat: str = "live_run",
     episode_registry: EpisodeRegistry | None = None,
     materialize_step: int = 1, timeout: float = 30.0,
+    capture: PrivateValidatedOutputCapture | None = None,
 ) -> ValidatedRunRecord:
     tmp, root = _new_tmp_root()
     try:
         snap = build_synthetic_repo_one(root)
         req = request or make_request(snapshot=snap, timeout_seconds=timeout)
         desc = descriptor or valid_descriptor()
-        return _ctx_run(hooks, req, desc, cat, snap, root, episode_registry, materialize_step)
+        return _ctx_run(hooks, req, desc, cat, snap, root, episode_registry,
+                        materialize_step, capture=capture)
     finally:
         tmp.cleanup()
 
@@ -6799,8 +7928,8 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_rt = build_synthetic_repo_one(root_rt)
         req_rt = make_request(snapshot=snap_rt, timeout_seconds=30.0)
-        # _execute_stage_isolated returns (status, result, err, wall).
-        rt_status, rt_result, rt_err, _ = _execute_stage_isolated(
+        # _execute_stage_isolated returns (status, result, err, wall, cpu, rss).
+        rt_status, rt_result, rt_err, _, _, _ = _execute_stage_isolated(
             valid_adapter_query, req_rt, root_rt,
             valid_descriptor(), "query")
         if rt_status != "ok" or rt_result is None or rt_err is not None:
@@ -7077,7 +8206,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_hostile = build_synthetic_repo_one(root_hostile)
         req_hostile = make_request(snapshot=snap_hostile, timeout_seconds=30.0)
-        hostile_status, hostile_result, hostile_err, _ = (
+        hostile_status, hostile_result, hostile_err, _, _, _ = (
             _execute_stage_isolated(
                 hostile_reduce_returning_query, req_hostile, root_hostile,
                 valid_descriptor(), "query"))
@@ -7115,7 +8244,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_prop = build_synthetic_repo_one(root_prop)
         req_prop = make_request(snapshot=snap_prop, timeout_seconds=30.0)
-        prop_status, prop_result, prop_err, _ = _execute_stage_isolated(
+        prop_status, prop_result, prop_err, _, _, _ = _execute_stage_isolated(
             hostile_property_subclass_query, req_prop, root_prop,
             valid_descriptor(), "query")
         if prop_status != "malformed":
@@ -7144,7 +8273,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_map = build_synthetic_repo_one(root_map)
         req_map = make_request(snapshot=snap_map, timeout_seconds=30.0)
-        map_status, map_result, map_err, _ = _execute_stage_isolated(
+        map_status, map_result, map_err, _, _, _ = _execute_stage_isolated(
             hostile_mapping_ledger_query, req_map, root_map,
             valid_descriptor(), "query")
         if map_status != "malformed":
@@ -7170,7 +8299,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_e73 = build_synthetic_repo_one(root_e73)
         req_e73 = make_request(snapshot=snap_e73, timeout_seconds=30.0)
-        e73_status, _, e73_err, _ = _execute_stage_isolated(
+        e73_status, _, e73_err, _, _, _ = _execute_stage_isolated(
             os_exit_73_query, req_e73, root_e73,
             valid_descriptor(), "query")
         if e73_status != "error" or e73_err != "process_died":
@@ -7194,7 +8323,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
         try:
             snap_ec = build_synthetic_repo_one(root_ec)
             req_ec = make_request(snapshot=snap_ec, timeout_seconds=30.0)
-            ec_status, _, ec_err, _ = _execute_stage_isolated(
+            ec_status, _, ec_err, _, _, _ = _execute_stage_isolated(
                 _qfn, req_ec, root_ec,
                 valid_descriptor(), "query")
             if ec_status != "error" or ec_err != "process_died":
@@ -7210,7 +8339,7 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
     try:
         snap_eof = build_synthetic_repo_one(root_eof)
         req_eof = make_request(snapshot=snap_eof, timeout_seconds=30.0)
-        eof_status, _, eof_err, _ = _execute_stage_isolated(
+        eof_status, _, eof_err, _, _, _ = _execute_stage_isolated(
             close_without_send_query, req_eof, root_eof,
             valid_descriptor(), "query")
         if eof_status != "error" or eof_err != "process_died":
@@ -7659,6 +8788,1204 @@ def cat8_no_silent_degeneration() -> list[ValidatedRunRecord]:
             )
         except ContractError:
             pass
+
+    # ===================================================================
+    # B0 Goal 1: same-execution private accepted capture (oracle-free).
+    # Internal assertions only — test records are NOT appended to recs so
+    # the committed Phase A report remains byte-stable.
+    # ===================================================================
+
+    # B0: probe the real platform measurement backend ONCE for the whole B0
+    # block. Used by B0-G1-a (success-path non-None) and B0-G2-a (busy-loop).
+    _cpu_avail, _rss_avail = _probe_measurement_backend()
+
+    # (B0-G1-a) Accepted exactly once + final hashes match + require_scoreable.
+    # Also verifies the SUCCESS-PATH resource sample: with the release barrier
+    # the child remains alive until release, so a real platform backend yields
+    # non-None RSS and CPU (CPU may be genuine 0) — Linux specifically no
+    # post-exit race (the /proc read happens while the child is blocked on the
+    # release pipe, not after exit). require_scoreable now requires non-None
+    # cpu_seconds AND rss_bytes for accepted ok records.
+    cap_acc = PrivateValidatedOutputCapture()
+    rec_acc = _repo_one_run(
+        _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration",
+        capture=cap_acc)
+    _expect_accepted(rec_acc, "cat8:b0_capture_accepted")
+    if not cap_acc.committed:
+        raise AssertionError(
+            "cat8: b0 capture not committed on accepted run")
+    if cap_acc.committed_count != 1:
+        raise AssertionError(
+            f"cat8: b0 capture committed_count={cap_acc.committed_count}, "
+            f"expected 1")
+    out = cap_acc.output
+    if out is None:
+        raise AssertionError("cat8: b0 capture output is None after commit")
+    if out.fingerprint != rec_acc.fingerprint:
+        raise AssertionError("cat8: b0 capture fingerprint mismatch")
+    if out.canonical_result_hash != rec_acc.canonical_result_hash:
+        raise AssertionError("cat8: b0 capture canonical_result_hash mismatch")
+    if out.canonical_pack_hash != rec_acc.canonical_pack_hash:
+        raise AssertionError("cat8: b0 capture canonical_pack_hash mismatch")
+    if out.result_status != "ok":
+        raise AssertionError(
+            f"cat8: b0 capture result_status={out.result_status!r} != ok")
+    if out.adapter_id != rec_acc.adapter_id:
+        raise AssertionError("cat8: b0 capture adapter_id mismatch")
+    # Success-path resource sample: the release barrier guarantees the child
+    # is alive when sampled. On a real available backend, RSS and CPU are
+    # non-None (CPU may be genuine 0 for a fast worker; RSS must be > 0).
+    if rec_acc.resource_sample is None:
+        raise AssertionError(
+            "cat8: b0 accepted run has no resource_sample on the success path")
+    if _cpu_avail and rec_acc.resource_sample.cpu_seconds is None:
+        raise AssertionError(
+            "cat8: b0 success-path CPU is None on available backend (release "
+            "barrier must keep child alive for sampling; no post-exit race)")
+    if rec_acc.resource_sample.cpu_seconds is not None:
+        if rec_acc.resource_sample.cpu_seconds < 0:
+            raise AssertionError(
+                f"cat8: b0 success-path CPU is negative: "
+                f"{rec_acc.resource_sample.cpu_seconds}")
+    if _rss_avail and rec_acc.resource_sample.rss_bytes is None:
+        raise AssertionError(
+            "cat8: b0 success-path RSS is None on available backend (release "
+            "barrier must keep child alive for sampling; no post-exit race)")
+    if rec_acc.resource_sample.rss_bytes is not None:
+        if rec_acc.resource_sample.rss_bytes <= 0:
+            raise AssertionError(
+                f"cat8: b0 success-path RSS is not positive: "
+                f"{rec_acc.resource_sample.rss_bytes}")
+    # require_scoreable: on an available backend, the success path yields
+    # non-None cpu/rss => passes. On an unavailable backend, cpu/rss are None
+    # => fails (missing metrics fail scoreability; never zero-fill).
+    if _cpu_avail and _rss_avail:
+        try:
+            require_scoreable(rec_acc, cap_acc)
+        except ContractError as exc:
+            raise AssertionError(
+                f"cat8: b0 require_scoreable failed on accepted run with "
+                f"non-None cpu/rss: {exc}")
+    else:
+        # Backend unavailable: success-path cpu/rss are None => not scoreable.
+        try:
+            require_scoreable(rec_acc, cap_acc)
+            raise AssertionError(
+                "cat8: b0 require_scoreable passed with None cpu/rss on "
+                "unavailable backend (must fail — missing metrics)")
+        except ContractError:
+            pass
+
+    # (B0-G1-b) All rejection classes produce no capture. Each adversarial
+    # rejection path with a collector must leave it empty.
+    for fn, label in (
+        (adv_path_absolute_query, "path_absolute"),
+        (adv_duplicate_cell_query, "duplicate_cell"),
+        (adv_non_finite_score_query, "non_finite_score"),
+        (adv_provenance_mismatch_query, "provenance_mismatch"),
+        (adv_query_returns_none, "query_returns_none"),
+        (adv_over_candidate_cap_query, "over_candidate_cap"),
+    ):
+        cap_rej = PrivateValidatedOutputCapture()
+        rec_rej = _repo_one_run(
+            _qhooks(fn), descriptor=adv_descriptor(),
+            request=make_request(adapter_id=SYN_ADAPTER_ID_ADV),
+            cat="cat8_no_silent_degeneration", capture=cap_rej)
+        _expect_rejected(rec_rej, f"cat8:b0_capture_reject_{label}")
+        if cap_rej.committed:
+            raise AssertionError(
+                f"cat8: b0 capture committed on rejected run ({label})")
+        if cap_rej.output is not None:
+            raise AssertionError(
+                f"cat8: b0 capture output set on rejected run ({label})")
+        # require_scoreable must fail on rejected record + empty capture.
+        try:
+            require_scoreable(rec_rej, cap_rej)
+            raise AssertionError(
+                f"cat8: b0 require_scoreable passed on rejected run ({label})")
+        except ContractError:
+            pass
+
+    # (B0-G1-c) Missing capture (None) -> require_scoreable fails closed.
+    try:
+        require_scoreable(rec_acc, None)
+        raise AssertionError(
+            "cat8: b0 require_scoreable passed with missing capture")
+    except ContractError:
+        pass
+
+    # (B0-G1-d) Duplicate capture commit -> HarnessInfrastructureError
+    # (infrastructure abort, NOT adapter rejection). A second commit on the
+    # same collector must raise. This covers "successful commit cannot repeat":
+    # after a successful commit, a second _commit_accepted call is rejected
+    # because the attempt counter was burned.
+    cap_dup = PrivateValidatedOutputCapture()
+    rec_dup = _repo_one_run(
+        _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration",
+        capture=cap_dup)
+    _expect_accepted(rec_dup, "cat8:b0_capture_dup_first")
+    if not cap_dup.committed:
+        raise AssertionError("cat8: b0 dup first commit failed")
+    # Directly attempt a second commit — must raise HarnessInfrastructureError
+    # (the attempt counter was burned by the first successful commit).
+    second_output = cap_dup.output
+    if second_output is None:
+        raise AssertionError("cat8: b0 dup output is None")
+    try:
+        cap_dup._commit_accepted(rec_dup, second_output)
+        raise AssertionError(
+            "cat8: b0 duplicate capture commit did not raise "
+            "HarnessInfrastructureError")
+    except HarnessInfrastructureError:
+        pass
+
+    # (B0-G1-d2) Failed first commit cannot retry. A commit that FAILLS
+    # validation burns the attempt counter; a second call is rejected as a
+    # duplicate (NOT retried). Build a mismatched output (wrong fingerprint)
+    # and commit it against rec_acc — the fingerprint mismatch must FAIL.
+    # Then attempt a second commit with the CORRECT output — it must ALSO
+    # fail as a duplicate (the failed attempt burned the counter).
+    cap_failed = PrivateValidatedOutputCapture()
+    _failed_out = replace(
+        out, fingerprint="fp_b0_g1d2_wrong_fingerprint")
+    try:
+        cap_failed._commit_accepted(rec_acc, _failed_out)
+        raise AssertionError(
+            "cat8: b0 failed-first-commit did not raise "
+            "HarnessInfrastructureError on fingerprint mismatch")
+    except HarnessInfrastructureError:
+        pass  # expected — fingerprint mismatch at commit
+    if cap_failed.committed:
+        raise AssertionError(
+            "cat8: b0 failed-first-commit left collector committed "
+            "(must be empty after a failed commit)")
+    if cap_failed.committed_count != 1:
+        raise AssertionError(
+            f"cat8: b0 failed-first-commit committed_count="
+            f"{cap_failed.committed_count} != 1 (attempt must be burned "
+            f"even on failure)")
+    # Retry with the CORRECT output — must also fail as a duplicate (the
+    # failed attempt burned the counter; failed commit cannot retry).
+    try:
+        cap_failed._commit_accepted(rec_acc, out)
+        raise AssertionError(
+            "cat8: b0 retry after failed commit did not raise "
+            "HarnessInfrastructureError (failed commit cannot retry)")
+    except HarnessInfrastructureError:
+        pass  # expected — duplicate (burned by the failed attempt)
+    if cap_failed.committed:
+        raise AssertionError(
+            "cat8: b0 retry-after-failure left collector committed")
+
+    # (B0-G1-e) Mismatched capture -> commit REJECTS (fingerprint mismatch
+    # at commit, NOT just require_scoreable). _commit_accepted validates all
+    # binding facts between record and output; a fingerprint mismatch raises
+    # HarnessInfrastructureError. Build a capture with a wrong fingerprint
+    # (format-valid) and verify _commit_accepted rejects it. The collector
+    # must remain empty (uncommitted) with committed_count=1 (burned).
+    cap_mis = PrivateValidatedOutputCapture()
+    bad_out = PrivateAcceptedOutput(
+        fingerprint="fp_mismatch_not_real",
+        run_cell_id=out.run_cell_id,
+        adapter_id=out.adapter_id,
+        adapter_version=out.adapter_version,
+        request_id=out.request_id,
+        episode_id=out.episode_id,
+        task_slug=out.task_slug,
+        result_status=out.result_status,
+        pack_status=out.pack_status,
+        canonical_result_hash=out.canonical_result_hash,
+        canonical_pack_hash=out.canonical_pack_hash,
+        validated_result=out.validated_result,
+        validated_candidates=out.validated_candidates,
+        evidence=out.evidence,
+        pack=out.pack,
+    )
+    # _commit_accepted must FAIL: fingerprint mismatch between record and
+    # output (output.fingerprint="fp_mismatch_not_real" != rec_acc.fingerprint).
+    try:
+        cap_mis._commit_accepted(rec_acc, bad_out)
+        raise AssertionError(
+            "cat8: b0 mismatched-fingerprint commit did not raise "
+            "HarnessInfrastructureError (binding mismatch must reject at "
+            "commit)")
+    except HarnessInfrastructureError:
+        pass  # expected — fingerprint binding mismatch at commit
+    if cap_mis.committed:
+        raise AssertionError(
+            "cat8: b0 mismatched-fingerprint commit left collector committed "
+            "(must be empty after a binding-mismatch rejection)")
+    if cap_mis.committed_count != 1:
+        raise AssertionError(
+            f"cat8: b0 mismatched-fingerprint committed_count="
+            f"{cap_mis.committed_count} != 1 (attempt must be burned)")
+    # require_scoreable must also fail (no committed capture).
+    try:
+        require_scoreable(rec_acc, cap_mis)
+        raise AssertionError(
+            "cat8: b0 require_scoreable passed on uncommitted mismatched "
+            "capture (must fail — no committed output)")
+    except ContractError:
+        pass
+
+    # (B0-G1-f) Capture commit failure aborts as infrastructure. A capture
+    # with an invalid output type (not PrivateAcceptedOutput) must raise
+    # HarnessInfrastructureError on commit. The attempt is burned (retry
+    # also fails as duplicate).
+    cap_invalid = PrivateValidatedOutputCapture()
+    try:
+        cap_invalid._commit_accepted(rec_acc, "not_a_private_output")  # type: ignore[arg-type]
+        raise AssertionError(
+            "cat8: b0 invalid capture commit did not raise "
+            "HarnessInfrastructureError")
+    except HarnessInfrastructureError:
+        pass
+    if cap_invalid.committed_count != 1:
+        raise AssertionError(
+            f"cat8: b0 invalid-type commit committed_count="
+            f"{cap_invalid.committed_count} != 1 (attempt must be burned)")
+    # Retry with correct output — must fail as duplicate.
+    try:
+        cap_invalid._commit_accepted(rec_acc, out)
+        raise AssertionError(
+            "cat8: b0 retry after invalid-type commit did not raise "
+            "HarnessInfrastructureError (failed commit cannot retry)")
+    except HarnessInfrastructureError:
+        pass
+
+    # (B0-G1-g) Force final-scan replacement after tentative accept -> no
+    # capture. Monkey-patch assert_snapshot_unchanged to fail on the FINAL
+    # call (4th call for a cold lifecycle run: after prepare, after index,
+    # after query, final scan). The tentative capture must be discarded and
+    # the collector must remain empty.
+    _orig_assert_unchanged = pb.assert_snapshot_unchanged
+    _assert_call_count = [0]
+
+    def _failing_final_assert(snap):
+        _assert_call_count[0] += 1
+        # Cold lifecycle: prepare scan(1), index scan(2), query scan(3),
+        # final scan(4). Fail on the 4th call.
+        if _assert_call_count[0] >= 4:
+            raise ContractError("forced final-scan failure for B0 test")
+        return _orig_assert_unchanged(snap)
+
+    cap_final = PrivateValidatedOutputCapture()
+    tmp_fsin, root_fsin = _new_tmp_root()
+    try:
+        snap_fsin = build_synthetic_repo_one(root_fsin)
+        req_fsin = make_request(
+            snapshot=snap_fsin, adapter_id=SYN_ADAPTER_ID_LIFE,
+            cache_state="cold",
+            request_id="pb_syn_b0_final_scan",
+            episode_id="pb_syn_b0_final_scan_ep")
+        try:
+            pb.assert_snapshot_unchanged = _failing_final_assert  # type: ignore[assignment]
+            rec_fsin = _ctx_run(
+                LIFECYCLE_HOOKS, req_fsin, lifecycle_descriptor(),
+                "cat8_no_silent_degeneration", snap_fsin, root_fsin,
+                capture=cap_final)
+        finally:
+            pb.assert_snapshot_unchanged = _orig_assert_unchanged  # type: ignore[assignment]
+        _expect_rejected(rec_fsin, "cat8:b0_final_scan_replacement")
+        if rec_fsin.failure_category != "snapshot_mutation:ContractError":
+            raise AssertionError(
+                f"cat8: b0 final-scan replacement failure_category="
+                f"{rec_fsin.failure_category!r}, expected "
+                f"snapshot_mutation:ContractError")
+        if cap_final.committed:
+            raise AssertionError(
+                "cat8: b0 capture committed after final-scan replacement "
+                "(must be empty)")
+        if cap_final.output is not None:
+            raise AssertionError(
+                "cat8: b0 capture output set after final-scan replacement "
+                "(must be None)")
+    finally:
+        pb.assert_snapshot_unchanged = _orig_assert_unchanged  # type: ignore[assignment]
+        tmp_fsin.cleanup()
+
+    # (B0-G1-h) Run phase does not import oracle. After exercising the
+    # capture path, the oracle guard must still pass (the capture type
+    # imports nothing from product_bakeoff_oracle).
+    import product_bakeoff_oracle as _oracle_guard  # noqa: E402
+    _oracle_guard.assert_run_phase_not_importing_oracle()
+
+    # ===================================================================
+    # B0 Goal 2: parent-trusted worker CPU/RSS (no psutil/dependency).
+    # Internal assertions only — test records are NOT appended to recs so
+    # the committed Phase A report remains byte-stable.
+    # ===================================================================
+
+    # (B0-G2-a) Real available backend yields positive RSS and nonnegative
+    # CPU for a bounded busy worker. Feature-detect unavailable honestly.
+    # (probe _cpu_avail/_rss_avail performed once at the top of the B0 block.)
+    if _cpu_avail or _rss_avail:
+        # Backend available: run a bounded busy worker that exceeds the
+        # timeout. The child is still alive when measured (timeout path),
+        # so CPU/RSS should be available on this platform.
+        tmp_bl, root_bl = _new_tmp_root()
+        try:
+            snap_bl = build_synthetic_repo_one(root_bl)
+            req_bl = make_request(
+                snapshot=snap_bl, adapter_id=SYN_ADAPTER_ID_VALID,
+                cache_state="cold", timeout_seconds=0.3,
+                request_id="pb_syn_b0_busy_loop",
+                episode_id="pb_syn_b0_busy_loop_ep")
+            rec_bl = _ctx_run(
+                _qhooks(busy_loop_timeout_query), req_bl, valid_descriptor(),
+                "cat8_no_silent_degeneration", snap_bl, root_bl)
+            _expect_rejected(rec_bl, "cat8:b0_busy_loop_timeout")
+            if rec_bl.result_status != "timeout":
+                raise AssertionError(
+                    f"cat8: b0 busy_loop result_status="
+                    f"{rec_bl.result_status!r}, expected timeout")
+            if rec_bl.failure_category != "adapter_timeout":
+                raise AssertionError(
+                    f"cat8: b0 busy_loop failure_category="
+                    f"{rec_bl.failure_category!r}, expected adapter_timeout")
+            if rec_bl.resource_sample is None:
+                raise AssertionError(
+                    "cat8: b0 busy_loop has no resource sample (timeout "
+                    "must remain sampled when possible)")
+            rs_bl = rec_bl.resource_sample
+            if _cpu_avail and rs_bl.cpu_seconds is None:
+                raise AssertionError(
+                    "cat8: b0 busy_loop CPU is None on available backend "
+                    "(should be measured)")
+            if rs_bl.cpu_seconds is not None and rs_bl.cpu_seconds < 0:
+                raise AssertionError(
+                    f"cat8: b0 busy_loop CPU is negative: "
+                    f"{rs_bl.cpu_seconds}")
+            if _rss_avail and rs_bl.rss_bytes is None:
+                raise AssertionError(
+                    "cat8: b0 busy_loop RSS is None on available backend "
+                    "(should be measured)")
+            if rs_bl.rss_bytes is not None and rs_bl.rss_bytes <= 0:
+                raise AssertionError(
+                    f"cat8: b0 busy_loop RSS is not positive: "
+                    f"{rs_bl.rss_bytes}")
+        finally:
+            tmp_bl.cleanup()
+    # else: backend unavailable on this platform — skip honestly.
+
+    # (B0-G2-b) Mocked backend failure -> None not zero. Monkey-patch the
+    # measurement function to always return (None, None). The aggregate must
+    # be None (NOT synthetic zero). Use globals() so the patch works whether
+    # the module is run as __main__ or imported.
+    _orig_measure = _measure_stage_cpu_rss
+    try:
+        globals()['_measure_stage_cpu_rss'] = lambda proc: (None, None)
+        rec_meas = _repo_one_run(
+            _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration")
+        _expect_accepted(rec_meas, "cat8:b0_mocked_fail_measure")
+        if rec_meas.resource_sample is None:
+            raise AssertionError(
+                "cat8: b0 mocked-fail run has no resource sample")
+        if rec_meas.resource_sample.cpu_seconds is not None:
+            raise AssertionError(
+                f"cat8: b0 mocked backend failure yielded CPU="
+                f"{rec_meas.resource_sample.cpu_seconds} (must be None, "
+                f"never synthetic zero)")
+        if rec_meas.resource_sample.rss_bytes is not None:
+            raise AssertionError(
+                f"cat8: b0 mocked backend failure yielded RSS="
+                f"{rec_meas.resource_sample.rss_bytes} (must be None, "
+                f"never synthetic zero)")
+        # B0: accepted run with a missing metric is NOT scoreable. An accepted
+        # ok record with None cpu_seconds/rss_bytes fails require_scoreable
+        # (never zero-fill, never drop one arm). This is independent of the
+        # capture (which was not provided here). Build a capture to prove the
+        # logical cell is not scoreable even with a valid committed capture.
+        cap_meas = PrivateValidatedOutputCapture()
+        # Re-run with the mock STILL active and a capture, then verify
+        # require_scoreable fails on the accepted-but-missing-metric record.
+        rec_meas2 = _repo_one_run(
+            _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration",
+            capture=cap_meas)
+        _expect_accepted(rec_meas2, "cat8:b0_mocked_fail_measure_scoreable")
+        if not cap_meas.committed:
+            raise AssertionError(
+                "cat8: b0 mocked-fail capture not committed on accepted run")
+        try:
+            require_scoreable(rec_meas2, cap_meas)
+            raise AssertionError(
+                "cat8: b0 require_scoreable passed on accepted run with None "
+                "cpu/rss (missing metrics must fail scoreability)")
+        except ContractError:
+            pass
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure
+
+    # (B0-G2-c) Partial per-stage availability -> aggregate None. Run a
+    # cold lifecycle run (prepare + index + query = 3 stages) with a
+    # stateful mock that returns data on the first call and None on
+    # subsequent calls. The aggregate must be None (not all stages have
+    # data).
+    _partial_count = [0]
+
+    def _partial_measure(proc):
+        _partial_count[0] += 1
+        if _partial_count[0] == 1:
+            return (0.001, 65536)
+        return (None, None)
+
+    _orig_measure2 = _measure_stage_cpu_rss
+    try:
+        globals()['_measure_stage_cpu_rss'] = _partial_measure
+        tmp_pl, root_pl = _new_tmp_root()
+        try:
+            snap_pl = build_synthetic_repo_one(root_pl)
+            req_pl = make_request(
+                snapshot=snap_pl, adapter_id=SYN_ADAPTER_ID_LIFE,
+                cache_state="cold",
+                request_id="pb_syn_b0_partial",
+                episode_id="pb_syn_b0_partial_ep")
+            rec_pl = _ctx_run(
+                LIFECYCLE_HOOKS, req_pl, lifecycle_descriptor(),
+                "cat8_no_silent_degeneration", snap_pl, root_pl)
+            _expect_accepted(rec_pl, "cat8:b0_partial_measure")
+            if rec_pl.resource_sample is None:
+                raise AssertionError(
+                    "cat8: b0 partial run has no resource sample")
+            if rec_pl.resource_sample.cpu_seconds is not None:
+                raise AssertionError(
+                    f"cat8: b0 partial per-stage availability yielded "
+                    f"CPU={rec_pl.resource_sample.cpu_seconds} (must be "
+                    f"None when any stage lacks CPU data)")
+            if rec_pl.resource_sample.rss_bytes is not None:
+                raise AssertionError(
+                    f"cat8: b0 partial per-stage availability yielded "
+                    f"RSS={rec_pl.resource_sample.rss_bytes} (must be "
+                    f"None when any stage lacks RSS data)")
+        finally:
+            tmp_pl.cleanup()
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure2
+
+    # (B0-G3-a) Cold prepare+index+query metrics aggregate CPU SUM and RSS
+    # MAX (ALL-ATTEMPTED for BOTH arms, independently). Run a cold lifecycle
+    # run (prepare + index + query = 3 attempted stages) with a mock that
+    # returns distinct per-stage values. CPU = sum of all 3; RSS = max of all
+    # 3. The audit's max-of-available suggestion is REJECTED: CPU is summed,
+    # not maxed; and each arm requires ALL attempted stages present.
+    _g3_stage = [0]
+
+    def _g3_measure_all(proc):
+        _g3_stage[0] += 1
+        # stage 1 (prepare): cpu=0.5, rss=100000
+        # stage 2 (index):  cpu=1.0, rss=300000
+        # stage 3 (query):  cpu=2.0, rss=200000
+        # => agg cpu = 3.5, agg rss = max(100000,300000,200000) = 300000
+        table = [(0.5, 100000), (1.0, 300000), (2.0, 200000)]
+        idx = min(_g3_stage[0] - 1, len(table) - 1)
+        return table[idx]
+
+    _orig_measure3 = _measure_stage_cpu_rss
+    try:
+        globals()['_measure_stage_cpu_rss'] = _g3_measure_all
+        tmp_g3, root_g3 = _new_tmp_root()
+        try:
+            snap_g3 = build_synthetic_repo_one(root_g3)
+            req_g3 = make_request(
+                snapshot=snap_g3, adapter_id=SYN_ADAPTER_ID_LIFE,
+                cache_state="cold",
+                request_id="pb_syn_b0_g3_agg",
+                episode_id="pb_syn_b0_g3_agg_ep")
+            cap_g3 = PrivateValidatedOutputCapture()
+            rec_g3 = _ctx_run(
+                LIFECYCLE_HOOKS, req_g3, lifecycle_descriptor(),
+                "cat8_no_silent_degeneration", snap_g3, root_g3,
+                capture=cap_g3)
+            _expect_accepted(rec_g3, "cat8:b0_g3_aggregate")
+            if rec_g3.resource_sample is None:
+                raise AssertionError(
+                    "cat8: b0 g3 run has no resource sample")
+            if rec_g3.resource_sample.cpu_seconds is None:
+                raise AssertionError(
+                    "cat8: b0 g3 CPU is None (all stages present => should "
+                    "sum to 3.5)")
+            if abs(rec_g3.resource_sample.cpu_seconds - 3.5) > 1e-9:
+                raise AssertionError(
+                    f"cat8: b0 g3 CPU={rec_g3.resource_sample.cpu_seconds} "
+                    f"!= 3.5 (sum of 0.5+1.0+2.0)")
+            if rec_g3.resource_sample.rss_bytes is None:
+                raise AssertionError(
+                    "cat8: b0 g3 RSS is None (all stages present => should "
+                    "max to 300000)")
+            if rec_g3.resource_sample.rss_bytes != 300000:
+                raise AssertionError(
+                    f"cat8: b0 g3 RSS={rec_g3.resource_sample.rss_bytes} "
+                    f"!= 300000 (max of 100000,300000,200000)")
+            # Accepted ok with non-None cpu/rss => require_scoreable passes.
+            try:
+                require_scoreable(rec_g3, cap_g3)
+            except ContractError as exc:
+                raise AssertionError(
+                    f"cat8: b0 g3 require_scoreable failed on accepted run "
+                    f"with non-None cpu/rss: {exc}")
+        finally:
+            tmp_g3.cleanup()
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure3
+
+    # (B0-G3-b) One missing CPU => run CPU None (RSS arm independent, may
+    # remain non-None if all stages have RSS). The mock returns CPU=None on
+    # stage 2 but RSS on all stages. Run CPU must be None; run RSS must be
+    # the max (NOT dropped). Accepted missing metric => not scoreable.
+    _g3b_stage = [0]
+
+    def _g3b_measure_missing_cpu(proc):
+        _g3b_stage[0] += 1
+        # stage 1: cpu=0.5, rss=100000
+        # stage 2: cpu=None, rss=300000  (CPU missing on ONE stage)
+        # stage 3: cpu=2.0, rss=200000
+        # => agg cpu = None (one stage lacks CPU), agg rss = 300000 (all present)
+        table = [(0.5, 100000), (None, 300000), (2.0, 200000)]
+        idx = min(_g3b_stage[0] - 1, len(table) - 1)
+        return table[idx]
+
+    _orig_measure4 = _measure_stage_cpu_rss
+    try:
+        globals()['_measure_stage_cpu_rss'] = _g3b_measure_missing_cpu
+        tmp_g3b, root_g3b = _new_tmp_root()
+        try:
+            snap_g3b = build_synthetic_repo_one(root_g3b)
+            req_g3b = make_request(
+                snapshot=snap_g3b, adapter_id=SYN_ADAPTER_ID_LIFE,
+                cache_state="cold",
+                request_id="pb_syn_b0_g3b_missing_cpu",
+                episode_id="pb_syn_b0_g3b_missing_cpu_ep")
+            cap_g3b = PrivateValidatedOutputCapture()
+            rec_g3b = _ctx_run(
+                LIFECYCLE_HOOKS, req_g3b, lifecycle_descriptor(),
+                "cat8_no_silent_degeneration", snap_g3b, root_g3b,
+                capture=cap_g3b)
+            _expect_accepted(rec_g3b, "cat8:b0_g3b_missing_cpu")
+            if rec_g3b.resource_sample.cpu_seconds is not None:
+                raise AssertionError(
+                    f"cat8: b0 g3b CPU={rec_g3b.resource_sample.cpu_seconds} "
+                    f"(must be None — one stage lacks CPU; never zero-fill)")
+            # RSS arm is independent: all stages have RSS => RSS = max.
+            if rec_g3b.resource_sample.rss_bytes is None:
+                raise AssertionError(
+                    "cat8: b0 g3b RSS is None (all stages have RSS; the "
+                    "missing CPU must NOT drop the RSS arm)")
+            if rec_g3b.resource_sample.rss_bytes != 300000:
+                raise AssertionError(
+                    f"cat8: b0 g3b RSS={rec_g3b.resource_sample.rss_bytes} "
+                    f"!= 300000")
+            # Accepted ok but CPU is None => not scoreable (missing metric).
+            try:
+                require_scoreable(rec_g3b, cap_g3b)
+                raise AssertionError(
+                    "cat8: b0 g3b require_scoreable passed with None CPU "
+                    "(missing metric must fail scoreability; never drop arm)")
+            except ContractError:
+                pass
+        finally:
+            tmp_g3b.cleanup()
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure4
+
+    # (B0-G3-c) One missing RSS => run RSS None (CPU arm independent). The
+    # mock returns RSS=None on stage 2 but CPU on all stages. Run RSS must be
+    # None; run CPU must be the sum (NOT dropped). Accepted missing metric =>
+    # not scoreable.
+    _g3c_stage = [0]
+
+    def _g3c_measure_missing_rss(proc):
+        _g3c_stage[0] += 1
+        # stage 1: cpu=0.5, rss=100000
+        # stage 2: cpu=1.0, rss=None  (RSS missing on ONE stage)
+        # stage 3: cpu=2.0, rss=200000
+        # => agg cpu = 3.5 (all present), agg rss = None (one stage lacks RSS)
+        table = [(0.5, 100000), (1.0, None), (2.0, 200000)]
+        idx = min(_g3c_stage[0] - 1, len(table) - 1)
+        return table[idx]
+
+    _orig_measure5 = _measure_stage_cpu_rss
+    try:
+        globals()['_measure_stage_cpu_rss'] = _g3c_measure_missing_rss
+        tmp_g3c, root_g3c = _new_tmp_root()
+        try:
+            snap_g3c = build_synthetic_repo_one(root_g3c)
+            req_g3c = make_request(
+                snapshot=snap_g3c, adapter_id=SYN_ADAPTER_ID_LIFE,
+                cache_state="cold",
+                request_id="pb_syn_b0_g3c_missing_rss",
+                episode_id="pb_syn_b0_g3c_missing_rss_ep")
+            cap_g3c = PrivateValidatedOutputCapture()
+            rec_g3c = _ctx_run(
+                LIFECYCLE_HOOKS, req_g3c, lifecycle_descriptor(),
+                "cat8_no_silent_degeneration", snap_g3c, root_g3c,
+                capture=cap_g3c)
+            _expect_accepted(rec_g3c, "cat8:b0_g3c_missing_rss")
+            if rec_g3c.resource_sample.rss_bytes is not None:
+                raise AssertionError(
+                    f"cat8: b0 g3c RSS={rec_g3c.resource_sample.rss_bytes} "
+                    f"(must be None — one stage lacks RSS; never zero-fill)")
+            # CPU arm is independent: all stages have CPU => CPU = sum.
+            if rec_g3c.resource_sample.cpu_seconds is None:
+                raise AssertionError(
+                    "cat8: b0 g3c CPU is None (all stages have CPU; the "
+                    "missing RSS must NOT drop the CPU arm)")
+            if abs(rec_g3c.resource_sample.cpu_seconds - 3.5) > 1e-9:
+                raise AssertionError(
+                    f"cat8: b0 g3c CPU={rec_g3c.resource_sample.cpu_seconds} "
+                    f"!= 3.5 (sum)")
+            # Accepted ok but RSS is None => not scoreable (missing metric).
+            try:
+                require_scoreable(rec_g3c, cap_g3c)
+                raise AssertionError(
+                    "cat8: b0 g3c require_scoreable passed with None RSS "
+                    "(missing metric must fail scoreability; never drop arm)")
+            except ContractError:
+                pass
+        finally:
+            tmp_g3c.cleanup()
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure5
+
+    # (B0-G2-d) Child cannot forge telemetry and wire has none. The wire
+    # envelope is a closed JSON object with EXACTLY {v, status, payload,
+    # error} keys — NO cpu_seconds / rss_bytes / peak_rss_bytes fields.
+    # The child returns an AdapterResult; the AdapterResult.resource_sample
+    # field is FORBIDDEN (validate_closed_shape rejects it if not None).
+    # Verify the wire envelope key set is closed and has no resource fields.
+    _STAGE_ENVELOPE_KEYS_NO_RESOURCE = frozenset(
+        {"v", "status", "payload", "error"})
+    if _STAGE_ENVELOPE_KEYS != _STAGE_ENVELOPE_KEYS_NO_RESOURCE:
+        raise AssertionError(
+            f"cat8: b0 wire envelope keys {_STAGE_ENVELOPE_KEYS} changed "
+            f"(must be exactly {{v, status, payload, error}} — no resource "
+            f"fields)")
+    for _bad_key in ("cpu_seconds", "rss_bytes", "peak_rss_bytes",
+                     "resource_sample", "telemetry"):
+        if _bad_key in _STAGE_ENVELOPE_KEYS:
+            raise AssertionError(
+                f"cat8: b0 wire envelope has forbidden resource key "
+                f"{_bad_key!r}")
+    # Adversarial adapter that tries to set resource_sample is already
+    # covered by adv_adapter_resource_sample_query (above). Verify the
+    # record from that run is rejected and has no resource_sample leak.
+    # (The existing test above already rejects it; here we just verify the
+    # wire-level invariant.)
+
+    # (B0-G2-e) Failures/timeouts/process death remain sampled. The
+    # bounded busy worker timeout (above) and existing sleep-prepare/index
+    # timeout tests already verify this. Additionally verify a process-died
+    # path (os._exit) retains a resource sample when possible.
+    cap_pd = PrivateValidatedOutputCapture()
+    rec_pd = _repo_one_run(
+        _qhooks(os_exit_42_query), descriptor=adv_descriptor(),
+        request=make_request(adapter_id=SYN_ADAPTER_ID_ADV),
+        cat="cat8_no_silent_degeneration", capture=cap_pd)
+    _expect_rejected(rec_pd, "cat8:b0_process_died")
+    if rec_pd.failure_category != "adapter_exception:process_died":
+        raise AssertionError(
+            f"cat8: b0 process_died failure_category="
+            f"{rec_pd.failure_category!r}, expected "
+            f"adapter_exception:process_died")
+    # A process-died run may or may not have a resource sample (the child
+    # died; measurement may fail). If present, cpu_seconds/rss_bytes may be
+    # None (measurement failure) but must NEVER be synthetic zero unless
+    # genuinely measured.
+    if rec_pd.resource_sample is not None:
+        if rec_pd.resource_sample.cpu_seconds is not None:
+            if rec_pd.resource_sample.cpu_seconds < 0:
+                raise AssertionError(
+                    "cat8: b0 process_died CPU is negative")
+        if rec_pd.resource_sample.rss_bytes is not None:
+            if rec_pd.resource_sample.rss_bytes < 0:
+                raise AssertionError(
+                    "cat8: b0 process_died RSS is negative")
+    # Capture must be empty for the rejected process-died run.
+    if cap_pd.committed:
+        raise AssertionError(
+            "cat8: b0 capture committed on process_died run (must be empty)")
+
+    # ===================================================================
+    # B0 Goal 1+2: success/malformed/timeout/EOF/os._exit/release failure
+    # close all endpoints and leave no child/thread. Each spawned stage opens
+    # a result pipe + a release pipe + a receiver thread + a child process.
+    # Every exit path (ok/malformed/timeout/eof/error) MUST close both pipe
+    # endpoints, join the receiver thread, and reap the child (verified by
+    # _reap_process which raises HarnessInfrastructureError on an unreaped
+    # child or thread leak). Here we assert the aggregate invariant: after a
+    # batch covering every exit classification, no receiver thread or child
+    # process is leaked.
+    # ===================================================================
+    _threads_before = threading.active_count()
+    _children_before = len(multiprocessing.active_children())
+    # success (accepted)
+    _repo_one_run(_qhooks(valid_adapter_query),
+                  cat="cat8_no_silent_degeneration")
+    # malformed (rejected)
+    _repo_one_run(_qhooks(adv_path_absolute_query),
+                  descriptor=adv_descriptor(),
+                  request=make_request(adapter_id=SYN_ADAPTER_ID_ADV),
+                  cat="cat8_no_silent_degeneration")
+    # timeout (rejected)
+    tmp_g4t, root_g4t = _new_tmp_root()
+    try:
+        snap_g4t = build_synthetic_repo_one(root_g4t)
+        req_g4t = make_request(
+            snapshot=snap_g4t, adapter_id=SYN_ADAPTER_ID_VALID,
+            cache_state="cold", timeout_seconds=0.2,
+            request_id="pb_syn_b0_g4_timeout",
+            episode_id="pb_syn_b0_g4_timeout_ep")
+        _ctx_run(_qhooks(busy_loop_timeout_query), req_g4t,
+                 valid_descriptor(), "cat8_no_silent_degeneration",
+                 snap_g4t, root_g4t)
+    finally:
+        tmp_g4t.cleanup()
+    # EOF / os._exit (process_died) — exercises the release-pipe BrokenPipe
+    # swallow: the child died before/during the release, so the parent's
+    # release send fails (BrokenPipe) and is swallowed; the child is reaped
+    # (leak-free). This is the "release failure" path.
+    _repo_one_run(_qhooks(os_exit_42_query),
+                  descriptor=adv_descriptor(),
+                  request=make_request(adapter_id=SYN_ADAPTER_ID_ADV),
+                  cat="cat8_no_silent_degeneration")
+    _repo_one_run(_qhooks(close_without_send_query),
+                  descriptor=adv_descriptor(),
+                  request=make_request(adapter_id=SYN_ADAPTER_ID_ADV),
+                  cat="cat8_no_silent_degeneration")
+    # Allow receiver threads / reaped children to settle.
+    time.sleep(0.2)
+    _threads_after = threading.active_count()
+    _children_after = len(multiprocessing.active_children())
+    if _threads_after > _threads_before:
+        raise AssertionError(
+            f"cat8: b0 receiver thread leak: active_count before="
+            f"{_threads_before}, after={_threads_after}")
+    if _children_after > _children_before:
+        raise AssertionError(
+            f"cat8: b0 child process leak: active_children before="
+            f"{_children_before}, after={_children_after}")
+
+    # ===================================================================
+    # B0 Goal 2: transitive capture immutability. Mutate the original ledger
+    # dict, the captured ledger, and the retained output after
+    # require_scoreable: mutation must be impossible / cause no hash drift.
+    # A mutable accepted object commit must be detached (canonical-copied) so
+    # the capture cannot retain a mutable alias.
+    # ===================================================================
+
+    # (B0-G5-a) Reconstructed ledger is immutable (MappingProxyType). The
+    # accepted run's validated_result.capability_ledger (from canonical JSON
+    # reconstruction) MUST be a MappingProxyType — mutating it raises
+    # TypeError. canonical_result_hash is unaffected (no drift).
+    if not isinstance(out.validated_result.capability_ledger, MappingProxyType):
+        raise AssertionError(
+            f"cat8: b0 captured ledger is not MappingProxyType (got "
+            f"{type(out.validated_result.capability_ledger).__name__})")
+    _captured_crh_before = canonical_result_hash(
+        out.validated_result, out.validated_candidates)
+    try:
+        out.validated_result.capability_ledger["candidate_search"] = "forged"  # type: ignore[index]
+        raise AssertionError(
+            "cat8: b0 mutating immutable captured ledger did not raise "
+            "TypeError (MappingProxyType must reject item assignment)")
+    except TypeError:
+        pass  # expected — immutable mapping rejects assignment
+    _captured_crh_after = canonical_result_hash(
+        out.validated_result, out.validated_candidates)
+    if _captured_crh_before != _captured_crh_after:
+        raise AssertionError(
+            f"cat8: b0 captured ledger hash drifted: "
+            f"{_captured_crh_before} -> {_captured_crh_after}")
+
+    # (B0-G5-b) Mutate the ORIGINAL ledger dict that an adapter-built
+    # AdapterResult carries: _commit_accepted must detach (canonical-copy) so
+    # the capture retains no mutable alias. Build an AdapterResult with a
+    # plain dict ledger, commit it via _commit_accepted with a matching
+    # record, mutate the original dict, and verify the captured ledger is
+    # unaffected (no hash drift). The captured ledger must be a
+    # MappingProxyType (immutable).
+    _orig_ledger = {"candidate_search": "executed"}
+    _mutable_result = AdapterResult(
+        status="ok", failure_category=None, candidates=(),
+        capability_ledger=_orig_ledger, fallback_provenance=())
+    _mutable_crh = canonical_result_hash(_mutable_result, ())
+    _mutable_out = PrivateAcceptedOutput(
+        fingerprint="fp_b0_g5b_detached",
+        run_cell_id=out.run_cell_id,
+        adapter_id=out.adapter_id,
+        adapter_version=out.adapter_version,
+        request_id=out.request_id,
+        episode_id=out.episode_id,
+        task_slug=out.task_slug,
+        result_status="ok",
+        pack_status=out.pack_status,
+        canonical_result_hash=_mutable_crh,
+        canonical_pack_hash=out.canonical_pack_hash,
+        validated_result=_mutable_result,
+        validated_candidates=(),
+        evidence=(),
+        pack=out.pack,
+    )
+    # Build a matching ValidatedRunRecord so _commit_accepted's binding checks
+    # pass (fingerprint, hashes, counts, ledger summary all match the output).
+    _mutable_record = ValidatedRunRecord(
+        fingerprint="fp_b0_g5b_detached",
+        run_cell_id=out.run_cell_id,
+        adapter_id=out.adapter_id,
+        status="accepted", failure_category=None,
+        result_status="ok", pack_status=out.pack_status,
+        candidate_count=0, evidence_count=0,
+        target_count=len(out.pack.targets),
+        support_count=len(out.pack.support),
+        capability_ledger_summary=dict(_orig_ledger),
+        canonical_result_hash=_mutable_crh,
+        canonical_pack_hash=out.canonical_pack_hash,
+        conformance_category="cat8_no_silent_degeneration",
+        cache_state="cold", interaction_mode="one_shot",
+        operation="context", adapter_repetition=1,
+        resource_sample=ResourceSample(
+            setup_seconds=0.0, index_seconds=0.0, query_seconds=0.0,
+            materialize_seconds=0.0, render_seconds=0.0,
+            rss_bytes=1024, cpu_seconds=0.0))
+    cap_g5b = PrivateValidatedOutputCapture()
+    cap_g5b._commit_accepted(_mutable_record, _mutable_out)
+    if not cap_g5b.committed:
+        raise AssertionError("cat8: b0 g5b mutable-ledger commit failed")
+    _committed_result = cap_g5b.output.validated_result
+    if not isinstance(_committed_result.capability_ledger, MappingProxyType):
+        raise AssertionError(
+            f"cat8: b0 g5b committed ledger is not MappingProxyType (got "
+            f"{type(_committed_result.capability_ledger).__name__}); commit "
+            f"must detach + immutable-wrap a mutable dict ledger")
+    _hash_before_mutation = canonical_result_hash(_committed_result, ())
+    # Mutate the ORIGINAL dict (the one the adapter built). The captured
+    # ledger must be a fresh immutable copy (detached) — unaffected.
+    _orig_ledger["candidate_search"] = "forged_after_commit"
+    _orig_ledger["new_key"] = "injected"
+    _hash_after_mutation = canonical_result_hash(_committed_result, ())
+    if _hash_before_mutation != _hash_after_mutation:
+        raise AssertionError(
+            f"cat8: b0 g5b captured ledger hash drifted after mutating the "
+            f"original dict: {_hash_before_mutation} -> "
+            f"{_hash_after_mutation} (commit must detach the alias)")
+    # The committed ledger still reflects the ORIGINAL values (not the
+    # mutation).
+    if _committed_result.capability_ledger.get("candidate_search") != "executed":
+        raise AssertionError(
+            f"cat8: b0 g5b captured ledger reflects post-commit mutation: "
+            f"{_committed_result.capability_ledger.get('candidate_search')!r}")
+    if "new_key" in _committed_result.capability_ledger:
+        raise AssertionError(
+            "cat8: b0 g5b captured ledger contains injected key (alias leak)")
+    # The committed ledger itself must reject mutation.
+    try:
+        _committed_result.capability_ledger["x"] = "y"  # type: ignore[index]
+        raise AssertionError(
+            "cat8: b0 g5b mutating committed immutable ledger did not raise")
+    except TypeError:
+        pass
+
+    # (B0-G5-c) Retained output after require_scoreable: expose
+    # capture.output and verify no score-visible mutation is possible. The
+    # validated_result is a frozen dataclass with an immutable ledger; the
+    # validated_candidates/evidence/pack are tuples/frozen. Recompute the
+    # hash before and after attempting mutations on every exposed field.
+    if _cpu_avail and _rss_avail:
+        require_scoreable(rec_acc, cap_acc)  # passes (re-verify)
+    _retained = cap_acc.output
+    if _retained is None:
+        raise AssertionError("cat8: b0 g5c retained output is None")
+    _retained_crh = canonical_result_hash(
+        _retained.validated_result, _retained.validated_candidates)
+    # Attempt mutation on the retained ledger (immutable).
+    try:
+        _retained.validated_result.capability_ledger["z"] = "w"  # type: ignore[index]
+        raise AssertionError(
+            "cat8: b0 g5c mutating retained ledger did not raise")
+    except TypeError:
+        pass
+    # Attempt mutation on the retained candidates tuple (immutable).
+    try:
+        _retained.validated_candidates.append(None)  # type: ignore[attr-defined]
+        raise AssertionError(
+            "cat8: b0 g5c mutating retained candidates tuple did not raise")
+    except AttributeError:
+        pass
+    _retained_crh2 = canonical_result_hash(
+        _retained.validated_result, _retained.validated_candidates)
+    if _retained_crh != _retained_crh2:
+        raise AssertionError(
+            f"cat8: b0 g5c retained-output hash drifted after mutation "
+            f"attempts: {_retained_crh} -> {_retained_crh2}")
+
+    # (B0-G5-d) Hostile Mapping-subclass ledger commit must FAIL (not be
+    # silently accepted as a dict). A non-dict, non-MappingProxyType Mapping
+    # is rejected at commit (could override __getitem__/items).
+    class _HostileLedger(Mapping):  # type: ignore[type-arg]
+        def __init__(self, d):
+            self._d = d
+        def __getitem__(self, k):
+            return self._d[k]
+        def __iter__(self):
+            return iter(self._d)
+        def __len__(self):
+            return len(self._d)
+    _hostile_result = AdapterResult(
+        status="ok", failure_category=None, candidates=(),
+        capability_ledger=_HostileLedger({"candidate_search": "executed"}),
+        fallback_provenance=())
+    _hostile_crh = canonical_result_hash(_hostile_result, ())
+    _hostile_out = PrivateAcceptedOutput(
+        fingerprint="fp_b0_g5d_hostile",
+        run_cell_id=out.run_cell_id,
+        adapter_id=out.adapter_id,
+        adapter_version=out.adapter_version,
+        request_id=out.request_id,
+        episode_id=out.episode_id,
+        task_slug=out.task_slug,
+        result_status="ok",
+        pack_status=out.pack_status,
+        canonical_result_hash=_hostile_crh,
+        canonical_pack_hash=out.canonical_pack_hash,
+        validated_result=_hostile_result,
+        validated_candidates=(),
+        evidence=(),
+        pack=out.pack,
+    )
+    # Build a matching record so _commit_accepted reaches the ledger-type
+    # check (which rejects the hostile Mapping subclass).
+    _hostile_record = ValidatedRunRecord(
+        fingerprint="fp_b0_g5d_hostile",
+        run_cell_id=out.run_cell_id,
+        adapter_id=out.adapter_id,
+        status="accepted", failure_category=None,
+        result_status="ok", pack_status=out.pack_status,
+        candidate_count=0, evidence_count=0,
+        target_count=len(out.pack.targets),
+        support_count=len(out.pack.support),
+        capability_ledger_summary={"candidate_search": "executed"},
+        canonical_result_hash=_hostile_crh,
+        canonical_pack_hash=out.canonical_pack_hash,
+        conformance_category="cat8_no_silent_degeneration",
+        cache_state="cold", interaction_mode="one_shot",
+        operation="context", adapter_repetition=1,
+        resource_sample=ResourceSample(
+            setup_seconds=0.0, index_seconds=0.0, query_seconds=0.0,
+            materialize_seconds=0.0, render_seconds=0.0,
+            rss_bytes=1024, cpu_seconds=0.0))
+    cap_g5d = PrivateValidatedOutputCapture()
+    try:
+        cap_g5d._commit_accepted(_hostile_record, _hostile_out)
+        raise AssertionError(
+            "cat8: b0 g5d hostile Mapping-subclass ledger commit did not "
+            "raise HarnessInfrastructureError (must reject or detach)")
+    except HarnessInfrastructureError:
+        pass
+
+    # ===================================================================
+    # B0 Goal 1: identity binding + table-driven mismatch rejection + reset
+    # absent + Phase A report drift unchanged.
+    # ===================================================================
+
+    # (B0-G1-i) Exact returned record passes; dataclasses.replace(record)
+    # identical-value copy FAILS identity. The capture stores the EXACT record
+    # object; require_scoreable enforces ``record is committed_record`` (NOT
+    # just equality). A replace(record) copy has identical values but a
+    # different object identity — it must fail require_scoreable.
+    if _cpu_avail and _rss_avail:
+        require_scoreable(rec_acc, cap_acc)  # exact object passes
+    _replace_rec = replace(rec_acc)  # identical values, different object
+    if _replace_rec == rec_acc:
+        pass  # values are equal (expected)
+    if _replace_rec is rec_acc:
+        raise AssertionError(
+            "cat8: b0 replace(record) is the same object (test setup error)")
+    try:
+        require_scoreable(_replace_rec, cap_acc)
+        raise AssertionError(
+            "cat8: b0 require_scoreable passed on dataclasses.replace(record) "
+            "copy (must fail — identity, not just equality)")
+    except ContractError:
+        pass  # expected — identity mismatch
+
+    # (B0-G1-j) Equal-valued record from a SEPARATE execution fails identity.
+    # Run a second accepted run with the same adapter/query (same values but
+    # a different record object). require_scoreable must fail when the second
+    # record is checked against the FIRST run's capture.
+    cap_sep = PrivateValidatedOutputCapture()
+    rec_sep = _repo_one_run(
+        _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration",
+        capture=cap_sep)
+    _expect_accepted(rec_sep, "cat8:b0_capture_sep_exec")
+    # rec_sep is a different object from rec_acc even if all values are equal
+    # (it came from a separate execution). require_scoreable with rec_sep
+    # against cap_acc (which committed rec_acc) must fail on identity.
+    try:
+        require_scoreable(rec_sep, cap_acc)
+        raise AssertionError(
+            "cat8: b0 require_scoreable passed on equal-valued record from "
+            "separate execution (must fail — identity, not just equality)")
+    except ContractError:
+        pass  # expected — identity mismatch
+    # But rec_sep against cap_sep (its OWN capture) must pass (if backend
+    # available).
+    if _cpu_avail and _rss_avail:
+        try:
+            require_scoreable(rec_sep, cap_sep)
+        except ContractError as exc:
+            raise AssertionError(
+                f"cat8: b0 require_scoreable failed on separate-execution "
+                f"record with its own capture: {exc}")
+
+    # (B0-G1-k) Table-driven binding/count/ledger/hash mismatch rejection at
+    # commit. Each row produces a PrivateAcceptedOutput that differs from the
+    # accepted output in exactly ONE binding field. _commit_accepted must
+    # reject each (HarnessInfrastructureError). Compact table-driven.
+    _mismatch_cases = [
+        ("fingerprint", lambda o: replace(o, fingerprint="fp_b0_mismatch_fp")),
+        ("run_cell_id", lambda o: replace(o, run_cell_id="mismatch_cell")),
+        ("adapter_id", lambda o: replace(o, adapter_id="mismatch_adapter")),
+        ("result_status", lambda o: replace(o, result_status="failed")),
+        ("pack_status", lambda o: replace(o, pack_status=(
+            "no_evidence" if o.pack_status != "no_evidence" else "uncertain"))),
+        ("canonical_result_hash",
+         lambda o: replace(o, canonical_result_hash="crh_mismatch0000")),
+        ("canonical_pack_hash",
+         lambda o: replace(o, canonical_pack_hash="cph_mismatch0000")),
+        ("candidate_count",
+         lambda o: replace(o, validated_candidates=(
+             o.validated_candidates + (o.validated_candidates[0],)
+             if o.validated_candidates else (_widget_target_candidate(),)))),
+        ("evidence_count",
+         lambda o: replace(o, evidence=(
+             o.evidence + (o.evidence[0],) if o.evidence else ()))),
+        ("capability_ledger_summary",
+         lambda o: replace(o, validated_result=replace(
+             o.validated_result,
+             capability_ledger=MappingProxyType(
+                 dict(o.validated_result.capability_ledger,
+                      candidate_search="skipped"))))),
+    ]
+    for _label, _mutate in _mismatch_cases:
+        _bad_out = _mutate(out)
+        _cap_mm = PrivateValidatedOutputCapture()
+        try:
+            _cap_mm._commit_accepted(rec_acc, _bad_out)
+            # Some mismatches (e.g. canonical_result_hash) might cause the
+            # hash recomputation to also fail, which is still a rejection.
+            # If _commit_accepted did NOT raise, the mismatch was not caught
+            # — that's a test failure.
+            raise AssertionError(
+                f"cat8: b0 table-driven mismatch '{_label}' was NOT rejected "
+                f"at commit (must raise HarnessInfrastructureError)")
+        except HarnessInfrastructureError:
+            pass  # expected — mismatch rejected at commit
+        if _cap_mm.committed:
+            raise AssertionError(
+                f"cat8: b0 table-driven mismatch '{_label}' left collector "
+                f"committed (must be empty after rejection)")
+        if _cap_mm.committed_count != 1:
+            raise AssertionError(
+                f"cat8: b0 table-driven mismatch '{_label}' committed_count="
+                f"{_cap_mm.committed_count} != 1 (attempt must be burned)")
+
+    # (B0-G1-l) ``reset`` is ABSENT from PrivateValidatedOutputCapture. There
+    # is NO public reset() method (removed in B0). The sole mutator is the
+    # private _commit_accepted.
+    if hasattr(PrivateValidatedOutputCapture, "reset"):
+        raise AssertionError(
+            "cat8: b0 PrivateValidatedOutputCapture has 'reset' attribute "
+            "(must be ABSENT — reset was removed)")
+    if hasattr(PrivateValidatedOutputCapture, "commit"):
+        raise AssertionError(
+            "cat8: b0 PrivateValidatedOutputCapture has public 'commit' "
+            "attribute (must be ABSENT — replaced by private "
+            "_commit_accepted)")
+    # Verify _commit_accepted is the sole mutator (name-mangled check).
+    if not hasattr(PrivateValidatedOutputCapture, "_commit_accepted"):
+        raise AssertionError(
+            "cat8: b0 PrivateValidatedOutputCapture lacks _commit_accepted "
+            "(must be the sole private mutator)")
+
+    # (B0-G1-m) Phase A report drift unchanged. The B0 capture tests are
+    # internal assertions only — NO test records are appended to recs, so
+    # the committed Phase A report remains byte-stable. Verify the report
+    # count is unchanged from the expected 86/29/57 projection (accepted/
+    # rejected/totals). This is a lightweight check here; the full drift
+    # check is run via --check-drift.
+    if len(recs) == 0:
+        raise AssertionError(
+            "cat8: b0 recs is empty (Phase A report projection would change)")
+
+    # (B0-G1-n) Canonical contract surface must NOT expose
+    # PrivateAcceptedOutput — it is harness-private, oracle-free, in-memory
+    # only and lives in THIS conformance module (next to
+    # PrivateValidatedOutputCapture). Its absence from the contract preserves
+    # the pre-B0 canonical bytes/shape and leaves the Phase A public report
+    # drift unchanged (no contract-surface addition reached the report).
+    if hasattr(pb, "PrivateAcceptedOutput"):
+        raise AssertionError(
+            "cat8: b0 product_bakeoff_contract exposes PrivateAcceptedOutput "
+            "(must be harness-private in conformance, absent from canonical "
+            "contract surface)")
+    _pa_all = getattr(pb, "__all__", ())
+    if "PrivateAcceptedOutput" in _pa_all:
+        raise AssertionError(
+            "cat8: b0 product_bakeoff_contract.__all__ lists "
+            "PrivateAcceptedOutput (must be absent from the canonical "
+            "surface; report drift unchanged)")
+
+    # ===================================================================
+    # B0 Goal 1: release barrier LIVENESS proof. The release barrier must
+    # keep the worker ALIVE (blocked on the fixed release token) when the
+    # parent samples its direct CPU/RSS — eliminating the successful-worker
+    # post-exit race. This is proven on EVERY platform (not just Linux) by
+    # recording proc.exitcode at measurement time: None means the child is
+    # still running. With a broken barrier (wrong pipe direction) the child
+    # would exit before sampling (exitcode != None); on Linux that yields
+    # None cpu/rss (the /proc race), but on Windows the handle retains info
+    # after exit — so only an exitcode check catches the regression on all
+    # platforms. This is the discriminating test for the release barrier.
+    # ===================================================================
+    _g6_alive_at_sample: list[bool | None] = []
+    _orig_measure6 = _measure_stage_cpu_rss
+
+    def _g6_measure_with_liveness(proc):
+        # exitcode is None iff the process is still running.
+        _g6_alive_at_sample.append(proc.exitcode is None)
+        return _orig_measure6(proc)
+
+    try:
+        globals()['_measure_stage_cpu_rss'] = _g6_measure_with_liveness
+        _g6_alive_at_sample.clear()
+        cap_g6 = PrivateValidatedOutputCapture()
+        rec_g6 = _repo_one_run(
+            _qhooks(valid_adapter_query), cat="cat8_no_silent_degeneration",
+            capture=cap_g6)
+        _expect_accepted(rec_g6, "cat8:b0_g6_release_liveness")
+        # A query-only run (warm, no prepare/index) exercises exactly ONE
+        # spawned stage (query). The child MUST be alive (exitcode is None)
+        # when sampled on the success path — the release barrier works.
+        if not _g6_alive_at_sample:
+            raise AssertionError(
+                "cat8: b0 g6 measurement was never called (release barrier "
+                "test did not exercise the sampling path)")
+        for i, alive in enumerate(_g6_alive_at_sample):
+            if alive is not True:
+                raise AssertionError(
+                    f"cat8: b0 g6 child was NOT alive at sampling time "
+                    f"(stage {i}: exitcode-is-None={alive}); the release "
+                    f"barrier must keep the worker blocked on the release "
+                    f"token until after sampling — no post-exit race")
+        # require_scoreable passes on available backends (non-None cpu/rss).
+        if _cpu_avail and _rss_avail:
+            try:
+                require_scoreable(rec_g6, cap_g6)
+            except ContractError as exc:
+                raise AssertionError(
+                    f"cat8: b0 g6 require_scoreable failed: {exc}")
+    finally:
+        globals()['_measure_stage_cpu_rss'] = _orig_measure6
+
     return recs
 
 

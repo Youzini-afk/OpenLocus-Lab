@@ -7,6 +7,7 @@ on:
       - 'crates/**'
       - 'eval/**'
       - 'docs/**'
+      - 'README.md'
       - '.github/workflows/retrieval-benchmark.yml'
       - 'scripts/validate_selftest_quality.py'
       - 'Cargo.toml'
@@ -85,6 +86,8 @@ jobs:
         run: python3 eval/product_bakeoff_conformance.py --self-test
       - name: Product bakeoff Phase A report drift check
         run: python3 eval/product_bakeoff_conformance.py --check-drift artifacts/product_bakeoff_a/product_bakeoff_a_report.json
+      - name: Run openlocus-core, openlocus-index and openlocus-cli locked tests (Linux; POSIX symlink cases non-vacuous)
+        run: cargo test --locked -p openlocus-core -p openlocus-index -p openlocus-cli
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
@@ -159,6 +162,29 @@ jobs:
             --stage "${{ steps.stage.outputs.stage }}" \
             "${extra[@]}")
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  package-tests:
+    # B0 filesystem-safety closure: run the locked package test suite on
+    # both ubuntu-latest and windows-latest so the cfg(unix) symlink
+    # fixtures and cfg(windows) junction/reparse-point fixtures are both
+    # exercised in CI. The plan job's Linux-only `cargo test -p ...` step
+    # remains for fast POSIX-only feedback; this job adds the Windows
+    # coverage required for non-vacuous reparse-point tests.
+    needs: plan
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run locked package tests (core + index + cli)
+        run: cargo test --locked -p openlocus-core -p openlocus-index -p openlocus-cli
 
   benchmark:
     needs: plan

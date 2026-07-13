@@ -45,6 +45,15 @@ cargo run -p openlocus-cli -- index build --chunk-strategy line --json
 cargo run -p openlocus-cli -- index validate --json
 ```
 
+### Separated persistent index (source root vs state root)
+
+Persistent BM25 supports a separated `--source-root` (where files are scanned, policy is loaded, and current content is re-read) and `--state-root` (where persistent index and telemetry artifacts are written). Persistent INDEX artifacts live only under `state_root/.openlocus/index`; best-effort persistent CLI telemetry traces, when safely writable, live only under `state_root/.openlocus/traces` and never fall back to source; trace failure warns/skips after the core command result. `--state-root` requires `--source-root` and is rejected alone; supported legacy colocated mode remains behavior-compatible, but its trace writes are now checked too (colocated commands are not literally unchanged). Exact guarantee: under a quiescent filesystem tree, pre-existing symlink / Windows reparse point / special-file / wrong-kind descendants and unsafe source-vs-artifact overlap fail closed, and a full typed preflight happens before mutating any EXISTING index artifact; establishing a wholly absent `state_root` trust anchor may create its missing real-directory components before that typed preflight. Exact non-guarantees: no concurrent path-swap/TOCTOU resistance, hard-link or bind-mount defense, hostile/network filesystem defense, or OS sandbox claim. This is B0 engineering readiness only, not S0-S5 tournament/product/fairness evidence.
+
+```bash
+cargo run -p openlocus-cli -- index build --source-root ./src --state-root ./state --json
+cargo run -p openlocus-cli -- index purge --source-root ./src --state-root ./state --json
+```
+
 Provider, derived, dense, and commands marked or gated as experimental are research scaffolds unless a later route explicitly says otherwise.
 
 ## Local validation commands
