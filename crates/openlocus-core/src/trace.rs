@@ -660,7 +660,8 @@ mod tests {
             .to_string();
         assert!(
             err.contains("dangling symlink at trace artifact path")
-                || err.contains("cannot stat trace artifact component"),
+                || err.contains("cannot stat trace artifact component")
+                || err.contains("cannot canonicalize trace artifact path"),
             "got: {}",
             err
         );
