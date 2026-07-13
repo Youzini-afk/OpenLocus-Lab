@@ -4927,14 +4927,16 @@ def cat2_snapshot_visibility_isolation() -> list[ValidatedRunRecord]:
     if _can_create_symlinks():
         tmp, root = _new_tmp_root()
         try:
-            # Create a real directory INSIDE root with a smuggled file.
-            real_inside = root / "real_inside_dir"
-            real_inside.mkdir(exist_ok=True)
+            # Build the snapshot first (no symlink or undeclared source yet),
+            # then use its excluded writable-state root as the in-root link
+            # target.  This keeps the frozen source declaration exact while
+            # ensuring scan_visible_tree can reject only the source-tree
+            # symlink, not an unrelated undeclared target file.
+            snap = build_synthetic_repo_one(root)
+            real_inside = snap.writable_state_root
             (real_inside / "smuggled.rs").write_text(
                 "pub fn smuggled() {}\n", encoding="utf-8")
-            # Build the snapshot first (no symlink yet).
-            snap = build_synthetic_repo_one(root)
-            # Create a symlinked parent: root/src2 -> root/real_inside_dir
+            # Create a symlinked parent: root/src2 -> root/.pb_writable_state
             # (target is STILL INSIDE root).
             in_root_symlinked_parent = root / "src2"
             if in_root_symlinked_parent.exists():
