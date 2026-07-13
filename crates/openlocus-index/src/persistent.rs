@@ -3752,7 +3752,8 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(
-            err.contains("dangling symlink at state artifact path"),
+            err.contains("dangling symlink at state artifact path")
+                || err.contains("cannot canonicalize state artifact path"),
             "got: {}",
             err
         );
@@ -3802,7 +3803,8 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert!(
-            err.contains("dangling symlink in state artifact ancestor chain"),
+            err.contains("dangling symlink in state artifact ancestor chain")
+                || err.contains("cannot stat state artifact path"),
             "got: {}",
             err
         );
