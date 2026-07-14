@@ -86,8 +86,13 @@ jobs:
         run: python3 eval/product_bakeoff_conformance.py --self-test
       - name: Product bakeoff Phase A report drift check
         run: python3 eval/product_bakeoff_conformance.py --check-drift artifacts/product_bakeoff_a/product_bakeoff_a_report.json
-      - name: Run openlocus-core, openlocus-index and openlocus-cli locked tests (Linux; POSIX symlink cases non-vacuous)
-        run: cargo test --locked -p openlocus-core -p openlocus-index -p openlocus-cli
+      - name: Run locked OpenLocus package tests (Linux; POSIX symlink cases non-vacuous)
+        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-cli
+      - name: Run product bakeoff B1 mechanics self-test and fault injection
+        run: |
+          cargo build --locked -p openlocus-cli
+          python3 eval/product_bakeoff_b1_cli.py --self-test
+          python3 eval/product_bakeoff_b1_cli.py --fault-test
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
@@ -183,8 +188,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Run locked package tests (core + index + cli)
-        run: cargo test --locked -p openlocus-core -p openlocus-index -p openlocus-cli
+      - name: Run locked package tests (ast + core + graph + index + retrieval + cli)
+        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-cli
 
   benchmark:
     needs: plan

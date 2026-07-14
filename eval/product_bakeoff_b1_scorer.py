@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hidden B1 v2.3 fixture scorer.
+"""Hidden B1 v2.4 fixture scorer.
 
 This module is imported only after every structural, execution, resource,
 state, lineage, provider and privacy gate has passed. It contains the exact
@@ -52,7 +52,7 @@ from product_bakeoff_oracle import (
     assert_run_phase_not_importing_oracle,
 )
 
-SCORER_VERSION = "product_bakeoff_b1_scorer.v2.3"
+SCORER_VERSION = "product_bakeoff_b1_scorer.v2.4"
 
 B1_RUN_PHASE_MODULES = (
     "product_bakeoff_contract",
@@ -303,9 +303,15 @@ def _assert_parent_receipt_binding(
         request_prefix = "b1_ctx"
     else:
         request_prefix = "b1_sup"
-    expected_request_id = (
-        f"{request_prefix}_{record.run_cell_id}_{record.adapter_id}_"
-        f"rep{record.adapter_repetition}_{record.cache_state}")
+    if record.interaction_mode == "two_step" \
+            and record.operation == "context":
+        expected_request_id = (
+            f"{request_prefix}_{record.run_cell_id}_"
+            f"rep{record.adapter_repetition}_{record.cache_state}")
+    else:
+        expected_request_id = (
+            f"{request_prefix}_{record.run_cell_id}_{record.adapter_id}_"
+            f"rep{record.adapter_repetition}_{record.cache_state}")
     expected_fields = {
         "schema_version": B1_PARENT_RECEIPT_SCHEMA_VERSION,
         "request_id": expected_request_id,
@@ -396,6 +402,8 @@ def _expected_context_receipts(
         elif component == "graph" \
                 and task.task_family not in B1_GRAPH_ELIGIBLE_TASK_FAMILIES:
             expected[component] = ("legitimate_skip", 0)
+        elif task.task_slug == "b1_t03" and component == "bm25":
+            expected[component] = ("executed", 0)
         elif task.task_slug == "b1_t10":
             expected[component] = ("executed", 0)
         else:
@@ -502,11 +510,15 @@ def _assert_context_cell(
             pack.targets[0].end_line,
         ) not in _TIE_CELLS:
             failures.append("uncertain tie does not bind one tied primary")
-    elif task.task_slug == "b1_t10":
+    elif task.task_slug == "b1_t10" \
+            or (task.task_slug == "b1_t03" and adapter_id == S0_ADAPTER_ID):
         if pack.pack_status != "no_evidence":
-            failures.append(f"no-answer pack_status {pack.pack_status!r} != 'no_evidence'")
+            failures.append(
+                f"expected-empty pack_status {pack.pack_status!r} "
+                "!= 'no_evidence'")
         if cells or pack.targets or pack.support:
-            failures.append("no-answer cell contains evidence/targets/support")
+            failures.append(
+                "expected-empty cell contains evidence/targets/support")
     else:
         if pack.pack_status != "ready" or not pack.targets:
             failures.append("deterministic context is not ready with a target")

@@ -498,7 +498,8 @@ def _collect_parent_execution_receipt(
     }
     receipt_dir = private_root / "receipts"
     receipt_dir.mkdir(parents=True, exist_ok=True)
-    receipt_path = receipt_dir / f"{request.run_spec.request_id}.json"
+    receipt_path = receipt_dir / (
+        f"{request.adapter_id}__{request.run_spec.request_id}.json")
     receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True),
                             encoding="utf-8")
     cell.parent_receipt = receipt
@@ -518,7 +519,8 @@ def _persist_private_cell(cell: B1CellResult, private_root: Path) -> None:
     cells_dir = private_root / "cells"
     cells_dir.mkdir(parents=True, exist_ok=True)
     request_id = cell.request.run_spec.request_id
-    (cells_dir / f"{request_id}.json").write_text(
+    private_name = f"{cell.request.adapter_id}__{request_id}.json"
+    (cells_dir / private_name).write_text(
         json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
@@ -789,9 +791,8 @@ class B1RunResult:
     runs_dir: str = ""
 
 
-_B1_CONTEXT_PROBE_SLUGS = frozenset({
-    "b1_t01", "b1_t04", "b1_t05", "b1_t08", "b1_t09", "b1_t10",
-})
+_B1_CONTEXT_PROBE_SLUGS = frozenset(
+    task.task_slug for task in B1_ONE_SHOT_TASKS)
 
 
 def _finish_cell(
@@ -842,7 +843,8 @@ def _run_context_plan_probe(
                 request = _make_b1_request(
                     task, snapshot, adapter_id, 1, cache,
                     operation="context", request_id=request_id,
-                    episode_id=f"{request_id}_episode",
+                    episode_id=(
+                        f"b1_preflight_one_ep_{task.task_slug}_{cache}"),
                 )
                 cell = _run_cell(
                     hooks, descriptor, request, snapshot, cell_root,
@@ -873,6 +875,20 @@ def _run_context_plan_probe(
                     by_component = {
                         item["component"]: item for item in component_receipts
                     }
+                    if "literal" in expected_components \
+                            and task.task_family == "error_text":
+                        literal_receipt = by_component["literal"]
+                        if literal_receipt["status"] != "executed" \
+                                or literal_receipt["evidence_count"] < 1:
+                            raise ContractError(
+                                "literal-task preflight lacks literal evidence")
+                    if "symbol" in expected_components \
+                            and task.task_family == "symbol_lookup":
+                        symbol_receipt = by_component["symbol"]
+                        if symbol_receipt["status"] != "executed" \
+                                or symbol_receipt["evidence_count"] < 1:
+                            raise ContractError(
+                                "symbol-task preflight lacks AST symbol evidence")
                     if "graph" in expected_components \
                             and task.task_family in B1_GRAPH_ELIGIBLE_TASK_FAMILIES:
                         graph_receipt = by_component["graph"]
@@ -916,10 +932,8 @@ def run_preflight_probe(runs_dir: Path) -> dict[str, Any]:
             snapshot = _materialize_b1_snapshot(cell_root, task.visible_files())
             for cache in B1_CACHE_STATES:
                 registry = EpisodeRegistry()
-                episode_id = (
-                    f"b1_preflight_ep_{task.task_slug}_{adapter_id}_{cache}")
-                context_id = (
-                    f"b1_preflight_ctx_{task.task_slug}_{adapter_id}_{cache}")
+                episode_id = f"b1_preflight_ep_{task.task_slug}_{cache}"
+                context_id = f"b1_preflight_ctx_{task.task_slug}_{cache}"
                 support_id = (
                     f"b1_preflight_sup_{task.task_slug}_{adapter_id}_{cache}")
                 context_request = _make_b1_request(
@@ -989,6 +1003,49 @@ def run_preflight_probe(runs_dir: Path) -> dict[str, Any]:
 
     _run_context_plan_probe(
         root, private_root, aggregate, adapter_map, failures)
+
+    context_probe_records = [
+        record for record in aggregate.records
+        if record.run_cell_id in _B1_CONTEXT_PROBE_SLUGS
+        and record.operation == "context"
+    ]
+    context_probe_spec = ComparisonMatrixSpec(
+        expected_adapter_ids=B1_ADAPTER_IDS,
+        expected_run_cells=tuple(
+            task.task_slug for task in B1_ONE_SHOT_TASKS
+            if task.task_slug in _B1_CONTEXT_PROBE_SLUGS),
+        expected_repetitions=(1,),
+        expected_cache_states=B1_CACHE_STATES,
+        expected_steps=(("one_shot", "context"),),
+    )
+    context_matrix_failures = validate_comparison_matrix(
+        context_probe_spec, context_probe_records)
+    failures.extend(
+        f"context preflight matrix: {failure}"
+        for failure in context_matrix_failures)
+
+    two_step_probe_records = [
+        record for record in aggregate.records
+        if record.run_cell_id in {
+            task.task_slug for task in B1_TWO_STEP_TASKS
+        }
+    ]
+    two_step_probe_spec = ComparisonMatrixSpec(
+        expected_adapter_ids=B1_ADAPTER_IDS,
+        expected_run_cells=tuple(
+            task.task_slug for task in B1_TWO_STEP_TASKS),
+        expected_repetitions=(1,),
+        expected_cache_states=B1_CACHE_STATES,
+        expected_steps=(
+            ("two_step", "context"),
+            ("two_step", "support"),
+        ),
+    )
+    two_step_matrix_failures = validate_comparison_matrix(
+        two_step_probe_spec, two_step_probe_records)
+    failures.extend(
+        f"two-step preflight matrix: {failure}"
+        for failure in two_step_matrix_failures)
 
     for task_slug, by_adapter in targets.items():
         expected_target_count = len(B1_ADAPTER_IDS) * len(B1_CACHE_STATES)
@@ -1157,7 +1214,7 @@ def run_full_matrix(
                 snapshot = _materialize_b1_snapshot(cell, vis)
                 for cache in B1_CACHE_STATES:
                     ep_id = f"b1_ep_{task.task_slug}_rep{rep}_{cache}"
-                    ctx_req_id = f"b1_ctx_{task.task_slug}_{adapter_id}_rep{rep}_{cache}"
+                    ctx_req_id = f"b1_ctx_{task.task_slug}_rep{rep}_{cache}"
                     sup_req_id = f"b1_sup_{task.task_slug}_{adapter_id}_rep{rep}_{cache}"
 
                     registry = EpisodeRegistry()

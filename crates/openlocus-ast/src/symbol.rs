@@ -190,7 +190,6 @@ fn js_symbol_info(kind: &str) -> Option<(Option<String>, AstSymbolKind)> {
         "method_definition" => Some((None, AstSymbolKind::Method)),
         "lexical_declaration" => Some((None, AstSymbolKind::Variable)),
         "variable_declaration" => Some((None, AstSymbolKind::Variable)),
-        "export_statement" => Some((None, AstSymbolKind::Unknown)),
         _ => None,
     }
 }
@@ -202,7 +201,6 @@ fn ts_symbol_info(kind: &str) -> Option<(Option<String>, AstSymbolKind)> {
         "method_definition" => Some((None, AstSymbolKind::Method)),
         "lexical_declaration" => Some((None, AstSymbolKind::Variable)),
         "variable_declaration" => Some((None, AstSymbolKind::Variable)),
-        "export_statement" => Some((None, AstSymbolKind::Unknown)),
         "interface_declaration" => Some((None, AstSymbolKind::Interface)),
         "type_alias_declaration" => Some((None, AstSymbolKind::Type)),
         "enum_declaration" => Some((None, AstSymbolKind::Enum)),
@@ -414,6 +412,20 @@ mod tests {
             .find(|s| s.kind == AstSymbolKind::Interface);
         assert!(iface.is_some(), "should find interface symbol");
         assert_eq!(iface.unwrap().name, "Config");
+    }
+
+    #[test]
+    fn ts_exported_function_descends_through_export_wrapper() {
+        let source = "export function selune(): void {}\n";
+        let result = extract_ast_symbols("api.ts", "typescript", source);
+        assert_eq!(result.status, AstSymbolStatus::Supported);
+        let function = result
+            .symbols
+            .iter()
+            .find(|symbol| symbol.name == "selune")
+            .expect("exported TypeScript function should be extracted");
+        assert_eq!(function.kind, AstSymbolKind::Function);
+        assert_eq!((function.start_line, function.end_line), (1, 1));
     }
 
     #[test]

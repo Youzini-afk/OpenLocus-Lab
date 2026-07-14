@@ -81,7 +81,7 @@ RUST_FILES: dict[str, str] = {
     ),
     "src/e67.rs": (
         "use crate::d53::Neral;\n"
-        "pub fn accept(_: Neral) {}\n"
+        "pub fn accept(_: u8) {}\n"
     ),
     "src/h03.rs": (
         "pub struct Orvane;\n"

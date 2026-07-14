@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Command-line entry point for the B1 v2.3 mechanics screen.
+"""Command-line entry point for the B1 v2.4 mechanics screen.
 
 The run phase intentionally has no scorer/oracle import. Hidden scoring is
 loaded dynamically only after every parent-owned pre-score gate passes.
@@ -784,6 +784,22 @@ def run_fault_test() -> int:
     if scorer._assert_parent_receipt_binding(  # noqa: SLF001
             record, capture, parent_receipt):
         failures.append("valid scorer parent binding fixture was rejected")
+    two_step_record = copy.copy(record)
+    two_step_record.run_cell_id = "b1_t11"
+    two_step_record.interaction_mode = "two_step"
+    two_step_record.operation = "context"
+    two_step_receipt = copy.deepcopy(parent_receipt)
+    two_step_receipt["request_id"] = "b1_ctx_b1_t11_rep1_cold"
+    two_step_receipt["task_slug"] = "b1_t11"
+    if scorer._assert_parent_receipt_binding(  # noqa: SLF001
+            two_step_record, capture, two_step_receipt):
+        failures.append("valid common-parent two-step binding was rejected")
+    adapter_bound_receipt = copy.deepcopy(two_step_receipt)
+    adapter_bound_receipt["request_id"] = (
+        f"b1_ctx_b1_t11_{adapter_id}_rep1_cold")
+    if not scorer._assert_parent_receipt_binding(  # noqa: SLF001
+            two_step_record, capture, adapter_bound_receipt):
+        failures.append("scorer accepted adapter-specific two-step parent id")
     warm_bound_record = copy.copy(record)
     warm_bound_record.cache_state = "warm"
     warm_parent_receipt = copy.deepcopy(parent_receipt)

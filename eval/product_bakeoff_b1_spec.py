@@ -54,7 +54,7 @@ from pathlib import Path
 # Schema identity
 # ---------------------------------------------------------------------------
 
-B1_SPEC_VERSION = "product_bakeoff_b1.v2.3"
+B1_SPEC_VERSION = "product_bakeoff_b1.v2.4"
 B1_GENERATED_BY = "eval/product_bakeoff_b1_spec.py"
 B1_CLAIM_LEVEL = "b1_mechanics_screen_only"
 
@@ -169,7 +169,7 @@ B1_ADAPTER_IDS = (
     S4_ADAPTER_ID,
     S5_ADAPTER_ID,
 )
-B1_ADAPTER_VERSION = "v2.3"
+B1_ADAPTER_VERSION = "v2.4"
 
 # Upstream revision (the B0 substrate this screen traverses).
 B1_UPSTREAM_REVISION = "b0_substrate"
@@ -244,6 +244,7 @@ B1_PROVIDER_AUDIT_REL = ".openlocus/audit/embeddings.jsonl"
 B1_TRANSCRIPT_DIR_REL = ".openlocus/b1/transcripts"
 B1_INDEX_SEAL_REL = ".openlocus/b1/index_seal.json"
 B1_LINEAGE_RECEIPT_REL = ".openlocus/b1/lineage_receipt.json"
+B1_PARENT_RESULT_ID_POLICY = "logical_cell_common_across_adapters_v1"
 B1_TRANSCRIPT_SCHEMA_VERSION = "product_bakeoff_b1_invocation.v1"
 B1_PARENT_RECEIPT_SCHEMA_VERSION = "product_bakeoff_b1_parent_receipt.v1.3"
 B1_INDEX_SEAL_SCHEMA_VERSION = "product_bakeoff_b1_index_seal.v1"
@@ -255,7 +256,7 @@ B1_EXPECTED_INDEX_ENTRIES = frozenset({"index", "traces", "audit", "b1"})
 # Sanitized aggregate schema (frozen, V2 closed)
 # ---------------------------------------------------------------------------
 
-B1_AGGREGATE_SCHEMA_VERSION = "product_bakeoff_b1_aggregate.v2.3"
+B1_AGGREGATE_SCHEMA_VERSION = "product_bakeoff_b1_aggregate.v2.4"
 
 # Public stdout carries ONLY sanitized aggregate (exactly one JSON object).
 # No banners, paths, runtime, or assertion details.  Private full
@@ -381,6 +382,7 @@ B1_SOURCE_BUNDLE_PATHS = (
     "eval/product_bakeoff_conformance.py",
     "crates/openlocus-cli/src/bakeoff_query.rs",
     "crates/openlocus-cli/src/lib.rs",
+    "crates/openlocus-ast/src/symbol.rs",
     "crates/openlocus-retrieval/src/rrf.rs",
     "Cargo.lock",
 )
@@ -475,6 +477,7 @@ def b1_spec_digest() -> str:
         "transcript_dir_rel": B1_TRANSCRIPT_DIR_REL,
         "index_seal_rel": B1_INDEX_SEAL_REL,
         "lineage_receipt_rel": B1_LINEAGE_RECEIPT_REL,
+        "parent_result_id_policy": B1_PARENT_RESULT_ID_POLICY,
         "transcript_schema": B1_TRANSCRIPT_SCHEMA_VERSION,
         "parent_receipt_schema": B1_PARENT_RECEIPT_SCHEMA_VERSION,
         "index_seal_schema": B1_INDEX_SEAL_SCHEMA_VERSION,
@@ -614,6 +617,7 @@ __all__ = [
     "B1_TRAJECTORY_PATTERN", "B1_EXPECTED_INDEX_ENTRIES",
     "B1_PROVIDER_AUDIT_REL", "B1_TRANSCRIPT_DIR_REL",
     "B1_INDEX_SEAL_REL", "B1_LINEAGE_RECEIPT_REL",
+    "B1_PARENT_RESULT_ID_POLICY",
     "B1_TRANSCRIPT_SCHEMA_VERSION", "B1_PARENT_RECEIPT_SCHEMA_VERSION",
     "B1_INDEX_SEAL_SCHEMA_VERSION",
     "B1_AGGREGATE_SCHEMA_VERSION", "B1_AGGREGATE_KEYS",
