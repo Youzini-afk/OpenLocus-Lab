@@ -366,10 +366,14 @@ B1_PRE_SCORE_GATES = (
     "sentinel_expected_passed",
 )
 
-# Synthetic fixture/scorer publication remains unapproved until the required
-# independent staged-surface review. Keeping this explicit prevents an
-# implementation pass from silently becoming publication authorization.
-B1_SYNTHETIC_PUBLICATION_DECISION = "pending_independent_staged_review"
+# The project owner authorized aggregate-only publication of the synthetic B1
+# mechanics result on 2026-07-14.  This does not authorize publishing private
+# rows, task/query/path details, receipts, traces, or resource samples, and it
+# does not upgrade the B1 mechanics result into a product winner/default or
+# effectiveness claim.
+B1_SYNTHETIC_PUBLICATION_DECISION = (
+    "owner_authorized_aggregate_only_publication"
+)
 
 B1_SOURCE_BUNDLE_PATHS = (
     "eval/product_bakeoff_b1_spec.py",
