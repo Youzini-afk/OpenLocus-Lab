@@ -93,8 +93,19 @@ jobs:
           cargo build --locked -p openlocus-cli
           python3 eval/product_bakeoff_b1_cli.py --self-test
           python3 eval/product_bakeoff_b1_cli.py --fault-test
-      - name: Run product bakeoff B2 protocol freeze gates
+      - name: Run product bakeoff B2 implementation and protocol freeze gates
         run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b2_protocol.py \
+            eval/product_bakeoff_b2_corpus.py \
+            eval/product_bakeoff_b2_oracle.py \
+            eval/product_bakeoff_b2_author.py \
+            eval/product_bakeoff_b2_adapters.py \
+            eval/product_bakeoff_b2_runner.py \
+            eval/product_bakeoff_b2_scorer.py \
+            eval/product_bakeoff_b2_cli.py
+          python3 eval/product_bakeoff_b2_cli.py --self-test
+          python3 eval/product_bakeoff_b2_cli.py --fault-test
           python3 eval/product_bakeoff_b2_protocol.py --self-test
           python3 eval/product_bakeoff_b2_protocol.py --fault-test
           python3 eval/product_bakeoff_b2_protocol.py --validate-report artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json

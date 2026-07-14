@@ -1,14 +1,21 @@
 # Product Stack Bakeoff — B2 Internal Tournament Protocol Freeze
 
-Date: 2026-07-14
+Date: 2026-07-15
 
-Status: `product_bakeoff_b2_protocol_frozen_no_execution_no_result`
+Status: `product_bakeoff_b2_implementation_ready_private_preflight_passed_no_execution_no_result`
 
-B2 is now preregistered as a bounded internal product-decision tournament. This checkpoint freezes the experimental design, task margins, run order, scoring rules, gates, promotion logic, tie handling, and privacy boundary. It has not materialized the empirical task set, run an adapter, scored a task, selected a finalist, or chosen a product default.
+B2 remains preregistered as a bounded internal product-decision tournament. The frozen experimental design, task margins, run order, scoring rules, gates, promotion logic, tie handling, and privacy boundary are unchanged. The private admission, offline authoring, adapter, runner, scorer, and publication layers are now implemented. A private 12-repository/48-task candidate frame has been prepared and aggregate-audited, and synthetic, fault-injection, and unused-repository real-source preflights have passed. The final runtime freeze receipt does not yet exist, the 1,440-record matrix has not started, no task has been scored, and no finalist or product default has been selected.
 
-The executable protocol and closed public report are:
+The executable implementation surface and closed public protocol report are:
 
 - [`product_bakeoff_b2_protocol.py`](../../eval/product_bakeoff_b2_protocol.py)
+- [`product_bakeoff_b2_corpus.py`](../../eval/product_bakeoff_b2_corpus.py)
+- [`product_bakeoff_b2_author.py`](../../eval/product_bakeoff_b2_author.py)
+- [`product_bakeoff_b2_oracle.py`](../../eval/product_bakeoff_b2_oracle.py)
+- [`product_bakeoff_b2_adapters.py`](../../eval/product_bakeoff_b2_adapters.py)
+- [`product_bakeoff_b2_runner.py`](../../eval/product_bakeoff_b2_runner.py)
+- [`product_bakeoff_b2_scorer.py`](../../eval/product_bakeoff_b2_scorer.py)
+- [`product_bakeoff_b2_cli.py`](../../eval/product_bakeoff_b2_cli.py)
 - [`product_bakeoff_b2_protocol_report.json`](../../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
 
 ## Parent lock
@@ -58,6 +65,8 @@ The complete design requires 288 index builds and 1,440 validated records: 864 o
 
 The base arm order is derived from a fixed seed. Orthogonal cyclic rotations balance every arm exactly across execution positions within size, task-role, and repetition strata. Language strata contain 64 schedule rows and therefore cannot divide perfectly by six; every arm-position count is constrained to 10–12.
 
+For a two-step task, all six context steps run first in frozen arm order. Their selected primary targets must share one canonical path and have a non-empty line-range intersection. That exact intersection becomes the common parent for all six support requests, which then run in the same frozen arm order. Divergent paths or an empty intersection fail the complete run closed instead of giving an arm a different parent question.
+
 ## Task admission and scoring
 
 Before any arm output exists, the private repository, task, and oracle manifests must be frozen and digested. Tasks cannot be built or edited using adapter output. Queries cannot disclose a repository identity, source path, or line number.
@@ -67,6 +76,8 @@ Deterministic tasks have exactly one positive target span; ambiguous tasks have 
 Context quality is scored on deduplicated `(canonical path, line)` atoms. Precision, recall, and F0.5 are calculated as exact rational values, converted by flooring to integer millionths, and summed over the 42 answerable tasks. Rankings use the unrounded sum, never a rounded mean. A task is marked harmful when any selected evidence line overlaps a frozen negative span.
 
 Quality semantics must be identical across cache state and repetition before the scorer may collapse technical measurements into one task-level result.
+
+The current private preparation pass matches every public margin without publishing repository identities, task text, paths, or oracle rows: 12 repositories, 48 tasks, three languages with four repositories each, four size bands with three repositories each, 36 one-shot plus 12 two-step tasks, 48 positive spans, 96 negative spans, and 12 support relations. This remains a freeze-before audit only; no final-task arm output was used to create or edit the frame.
 
 ## Product gates and promotion tracks
 
@@ -96,16 +107,16 @@ Zero, one, or multiple finalists are valid outcomes. If multiple eligible arms f
 
 After any arm output exists, B2 forbids task addition/removal/replacement, query or oracle edits, threshold/weight/order changes, arm-specific budgets, interim elimination, selective reruns, and missing-cell imputation. An infrastructure-invalid run must be discarded and restarted as a complete new run under a new private run identity.
 
-The empirical tournament runs locally under an ignored directory. CI runs only the public protocol self-test, fault injection, report validation, drift check, and documentation validation. Public empirical output is aggregate-only: no task/repository rows, queries, candidates, paths, ranges, excerpts, hashes, labels, per-cell resources, private run paths, provider payloads, or secrets.
+The empirical tournament runs locally under an ignored directory. CI runs only public B2 compilation, implementation self-tests, implementation fault injection, protocol self-test and fault injection, report validation, drift check, package regression tests, and documentation validation. It never receives the private candidate plan, repositories, tasks, or oracle rows. Public empirical output is aggregate-only: no task/repository rows, queries, candidates, paths, ranges, excerpts, private-content hashes or freeze-manifest digests, labels, per-cell resources, private run paths, provider payloads, or secrets. Public protocol and aggregate-artifact self-digests remain allowed.
 
 ## Frozen identifiers
 
-- B2 spec digest: `b2spec_3b44c386004d933d`
-- B2 source bundle digest: `b2src_dfa9d0bcf855fe78968e4ecf8dd6e5a708dcc057ba580f28c1016136352d7687`
+- B2 spec digest: `b2spec_358b77c924fbe3f1`
+- B2 source bundle digest: `b2src_c129273f4078d484401e4e255a110b926a0cce7f513fe2f1455415f6309f2ea0`
 - Task-slot digest: `b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff`
 - Execution-schedule digest: `b2sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- Protocol-report digest: `b2protocol_d23648309bb0b4a3f3b3d39124ed4715f78fa0968a1fe6e3988f610ec1364b1c`
+- Protocol-report digest: `b2protocol_9057cbb85bb11f84377424a96ea2de55e7bff80314520b89b3c0c1e35340b679`
 
 ## Next authorized work
 
-Implement the private repository/task admission layer and the B2 runner against this exact protocol. Before the first empirical run, freeze the private task/oracle manifests and one runtime bundle, pass self-test, fault injection, privacy, schedule, and bundle preflight, and then run the complete matrix locally. No B2 quality result exists at this checkpoint.
+Commit and validate this implementation checkpoint in CI. Then freeze the prepared private repository/task/oracle manifests and one runtime bundle, verify the receipt and all pre-score gates, and run the complete matrix once locally without interim inspection. No B2 quality result exists at this checkpoint.

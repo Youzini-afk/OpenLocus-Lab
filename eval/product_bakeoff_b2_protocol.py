@@ -72,6 +72,14 @@ B2_PARENT_B1_AGGREGATE_REL = (
 
 # The committed B2 design source is added to the complete B1 source surface.
 B2_SOURCE_BUNDLE_PATHS = tuple(B1_SOURCE_BUNDLE_PATHS) + (
+    "eval/ci_clone_and_lock_repo.py",
+    "eval/product_bakeoff_b2_corpus.py",
+    "eval/product_bakeoff_b2_oracle.py",
+    "eval/product_bakeoff_b2_author.py",
+    "eval/product_bakeoff_b2_adapters.py",
+    "eval/product_bakeoff_b2_runner.py",
+    "eval/product_bakeoff_b2_scorer.py",
+    "eval/product_bakeoff_b2_cli.py",
     "eval/product_bakeoff_b2_protocol.py",
     ".github/workflows/retrieval-benchmark.yml",
 )
@@ -279,6 +287,12 @@ B2_SCORING_RULES = {
         "context_target_success_and_parent_lineage_valid_and_at_least_one_"
         "selected_support_span_matches_a_frozen_target_relation_span"
     ),
+    "two_step_step_order": "all_six_context_steps_in_frozen_arm_order_then_all_six_support_steps_in_same_order",
+    "two_step_parent_normalization": (
+        "all_six_context_targets_must_share_one_path_and_a_nonempty_line_range_"
+        "intersection;_the_exact_intersection_is_the_common_parent_for_all_"
+        "six_support_requests;_otherwise_the_run_fails_closed"
+    ),
     "logical_task_success_partition": (
         "task_success_count_equals_one_shot_success_count_plus_support_success_count"
     ),
@@ -295,6 +309,11 @@ B2_SCORING_RULES = {
     "harmful_evidence_task": "any_selected_line_atom_intersects_any_frozen_negative_span",
     "no_answer_tasks_excluded_from_context_f05_sum": True,
     "quality_scored_once_per_logical_task_after_exact_cache_repetition_semantic_equality": True,
+    "resource_percentile_rule": "nearest_rank_ceiling_p95",
+    "warm_query_population": "all_warm_context_and_support_records_query_plus_materialize_plus_render",
+    "peak_rss_population": "all_attempted_validated_records_parent_observed_direct_worker_peak_rss",
+    "cold_index_population": "one_cold_context_prepare_per_repository_arm_repetition",
+    "index_state_population": "sealed_persistent_index_bytes_after_each_cold_context_build",
 }
 
 B2_QUALITY_FLOORS = {
@@ -489,6 +508,7 @@ B2_PUBLICATION_POLICY = {
     "task_level_results_public": False,
     "task_text_or_query_public": False,
     "candidate_path_range_excerpt_hash_public": False,
+    "private_manifest_or_freeze_digest_public": False,
     "oracle_or_label_rows_public": False,
     "resource_samples_or_timings_per_cell_public": False,
     "private_run_paths_public": False,
@@ -1684,11 +1704,20 @@ def _build_report_without_protocol_digest() -> dict[str, Any]:
             "runtime_bundle_must_be_single_and_frozen_before_execution": True,
             "mixed_runtime_bundles_in_one_tournament_forbidden": True,
         },
+        "implementation_readiness": {
+            "private_repository_admission_implemented": True,
+            "offline_task_and_oracle_authoring_implemented": True,
+            "all_six_b1_adapter_wrappers_implemented": True,
+            "split_plot_runner_implemented": True,
+            "isolated_scorer_and_aggregate_publication_implemented": True,
+            "single_cli_for_self_fault_prepare_freeze_run_and_validate": True,
+            "real_repository_preflight_required_before_freeze": True,
+            "full_tournament_execution_is_not_part_of_this_protocol_report": True,
+        },
         "next_authorized_action": (
-            "implement_private_task_admission_and_b2_runner_against_this_exact_"
-            "protocol; before empirical execution freeze the private task/oracle_"
-            "manifests and one runtime bundle, pass protocol/self/fault/privacy_"
-            "preflight, then run the complete matrix locally under ignored runs"
+            "freeze the prepared private repository/task/oracle manifests and one "
+            "runtime bundle, confirm protocol/self/fault/privacy/bundle preflight, then "
+            "run the complete matrix locally under ignored runs without interim looks"
         ),
     }
 

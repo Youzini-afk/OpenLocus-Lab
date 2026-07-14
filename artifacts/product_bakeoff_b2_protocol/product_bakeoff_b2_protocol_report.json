@@ -56,6 +56,16 @@
     "source_and_runtime_bundle_locked_before_execution": true,
     "source_immutable": true
   },
+  "implementation_readiness": {
+    "all_six_b1_adapter_wrappers_implemented": true,
+    "full_tournament_execution_is_not_part_of_this_protocol_report": true,
+    "isolated_scorer_and_aggregate_publication_implemented": true,
+    "offline_task_and_oracle_authoring_implemented": true,
+    "private_repository_admission_implemented": true,
+    "real_repository_preflight_required_before_freeze": true,
+    "single_cli_for_self_fault_prepare_freeze_run_and_validate": true,
+    "split_plot_runner_implemented": true
+  },
   "lifecycle_matrix": {
     "cold_observations_per_task": 1,
     "index_build_count": 288,
@@ -101,6 +111,7 @@
     "resource_samples_are_repeated_measurements_not_independent_tasks": true,
     "scoring_rules": {
       "abstain_success": "status_no_evidence_and_zero_candidates_evidence_targets_and_support",
+      "cold_index_population": "one_cold_context_prepare_per_repository_arm_repetition",
       "component_subset_success": "target_or_status_success_inside_the_frozen_component_eligible_subset;_for_support_the_value_is_support_success_count",
       "context_empty_answerable_value": 0,
       "context_f05": "1.25_times_precision_times_recall_divided_by_0.25_times_precision_plus_recall",
@@ -111,12 +122,18 @@
       "duplicate_selected_line_atoms_deduplicated_before_scoring": true,
       "fixed_point_conversion": "floor_exact_rational_times_1000000",
       "harmful_evidence_task": "any_selected_line_atom_intersects_any_frozen_negative_span",
+      "index_state_population": "sealed_persistent_index_bytes_after_each_cold_context_build",
       "line_atom": "canonical_relative_path_plus_one_indexed_line",
       "logical_task_success_partition": "task_success_count_equals_one_shot_success_count_plus_support_success_count",
       "multi_target_success": "status_uncertain_and_at_least_two_distinct_positive_target_spans_covered_and_no_selected_target_intersects_a_negative_span",
       "no_answer_tasks_excluded_from_context_f05_sum": true,
+      "peak_rss_population": "all_attempted_validated_records_parent_observed_direct_worker_peak_rss",
       "quality_scored_once_per_logical_task_after_exact_cache_repetition_semantic_equality": true,
-      "two_step_support_success": "context_target_success_and_parent_lineage_valid_and_at_least_one_selected_support_span_matches_a_frozen_target_relation_span"
+      "resource_percentile_rule": "nearest_rank_ceiling_p95",
+      "two_step_parent_normalization": "all_six_context_targets_must_share_one_path_and_a_nonempty_line_range_intersection;_the_exact_intersection_is_the_common_parent_for_all_six_support_requests;_otherwise_the_run_fails_closed",
+      "two_step_step_order": "all_six_context_steps_in_frozen_arm_order_then_all_six_support_steps_in_same_order",
+      "two_step_support_success": "context_target_success_and_parent_lineage_valid_and_at_least_one_selected_support_span_matches_a_frozen_target_relation_span",
+      "warm_query_population": "all_warm_context_and_support_records_query_plus_materialize_plus_render"
     },
     "subset_denominators": {
       "graph": 16,
@@ -125,7 +142,7 @@
       "symbol": 16
     }
   },
-  "next_authorized_action": "implement_private_task_admission_and_b2_runner_against_this_exact_protocol; before empirical execution freeze the private task/oracle_manifests and one runtime bundle, pass protocol/self/fault/privacy_preflight, then run the complete matrix locally under ignored runs",
+  "next_authorized_action": "freeze the prepared private repository/task/oracle manifests and one runtime bundle, confirm protocol/self/fault/privacy/bundle preflight, then run the complete matrix locally under ignored runs without interim looks",
   "parent_b1_lock": {
     "closeout_checkpoint": "617b452cf24ac7294b49133caf18ee8f279e1dfe",
     "fixture_digest": "b1fix_b012d3da68d75522",
@@ -144,6 +161,7 @@
     "minimum_public_stratum_denominator": 12,
     "oracle_or_label_rows_public": false,
     "predeclared_language_size_role_aggregates_public": true,
+    "private_manifest_or_freeze_digest_public": false,
     "private_run_paths_public": false,
     "provider_payloads_or_secrets_public": false,
     "publication_level": "aggregate_only",
@@ -321,7 +339,7 @@
     },
     "zero_one_or_multiple_finalists_are_valid_outcomes": true
   },
-  "protocol_digest": "b2protocol_d23648309bb0b4a3f3b3d39124ed4715f78fa0968a1fe6e3988f610ec1364b1c",
+  "protocol_digest": "b2protocol_9057cbb85bb11f84377424a96ea2de55e7bff80314520b89b3c0c1e35340b679",
   "randomization": {
     "arm_order_is_constrained_randomization_not_adaptive": true,
     "arm_position_count_each_overall": 32,
@@ -347,8 +365,8 @@
   },
   "schema_version": "product_bakeoff_b2_protocol_report.v1",
   "source_locks": {
-    "b2_source_bundle_digest": "b2src_dfa9d0bcf855fe78968e4ecf8dd6e5a708dcc057ba580f28c1016136352d7687",
-    "b2_spec_digest": "b2spec_3b44c386004d933d",
+    "b2_source_bundle_digest": "b2src_c129273f4078d484401e4e255a110b926a0cce7f513fe2f1455415f6309f2ea0",
+    "b2_spec_digest": "b2spec_358b77c924fbe3f1",
     "line_endings_normalized_for_cross_platform_source_digest": true,
     "mixed_runtime_bundles_in_one_tournament_forbidden": true,
     "runtime_bundle_must_be_single_and_frozen_before_execution": true

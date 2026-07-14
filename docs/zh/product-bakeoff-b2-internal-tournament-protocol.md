@@ -1,14 +1,21 @@
 # 产品栈对比 — B2 内部锦标赛协议冻结
 
-日期：2026-07-14
+日期：2026-07-15
 
-状态：`product_bakeoff_b2_protocol_frozen_no_execution_no_result`
+状态：`product_bakeoff_b2_implementation_ready_private_preflight_passed_no_execution_no_result`
 
-B2 现已作为有界的内部产品决策锦标赛完成预注册。本检查点冻结实验设计、任务边际、运行顺序、评分规则、硬门禁、晋级逻辑、同分处理和隐私边界。它尚未物化经验任务集、运行适配器、评分任务、选出决赛方案或确定产品默认。
+B2 仍是已预注册的有界内部产品决策锦标赛；冻结的实验设计、任务边际、运行顺序、评分规则、硬门禁、晋级逻辑、同分处理和隐私边界均未改变。私有仓库准入、离线任务编写、适配器、runner、scorer 和公开发布层现已实现。私有的 12 仓库/48 任务候选框已完成准备与仅汇总审计，合成测试、故障注入和未入选仓库上的真实源码预检均已通过。最终运行时冻结回执尚未生成，1,440 条记录的完整矩阵尚未启动，没有任务被正式评分，也没有选出决赛方案或产品默认。
 
-可执行协议与闭合公开报告为：
+可执行实现表面与闭合公开协议报告为：
 
 - [`product_bakeoff_b2_protocol.py`](../../eval/product_bakeoff_b2_protocol.py)
+- [`product_bakeoff_b2_corpus.py`](../../eval/product_bakeoff_b2_corpus.py)
+- [`product_bakeoff_b2_author.py`](../../eval/product_bakeoff_b2_author.py)
+- [`product_bakeoff_b2_oracle.py`](../../eval/product_bakeoff_b2_oracle.py)
+- [`product_bakeoff_b2_adapters.py`](../../eval/product_bakeoff_b2_adapters.py)
+- [`product_bakeoff_b2_runner.py`](../../eval/product_bakeoff_b2_runner.py)
+- [`product_bakeoff_b2_scorer.py`](../../eval/product_bakeoff_b2_scorer.py)
+- [`product_bakeoff_b2_cli.py`](../../eval/product_bakeoff_b2_cli.py)
 - [`product_bakeoff_b2_protocol_report.json`](../../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
 
 ## 父级锁定
@@ -58,6 +65,8 @@ B2 绑定到已正式收口的 B1 机械能力包：
 
 基础 arm 顺序由固定种子生成。正交循环轮换使每个 arm 在规模、任务角色和 repetition 分层内精确均衡地出现在各执行位置。每种语言有 64 行调度，无法被 6 个位置整除，因此每个 arm-position 计数被限制在 10–12。
 
+双步任务先按冻结的 arm 顺序运行六个 context 步骤。六个主目标必须位于同一规范路径，且行范围存在非空交集；这个精确交集成为六个 support 请求共同的父范围，随后再按相同的冻结 arm 顺序运行 support。若路径分叉或交集为空，完整运行直接失败关闭，不允许不同 arm 得到不同的父问题。
+
 ## 任务准入与评分
 
 在任何 arm 输出出现前，私有仓库、任务和 oracle manifest 必须冻结并计算摘要。不得使用适配器输出创建或修改任务。查询不得暴露仓库身份、源码路径或行号。
@@ -67,6 +76,8 @@ Deterministic 任务恰好有 1 个正目标 span；ambiguous 任务至少有 2 
 上下文质量按去重后的 `(canonical path, line)` 原子评分。Precision、recall 和 F0.5 使用精确有理数计算，向下取整为整数百万分数，并在 42 个可回答任务上求和。排名使用未舍入总和，绝不使用舍入后的平均值。如果任何已选择证据行与冻结负 span 相交，该任务记为 harmful。
 
 只有在 cache state 和 repetition 之间的质量语义完全一致后，scorer 才能把技术测量折叠为一个任务级结果。
+
+当前私有准备轮次在不公开仓库身份、任务文本、路径或 oracle 行的前提下，匹配全部公开边际：12 个仓库、48 个任务；三种语言各 4 个仓库；四个规模档各 3 个仓库；36 个单步任务加 12 个双步任务；48 个正 span、96 个负 span 和 12 条支持关系。这仍只是冻结前审计；没有使用任何最终任务的 arm 输出来创建或修改任务框。
 
 ## 产品门禁与晋级轨道
 
@@ -96,16 +107,16 @@ S0 保留为必需的控制和回退比较，但不会自动晋级。S4 与 S5 �
 
 任何 arm 输出出现后，B2 禁止增删替换任务、修改 query 或 oracle、改变阈值/权重/顺序、设置 arm 专属预算、阶段性淘汰、选择性重跑和缺失单元插补。基础设施无效的运行必须整体作废，并以新的私有运行身份完整重启。
 
-经验锦标赛在 Git 忽略的本地目录中运行。CI 只运行公开协议自检、故障注入、报告校验、漂移检查和文档校验。公开经验输出只允许 aggregate-only：不得公开任务/仓库行、查询、候选、路径、范围、摘录、hash、标签、逐单元资源、私有运行路径、provider payload 或密钥。
+经验锦标赛在 Git 忽略的本地目录中运行。CI 只运行公开的 B2 编译、实现自检、实现故障注入、协议自检与故障注入、报告校验、漂移检查、包回归测试和文档校验；它不会接收私有候选计划、仓库、任务或 oracle 行。公开经验输出只允许 aggregate-only：不得公开任务/仓库行、查询、候选、路径、范围、摘录、私有内容 hash 或冻结 manifest 摘要、标签、逐单元资源、私有运行路径、provider payload 或密钥。公开协议摘要和汇总产物自身摘要仍可保留。
 
 ## 冻结标识
 
-- B2 规格摘要：`b2spec_3b44c386004d933d`
-- B2 源码包摘要：`b2src_dfa9d0bcf855fe78968e4ecf8dd6e5a708dcc057ba580f28c1016136352d7687`
+- B2 规格摘要：`b2spec_358b77c924fbe3f1`
+- B2 源码包摘要：`b2src_c129273f4078d484401e4e255a110b926a0cce7f513fe2f1455415f6309f2ea0`
 - 任务槽摘要：`b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff`
 - 执行调度摘要：`b2sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- 协议报告摘要：`b2protocol_d23648309bb0b4a3f3b3d39124ed4715f78fa0968a1fe6e3988f610ec1364b1c`
+- 协议报告摘要：`b2protocol_9057cbb85bb11f84377424a96ea2de55e7bff80314520b89b3c0c1e35340b679`
 
 ## 下一项已授权工作
 
-按照这份精确协议实现私有仓库/任务准入层和 B2 runner。第一次经验运行前，冻结私有 task/oracle manifest 和单一 runtime bundle，通过 self-test、fault injection、隐私、调度与 bundle 预检，然后在本地运行完整矩阵。本检查点不存在任何 B2 质量结果。
+先提交这一实现检查点并让 CI 完整验证。随后冻结已准备好的私有仓库/task/oracle manifest 与单一 runtime bundle，校验冻结回执和所有评分前门禁，再在不进行中途查看的前提下于本地完整运行一次矩阵。本检查点不存在任何 B2 质量结果。
