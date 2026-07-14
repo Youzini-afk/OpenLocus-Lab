@@ -17,6 +17,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 - Phase A conformance report / Phase A conformance 报告: [`artifacts/product_bakeoff_a/product_bakeoff_a_report.json`](../artifacts/product_bakeoff_a/product_bakeoff_a_report.json)
 - B1 mechanics screen closeout / B1 机械能力筛查收口: [EN](en/product-bakeoff-b1-mechanics-screen.md) / [ZH](zh/product-bakeoff-b1-mechanics-screen.md)
 - B1 closed aggregate / B1 闭合聚合: [`artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json`](../artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json)
+- B2 internal tournament protocol / B2 内部锦标赛协议: [EN](en/product-bakeoff-b2-internal-tournament-protocol.md) / [ZH](zh/product-bakeoff-b2-internal-tournament-protocol.md)
+- B2 protocol report / B2 协议报告: [`artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json`](../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
 
 ## Current route closure / 当前路线关闭
 

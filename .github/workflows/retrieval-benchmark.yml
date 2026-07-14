@@ -93,6 +93,14 @@ jobs:
           cargo build --locked -p openlocus-cli
           python3 eval/product_bakeoff_b1_cli.py --self-test
           python3 eval/product_bakeoff_b1_cli.py --fault-test
+      - name: Run product bakeoff B2 protocol freeze gates
+        run: |
+          python3 eval/product_bakeoff_b2_protocol.py --self-test
+          python3 eval/product_bakeoff_b2_protocol.py --fault-test
+          python3 eval/product_bakeoff_b2_protocol.py --validate-report artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json
+          python3 eval/product_bakeoff_b2_protocol.py --check-drift artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json
+      - name: Validate bilingual documentation mirror
+        run: python3 scripts/validate_docs_i18n.py
       - id: stage
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then

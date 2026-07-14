@@ -50,4 +50,4 @@ All row-level outputs remain under an ignored local directory. Only the validate
 
 ## Next phase
 
-B1 is frozen and closed. The next product-decision step is B2: a preregistered 48-task internal tournament that compares correctness, context quality, latency, memory, abstention, and support behavior without post-hoc tuning on the decision set.
+B1 is frozen and closed. The B2 48-task internal tournament protocol is now frozen in [`product-bakeoff-b2-internal-tournament-protocol.md`](./product-bakeoff-b2-internal-tournament-protocol.md). The next implementation step is the private repository/task admission layer and complete local B2 runner; no B2 empirical result exists yet.

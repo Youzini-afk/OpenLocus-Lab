@@ -1,0 +1,477 @@
+{
+  "claim_level": "design_only_no_tournament_result",
+  "execution_boundary": {
+    "adapter_execution_executed": false,
+    "design_only": true,
+    "empirical_task_materialization_executed": false,
+    "private_oracle_rows_read": false,
+    "provider_or_network_calls_executed": false,
+    "tournament_scoring_executed": false,
+    "winner_or_default_selected": false
+  },
+  "experimental_design": {
+    "analysis_unit": "paired_task_level_outcomes_with_repository_cluster_respected",
+    "cache_and_repetition_are_technical_repeated_measures": true,
+    "complete_block": "every_task_receives_all_six_stacks",
+    "design_type": "randomized_complete_task_blocks_with_repo_split_plot_lifecycle",
+    "experimental_unit": "logical_task",
+    "independent_unit_count": 48,
+    "interim_looks": 0,
+    "repository_is_nested_cluster": true,
+    "single_final_analysis_only": true,
+    "technical_measurements_do_not_increase_independent_n": true,
+    "treatments": [
+      "b1_s0_bm25",
+      "b1_s1_bm25_text",
+      "b1_s2_bm25_text_symbol",
+      "b1_s3_bm25_text_symbol_graph",
+      "b1_s4_s2pool_support",
+      "b1_s5_s3pool_support"
+    ]
+  },
+  "forbidden_adaptations": [
+    "no_task_add_drop_replace_after_any_arm_output",
+    "no_oracle_or_query_edit_after_any_arm_output",
+    "no_metric_threshold_weight_or_order_change_after_any_arm_output",
+    "no_arm_specific_budget_timeout_or_visibility",
+    "no_interim_arm_elimination_or_early_winner_call",
+    "no_selective_rerun_of_only_failed_or_losing_cells",
+    "no_imputation_for_missing_or_rejected_cells",
+    "no_provider_network_or_model_calls",
+    "no_public_per_task_or_per_repo_empirical_detail"
+  ],
+  "hard_gates": {
+    "all_current_source_citations_valid": true,
+    "all_records_accepted": true,
+    "all_resource_samples_complete": true,
+    "cold_warm_and_repetition_quality_semantics_equal": true,
+    "complete_1440_record_matrix": true,
+    "no_post_hoc_task_or_rule_change": true,
+    "parent_b1_closeout_lock_matches": true,
+    "privacy_canary_absent_from_public_surface": true,
+    "private_oracle_manifest_frozen_before_execution": true,
+    "private_task_manifest_frozen_before_execution": true,
+    "provider_network_call_count_zero": true,
+    "scorer_and_oracle_unloaded_until_pre_score_gates_pass": true,
+    "source_and_runtime_bundle_locked_before_execution": true,
+    "source_immutable": true
+  },
+  "lifecycle_matrix": {
+    "cold_observations_per_task": 1,
+    "index_build_count": 288,
+    "lifecycle_policy": "repo_block_split_plot_rotating_cold_task_v1",
+    "one_cold_plus_three_warm_per_task": true,
+    "one_index_build_per_repo_arm_repetition": true,
+    "one_shot_records": 864,
+    "records_per_arm": 240,
+    "repetitions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "total_records": 1440,
+    "two_step_order": [
+      "context",
+      "support"
+    ],
+    "two_step_records": 576,
+    "warm_observations_per_task": 3
+  },
+  "metric_contract": {
+    "fixed_point_scale": 1000000,
+    "metric_definitions": {
+      "ambiguous_status_success_count": "count of six ambiguous tasks returning uncertain with multi-target coverage and no oracle-negative target",
+      "answerable_target_success_count": "count of the 42 answerable tasks with at least one oracle-valid primary target under the frozen task-kind rule",
+      "cold_index_p95_us": "parent-observed p95 cold prepare/index duration in integer microseconds",
+      "component_subset_success_counts": "target/status success counts within the predeclared literal, symbol, graph, and support subsets; support subset success equals support success",
+      "context_f05_sum_ppm": "sum over 42 answerable tasks of span F0.5 stored as integer millionths; rank uses the sum, never a rounded mean",
+      "harmful_evidence_task_count": "count of answerable tasks whose selected evidence overlaps a frozen oracle-negative span",
+      "index_state_p95_bytes": "p95 sealed persistent-state bytes after cold build",
+      "no_answer_status_success_count": "count of six no-answer tasks returning no_evidence with no selected candidate/evidence/target/support",
+      "one_shot_success_count": "count of 36 one-shot tasks meeting the frozen status and target rule",
+      "peak_rss_p95_bytes": "parent-observed p95 peak resident bytes over attempted stages",
+      "support_success_count": "count of 12 two-step tasks with a correct bound parent target and at least one oracle-valid bounded support relation",
+      "task_success_count": "count of the 48 logical tasks whose frozen status/target and, when applicable, support requirements all pass",
+      "warm_query_p95_us": "parent-observed warm query-to-pack p95 in integer microseconds over technical repetitions"
+    },
+    "no_opaque_single_composite_score": true,
+    "quality_and_resource_ranks_reported_separately": true,
+    "quality_semantics_must_match_across_cache_and_repetitions": true,
+    "resource_samples_are_repeated_measurements_not_independent_tasks": true,
+    "scoring_rules": {
+      "abstain_success": "status_no_evidence_and_zero_candidates_evidence_targets_and_support",
+      "component_subset_success": "target_or_status_success_inside_the_frozen_component_eligible_subset;_for_support_the_value_is_support_success_count",
+      "context_empty_answerable_value": 0,
+      "context_f05": "1.25_times_precision_times_recall_divided_by_0.25_times_precision_plus_recall",
+      "context_precision": "positive_selected_line_atoms_divided_by_selected_line_atoms",
+      "context_recall": "positive_selected_line_atoms_divided_by_positive_oracle_line_atoms",
+      "context_sum_denominator_tasks": 42,
+      "deterministic_target_success": "selected_primary_target_intersects_the_single_positive_target_span_and_intersects_no_negative_span",
+      "duplicate_selected_line_atoms_deduplicated_before_scoring": true,
+      "fixed_point_conversion": "floor_exact_rational_times_1000000",
+      "harmful_evidence_task": "any_selected_line_atom_intersects_any_frozen_negative_span",
+      "line_atom": "canonical_relative_path_plus_one_indexed_line",
+      "logical_task_success_partition": "task_success_count_equals_one_shot_success_count_plus_support_success_count",
+      "multi_target_success": "status_uncertain_and_at_least_two_distinct_positive_target_spans_covered_and_no_selected_target_intersects_a_negative_span",
+      "no_answer_tasks_excluded_from_context_f05_sum": true,
+      "quality_scored_once_per_logical_task_after_exact_cache_repetition_semantic_equality": true,
+      "two_step_support_success": "context_target_success_and_parent_lineage_valid_and_at_least_one_selected_support_span_matches_a_frozen_target_relation_span"
+    },
+    "subset_denominators": {
+      "graph": 16,
+      "literal": 12,
+      "support": 12,
+      "symbol": 16
+    }
+  },
+  "next_authorized_action": "implement_private_task_admission_and_b2_runner_against_this_exact_protocol; before empirical execution freeze the private task/oracle_manifests and one runtime bundle, pass protocol/self/fault/privacy_preflight, then run the complete matrix locally under ignored runs",
+  "parent_b1_lock": {
+    "closeout_checkpoint": "617b452cf24ac7294b49133caf18ee8f279e1dfe",
+    "fixture_digest": "b1fix_b012d3da68d75522",
+    "mechanics_pass_required": true,
+    "public_aggregate": "artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json",
+    "runtime_bundle_digest": "b1run_01c1fdcfe6d77f3d1f8101f66a90191a1f4a620d43e39a139b686149e0b2a896",
+    "source_bundle_digest": "b1src_fa5b30ca188d08a491206e13acfe3faa9a5070a68be2222ba349392101b136d2",
+    "source_checkpoint": "0b6f2e13b1dbc679eb1f827c28a8abd5403dcd58",
+    "spec_digest": "b1spec_6058c3e732d077f5",
+    "spec_version": "product_bakeoff_b1.v2.4"
+  },
+  "phase": "product_bakeoff_b2_internal_product_decision_tournament_protocol",
+  "privacy_publication": {
+    "arm_level_aggregate_metrics_public": true,
+    "candidate_path_range_excerpt_hash_public": false,
+    "minimum_public_stratum_denominator": 12,
+    "oracle_or_label_rows_public": false,
+    "predeclared_language_size_role_aggregates_public": true,
+    "private_run_paths_public": false,
+    "provider_payloads_or_secrets_public": false,
+    "publication_level": "aggregate_only",
+    "repo_level_results_public": false,
+    "resource_samples_or_timings_per_cell_public": false,
+    "task_level_results_public": false,
+    "task_text_or_query_public": false
+  },
+  "promotion_contract": {
+    "baseline_control_arm": "b1_s0_bm25",
+    "baseline_noninferiority": {
+      "max_context_f05_average_loss_ppm": 10000,
+      "max_harmful_evidence_extra_tasks": 1,
+      "max_target_success_loss": 1,
+      "max_task_success_loss": 1
+    },
+    "baseline_resource_ceilings": {
+      "cold_index_additive_us": 5000000,
+      "cold_index_ratio_ppm": 1500000,
+      "index_state_additive_bytes": 67108864,
+      "index_state_ratio_ppm": 1100000,
+      "peak_rss_additive_bytes": 268435456,
+      "peak_rss_ratio_ppm": 2000000,
+      "warm_query_additive_us": 250000,
+      "warm_query_ratio_ppm": 2000000
+    },
+    "baseline_retained_for_phase_c_and_d_even_if_not_promoted": true,
+    "component_rules": [
+      {
+        "allow_context_alternative": true,
+        "alternative_context_mean_gain_ppm": 10000,
+        "child": "b1_s1_bm25_text",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1150000,
+        "max_warm_query_ratio_ppm": 1200000,
+        "minimum_success_gain": 1,
+        "parent": "b1_s0_bm25",
+        "regression_metric": "task_success_count",
+        "rule_id": "literal_earns_inclusion",
+        "subset": "literal"
+      },
+      {
+        "allow_context_alternative": true,
+        "alternative_context_mean_gain_ppm": 10000,
+        "child": "b1_s2_bm25_text_symbol",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1150000,
+        "max_warm_query_ratio_ppm": 1200000,
+        "minimum_success_gain": 1,
+        "parent": "b1_s1_bm25_text",
+        "regression_metric": "task_success_count",
+        "rule_id": "symbol_earns_inclusion",
+        "subset": "symbol"
+      },
+      {
+        "allow_context_alternative": true,
+        "alternative_context_mean_gain_ppm": 20000,
+        "child": "b1_s3_bm25_text_symbol_graph",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1200000,
+        "max_warm_query_ratio_ppm": 1300000,
+        "minimum_success_gain": 2,
+        "parent": "b1_s2_bm25_text_symbol",
+        "regression_metric": "task_success_count",
+        "rule_id": "graph_earns_inclusion_over_s2",
+        "subset": "graph"
+      },
+      {
+        "allow_context_alternative": false,
+        "alternative_context_mean_gain_ppm": 10000,
+        "child": "b1_s4_s2pool_support",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1250000,
+        "max_warm_query_ratio_ppm": 1350000,
+        "minimum_success_gain": 3,
+        "parent": "b1_s2_bm25_text_symbol",
+        "regression_metric": "one_shot_success_count",
+        "rule_id": "support_earns_inclusion_over_s2",
+        "subset": "support"
+      },
+      {
+        "allow_context_alternative": false,
+        "alternative_context_mean_gain_ppm": 10000,
+        "child": "b1_s5_s3pool_support",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1250000,
+        "max_warm_query_ratio_ppm": 1350000,
+        "minimum_success_gain": 3,
+        "parent": "b1_s3_bm25_text_symbol_graph",
+        "regression_metric": "one_shot_success_count",
+        "rule_id": "support_earns_inclusion_over_s3",
+        "subset": "support"
+      },
+      {
+        "allow_context_alternative": true,
+        "alternative_context_mean_gain_ppm": 20000,
+        "child": "b1_s5_s3pool_support",
+        "max_harmful_evidence_extra_tasks": 1,
+        "max_overall_task_loss": 1,
+        "max_peak_rss_ratio_ppm": 1200000,
+        "max_warm_query_ratio_ppm": 1300000,
+        "minimum_success_gain": 2,
+        "parent": "b1_s4_s2pool_support",
+        "regression_metric": "task_success_count",
+        "rule_id": "graph_earns_inclusion_over_s4",
+        "subset": "graph"
+      }
+    ],
+    "decision_equivalence": {
+      "max_context_f05_average_loss_ppm": 10000,
+      "max_harmful_evidence_extra_tasks": 1,
+      "max_peak_rss_additive_bytes": 67108864,
+      "max_peak_rss_ratio_ppm": 1150000,
+      "max_status_success_loss": 1,
+      "max_support_success_loss": 1,
+      "max_target_success_loss": 1,
+      "max_task_success_loss": 1,
+      "max_warm_query_additive_us": 100000,
+      "max_warm_query_ratio_ppm": 1200000
+    },
+    "default_track_arms": [
+      "b1_s4_s2pool_support",
+      "b1_s5_s3pool_support"
+    ],
+    "no_arm_automatically_promoted": true,
+    "optional_track_arms": [
+      "b1_s1_bm25_text",
+      "b1_s2_bm25_text_symbol",
+      "b1_s3_bm25_text_symbol_graph"
+    ],
+    "phase_c_shortlist_prefers_default_track_when_any_default_arm_passes": true,
+    "quality_floors": {
+      "ambiguous_status_success_count": 5,
+      "answerable_target_success_count": 34,
+      "default_track_support_success_count": 9,
+      "default_track_task_success_count": 36,
+      "language_success_floor_each_of_16": 11,
+      "max_harmful_evidence_task_count": 4,
+      "no_answer_status_success_count": 5,
+      "one_shot_success_count": 30,
+      "role_success_floor_each_of_12": 8,
+      "size_success_floor_each_of_12": 8,
+      "task_success_count": 34
+    },
+    "required_component_rules": {
+      "b1_s1_bm25_text": [
+        "literal_earns_inclusion"
+      ],
+      "b1_s2_bm25_text_symbol": [
+        "literal_earns_inclusion",
+        "symbol_earns_inclusion"
+      ],
+      "b1_s3_bm25_text_symbol_graph": [
+        "literal_earns_inclusion",
+        "symbol_earns_inclusion",
+        "graph_earns_inclusion_over_s2"
+      ],
+      "b1_s4_s2pool_support": [
+        "literal_earns_inclusion",
+        "symbol_earns_inclusion",
+        "support_earns_inclusion_over_s2"
+      ],
+      "b1_s5_s3pool_support": [
+        "literal_earns_inclusion",
+        "symbol_earns_inclusion",
+        "graph_earns_inclusion_over_s2",
+        "support_earns_inclusion_over_s3",
+        "graph_earns_inclusion_over_s4"
+      ]
+    },
+    "zero_one_or_multiple_finalists_are_valid_outcomes": true
+  },
+  "protocol_digest": "b2protocol_d23648309bb0b4a3f3b3d39124ed4715f78fa0968a1fe6e3988f610ec1364b1c",
+  "randomization": {
+    "arm_order_is_constrained_randomization_not_adaptive": true,
+    "arm_position_count_each_overall": 32,
+    "arm_position_count_each_per_repetition": 8,
+    "arm_positions_exactly_balanced_within_each_size_role_and_repetition": true,
+    "arm_rotation_coefficients_mod_6": {
+      "language": 2,
+      "repetition": 2,
+      "role": 1,
+      "size_band": 1
+    },
+    "each_arm_appears_equally_in_each_execution_position": true,
+    "each_repo_repetition_has_one_cold_three_warm_tasks": true,
+    "each_task_cold_once_warm_three_times": true,
+    "language_arm_position_count_range_inclusive": [
+      10,
+      12
+    ],
+    "policy": "seeded_repo_order_plus_orthogonal_cyclic_arm_position_balance_v1",
+    "schedule_digest": "b2sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "schedule_row_count": 192,
+    "seed": "openlocus-b2-20260714-rcbd-splitplot-v1"
+  },
+  "schema_version": "product_bakeoff_b2_protocol_report.v1",
+  "source_locks": {
+    "b2_source_bundle_digest": "b2src_dfa9d0bcf855fe78968e4ecf8dd6e5a708dcc057ba580f28c1016136352d7687",
+    "b2_spec_digest": "b2spec_3b44c386004d933d",
+    "line_endings_normalized_for_cross_platform_source_digest": true,
+    "mixed_runtime_bundles_in_one_tournament_forbidden": true,
+    "runtime_bundle_must_be_single_and_frozen_before_execution": true
+  },
+  "status": "product_bakeoff_b2_protocol_frozen_no_execution_no_result",
+  "task_frame": {
+    "actual_repo_identity_and_task_text_private_until_aggregate_release": true,
+    "admission_rules": {
+      "abstain_oracle_positive_span_count": 0,
+      "actual_repo_identity_kept_private_until_aggregate_release": true,
+      "adapter_output_must_not_be_used_to_create_or_edit_task_oracle": true,
+      "all_oracle_spans_must_validate_against_frozen_current_source": true,
+      "deterministic_oracle_exact_positive_span_count": 1,
+      "immutable_commit_and_visible_tree_manifest_required": true,
+      "license_or_usage_permission_required": true,
+      "min_distinct_negative_spans_per_task": 2,
+      "multi_target_oracle_min_distinct_positive_span_count": 2,
+      "no_task_replacement_or_exclusion_after_manifest_freeze": true,
+      "one_frozen_repo_snapshot_per_language_size_stratum": true,
+      "positive_negative_spans_must_be_disjoint": true,
+      "query_must_not_contain_source_path_line_number_or_repo_identity": true,
+      "repo_snapshot_count": 12,
+      "resolved_source_root_must_be_real_directory_not_link_or_reparse": true,
+      "task_authored_before_any_arm_output": true,
+      "task_text_and_oracle_rows_kept_private": true,
+      "two_step_oracle_min_support_relation_count": 1,
+      "visible_tree_must_match_frozen_manifest_before_and_after_execution": true
+    },
+    "component_eligible_counts": {
+      "graph": 16,
+      "literal": 12,
+      "support": 12,
+      "symbol": 16
+    },
+    "interaction_counts": {
+      "one_shot": 36,
+      "two_step": 12
+    },
+    "language_counts": {
+      "python": 16,
+      "rust": 16,
+      "typescript": 16
+    },
+    "languages": [
+      "rust",
+      "python",
+      "typescript"
+    ],
+    "oracle_kind_counts": {
+      "abstain": 6,
+      "deterministic": 36,
+      "multi_target": 6
+    },
+    "repo_slot_count": 12,
+    "role_counts": {
+      "direct": 12,
+      "relational": 12,
+      "restraint": 12,
+      "workflow": 12
+    },
+    "size_band_visible_bytes_half_open": {
+      "large": [
+        16777216,
+        67108864
+      ],
+      "medium": [
+        4194304,
+        16777216
+      ],
+      "small": [
+        262144,
+        4194304
+      ],
+      "xlarge": [
+        67108864,
+        268435457
+      ]
+    },
+    "size_bands": [
+      "small",
+      "medium",
+      "large",
+      "xlarge"
+    ],
+    "size_counts": {
+      "large": 12,
+      "medium": 12,
+      "small": 12,
+      "xlarge": 12
+    },
+    "task_and_oracle_manifests_frozen_before_any_arm_output": true,
+    "task_family_counts": {
+      "ambiguous_target": 6,
+      "caller_trace": 4,
+      "configuration_discovery": 4,
+      "cross_file_dependency": 4,
+      "definition_find": 4,
+      "error_text": 4,
+      "no_answer": 6,
+      "refactor_target_find": 4,
+      "symbol_lookup": 4,
+      "test_discovery": 4,
+      "type_resolution": 4
+    },
+    "task_slot_count": 48,
+    "task_slot_digest": "b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff",
+    "tasks_per_repo_slot": 4,
+    "visible_file_count_range_inclusive": [
+      32,
+      50000
+    ]
+  },
+  "tie_policy": {
+    "competition_rank_example": [
+      1,
+      1,
+      3
+    ],
+    "decision_equivalent_arms_may_all_advance": true,
+    "exact_equal_quality_vector": "shared_competition_rank",
+    "exact_equal_resource_vector": "shared_competition_rank",
+    "forced_unique_winner": false,
+    "maximum_finalist_count": null,
+    "quality_values": "unrounded_integer_counts_and_fixed_point_sums_only"
+  }
+}

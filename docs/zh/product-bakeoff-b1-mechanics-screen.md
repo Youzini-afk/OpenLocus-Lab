@@ -50,4 +50,4 @@ python eval/product_bakeoff_b1_cli.py --full-screen --runs-dir <ignored-local-di
 
 ## 下一阶段
 
-B1 已冻结并收口。下一项产品决策工作是 B2：预注册的 48 任务内部锦标赛，在不依据决策集做事后调参的前提下，比较正确性、上下文质量、延迟、内存、弃答和支持证据行为。
+B1 已冻结并收口。B2 的 48 任务内部锦标赛协议现已冻结，参见 [`product-bakeoff-b2-internal-tournament-protocol.md`](./product-bakeoff-b2-internal-tournament-protocol.md)。下一项实现工作是私有仓库/任务准入层与完整本地 B2 runner；目前尚无 B2 经验结果。
