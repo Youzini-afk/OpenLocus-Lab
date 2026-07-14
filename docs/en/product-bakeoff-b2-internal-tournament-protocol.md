@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b2_implementation_ready_private_preflight_passed_no_execution_no_result`
+Status: `product_bakeoff_b2_execution_failed_closed_no_result`
 
-B2 remains preregistered as a bounded internal product-decision tournament. The frozen experimental design, task margins, run order, scoring rules, gates, promotion logic, tie handling, and privacy boundary are unchanged. The private admission, offline authoring, adapter, runner, scorer, and publication layers are now implemented. A private 12-repository/48-task candidate frame has been prepared and aggregate-audited, and synthetic, fault-injection, and unused-repository real-source preflights have passed. The final runtime freeze receipt does not yet exist, the 1,440-record matrix has not started, no task has been scored, and no finalist or product default has been selected.
+B2 remains preregistered as a bounded internal product-decision tournament. The implementation and private 12-repository/48-task frame were frozen, the source checkpoint passed cross-platform CI, and the formal 1,440-record matrix was started. The run then failed closed before support execution or scoring because the six accepted context outputs for a two-step task did not share one canonical source path, so the frozen common-parent rule could not construct a shared support parent. Exactly 24 context records and 24 parent receipts had been accepted at the stop point, with zero provider/network calls. No tournament score, rank, finalist, or product-default result exists.
 
 The executable implementation surface and closed public protocol report are:
 
@@ -17,6 +17,11 @@ The executable implementation surface and closed public protocol report are:
 - [`product_bakeoff_b2_scorer.py`](../../eval/product_bakeoff_b2_scorer.py)
 - [`product_bakeoff_b2_cli.py`](../../eval/product_bakeoff_b2_cli.py)
 - [`product_bakeoff_b2_protocol_report.json`](../../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
+- [`product_bakeoff_b2_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b2/product_bakeoff_b2_failed_closed_aggregate.json)
+
+## Failed-closed execution checkpoint
+
+This was not a timeout, malformed record, missing receipt, resource failure, or network failure. All 24 emitted records were accepted and parent-validated. The stopping condition was the preregistered cross-arm parent-path convergence rule itself. Because arm output now exists, B2 cannot repair the task, relax the rule, fill missing cells, or selectively rerun this tournament. A deterministic retry under the same frozen bundle would reproduce the same stopping condition and is therefore not authorized.
 
 ## Parent lock
 
@@ -119,4 +124,4 @@ The empirical tournament runs locally under an ignored directory. CI runs only p
 
 ## Next authorized work
 
-Commit and validate this implementation checkpoint in CI. Then freeze the prepared private repository/task/oracle manifests and one runtime bundle, verify the receipt and all pre-score gates, and run the complete matrix once locally without interim inspection. No B2 quality result exists at this checkpoint.
+Close B2 as `failed_closed_no_result`. Any further product tournament must be separately preregistered with a new holdout task frame and a parent-binding policy justified before any new arm output. It must not resume, selectively repair, or reuse this incomplete matrix as a valid result.

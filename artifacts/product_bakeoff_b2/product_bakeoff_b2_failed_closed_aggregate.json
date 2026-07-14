@@ -1,0 +1,53 @@
+{
+  "schema_version": "product_bakeoff_b2_failed_closed_aggregate.v1",
+  "phase": "product_bakeoff_b2_internal_product_decision_tournament",
+  "status": "product_bakeoff_b2_execution_failed_closed_no_result",
+  "claim_level": "incomplete_matrix_no_tournament_result",
+  "source_checkpoint": "55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915",
+  "protocol": {
+    "spec_digest": "b2spec_358b77c924fbe3f1",
+    "source_bundle_digest": "b2src_c129273f4078d484401e4e255a110b926a0cce7f513fe2f1455415f6309f2ea0",
+    "task_slot_digest": "b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff",
+    "execution_schedule_digest": "b2sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "protocol_report_digest": "b2protocol_9057cbb85bb11f84377424a96ea2de55e7bff80314520b89b3c0c1e35340b679"
+  },
+  "execution": {
+    "expected_complete_record_count": 1440,
+    "validated_records_before_stop": 24,
+    "accepted_records_before_stop": 24,
+    "context_records_before_stop": 24,
+    "support_records_before_stop": 0,
+    "parent_receipts_before_stop": 24,
+    "parent_receipt_error_count": 0,
+    "provider_network_call_count": 0,
+    "complete_matrix_gate_passed": false,
+    "pre_score_gates_passed": false,
+    "tournament_scoring_executed": false,
+    "quality_or_resource_ranking_executed": false,
+    "finalist_selected": false,
+    "product_default_changed": false
+  },
+  "failure": {
+    "category": "two_step_common_parent_path_divergence",
+    "failed_closed": true,
+    "record_validation_failure": false,
+    "resource_or_network_failure": false,
+    "description": "The six frozen arms produced accepted single-target context outputs on more than one canonical source path for a two-step task, so the preregistered common-parent rule could not construct one shared support parent."
+  },
+  "anti_adaptation": {
+    "same_run_selective_retry_allowed": false,
+    "missing_cells_may_be_imputed": false,
+    "task_query_or_oracle_may_be_edited": false,
+    "frozen_rule_may_be_changed_for_this_tournament": false,
+    "same_frozen_tournament_has_a_valid_result": false
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "repository_identity_public": false,
+    "task_identity_or_text_public": false,
+    "candidate_path_or_range_public": false,
+    "private_manifest_or_freeze_digest_public": false,
+    "per_arm_task_output_public": false
+  },
+  "next_authorized_action": "Close B2 as failed-closed with no result. Any further product tournament must be a separately preregistered holdout experiment with a new task frame; it must not selectively repair or resume this run."
+}

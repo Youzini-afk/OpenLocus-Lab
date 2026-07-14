@@ -2,9 +2,9 @@
 
 日期：2026-07-15
 
-状态：`product_bakeoff_b2_implementation_ready_private_preflight_passed_no_execution_no_result`
+状态：`product_bakeoff_b2_execution_failed_closed_no_result`
 
-B2 仍是已预注册的有界内部产品决策锦标赛；冻结的实验设计、任务边际、运行顺序、评分规则、硬门禁、晋级逻辑、同分处理和隐私边界均未改变。私有仓库准入、离线任务编写、适配器、runner、scorer 和公开发布层现已实现。私有的 12 仓库/48 任务候选框已完成准备与仅汇总审计，合成测试、故障注入和未入选仓库上的真实源码预检均已通过。最终运行时冻结回执尚未生成，1,440 条记录的完整矩阵尚未启动，没有任务被正式评分，也没有选出决赛方案或产品默认。
+B2 仍是已预注册的有界内部产品决策锦标赛。实现与私有的 12 仓库/48 任务框已冻结，源码检查点通过了跨平台 CI，正式的 1,440 条记录矩阵也已启动。随后运行在 support 执行和评分之前按规则失败关闭：某个双步任务的六个 context 输出虽然全部验收通过，但没有落在同一条规范源码路径，因此冻结的共同父范围规则无法构造共享 support 父目标。停止时共有 24 条 context 记录和 24 份父进程回执验收通过，provider/网络调用为 0。不存在锦标赛分数、排名、决赛方案或产品默认结果。
 
 可执行实现表面与闭合公开协议报告为：
 
@@ -17,6 +17,11 @@ B2 仍是已预注册的有界内部产品决策锦标赛；冻结的实验设�
 - [`product_bakeoff_b2_scorer.py`](../../eval/product_bakeoff_b2_scorer.py)
 - [`product_bakeoff_b2_cli.py`](../../eval/product_bakeoff_b2_cli.py)
 - [`product_bakeoff_b2_protocol_report.json`](../../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
+- [`product_bakeoff_b2_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b2/product_bakeoff_b2_failed_closed_aggregate.json)
+
+## 失败关闭执行检查点
+
+这不是超时、坏记录、缺失回执、资源故障或网络故障。已产生的 24 条记录全部通过验收与父进程校验；停止条件来自预注册的跨 arm 父路径收敛规则本身。由于 arm 输出已经存在，B2 不能修补任务、放宽规则、填充缺失单元或选择性重跑。同一冻结包下的确定性重试会再次触发相同停止条件，因此不获授权。
 
 ## 父级锁定
 
@@ -119,4 +124,4 @@ S0 保留为必需的控制和回退比较，但不会自动晋级。S4 与 S5 �
 
 ## 下一项已授权工作
 
-先提交这一实现检查点并让 CI 完整验证。随后冻结已准备好的私有仓库/task/oracle manifest 与单一 runtime bundle，校验冻结回执和所有评分前门禁，再在不进行中途查看的前提下于本地完整运行一次矩阵。本检查点不存在任何 B2 质量结果。
+将 B2 收口为 `failed_closed_no_result`。任何后续产品锦标赛都必须使用新的 holdout 任务框单独预注册，并在产生任何新 arm 输出前论证新的父目标绑定策略；不得恢复、选择性修补或把这份不完整矩阵当作有效结果复用。
