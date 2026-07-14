@@ -20,18 +20,62 @@ const K: u64 = 60;
 /// Input: multiple `Vec<Evidence>` from different channels (regex, bm25, symbol).
 /// Output: deduplicated, RRF-scored, sorted evidence.
 pub fn rrf_combine(channel_evidence: Vec<(Vec<Evidence>, Channel)>) -> Vec<Evidence> {
+    let weighted = channel_evidence
+        .into_iter()
+        .map(|(evidence, channel)| (evidence, channel, 1))
+        .collect();
+    rrf_combine_impl(weighted, false)
+}
+
+/// Combine evidence using RRF while allowing exact native-score ties to
+/// share a competition rank (`1, 1, 3`). Input lists must already be sorted
+/// by native score descending with a deterministic secondary order.
+///
+/// This leaves [`rrf_combine`] unchanged for existing callers while exposing
+/// an explicit production variant for workflows that must preserve genuine
+/// equal-quality candidates as equal-ranked.
+pub fn rrf_combine_with_rank_ties(
+    channel_evidence: Vec<(Vec<Evidence>, Channel)>,
+) -> Vec<Evidence> {
+    let weighted = channel_evidence
+        .into_iter()
+        .map(|(evidence, channel)| (evidence, channel, 1))
+        .collect();
+    rrf_combine_impl(weighted, true)
+}
+
+/// Combine evidence using competition-rank ties and explicit positive
+/// integer channel weights. A weight of `2` contributes two RRF votes at
+/// the same rank. Existing unweighted entry points remain unchanged.
+pub fn rrf_combine_with_rank_ties_and_channel_weights(
+    channel_evidence: Vec<(Vec<Evidence>, Channel, u64)>,
+) -> Vec<Evidence> {
+    rrf_combine_impl(channel_evidence, true)
+}
+
+fn rrf_combine_impl(
+    channel_evidence: Vec<(Vec<Evidence>, Channel, u64)>,
+    equal_scores_share_rank: bool,
+) -> Vec<Evidence> {
     // Key: (path, start_line, end_line) → accumulated RRF score + metadata
     let mut merged: HashMap<(String, u64, u64), MergedEntry> = HashMap::new();
 
-    for (evidences, _channel) in &channel_evidence {
-        for (rank, evidence) in evidences.iter().enumerate() {
+    for (evidences, _channel, channel_weight) in &channel_evidence {
+        let mut competition_rank = 1usize;
+        let mut previous_native_score: Option<f64> = None;
+        for (position, evidence) in evidences.iter().enumerate() {
+            if !equal_scores_share_rank
+                || previous_native_score.is_none_or(|score| score != evidence.core.score)
+            {
+                competition_rank = position + 1;
+            }
             let key = (
                 evidence.core.path.clone(),
                 evidence.core.start_line,
                 evidence.core.end_line,
             );
 
-            let rrf_contribution = 1.0 / (K as f64 + (rank + 1) as f64);
+            let rrf_contribution = *channel_weight as f64 / (K as f64 + competition_rank as f64);
 
             let entry = merged.entry(key).or_insert_with(|| MergedEntry {
                 core: evidence.core.clone(),
@@ -44,6 +88,7 @@ pub fn rrf_combine(channel_evidence: Vec<(Vec<Evidence>, Channel)>) -> Vec<Evide
             entry.rrf_score += rrf_contribution;
             entry.channels.push(_channel.clone());
             entry.whys.extend(evidence.core.why.iter().cloned());
+            previous_native_score = Some(evidence.core.score);
         }
     }
 
@@ -207,6 +252,96 @@ mod tests {
         assert!(a_ev.core.channels.contains(&Channel::Regex));
         assert!(a_ev.core.channels.contains(&Channel::Bm25));
         assert!(a_ev.core.score > 0.0);
+    }
+
+    #[test]
+    fn rrf_rank_ties_use_competition_ranking() {
+        let evidence = vec![
+            Evidence::new(
+                "a.rs",
+                1,
+                1,
+                "sha",
+                2.0,
+                vec!["a".into()],
+                vec![Channel::Bm25],
+            ),
+            Evidence::new(
+                "b.rs",
+                1,
+                1,
+                "sha",
+                2.0,
+                vec!["b".into()],
+                vec![Channel::Bm25],
+            ),
+            Evidence::new(
+                "c.rs",
+                1,
+                1,
+                "sha",
+                1.0,
+                vec!["c".into()],
+                vec![Channel::Bm25],
+            ),
+        ];
+
+        let result = rrf_combine_with_rank_ties(vec![(evidence, Channel::Bm25)]);
+        let a = result.iter().find(|item| item.core.path == "a.rs").unwrap();
+        let b = result.iter().find(|item| item.core.path == "b.rs").unwrap();
+        let c = result.iter().find(|item| item.core.path == "c.rs").unwrap();
+        assert_eq!(a.core.score, b.core.score);
+        assert_eq!(a.core.score, 1.0 / 61.0);
+        assert_eq!(c.core.score, 1.0 / 63.0);
+        assert_eq!(result[0].core.path, "a.rs");
+        assert_eq!(result[1].core.path, "b.rs");
+    }
+
+    #[test]
+    fn weighted_graph_vote_can_promote_a_related_candidate() {
+        let definition = |channel| {
+            Evidence::new(
+                "definition.rs",
+                1,
+                1,
+                "sha-definition",
+                2.0,
+                vec!["definition".into()],
+                vec![channel],
+            )
+        };
+        let dependency = |score, channel| {
+            Evidence::new(
+                "dependency.rs",
+                1,
+                1,
+                "sha-dependency",
+                score,
+                vec!["dependency".into()],
+                vec![channel],
+            )
+        };
+        let result = rrf_combine_with_rank_ties_and_channel_weights(vec![
+            (
+                vec![definition(Channel::Bm25), dependency(1.0, Channel::Bm25)],
+                Channel::Bm25,
+                1,
+            ),
+            (
+                vec![definition(Channel::Regex), dependency(2.0, Channel::Regex)],
+                Channel::Regex,
+                1,
+            ),
+            (
+                vec![definition(Channel::TreeSitter)],
+                Channel::TreeSitter,
+                1,
+            ),
+            (vec![dependency(2.0, Channel::Graph)], Channel::Graph, 2),
+        ]);
+
+        assert_eq!(result[0].core.path, "dependency.rs");
+        assert!(result[0].core.score > result[1].core.score);
     }
 
     #[test]

@@ -38,6 +38,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+pub mod bakeoff_query;
+
 #[derive(Parser)]
 #[command(
     name = "openlocus",
@@ -171,6 +173,17 @@ pub enum Commands {
     Dense {
         #[command(subcommand)]
         dense_cmd: DenseCommands,
+    },
+    /// B1 v2 narrow integration surface (internal): cumulative retrieval
+    /// stack (persistent BM25 + literal text + exact-name AST symbol +
+    /// eligible depth-1 graph) fused through the production tie-aware,
+    /// graph-weighted RRF K=60 variant, plus verified-parent support mode.
+    /// Read-only
+    /// except existing checked trace routing under the caller state root.
+    /// Does NOT change `retrieve`, search/index/graph/impact behavior.
+    BakeoffQuery {
+        #[command(subcommand)]
+        bakeoff_cmd: BakeoffCommands,
     },
 }
 
@@ -500,6 +513,72 @@ pub enum DenseCommands {
     Purge {
         /// Output as JSON
         #[arg(long)]
+        json: bool,
+    },
+}
+
+/// `bakeoff-query` sub-subcommands. One top-level CLI subcommand with two
+/// sub-modes (context + support) — the smallest equivalent of the
+/// `bakeoff-query` surface described in the V2 repair contract. Both
+/// modes require explicit `--source-root` and `--state-root` (fail-closed
+/// resolution; no colocated default to repo_root).
+#[derive(Subcommand)]
+pub enum BakeoffCommands {
+    /// Context mode: cumulative retrieval stack fused through production
+    /// RRF. Invokes persistent BM25, production literal text exactly once,
+    /// exact-name post-filtered AST symbol, and eligible depth-1 graph
+    /// seeded from real pre-graph evidence. Returns flattened production
+    /// evidence + per-component receipts.
+    Context {
+        /// Source root (where files live). Required, fail-closed.
+        #[arg(long)]
+        source_root: String,
+        /// State root (where the persistent BM25 index lives). Required,
+        /// fail-closed. Persistent state must be explicit; no colocated
+        /// default to repo_root is permitted for bakeoff-query.
+        #[arg(long)]
+        state_root: String,
+        /// Raw query string. Never interpreted as a path.
+        #[arg(long)]
+        query: String,
+        /// Closed ordered cumulative component set, comma-separated.
+        /// Valid prefixes of `bm25,literal,symbol,graph` only.
+        #[arg(long)]
+        components: String,
+        /// Canonical Phase A task family (closed vocabulary).
+        #[arg(long)]
+        task_family: String,
+        /// Maximum results (post-fusion cap). B1 common cap is 8.
+        #[arg(long, default_value_t = 8)]
+        max_results: usize,
+        /// Output as JSON. Always JSON for bakeoff-query (envelope contract).
+        #[arg(long, default_value_t = true)]
+        json: bool,
+    },
+    /// Support mode: explicit verified parent path/range, production
+    /// depth-1 graph expansion, structured relation provenance. NEVER
+    /// infers a path from a query.
+    Support {
+        /// Source root (where files live). Required, fail-closed.
+        #[arg(long)]
+        source_root: String,
+        /// State root (where persistent state lives; checked trace
+        /// routing target). Required, fail-closed.
+        #[arg(long)]
+        state_root: String,
+        /// Explicit verified parent path under source_root. NEVER
+        /// inferred from a query. Validates source confinement.
+        #[arg(long)]
+        parent_path: String,
+        /// Parent line range, `"start-end"` (1-indexed, inclusive).
+        #[arg(long)]
+        parent_range: String,
+        /// Maximum results (post-fusion cap). B1 common cap is 4 for
+        /// support.
+        #[arg(long, default_value_t = 4)]
+        max_results: usize,
+        /// Output as JSON. Always JSON for bakeoff-query.
+        #[arg(long, default_value_t = true)]
         json: bool,
     },
 }
@@ -1298,6 +1377,134 @@ pub fn run() -> Result<()> {
                     serde_json::json!({"purged": result.purged}),
                 );
                 print_output(&result, json)
+            }
+        },
+        Commands::BakeoffQuery { bakeoff_cmd } => match bakeoff_cmd {
+            BakeoffCommands::Context {
+                source_root,
+                state_root,
+                query,
+                components,
+                task_family,
+                max_results,
+                json: _,
+            } => {
+                // Delegate to the narrow bakeoff-query module. It owns
+                // its own checked trace routing (source-aware
+                // `append_trace_at_roots` under the caller state root);
+                // no colocated `trace_event` is emitted here. Output is
+                // always a strict closed JSON envelope — never a
+                // pretty-printed `print_output` value, so a `success=false`
+                // envelope still appears on stdout for the Python adapter
+                // to consume and fail-closed on.
+                let args = bakeoff_query::ContextArgs {
+                    source_root,
+                    state_root,
+                    query,
+                    components,
+                    task_family,
+                    max_results,
+                };
+                match bakeoff_query::run_context(args) {
+                    Ok(envelope) => {
+                        println!(
+                            "{}",
+                            serde_json::to_string_pretty(&envelope)
+                                .unwrap_or_else(|_| "{\"success\":false}".to_string())
+                        );
+                        Ok(())
+                    }
+                    Err(e) => {
+                        // Fail-closed: print a strict closed error envelope
+                        // and exit nonzero. The Python adapter must not
+                        // treat this as a successful envelope.
+                        let err_env = bakeoff_query::BakeoffErrorEnvelope {
+                            schema_version: bakeoff_query::BAKEOFF_QUERY_SCHEMA_VERSION.to_string(),
+                            success: false,
+                            mode: "context".to_string(),
+                            error: e.to_string(),
+                            fail_closed_reason: "component_error_or_fail_closed_condition"
+                                .to_string(),
+                            components_requested: Vec::new(),
+                            receipts: Vec::new(),
+                            provider: bakeoff_query::ProviderDiagnostics {
+                                remote_calls: 0,
+                                outbound_calls: 0,
+                                audit_path: String::new(),
+                                audit_events_before: 0,
+                                audit_events_after: 0,
+                            },
+                            trace: bakeoff_query::TraceDiagnostics {
+                                routed_to: String::new(),
+                                event: "bakeoff_query_context_error".to_string(),
+                                written: false,
+                            },
+                        };
+                        println!(
+                            "{}",
+                            serde_json::to_string_pretty(&err_env)
+                                .unwrap_or_else(|_| "{\"success\":false}".to_string())
+                        );
+                        // Anyhow error propagates to main() which prints
+                        // to stderr and exits nonzero.
+                        Err(e)
+                    }
+                }
+            }
+            BakeoffCommands::Support {
+                source_root,
+                state_root,
+                parent_path,
+                parent_range,
+                max_results,
+                json: _,
+            } => {
+                let args = bakeoff_query::SupportArgs {
+                    source_root,
+                    state_root,
+                    parent_path,
+                    parent_range,
+                    max_results,
+                };
+                match bakeoff_query::run_support(args) {
+                    Ok(envelope) => {
+                        println!(
+                            "{}",
+                            serde_json::to_string_pretty(&envelope)
+                                .unwrap_or_else(|_| "{\"success\":false}".to_string())
+                        );
+                        Ok(())
+                    }
+                    Err(e) => {
+                        let err_env = bakeoff_query::BakeoffErrorEnvelope {
+                            schema_version: bakeoff_query::BAKEOFF_QUERY_SCHEMA_VERSION.to_string(),
+                            success: false,
+                            mode: "support".to_string(),
+                            error: e.to_string(),
+                            fail_closed_reason: "support_fail_closed_condition".to_string(),
+                            components_requested: vec!["support".to_string()],
+                            receipts: Vec::new(),
+                            provider: bakeoff_query::ProviderDiagnostics {
+                                remote_calls: 0,
+                                outbound_calls: 0,
+                                audit_path: String::new(),
+                                audit_events_before: 0,
+                                audit_events_after: 0,
+                            },
+                            trace: bakeoff_query::TraceDiagnostics {
+                                routed_to: String::new(),
+                                event: "bakeoff_query_support_error".to_string(),
+                                written: false,
+                            },
+                        };
+                        println!(
+                            "{}",
+                            serde_json::to_string_pretty(&err_env)
+                                .unwrap_or_else(|_| "{\"success\":false}".to_string())
+                        );
+                        Err(e)
+                    }
+                }
             }
         },
     }
