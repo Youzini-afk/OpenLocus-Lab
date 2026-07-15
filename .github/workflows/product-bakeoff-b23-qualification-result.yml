@@ -1,0 +1,59 @@
+name: product-bakeoff-b23-qualification-result
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'artifacts/product_bakeoff_b23_runner_qualification/**'
+      - 'docs/en/product-bakeoff-b23-runner-qualification-result.md'
+      - 'docs/zh/product-bakeoff-b23-runner-qualification-result.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b23-qualification-result.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-result:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out public result
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Validate exact public qualification aggregate
+        run: |
+          python3 eval/product_bakeoff_b23_runner_qualification.py \
+            --validate-public \
+            artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json
+          python3 - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          path = Path(
+              "artifacts/product_bakeoff_b23_runner_qualification/"
+              "product_bakeoff_b23_runner_qualification.json"
+          )
+          raw = path.read_bytes()
+          report = json.loads(raw)
+          assert hashlib.sha256(raw).hexdigest() == (
+              "b22229479ed3744321a4a6b09e454d06dc873f08d366069c738e6109c72a7e95"
+          )
+          assert report["decision"] == {
+              "failure_codes": [],
+              "future_holdout_authoring_authorized": True,
+              "future_tournament_execution_authorized": False,
+              "runner_qualified": True,
+          }
+          assert report["privacy"]["private_input_read"] is False
+          PY
+      - name: Validate public privacy and bilingual docs
+        run: |
+          python3 scripts/public_artifact_privacy_audit.py --self-test
+          python3 scripts/public_artifact_privacy_audit.py
+          python3 scripts/validate_docs_i18n.py
+      - name: Check formatting
+        run: git diff --check

@@ -19,6 +19,9 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B1 closed aggregate / B1 闭合聚合: [`artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json`](../artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json)
 - B2 internal tournament protocol / B2 内部锦标赛协议: [EN](en/product-bakeoff-b2-internal-tournament-protocol.md) / [ZH](zh/product-bakeoff-b2-internal-tournament-protocol.md)
 - B2 protocol report / B2 协议报告: [`artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json`](../artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json)
+- B2.3 constrained Linux design / B2.3 受限 Linux 设计: [EN](en/product-bakeoff-b23-constrained-linux-longrun.md) / [ZH](zh/product-bakeoff-b23-constrained-linux-longrun.md)
+- B2.3 runner qualification result / B2.3 runner 资格结果: [EN](en/product-bakeoff-b23-runner-qualification-result.md) / [ZH](zh/product-bakeoff-b23-runner-qualification-result.md)
+- B2.3 qualification aggregate / B2.3 资格汇总: [`artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json`](../artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json)
 
 ## Current route closure / 当前路线关闭
 
