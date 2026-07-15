@@ -1777,7 +1777,12 @@ def run_self_test() -> dict[str, Any]:
         )
         cpu_v1 = _cpu_limit_profile(root)
         memory_v1 = _memory_limit_profile(root)
-        checks.append(("cgroup_v1_cpu_quota", cpu_v1["effective_cpu_quota_count"] == 12))
+        checks.append(("cgroup_v1_cpu_quota", cpu_v1["cpu_quota_count"] == 12.0))
+        checks.append((
+            "cgroup_v1_effective_cpu_minimum",
+            cpu_v1["effective_cpu_quota_count"]
+            == min(int(os.cpu_count() or 0), 96, 12),
+        ))
         checks.append(("cgroup_v1_cpu_finite", cpu_v1["finite_cgroup_cpu_limit"] is True))
         checks.append(("cgroup_v1_memory_finite", memory_v1["finite_cgroup_memory_limit"] is True))
         checks.append((
@@ -1792,7 +1797,12 @@ def run_self_test() -> dict[str, Any]:
         (root / "memory.current").write_text(str(1024**3), encoding="utf-8")
         cpu_v2 = _cpu_limit_profile(root)
         memory_v2 = _memory_limit_profile(root)
-        checks.append(("cgroup_v2_cpu_quota", cpu_v2["effective_cpu_quota_count"] == 8))
+        checks.append(("cgroup_v2_cpu_quota", cpu_v2["cpu_quota_count"] == 8.0))
+        checks.append((
+            "cgroup_v2_effective_cpu_minimum",
+            cpu_v2["effective_cpu_quota_count"]
+            == min(int(os.cpu_count() or 0), 16, 8),
+        ))
         checks.append(("cgroup_v2_memory_finite", memory_v2["finite_cgroup_memory_limit"] is True))
     profile = _mock_profile()
     checks.append(("constrained_profile_passes", not validate_runner_profile(profile)))
