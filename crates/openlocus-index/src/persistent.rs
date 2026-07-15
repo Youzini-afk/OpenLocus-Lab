@@ -27,6 +27,7 @@ use std::time::Instant;
 use tantivy::collector::TopDocs;
 use tantivy::query::QueryParser;
 use tantivy::schema::*;
+use tantivy::tokenizer::TokenStream;
 use tantivy::{Index, ReloadPolicy, doc};
 
 use crate::manifest::*;
@@ -1947,8 +1948,10 @@ pub fn search_persistent_bm25_at_state_root(
 
     let query_ms = query_start.elapsed().as_millis() as u64;
 
-    // Tokenize query for line-level scoring
-    let query_tokens = tokenize_query(query);
+    // Tokenize with the content field's actual Tantivy analyzer so the
+    // line-level verifier cannot disagree with the index/query parser about
+    // punctuation, underscores, one-character terms, or long-token removal.
+    let query_tokens = tokenize_query(&index, content_field, query)?;
 
     let materialize_start = Instant::now();
     let mut results = Vec::new();
@@ -2339,7 +2342,7 @@ impl PersistentBm25Index {
             .search(&parsed_query, &TopDocs::with_limit(max_results * 2))?;
 
         let query_ms = query_start.elapsed().as_millis() as u64;
-        let query_tokens = tokenize_query(query);
+        let query_tokens = tokenize_query(&self.index, self.content_field, query)?;
 
         let materialize_start = Instant::now();
         let mut results = Vec::new();
@@ -2485,15 +2488,32 @@ impl PersistentBm25Index {
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
-/// Tokenize a query into lowercase tokens, filtering out short noise words.
-fn tokenize_query(query: &str) -> Vec<String> {
-    query
-        .split(|c: char| {
-            c.is_whitespace() || c == ':' || c == '/' || c == '"' || c == '(' || c == ')'
-        })
-        .map(|t| t.trim().to_lowercase())
-        .filter(|t| t.len() >= 2 && !t.starts_with('_'))
-        .collect()
+/// Tokenize a query with the exact analyzer configured for the persistent
+/// content field.
+///
+/// The prior verifier used an independent hand-written splitter and dropped
+/// every token beginning with `_`.  Tantivy's default analyzer instead splits
+/// `_private_symbol` into `private` and `symbol`, so the index could return a
+/// hit that the verifier then rejected as having no line-level overlap.  By
+/// resolving the tokenizer from the field schema, indexing, query parsing, and
+/// current-source line verification share one token contract.
+fn tokenize_query(index: &Index, content_field: Field, query: &str) -> Result<Vec<String>> {
+    let schema = index.schema();
+    let field_entry = schema.get_field_entry(content_field);
+    let FieldType::Str(text_options) = field_entry.field_type() else {
+        bail!("persistent content field is not text");
+    };
+    let indexing = text_options
+        .get_indexing_options()
+        .context("persistent content field is not indexed")?;
+    let tokenizer_name = indexing.tokenizer();
+    let mut analyzer = index.tokenizers().get(tokenizer_name).with_context(|| {
+        format!("persistent content tokenizer {tokenizer_name:?} is unavailable")
+    })?;
+    let mut stream = analyzer.token_stream(query);
+    let mut tokens = Vec::new();
+    stream.process(&mut |token| tokens.push(token.text.clone()));
+    Ok(tokens)
 }
 
 /// Find the line within [start_line, end_line] that has the highest query
@@ -4074,6 +4094,54 @@ mod tests {
             .first()
             .expect("expected current indexed hit from reusable handle");
         assert_current_evidence(root, first, "src/current.rs", "current_kernel_target");
+    }
+
+    #[test]
+    fn regression_leading_underscore_identifier_uses_content_field_tokenizer() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        write_file(
+            root,
+            "src/private.py",
+            "def before():\n    return 0\n\ndef _hidden_symbol():\n    return 1\n",
+        );
+
+        let policy = Policy::default();
+        let records = vec![file_record(root, "src/private.py")];
+        build_index(root, &records, &policy, ChunkStrategy::LineWindowV1).unwrap();
+
+        let index = Index::open_in_dir(root.join(TANTIVY_DIR_RELATIVE)).unwrap();
+        let content_field = index.schema().get_field("content").unwrap();
+        assert_eq!(
+            tokenize_query(&index, content_field, "_hidden_symbol").unwrap(),
+            vec!["hidden", "symbol"]
+        );
+        assert_eq!(
+            tokenize_query(&index, content_field, "feature.flag").unwrap(),
+            vec!["feature", "flag"]
+        );
+        assert_eq!(
+            tokenize_query(&index, content_field, "x").unwrap(),
+            vec!["x"]
+        );
+
+        let (evidence, stats) =
+            search_persistent_bm25(root, "_hidden_symbol", 10, &policy).unwrap();
+        assert_eq!(stats.stale_hits_skipped, 0);
+        assert_eq!(stats.invalid_hits_skipped, 0);
+        let first = evidence
+            .first()
+            .expect("expected underscore-leading identifier from persistent search");
+        assert_current_evidence(root, first, "src/private.py", "_hidden_symbol");
+
+        let handle = PersistentBm25Index::open(root, &policy).unwrap();
+        let (handle_evidence, handle_stats) = handle.search(root, "_hidden_symbol", 10).unwrap();
+        assert_eq!(handle_stats.stale_hits_skipped, 0);
+        assert_eq!(handle_stats.invalid_hits_skipped, 0);
+        let first = handle_evidence
+            .first()
+            .expect("expected underscore-leading identifier from reusable handle");
+        assert_current_evidence(root, first, "src/private.py", "_hidden_symbol");
     }
 
     #[test]
