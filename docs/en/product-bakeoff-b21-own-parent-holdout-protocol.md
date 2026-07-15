@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b21_holdout_prepared_not_frozen_no_arm_output_no_result`
+Status: `product_bakeoff_b21_execution_failed_closed_no_result`
 
-B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. Its holdout exclusion overlay, own-parent runner, terminal support outcome, isolated scorer, and aggregate-only publisher are implemented. Three scenarios on two repositories excluded from the final holdout produced 36 logical records: ordinary support, six `parent_unavailable` terminals, and natural cross-path target divergence. All preflights passed with zero provider/network calls. The final 12-repository/48-task holdout is now privately materialized and aggregate-audited, but it has not been runtime-frozen, executed by any arm, or scored.
+B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. Its final 12-repository/48-task holdout and release runtime were privately frozen after all public readiness gates passed. The initial run and one complete infrastructure restart under a new private run identity each completed two of 48 groups and 60 complete-group logical records, then wrote 18 rejected timeout context records in the incomplete next group. Both attempts failed closed before complete-matrix gates or scoring, with zero provider/network calls. No tournament score, rank, shortlist, or product-default result exists.
 
 The executable protocol and public design report are:
 
@@ -15,6 +15,7 @@ The executable protocol and public design report are:
 - [`product_bakeoff_b21_cli.py`](../../eval/product_bakeoff_b21_cli.py)
 - [`product_bakeoff_b21_protocol_report.json`](../../artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json)
 - [`product_bakeoff_b21_holdout_readiness.json`](../../artifacts/product_bakeoff_b21_readiness/product_bakeoff_b21_holdout_readiness.json)
+- [`product_bakeoff_b21_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b21/product_bakeoff_b21_failed_closed_aggregate.json)
 
 ## Parent lock and non-reuse boundary
 
@@ -48,7 +49,13 @@ Repository identities, task text, queries, paths, ranges, oracle rows, private m
 
 The prepared private frame passed the frozen admission and authoring rules with 12 distinct repository identities, 48 task records, and 48 oracle records. Repository-slug overlap is zero against both the B2 frame and the two real-preflight repositories. The public task margins remain exactly preregistered: 16 tasks per language, 12 per size band, 12 per role, 36 one-shot plus 12 two-step tasks, and 36 deterministic plus six multi-target plus six abstention oracles. All visible size bands and the private holdout binding validated.
 
-This checkpoint is gated on source commit `cc09c9e97d3cb04bb7bac4b9e72ee3856677256f` and successful CI run `29386937460`. Candidate failover finished before any arm output. Runtime freeze is still absent, logical records executed remain zero, provider/model calls remain zero, and no B2.1 tournament result exists. The readiness artifact publishes no repository identity, task text, source location, oracle record, private digest, or private execution location. Readiness digest: `b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88`.
+The readiness checkpoint was gated on source commit `cc09c9e97d3cb04bb7bac4b9e72ee3856677256f` and successful CI run `29386937460`. Candidate failover finished before any arm output. At that checkpoint runtime freeze was absent, logical records executed were zero, provider/model calls were zero, and no B2.1 tournament result existed. The readiness artifact publishes no repository identity, task text, source location, oracle record, private digest, or private execution location. Readiness digest: `b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88`.
+
+## Failed-closed execution checkpoint
+
+Execution was gated on readiness commit `e4b77798fcf31b0bbb0937955f721b41b9dbfd18` and successful CI run `29390355476`. Private manifests and exactly one release runtime bundle were frozen before any final arm output. In each attempt, 78 normal records were written before stop: 60 accepted records from two completed groups and 18 rejected timeout context records from the incomplete next group. Those records comprised 66 context and 12 support records; no terminal support record was emitted, 60 parent receipts were complete, 18 parent receipts were unavailable because their context cells timed out, and provider/network calls were zero.
+
+The `parent_unavailable` terminal policy applies only after an accepted context produces no exactly-one ready target. It cannot convert a rejected or timed-out context into a quality failure, so both attempts were infrastructure-invalid and failed closed. The inherited B2 restart rule permitted one complete restart with a new private run identity and the exact same frozen inputs/runtime; the same aggregate timeout boundary repeated. No selective cell retry, imputation, task/oracle edit, timeout change, third attempt, scorer load, ranking, or shortlist selection occurred. Failure aggregate digest: `b21failure_6feabc0f3ffa4efc396a5195417f15ff4e21527f753114f1854951ddc855b68c`.
 
 ## Frozen identifiers
 
@@ -60,4 +67,4 @@ This checkpoint is gated on source commit `cc09c9e97d3cb04bb7bac4b9e72ee38566772
 
 ## Next authorized work
 
-After this readiness checkpoint is committed, pushed, and remotely green, build the release runtime and freeze the prepared private manifests with exactly one runtime bundle. Then execute the complete matrix once without interim quality inspection. No B2.1 empirical result exists at this checkpoint.
+Close B2.1 as `failed_closed_no_result`. Any further product tournament must be separately preregistered with a fresh holdout frame and a timeout/resource-lifecycle policy justified before any new arm output. It must not resume, selectively repair, score, or reuse either incomplete B2.1 attempt as a valid result.

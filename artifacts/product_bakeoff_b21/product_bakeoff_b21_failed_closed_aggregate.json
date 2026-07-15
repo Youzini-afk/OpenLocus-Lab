@@ -1,0 +1,81 @@
+{
+  "schema_version": "product_bakeoff_b21_failed_closed_aggregate.v1",
+  "phase": "product_bakeoff_b21_own_parent_holdout_tournament",
+  "date": "2026-07-15",
+  "status": "product_bakeoff_b21_execution_failed_closed_no_result",
+  "claim_level": "repeated_infrastructure_invalid_incomplete_matrix_no_tournament_result",
+  "source_gate": {
+    "checkpoint": "e4b77798fcf31b0bbb0937955f721b41b9dbfd18",
+    "ci_run_id": 29390355476,
+    "ci_conclusion": "success",
+    "readiness_digest": "b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88"
+  },
+  "protocol": {
+    "spec_digest": "b21spec_3d656619189a7531",
+    "source_bundle_digest": "b21src_76cd7f44a8c25d1d6b46493414b1753f4e72e72298d437f2bf3a8a01211d341d",
+    "holdout_frame_digest": "b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9",
+    "execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "protocol_report_digest": "b21protocol_385333bd86ba0a553229caf0797ceb2ef1acd18f05cae8f9a4edcff16ba5c2e1"
+  },
+  "execution": {
+    "runtime_and_private_inputs_frozen_before_execution": true,
+    "complete_restart_attempt_count": 2,
+    "expected_group_count": 48,
+    "completed_group_count_each_attempt": 2,
+    "expected_complete_logical_record_count": 1440,
+    "completed_group_logical_record_count_each_attempt": 60,
+    "normal_records_written_before_stop_each_attempt": 78,
+    "accepted_records_before_stop_each_attempt": 60,
+    "rejected_records_before_stop_each_attempt": 18,
+    "context_records_before_stop_each_attempt": 66,
+    "support_records_before_stop_each_attempt": 12,
+    "terminal_support_records_before_stop_each_attempt": 0,
+    "parent_receipts_before_stop_each_attempt": 60,
+    "parent_receipt_error_count_each_attempt": 18,
+    "timeout_records_before_stop_each_attempt": 18,
+    "provider_network_call_count_each_attempt": 0,
+    "complete_matrix_gate_passed": false,
+    "pre_score_gates_passed": false,
+    "tournament_scoring_executed": false,
+    "quality_or_resource_ranking_executed": false,
+    "phase_c_shortlist_selected": false,
+    "product_default_changed": false,
+    "public_tournament_result_exists": false
+  },
+  "failure": {
+    "category": "repeated_context_timeout_after_complete_restart",
+    "failed_closed": true,
+    "infrastructure_invalid": true,
+    "repeated_at_same_aggregate_boundary": true,
+    "normal_context_records_rejected": true,
+    "provider_or_model_failure": false,
+    "description": "Both the initial frozen run and one complete restart under a new private run identity completed two groups, then wrote the same aggregate count of rejected timeout context records in the incomplete next group. A rejected or timed-out context is not eligible for the parent_unavailable terminal policy, so the runner failed closed before complete-matrix gates or scoring."
+  },
+  "restart_boundary": {
+    "first_infrastructure_invalid_attempt_discarded": true,
+    "restart_used_new_private_run_identity": true,
+    "restart_reused_exact_frozen_inputs_and_runtime": true,
+    "selective_cell_retry_performed": false,
+    "incomplete_cells_reused": false,
+    "third_attempt_performed": false
+  },
+  "anti_adaptation": {
+    "missing_cells_may_be_imputed": false,
+    "task_query_or_oracle_may_be_edited": false,
+    "frozen_rule_or_timeout_may_be_changed_for_b21": false,
+    "failed_or_losing_cells_may_be_selectively_rerun": false,
+    "incomplete_b21_records_may_be_scored": false,
+    "same_frozen_tournament_has_a_valid_result": false
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "repository_identity_public": false,
+    "task_identity_or_text_public": false,
+    "source_location_or_range_public": false,
+    "private_manifest_or_freeze_digest_public": false,
+    "per_arm_task_output_public": false,
+    "private_execution_location_public": false
+  },
+  "next_authorized_action": "Close B2.1 as failed_closed_no_result. Any further product tournament must be separately preregistered with a fresh holdout frame and a timeout and resource-lifecycle policy justified before any new arm output; it must not resume, selectively repair, score, or reuse either incomplete B2.1 attempt as a valid result.",
+  "failure_aggregate_digest": "b21failure_6feabc0f3ffa4efc396a5195417f15ff4e21527f753114f1854951ddc855b68c"
+}

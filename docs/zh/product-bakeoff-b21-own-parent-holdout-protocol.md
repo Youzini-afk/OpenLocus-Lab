@@ -2,9 +2,9 @@
 
 日期：2026-07-15
 
-状态：`product_bakeoff_b21_holdout_prepared_not_frozen_no_arm_output_no_result`
+状态：`product_bakeoff_b21_execution_failed_closed_no_result`
 
-B2.1 是新的确认性 holdout 锦标赛，不是对不完整 B2 矩阵的修补或续跑。全新 holdout 排除覆盖层、own-parent runner、终止型 support 结果、隔离 scorer 和仅汇总发布器现已实现。两个明确排除于最终 holdout 的仓库完成了三个场景，共 36 条逻辑记录：普通 support、六条 `parent_unavailable` 终止记录，以及自然产生的跨路径目标分歧。全部预检通过，provider/网络调用为 0。最终的 12 仓库/48 任务 holdout 现已在私有目录完成物化和汇总审计，但尚未冻结 runtime、尚未由任何 arm 执行，也尚未评分。
+B2.1 是新的确认性 holdout 锦标赛，不是对不完整 B2 矩阵的修补或续跑。最终的 12 仓库/48 任务 holdout 与 release runtime 在全部公开就绪门禁通过后完成私有冻结。首次运行以及使用新私有运行身份进行的一次完整基础设施重启，都完成了 48 个 group 中的 2 个和 60 条完整 group 逻辑记录，随后在未完成的下一 group 写出 18 条被拒绝的 timeout context 记录。两次尝试都在完整矩阵门禁和评分之前失败关闭，provider/网络调用均为 0。不存在锦标赛得分、排名、shortlist 或产品默认结果。
 
 可执行协议与公开设计报告为：
 
@@ -15,6 +15,7 @@ B2.1 是新的确认性 holdout 锦标赛，不是对不完整 B2 矩阵的修�
 - [`product_bakeoff_b21_cli.py`](../../eval/product_bakeoff_b21_cli.py)
 - [`product_bakeoff_b21_protocol_report.json`](../../artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json)
 - [`product_bakeoff_b21_holdout_readiness.json`](../../artifacts/product_bakeoff_b21_readiness/product_bakeoff_b21_holdout_readiness.json)
+- [`product_bakeoff_b21_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b21/product_bakeoff_b21_failed_closed_aggregate.json)
 
 ## 父级锁定与禁止复用边界
 
@@ -48,7 +49,13 @@ B2.1 绑定 B2 实现检查点 `55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915` 和失
 
 已准备的私有任务框通过冻结的准入和编写规则：12 个不同仓库身份、48 条任务记录和 48 条 oracle 记录。相对于 B2 任务框以及两个真实预检仓库，仓库 slug 重叠数均为 0。公开任务边际保持与预注册完全一致：每种语言 16 个任务、每个规模带 12 个、每种角色 12 个，36 个 one-shot 加 12 个 two-step，以及 36 个 deterministic、6 个 multi-target、6 个 abstain oracle。所有可见规模带与私有 holdout 绑定均已验证。
 
-本检查点由源码提交 `cc09c9e97d3cb04bb7bac4b9e72ee3856677256f` 和成功 CI 运行 `29386937460` 门控。候选回退在任何 arm 输出之前完成。runtime 冻结仍不存在，已执行逻辑记录仍为 0，provider/model 调用仍为 0，也不存在 B2.1 锦标赛结果。公开就绪产物不包含仓库身份、任务文本、源码位置、oracle 记录、私有摘要或私有执行位置。就绪摘要：`b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88`。
+就绪检查点由源码提交 `cc09c9e97d3cb04bb7bac4b9e72ee3856677256f` 和成功 CI 运行 `29386937460` 门控。候选回退在任何 arm 输出之前完成。在该检查点，runtime 冻结尚不存在，已执行逻辑记录为 0，provider/model 调用为 0，也不存在 B2.1 锦标赛结果。公开就绪产物不包含仓库身份、任务文本、源码位置、oracle 记录、私有摘要或私有执行位置。就绪摘要：`b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88`。
+
+## 失败关闭执行检查点
+
+执行由就绪提交 `e4b77798fcf31b0bbb0937955f721b41b9dbfd18` 和成功 CI 运行 `29390355476` 门控。私有 manifest 与且仅与一个 release runtime bundle 在最终 arm 输出前完成冻结。每次尝试在停止前都写出 78 条正常记录：两个完整 group 的 60 条 accepted 记录，以及未完成下一 group 的 18 条 rejected timeout context 记录。这些记录包含 66 条 context 和 12 条 support；没有 terminal support 记录，60 份父收据完整，18 份父收据因 context timeout 而不可用，provider/网络调用为 0。
+
+`parent_unavailable` 终止策略只适用于已 accepted 的 context 没有产生恰好一个 ready 目标的情况；它不能把 rejected 或 timeout context 转成质量失败，因此两次尝试都属于基础设施无效并失败关闭。继承自 B2 的重启规则允许使用新私有运行身份和完全相同的冻结输入/runtime 做一次完整重启；相同的汇总 timeout 边界再次出现。未进行选择性单元重试、插补、任务/oracle 修改、timeout 修改、第三次尝试、scorer 加载、排名或 shortlist 选择。失败汇总摘要：`b21failure_6feabc0f3ffa4efc396a5195417f15ff4e21527f753114f1854951ddc855b68c`。
 
 ## 冻结标识
 
@@ -60,4 +67,4 @@ B2.1 绑定 B2 实现检查点 `55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915` 和失
 
 ## 下一项已授权工作
 
-本就绪检查点提交、推送并通过远端 CI 后，构建 release runtime，并用且仅用一个 runtime bundle 冻结已准备的私有 manifest。随后在不进行中途质量查看的前提下完整运行一次矩阵。本检查点不存在 B2.1 经验结果。
+将 B2.1 收口为 `failed_closed_no_result`。任何后续产品锦标赛都必须使用全新 holdout 任务框单独预注册，并在产生任何新 arm 输出前论证 timeout/resource-lifecycle 策略；不得恢复、选择性修补、评分或把任一不完整 B2.1 尝试当作有效结果复用。
