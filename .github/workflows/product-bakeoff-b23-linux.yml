@@ -70,6 +70,10 @@ jobs:
     environment: b23-private-execution
     runs-on: [self-hosted, linux, x64, openlocus-b23-private]
     timeout-minutes: 480
+    env:
+      # Self-hosted providers may add a private CA to the system bundle. Node
+      # actions must trust that bundle without disabling TLS verification.
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
     steps:
       - name: Refuse non-main, non-manual, or unbootstrapped execution
         shell: bash

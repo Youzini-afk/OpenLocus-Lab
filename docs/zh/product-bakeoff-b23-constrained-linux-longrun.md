@@ -64,7 +64,7 @@ profile 与 I/O 门禁通过后，资格器确定性生成一个公开合成 Typ
 
 bootstrap 会把冻结的 Rust 1.95 工具链安装到调用者提供的私有数据盘根目录。Rustup 1.29.0 从官方归档下载，并使用其公开 SHA-256 文件校验。脚本不会注册 runner、克隆私有 holdout 或启动资格测试。
 
-仓库是公开的。pull request 与 push 不能启动私有资格 job。job 只有只读仓库权限，不保留 checkout 凭据，不使用 Actions cache，把外部 action 固定到完整 commit SHA，并且只上传经过严格验证的汇总 JSON。GitHub 建议使用一次性 self-hosted runner，并把 runner 诊断日志保存在外部受限存储；参见 [self-hosted runner 参考](https://docs.github.com/en/actions/reference/runners/self-hosted-runners)。
+仓库是公开的。pull request 与 push 不能启动私有资格 job。job 只有只读仓库权限，不保留 checkout 凭据，不使用 Actions cache，把外部 action 固定到完整 commit SHA，并且只上传经过严格验证的汇总 JSON。Node action 使用 Linux 系统 CA 证书包；服务商安装私有 CA 时也通过该证书包建立信任，绝不关闭 TLS 校验。GitHub 建议使用一次性 self-hosted runner，并把 runner 诊断日志保存在外部受限存储；参见 [self-hosted runner 参考](https://docs.github.com/en/actions/reference/runners/self-hosted-runners)。
 
 ## 本地验证边界
 
@@ -73,8 +73,8 @@ bootstrap 会把冻结的 Rust 1.95 工具链安装到调用者提供的私有�
 ## 冻结标识
 
 - B2.3 规格摘要：`b23spec_b9281d2e323f8103`
-- B2.3 源码包摘要：`b23src_ad90913234375d3acfc98dc7d904e61852fc098dd23077baa60375cdbf4899e4`
-- B2.3 协议报告摘要：`b23protocol_772ef98e70cf8548e3895ad920c05e3bbac6791b2681b10856a15cc6527d3e7b`
+- B2.3 源码包摘要：`b23src_c674402a50183c6d3bb6eec0d855900dbfe7822929eb9656965077f9336057eb`
+- B2.3 协议报告摘要：`b23protocol_4e59c0b0496aeaf3f5adfc88148d22e8edd617f075831b82152a805aa836bf23`
 
 ## 下一项已授权工作
 

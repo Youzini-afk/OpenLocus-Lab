@@ -111,7 +111,7 @@
     "task_text_or_query_public": false,
     "terminal_support_count_public_at_arm_aggregate": true
   },
-  "protocol_digest": "b23protocol_772ef98e70cf8548e3895ad920c05e3bbac6791b2681b10856a15cc6527d3e7b",
+  "protocol_digest": "b23protocol_4e59c0b0496aeaf3f5adfc88148d22e8edd617f075831b82152a805aa836bf23",
   "retry_policy": {
     "complete_restart_after_any_future_arm_output_allowed": false,
     "future_tournament_attempt_count": 1,
@@ -149,7 +149,7 @@
   },
   "schema_version": "product_bakeoff_b23_protocol_report.v1",
   "source_locks": {
-    "b23_source_bundle_digest": "b23src_ad90913234375d3acfc98dc7d904e61852fc098dd23077baa60375cdbf4899e4",
+    "b23_source_bundle_digest": "b23src_c674402a50183c6d3bb6eec0d855900dbfe7822929eb9656965077f9336057eb",
     "b23_spec_digest": "b23spec_b9281d2e323f8103",
     "line_endings_normalized_for_cross_platform_digest": true
   },

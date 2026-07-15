@@ -64,7 +64,7 @@ Once any future arm output exists, a process or machine restart closes B2.3 with
 
 The bootstrap installs the pinned Rust 1.95 toolchain under a caller-supplied private data-volume root. Rustup 1.29.0 is downloaded from the official archive and checked against its published SHA-256 file. The script does not register a runner, clone a private holdout, or start qualification.
 
-The repository is public. Pull requests and pushes cannot start the private qualification job. The job has read-only repository permission, does not retain checkout credentials, uses no Actions cache, pins external actions to full commit SHAs, and uploads only a strictly validated aggregate JSON. GitHub recommends ephemeral self-hosted runners and external retention of runner diagnostics; see the [self-hosted runner reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners).
+The repository is public. Pull requests and pushes cannot start the private qualification job. The job has read-only repository permission, does not retain checkout credentials, uses no Actions cache, pins external actions to full commit SHAs, and uploads only a strictly validated aggregate JSON. Node-based actions trust the Linux system CA bundle, including a provider-installed private CA when present; TLS verification is never disabled. GitHub recommends ephemeral self-hosted runners and external retention of runner diagnostics; see the [self-hosted runner reference](https://docs.github.com/en/actions/reference/runners/self-hosted-runners).
 
 ## Local validation boundary
 
@@ -73,8 +73,8 @@ Only compilation, protocol self-tests, fault injection, cgroup parser fixtures, 
 ## Frozen identifiers
 
 - B2.3 spec digest: `b23spec_b9281d2e323f8103`
-- B2.3 source bundle digest: `b23src_ad90913234375d3acfc98dc7d904e61852fc098dd23077baa60375cdbf4899e4`
-- B2.3 protocol report digest: `b23protocol_772ef98e70cf8548e3895ad920c05e3bbac6791b2681b10856a15cc6527d3e7b`
+- B2.3 source bundle digest: `b23src_c674402a50183c6d3bb6eec0d855900dbfe7822929eb9656965077f9336057eb`
+- B2.3 protocol report digest: `b23protocol_4e59c0b0496aeaf3f5adfc88148d22e8edd617f075831b82152a805aa836bf23`
 
 ## Next authorized work
 
