@@ -57,8 +57,8 @@ B23_PARENT_B22_SOURCE_BUNDLE_DIGEST = (
 B23_PARENT_B22_PROTOCOL_REPORT_DIGEST = (
     "b22protocol_a84b309cf327a81325eb38451682beb8077cd93e2e9a49b3befc65fc4219e425"
 )
-B23_PARENT_B22_REPORT_SHA256 = (
-    "f7fd7f5cb94131207578d18e31acd3052b67e6c33890b4643cd37c0d56c57a20"
+B23_PARENT_B22_REPORT_NORMALIZED_SHA256 = (
+    "15daa2914518e715c49f3686537ee135040f8361690a6f4983b5763e3e1695c1"
 )
 
 B23_SOURCE_BUNDLE_PATHS = (
@@ -219,12 +219,9 @@ def _prefixed_digest(prefix: str, value: Any, *, length: int | None = None) -> s
     return prefix + (digest[:length] if length is not None else digest)
 
 
-def file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+def normalized_text_file_sha256(path: Path) -> str:
+    raw = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(raw).hexdigest()
 
 
 def validate_parent_b22_checkpoint(repo_root: Path | None = None) -> list[str]:
@@ -232,7 +229,10 @@ def validate_parent_b22_checkpoint(repo_root: Path | None = None) -> list[str]:
     path = root / B22_REPORT_REL
     if path.is_symlink() or not path.is_file():
         return ["parent B2.2 protocol report missing or unsafe"]
-    if file_sha256(path) != B23_PARENT_B22_REPORT_SHA256:
+    if (
+        normalized_text_file_sha256(path)
+        != B23_PARENT_B22_REPORT_NORMALIZED_SHA256
+    ):
         return ["parent B2.2 protocol report bytes drifted"]
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -299,7 +299,9 @@ def b23_spec_payload() -> dict[str, Any]:
             "spec_digest": B23_PARENT_B22_SPEC_DIGEST,
             "source_bundle_digest": B23_PARENT_B22_SOURCE_BUNDLE_DIGEST,
             "protocol_report_digest": B23_PARENT_B22_PROTOCOL_REPORT_DIGEST,
-            "protocol_report_sha256": B23_PARENT_B22_REPORT_SHA256,
+            "protocol_report_normalized_sha256": (
+                B23_PARENT_B22_REPORT_NORMALIZED_SHA256
+            ),
         },
         "runner_class": copy.deepcopy(B23_RUNNER_CLASS),
         "io_qualification": copy.deepcopy(B23_IO_QUALIFICATION),
@@ -448,7 +450,7 @@ def run_fault_test() -> dict[str, Any]:
 
     rejected("unknown_key", lambda value: value.__setitem__("extra", True))
     rejected("status_drift", lambda value: value.__setitem__("status", "drift"))
-    rejected("parent_result_drift", lambda value: value["parent_b22_lock"].__setitem__("protocol_report_sha256", "0" * 64))
+    rejected("parent_result_drift", lambda value: value["parent_b22_lock"].__setitem__("protocol_report_normalized_sha256", "0" * 64))
     rejected("weak_cpu", lambda value: value["runner_class"].__setitem__("minimum_effective_cpu_quota_count", 1))
     rejected("weak_memory", lambda value: value["runner_class"].__setitem__("minimum_cgroup_memory_limit_bytes", GIB))
     rejected("private_before_qualification", lambda value: value["stress_qualification"].__setitem__("qualification_runs_before_private_input_read", False))

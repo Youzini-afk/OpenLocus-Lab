@@ -83,7 +83,7 @@
   "parent_b22_lock": {
     "checkpoint": "9acfc997c3971f7b6501b05311044887e43c4736",
     "protocol_report_digest": "b22protocol_a84b309cf327a81325eb38451682beb8077cd93e2e9a49b3befc65fc4219e425",
-    "protocol_report_sha256": "f7fd7f5cb94131207578d18e31acd3052b67e6c33890b4643cd37c0d56c57a20",
+    "protocol_report_normalized_sha256": "15daa2914518e715c49f3686537ee135040f8361690a6f4983b5763e3e1695c1",
     "source_bundle_digest": "b22src_05d40bb6c20414aa8ec0972d087e53750d0af635f0a57857ceddd864b4b1ea47",
     "spec_digest": "b22spec_adf15e2598e9f7c4"
   },
@@ -111,7 +111,7 @@
     "task_text_or_query_public": false,
     "terminal_support_count_public_at_arm_aggregate": true
   },
-  "protocol_digest": "b23protocol_f5d14c1ea3a1476202fd6d72570810c4a084ade2741667bc73b063d309a55680",
+  "protocol_digest": "b23protocol_e4b80a244846a70d5bdb7a9a5cd37e42987b3c8523ac9ffd7172130d149bfd69",
   "retry_policy": {
     "complete_restart_after_any_future_arm_output_allowed": false,
     "future_tournament_attempt_count": 1,
@@ -149,8 +149,8 @@
   },
   "schema_version": "product_bakeoff_b23_protocol_report.v1",
   "source_locks": {
-    "b23_source_bundle_digest": "b23src_160f678ececcc26cb8d194f2b12bf92857b7792c0687a9e12ec963e02a05c715",
-    "b23_spec_digest": "b23spec_b76203773b8dfc32",
+    "b23_source_bundle_digest": "b23src_86530c25e22fc30a61a311bf1abe4f93a3406d872806201460a6a0f77db174fc",
+    "b23_spec_digest": "b23spec_b9281d2e323f8103",
     "line_endings_normalized_for_cross_platform_digest": true
   },
   "status": "product_bakeoff_b23_linux_longrun_protocol_ready_no_runner_qualification_no_holdout_no_result",

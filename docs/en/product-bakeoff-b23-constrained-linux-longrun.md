@@ -16,7 +16,7 @@ The executable public surface is:
 
 ## Why B2.3 is a new checkpoint
 
-B2.2 froze a Windows x64 strong-runner class before any runner was registered or qualified. Rewriting those thresholds in place would erase the audit trail. B2.3 therefore locks the B2.2 report bytes and digests, then changes only the execution-environment design. No B2.2 private input or treatment output exists.
+B2.2 froze a Windows x64 strong-runner class before any runner was registered or qualified. Rewriting those thresholds in place would erase the audit trail. B2.3 therefore locks the B2.2 report's repository bytes after cross-platform line-ending normalization and locks its semantic digests, then changes only the execution-environment design. No B2.2 private input or treatment output exists.
 
 Lower speed is not itself a treatment confounder when every arm runs on the same qualified machine and the frozen complete arm rotation is preserved inside each logical-task block. Provider-host contention remains an uncontrolled nuisance, so performance claims are restricted to this one qualified machine and may not be generalized across machines.
 
@@ -72,9 +72,9 @@ Only compilation, protocol self-tests, fault injection, cgroup parser fixtures, 
 
 ## Frozen identifiers
 
-- B2.3 spec digest: `b23spec_b76203773b8dfc32`
-- B2.3 source bundle digest: `b23src_160f678ececcc26cb8d194f2b12bf92857b7792c0687a9e12ec963e02a05c715`
-- B2.3 protocol report digest: `b23protocol_f5d14c1ea3a1476202fd6d72570810c4a084ade2741667bc73b063d309a55680`
+- B2.3 spec digest: `b23spec_b9281d2e323f8103`
+- B2.3 source bundle digest: `b23src_86530c25e22fc30a61a311bf1abe4f93a3406d872806201460a6a0f77db174fc`
+- B2.3 protocol report digest: `b23protocol_e4b80a244846a70d5bdb7a9a5cd37e42987b3c8523ac9ffd7172130d149bfd69`
 
 ## Next authorized work
 
