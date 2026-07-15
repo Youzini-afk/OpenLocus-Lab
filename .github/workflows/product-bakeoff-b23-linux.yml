@@ -1,0 +1,162 @@
+name: product-bakeoff-b23-linux
+
+# Pull requests exercise only public contract checks. The sustained Linux
+# qualification is manual, protected-environment gated, and label-routed.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b23_*.py'
+      - 'scripts/product_bakeoff_b23_linux_bootstrap.sh'
+      - 'artifacts/product_bakeoff_b23_protocol/**'
+      - 'docs/en/product-bakeoff-b23-constrained-linux-longrun.md'
+      - 'docs/zh/product-bakeoff-b23-constrained-linux-longrun.md'
+      - '.github/workflows/product-bakeoff-b23-linux.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Public contract validation or constrained Linux qualification
+        required: true
+        default: public_contract
+        type: choice
+        options:
+          - public_contract
+          - runner_qualification
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b23-${{ github.ref }}-${{ inputs.mode || 'public_contract' }}
+  cancel-in-progress: false
+
+jobs:
+  public-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out frozen public source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Compile B2.3 protocol and qualifier
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b23_protocol.py \
+            eval/product_bakeoff_b23_runner_qualification.py
+      - name: Run B2.3 protocol self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b23_protocol.py --self-test
+          python3 eval/product_bakeoff_b23_protocol.py --fault-test
+      - name: Run B2.3 qualifier self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b23_runner_qualification.py --self-test
+          python3 eval/product_bakeoff_b23_runner_qualification.py --fault-test
+      - name: Validate B2.3 report and source drift
+        run: |
+          python3 eval/product_bakeoff_b23_protocol.py --validate-report artifacts/product_bakeoff_b23_protocol/product_bakeoff_b23_protocol_report.json
+          python3 eval/product_bakeoff_b23_protocol.py --check-drift artifacts/product_bakeoff_b23_protocol/product_bakeoff_b23_protocol_report.json
+      - name: Validate bootstrap shell syntax
+        run: bash -n scripts/product_bakeoff_b23_linux_bootstrap.sh
+      - name: Validate bilingual documentation mirror
+        run: python3 scripts/validate_docs_i18n.py
+      - name: Check working tree formatting
+        run: git diff --check
+
+  self-hosted-qualification:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'runner_qualification'
+    environment: b23-private-execution
+    runs-on: [self-hosted, linux, x64, openlocus-b23-private]
+    timeout-minutes: 480
+    steps:
+      - name: Refuse non-main, non-manual, or unbootstrapped execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_EVENT_NAME" == 'workflow_dispatch' ]]
+          [[ "$GITHUB_REF" == 'refs/heads/main' ]]
+          : "${OPENLOCUS_B23_DATA_ROOT:?missing OPENLOCUS_B23_DATA_ROOT}"
+          : "${OPENLOCUS_B23_SCRATCH_ROOT:?missing OPENLOCUS_B23_SCRATCH_ROOT}"
+          : "${OPENLOCUS_B23_PYTHON:?missing OPENLOCUS_B23_PYTHON}"
+          [[ -f "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh" ]]
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          [[ "$(ulimit -Sn)" -ge 65535 ]]
+      - name: Check out frozen public source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          clean: true
+      - name: Build release runtime on the data volume
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          cargo build --release --locked
+      - name: Revalidate public B2.3 contract on the runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_protocol.py --self-test
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_protocol.py --fault-test
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_runner_qualification.py --self-test
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_runner_qualification.py --fault-test
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_protocol.py --check-drift artifacts/product_bakeoff_b23_protocol/product_bakeoff_b23_protocol_report.json
+      - name: Run cgroup, I/O, and three-group long-timeout qualification
+        id: qualification
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          public_dir="$RUNNER_TEMP/b23-public"
+          mkdir -p "$public_dir"
+          public_out="$public_dir/product_bakeoff_b23_runner_qualification.json"
+          qualification_root="$OPENLOCUS_B23_SCRATCH_ROOT/qualification-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          [[ ! -e "$qualification_root" ]]
+          private_receipt="$qualification_root/private/runner_qualification_receipt.json"
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_runner_qualification.py \
+            --qualify \
+            --repo-root "$GITHUB_WORKSPACE" \
+            --scratch-root "$qualification_root" \
+            --openlocus "$CARGO_TARGET_DIR/release/openlocus" \
+            --private-receipt "$private_receipt" \
+            --public-out "$public_out"
+      - name: Validate the exact public aggregate
+        id: validate_aggregate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          public_out="$RUNNER_TEMP/b23-public/product_bakeoff_b23_runner_qualification.json"
+          [[ -f "$public_out" ]]
+          "$OPENLOCUS_B23_PYTHON" eval/product_bakeoff_b23_runner_qualification.py --validate-public "$public_out"
+      - name: Upload only the validated aggregate
+        if: always() && steps.validate_aggregate.outcome == 'success'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: product-bakeoff-b23-runner-qualification
+          path: ${{ runner.temp }}/b23-public/product_bakeoff_b23_runner_qualification.json
+          if-no-files-found: error
+          include-hidden-files: false
+          retention-days: 14
+          compression-level: 9
+      - name: Enforce qualification decision
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          source "$OPENLOCUS_B23_DATA_ROOT/b23-env.sh"
+          public_out="$RUNNER_TEMP/b23-public/product_bakeoff_b23_runner_qualification.json"
+          "$OPENLOCUS_B23_PYTHON" - "$public_out" '${{ steps.qualification.outcome }}' <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          report = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          if report["decision"]["runner_qualified"] is not True:
+              raise SystemExit("B2.3 runner qualification failed closed")
+          if sys.argv[2] != "success":
+              raise SystemExit("passing B2.3 report accompanied a nonzero process")
+          PY
