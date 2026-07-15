@@ -2,13 +2,17 @@
 
 日期：2026-07-15
 
-状态：`product_bakeoff_b21_protocol_frozen_no_execution_no_result`
+状态：`product_bakeoff_b21_implementation_ready_preflight_passed_no_holdout_no_result`
 
-B2.1 是新的确认性 holdout 锦标赛，不是对不完整 B2 矩阵的修补或续跑。B2 在评分前失败关闭，原因是某个双步任务的六个有效 context 输出没有落在同一条源码路径。B2.1 将这种目标差异保留为方法效果的一部分：每个 arm 的 support 步骤只跟随该 arm 自己在同一次执行中得到的 context 目标。
+B2.1 是新的确认性 holdout 锦标赛，不是对不完整 B2 矩阵的修补或续跑。全新 holdout 排除覆盖层、own-parent runner、终止型 support 结果、隔离 scorer 和仅汇总发布器现已实现。两个明确排除于最终 holdout 的仓库完成了三个场景，共 36 条逻辑记录：普通 support、六条 `parent_unavailable` 终止记录，以及自然产生的跨路径目标分歧。全部预检通过，provider/网络调用为 0。最终的 12 仓库/48 任务 holdout 尚未物化或执行。
 
 可执行协议与公开设计报告为：
 
 - [`product_bakeoff_b21_protocol.py`](../../eval/product_bakeoff_b21_protocol.py)
+- [`product_bakeoff_b21_corpus.py`](../../eval/product_bakeoff_b21_corpus.py)
+- [`product_bakeoff_b21_runner.py`](../../eval/product_bakeoff_b21_runner.py)
+- [`product_bakeoff_b21_scorer.py`](../../eval/product_bakeoff_b21_scorer.py)
+- [`product_bakeoff_b21_cli.py`](../../eval/product_bakeoff_b21_cli.py)
 - [`product_bakeoff_b21_protocol_report.json`](../../artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json)
 
 ## 父级锁定与禁止复用边界
@@ -31,7 +35,7 @@ B2.1 绑定 B2 实现检查点 `55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915` 和失
 
 ## 评分与晋级
 
-任务级质量、组件 earn-in 规则、非劣界限、资源上限、准入下限、同分处理以及零/一/多个决赛方案均继承 B2。双步任务只有在该 arm 的 context 目标通过 oracle 校验且同 arm support 输出命中冻结关系时才成功。终止型 support 机会计为失败并在 arm 汇总层报告；它们不进入 query latency 百分位，避免缺失父目标被奖励或伪装成实测查询。
+任务级质量、组件 earn-in 规则、非劣界限、资源上限、准入下限、同分处理以及零/一/多个决赛方案均继承 B2。双步任务只有在该 arm 的 context 目标通过 oracle 校验且同 arm support 输出命中冻结关系时才成功。终止型 support 机会计为失败并在 arm 汇总层报告；其父进程包装测量不进入 query latency 和 peak RSS 百分位，避免缺失父目标被奖励，或把包装器测量与真实 adapter 执行混在一起。
 
 禁止中途查看质量、提前淘汰、替换任务、选择性重跑或切换规则。只有完整逻辑矩阵、源码、lineage、资源、零网络、确定性和隐私门禁全部通过后才能加载评分。
 
@@ -41,12 +45,12 @@ B2.1 绑定 B2 实现检查点 `55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915` 和失
 
 ## 冻结标识
 
-- B2.1 规格摘要：`b21spec_a4460a279280e872`
-- B2.1 源码包摘要：`b21src_76e3433599291e9061c4449b32557b9a3ad2998cfc0a739f69a5632a4e47b7d3`
-- B2.1 holdout-frame 摘要：`b21frame_f50eda42c3403eb877e46a07b257a8a0ce8930759422c7536963f7d96eee8571`
+- B2.1 规格摘要：`b21spec_3d656619189a7531`
+- B2.1 源码包摘要：`b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf`
+- B2.1 holdout-frame 摘要：`b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9`
 - B2.1 执行调度摘要：`b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.1 协议报告摘要：`b21protocol_f1c833bfe2bae7d0ca11c15b6ba5c62650adde88f399217b6171e7156a61d7b7`
+- B2.1 协议报告摘要：`b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb`
 
 ## 下一项已授权工作
 
-实现全新 holdout 准入覆盖层、同 arm lineage runner、终止型 support 记录、隔离 scorer 与仅汇总结果校验器。在物化最终 holdout 任务框前，通过合成测试、故障注入和未使用仓库上的真实源码预检。本检查点不存在 B2.1 经验结果。
+准备一套新的 12 仓库/48 任务 holdout，排除所有 B2 与真实预检仓库。只审计其汇总边际，冻结私有 manifest 和单一 runtime bundle，然后在不进行中途质量查看的前提下完整运行一次矩阵。本检查点不存在 B2.1 经验结果。

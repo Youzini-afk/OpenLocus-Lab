@@ -1,5 +1,5 @@
 {
-  "claim_level": "design_only_no_b21_tournament_result",
+  "claim_level": "implementation_ready_no_b21_tournament_result",
   "design_rationale": {
     "b2_failure_was_not_used_to_rank_or_select_an_arm": true,
     "b2_records_were_mechanically_valid": true,
@@ -8,12 +8,21 @@
     "own_parent_policy_preserves_target_selection_as_part_of_treatment": true
   },
   "execution_boundary": {
-    "design_only": true,
+    "design_only": false,
     "final_holdout_adapter_execution_executed": false,
     "holdout_repositories_materialized": false,
     "holdout_tasks_materialized": false,
+    "implementation_ready": true,
+    "preflight_cross_path_divergence_observed_and_tolerated": true,
+    "preflight_logical_record_count": 36,
+    "preflight_normal_record_count": 30,
+    "preflight_provider_or_network_call_count": 0,
+    "preflight_repository_identity_count": 2,
+    "preflight_scenario_count": 3,
+    "preflight_terminal_support_record_count": 6,
     "provider_or_network_calls_executed": false,
     "tournament_scoring_executed": false,
+    "unused_repository_real_source_preflight_executed": true,
     "winner_or_default_selected": false
   },
   "experimental_design": {
@@ -84,7 +93,7 @@
     "terminal_support_records_closed_and_valid": true
   },
   "holdout_frame": {
-    "b21_holdout_frame_digest": "b21frame_f50eda42c3403eb877e46a07b257a8a0ce8930759422c7536963f7d96eee8571",
+    "b21_holdout_frame_digest": "b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9",
     "component_eligible_counts": {
       "graph": 16,
       "literal": 12,
@@ -92,6 +101,7 @@
       "symbol": 16
     },
     "holdout_rules": {
+      "all_real_preflight_repository_slugs_absent_from_final_holdout": true,
       "all_repository_identity_commit_pairs_absent_from_b2_frame": true,
       "all_repository_slugs_absent_from_b2_frame": true,
       "all_task_query_and_oracle_rows_new": true,
@@ -146,6 +156,16 @@
       "test_discovery": 4,
       "type_resolution": 4
     }
+  },
+  "implementation_readiness": {
+    "b2_and_preflight_repository_nonoverlap_enforced": true,
+    "final_holdout_not_materialized": true,
+    "fresh_holdout_exclusion_overlay_implemented": true,
+    "isolated_scorer_and_aggregate_publication_implemented": true,
+    "logical_1440_cell_gate_implemented": true,
+    "parent_unavailable_terminal_record_implemented": true,
+    "public_result_privacy_and_digest_validator_implemented": true,
+    "same_arm_own_parent_runner_implemented": true
   },
   "lifecycle_matrix": {
     "adapter_execution_record_count_range_inclusive": [
@@ -225,6 +245,7 @@
       "quality_scored_once_per_logical_task_after_exact_cache_repetition_semantic_equality": true,
       "resource_percentile_rule": "nearest_rank_ceiling_p95",
       "resource_query_population": "executed_adapter_queries_only;_terminal_support_opportunities_excluded",
+      "resource_rss_population": "executed_adapter_records_only;_terminal_parent_wrapper_rss_excluded",
       "target_divergence": "not_a_failure_gate_and_not_normalized",
       "terminal_support_count": "reported_separately_and_never_rewards_quality",
       "two_step_context_target": "score_each_arm_against_the_frozen_oracle_using_that_arms_own_context_target",
@@ -241,9 +262,10 @@
       "symbol": 16
     },
     "terminal_support_opportunities_are_quality_failures": true,
+    "terminal_support_opportunities_excluded_from_peak_rss_p95": true,
     "terminal_support_opportunities_excluded_from_query_p95": true
   },
-  "next_authorized_action": "implement the B2.1 fresh-holdout admission overlay, same-arm lineage runner, terminal support record, isolated scorer, and public privacy validator; pass synthetic/fault/real-repository preflight before any final holdout materialization",
+  "next_authorized_action": "prepare a new 12-repository 48-task holdout frame excluding every B2 and real-preflight repository, audit only aggregate margins, then freeze the private manifests and one runtime bundle before any final holdout arm output",
   "parent_b2_lock": {
     "b2_result_reused": false,
     "closeout_checkpoint": "07bfd116622bd0ed9a2bc654abec3bb98a7f38df",
@@ -265,6 +287,7 @@
     "terminal_count_reported_at_arm_aggregate": true,
     "terminal_counts_as_support_failure": true,
     "terminal_counts_as_task_failure": true,
+    "terminal_excluded_from_peak_rss_percentile": true,
     "terminal_excluded_from_query_latency_percentile": true,
     "terminal_is_not_an_infrastructure_failure": true,
     "terminal_outcome": "parent_unavailable",
@@ -459,7 +482,7 @@
     },
     "zero_one_or_multiple_finalists_are_valid_outcomes": true
   },
-  "protocol_digest": "b21protocol_f1c833bfe2bae7d0ca11c15b6ba5c62650adde88f399217b6171e7156a61d7b7",
+  "protocol_digest": "b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb",
   "randomization": {
     "arm_order_is_constrained_randomization_not_adaptive": true,
     "arm_position_count_each_overall": 32,
@@ -487,13 +510,13 @@
   },
   "schema_version": "product_bakeoff_b21_protocol_report.v1",
   "source_locks": {
-    "b21_source_bundle_digest": "b21src_76e3433599291e9061c4449b32557b9a3ad2998cfc0a739f69a5632a4e47b7d3",
-    "b21_spec_digest": "b21spec_a4460a279280e872",
+    "b21_source_bundle_digest": "b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf",
+    "b21_spec_digest": "b21spec_3d656619189a7531",
     "line_endings_normalized_for_cross_platform_source_digest": true,
     "mixed_runtime_bundles_in_one_tournament_forbidden": true,
     "runtime_bundle_must_be_single_and_frozen_before_execution": true
   },
-  "status": "product_bakeoff_b21_protocol_frozen_no_execution_no_result",
+  "status": "product_bakeoff_b21_implementation_ready_preflight_passed_no_holdout_no_result",
   "tie_policy": {
     "competition_rank_example": [
       1,

@@ -26,8 +26,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Compile B2.1 protocol
-        run: python3 -m py_compile eval/product_bakeoff_b21_protocol.py
+      - name: Compile B2.1 protocol and implementation
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b21_protocol.py \
+            eval/product_bakeoff_b21_corpus.py \
+            eval/product_bakeoff_b21_runner.py \
+            eval/product_bakeoff_b21_scorer.py \
+            eval/product_bakeoff_b21_cli.py
+      - name: Run B2.1 implementation self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b21_cli.py --self-test
+          python3 eval/product_bakeoff_b21_cli.py --fault-test
       - name: Run B2.1 protocol self-test and fault injection
         run: |
           python3 eval/product_bakeoff_b21_protocol.py --self-test

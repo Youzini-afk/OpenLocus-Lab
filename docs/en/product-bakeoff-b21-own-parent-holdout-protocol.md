@@ -2,13 +2,17 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b21_protocol_frozen_no_execution_no_result`
+Status: `product_bakeoff_b21_implementation_ready_preflight_passed_no_holdout_no_result`
 
-B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. B2 failed closed before scoring because the six valid context outputs for a two-step task did not share one source path. B2.1 preserves that target divergence as part of the treatment effect: each arm's support step follows only that arm's own same-execution context target.
+B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. Its holdout exclusion overlay, own-parent runner, terminal support outcome, isolated scorer, and aggregate-only publisher are now implemented. Three scenarios on two repositories excluded from the final holdout produced 36 logical records: ordinary support, six `parent_unavailable` terminals, and natural cross-path target divergence. All preflights passed with zero provider/network calls. The final 12-repository/48-task holdout has not been materialized or executed.
 
 The executable protocol and public design report are:
 
 - [`product_bakeoff_b21_protocol.py`](../../eval/product_bakeoff_b21_protocol.py)
+- [`product_bakeoff_b21_corpus.py`](../../eval/product_bakeoff_b21_corpus.py)
+- [`product_bakeoff_b21_runner.py`](../../eval/product_bakeoff_b21_runner.py)
+- [`product_bakeoff_b21_scorer.py`](../../eval/product_bakeoff_b21_scorer.py)
+- [`product_bakeoff_b21_cli.py`](../../eval/product_bakeoff_b21_cli.py)
 - [`product_bakeoff_b21_protocol_report.json`](../../artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json)
 
 ## Parent lock and non-reuse boundary
@@ -31,7 +35,7 @@ The fairness gate still requires identical task query, source visibility, budget
 
 ## Scoring and promotion
 
-Task-level quality, component earn-in rules, non-inferiority limits, resource ceilings, eligibility floors, tie handling, and zero/one/multiple-finalist outcomes remain inherited from B2. A two-step task succeeds only when that arm's context target is oracle-valid and its same-arm support output matches a frozen relation. Terminal support opportunities are failures and are reported at arm aggregate; they are excluded from query-latency percentiles so a missing parent is neither rewarded nor imputed as a measured query.
+Task-level quality, component earn-in rules, non-inferiority limits, resource ceilings, eligibility floors, tie handling, and zero/one/multiple-finalist outcomes remain inherited from B2. A two-step task succeeds only when that arm's context target is oracle-valid and its same-arm support output matches a frozen relation. Terminal support opportunities are failures and are reported at arm aggregate; their parent-wrapper measurements are excluded from query-latency and peak-RSS percentiles so a missing parent is neither rewarded nor mixed with an adapter execution measurement.
 
 No interim quality looks, early elimination, task replacement, selective rerun, or rule switch are allowed. Scoring remains isolated until the complete logical matrix, source, lineage, resource, zero-network, determinism, and privacy gates pass.
 
@@ -41,12 +45,12 @@ Repository identities, task text, queries, paths, ranges, oracle rows, private m
 
 ## Frozen identifiers
 
-- B2.1 spec digest: `b21spec_a4460a279280e872`
-- B2.1 source bundle digest: `b21src_76e3433599291e9061c4449b32557b9a3ad2998cfc0a739f69a5632a4e47b7d3`
-- B2.1 holdout-frame digest: `b21frame_f50eda42c3403eb877e46a07b257a8a0ce8930759422c7536963f7d96eee8571`
+- B2.1 spec digest: `b21spec_3d656619189a7531`
+- B2.1 source bundle digest: `b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf`
+- B2.1 holdout-frame digest: `b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9`
 - B2.1 execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.1 protocol-report digest: `b21protocol_f1c833bfe2bae7d0ca11c15b6ba5c62650adde88f399217b6171e7156a61d7b7`
+- B2.1 protocol-report digest: `b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb`
 
 ## Next authorized work
 
-Implement the fresh-holdout admission overlay, same-arm lineage runner, terminal support record, isolated scorer, and aggregate-only result validator. Pass synthetic tests, fault injection, and unused-repository real-source preflight before materializing the final holdout frame. No B2.1 empirical result exists at this checkpoint.
+Prepare a new 12-repository/48-task holdout frame excluding every B2 and real-preflight repository. Audit only its aggregate margins, freeze its private manifests and one runtime bundle, and then execute the full matrix once without interim quality inspection. No B2.1 empirical result exists at this checkpoint.

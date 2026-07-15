@@ -45,8 +45,8 @@ B2_PROTOCOL_REPORT_REL = (
 B21_SCHEMA_VERSION = "product_bakeoff_b21_protocol.v1"
 B21_REPORT_SCHEMA_VERSION = "product_bakeoff_b21_protocol_report.v1"
 B21_PHASE = "product_bakeoff_b21_own_parent_holdout_tournament_protocol"
-B21_STATUS = "product_bakeoff_b21_protocol_frozen_no_execution_no_result"
-B21_CLAIM_LEVEL = "design_only_no_b21_tournament_result"
+B21_STATUS = "product_bakeoff_b21_implementation_ready_preflight_passed_no_holdout_no_result"
+B21_CLAIM_LEVEL = "implementation_ready_no_b21_tournament_result"
 
 B21_PARENT_B2_SOURCE_CHECKPOINT = (
     "55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915"
@@ -72,6 +72,10 @@ B21_PARENT_B2_FAILURE_AGGREGATE_SHA256 = (
 )
 
 B21_SOURCE_BUNDLE_PATHS = tuple(b2.B2_SOURCE_BUNDLE_PATHS) + (
+    "eval/product_bakeoff_b21_corpus.py",
+    "eval/product_bakeoff_b21_runner.py",
+    "eval/product_bakeoff_b21_scorer.py",
+    "eval/product_bakeoff_b21_cli.py",
     "eval/product_bakeoff_b21_protocol.py",
     ".github/workflows/product-bakeoff-b21.yml",
 )
@@ -81,6 +85,7 @@ B21_HOLDOUT_RULES = {
     "logical_task_count": b2.B2_TASK_COUNT,
     "all_repository_slugs_absent_from_b2_frame": True,
     "all_repository_identity_commit_pairs_absent_from_b2_frame": True,
+    "all_real_preflight_repository_slugs_absent_from_final_holdout": True,
     "all_task_query_and_oracle_rows_new": True,
     "b2_empirical_cells_must_not_be_reused": True,
     "b2_private_manifests_must_not_be_reused": True,
@@ -117,6 +122,7 @@ B21_PARENT_UNAVAILABLE_POLICY = {
     "terminal_is_not_an_infrastructure_failure": True,
     "terminal_resource_sample_parent_observed": True,
     "terminal_excluded_from_query_latency_percentile": True,
+    "terminal_excluded_from_peak_rss_percentile": True,
     "terminal_count_reported_at_arm_aggregate": True,
     "rejected_timeout_or_malformed_context_still_fails_run_closed": True,
 }
@@ -144,6 +150,9 @@ B21_SCORING_OVERRIDES = {
     "quality_analysis_unit": "logical_task_after_four_technical_repetitions_agree",
     "resource_query_population": (
         "executed_adapter_queries_only;_terminal_support_opportunities_excluded"
+    ),
+    "resource_rss_population": (
+        "executed_adapter_records_only;_terminal_parent_wrapper_rss_excluded"
     ),
     "terminal_support_count": "reported_separately_and_never_rewards_quality",
 }
@@ -333,6 +342,7 @@ def _build_report_without_digest() -> dict[str, Any]:
     metric_contract["scoring_rules"].update(B21_SCORING_OVERRIDES)
     metric_contract["terminal_support_opportunities_are_quality_failures"] = True
     metric_contract["terminal_support_opportunities_excluded_from_query_p95"] = True
+    metric_contract["terminal_support_opportunities_excluded_from_peak_rss_p95"] = True
     promotion = copy.deepcopy(b2_report["promotion_contract"])
     return {
         "schema_version": B21_REPORT_SCHEMA_VERSION,
@@ -352,7 +362,16 @@ def _build_report_without_digest() -> dict[str, Any]:
             "b2_result_reused": False,
         },
         "execution_boundary": {
-            "design_only": True,
+            "design_only": False,
+            "implementation_ready": True,
+            "unused_repository_real_source_preflight_executed": True,
+            "preflight_repository_identity_count": 2,
+            "preflight_scenario_count": 3,
+            "preflight_logical_record_count": 36,
+            "preflight_normal_record_count": 30,
+            "preflight_terminal_support_record_count": 6,
+            "preflight_cross_path_divergence_observed_and_tolerated": True,
+            "preflight_provider_or_network_call_count": 0,
             "holdout_repositories_materialized": False,
             "holdout_tasks_materialized": False,
             "final_holdout_adapter_execution_executed": False,
@@ -428,11 +447,20 @@ def _build_report_without_digest() -> dict[str, Any]:
             "runtime_bundle_must_be_single_and_frozen_before_execution": True,
             "mixed_runtime_bundles_in_one_tournament_forbidden": True,
         },
+        "implementation_readiness": {
+            "fresh_holdout_exclusion_overlay_implemented": True,
+            "b2_and_preflight_repository_nonoverlap_enforced": True,
+            "same_arm_own_parent_runner_implemented": True,
+            "parent_unavailable_terminal_record_implemented": True,
+            "logical_1440_cell_gate_implemented": True,
+            "isolated_scorer_and_aggregate_publication_implemented": True,
+            "public_result_privacy_and_digest_validator_implemented": True,
+            "final_holdout_not_materialized": True,
+        },
         "next_authorized_action": (
-            "implement the B2.1 fresh-holdout admission overlay, same-arm lineage "
-            "runner, terminal support record, isolated scorer, and public privacy "
-            "validator; pass synthetic/fault/real-repository preflight before any "
-            "final holdout materialization"
+            "prepare a new 12-repository 48-task holdout frame excluding every B2 and "
+            "real-preflight repository, audit only aggregate margins, then freeze the "
+            "private manifests and one runtime bundle before any final holdout arm output"
         ),
     }
 
