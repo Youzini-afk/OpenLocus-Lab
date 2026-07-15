@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b24_prelaunch_receipt_validation_corrected_no_treatment_output`
+Status: `product_bakeoff_b24_private_holdout_frozen_no_treatment_output_no_result`
 
-B2.4 is a new confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed its public qualification. The private B2.4 holdout has been authored, but the first readiness checkpoint is superseded before execution because a pre-launch validator did not reproduce the parent B2.3 private-receipt hash serialization. This correction checkpoint contains no treatment output, score, rank, shortlist, or product-default decision.
+B2.4 is a new confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed its public qualification. The private B2.4 holdout has been authored and re-frozen against the corrected parent-receipt validator. The replacement aggregate-only readiness checkpoint confirms a closed 12-repository, 48-task frame with zero treatment output. It contains no score, rank, shortlist, or product-default decision.
 
 The executable public contract is:
 
@@ -17,6 +17,7 @@ The executable public contract is:
 - [`product_bakeoff_b24_linux_longrun.sh`](../../scripts/product_bakeoff_b24_linux_longrun.sh)
 - [`product-bakeoff-b24-holdout.yml`](../../.github/workflows/product-bakeoff-b24-holdout.yml)
 - [`product_bakeoff_b24_protocol_report.json`](../../artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json)
+- [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 
 ## Parent locks
 
@@ -30,11 +31,11 @@ The final private frame contains 12 repository snapshots and 48 newly authored l
 
 Each of the 12 slots has at least two candidates whose order and expected license are frozen before authoring. Failover may occur only before any treatment output. The inherited offline B2 author creates all queries and oracle rows without adapter output. No final task may be executed before the repository, task, oracle, source, runtime, timeout, and qualification bindings are frozen.
 
-## Superseded readiness checkpoint and correction
+## Corrected freeze and replacement readiness
 
-Private authoring completed on the same qualified machine. The superseded aggregate checkpoint confirmed 12 selected repository snapshots, 48 logical tasks, and 48 oracle records, with zero overlap against the 24 historical empirical repositories or the closed exclusion registry. It published an exclusion count of 24 and one excluded synthetic source, but no repository identity, candidate order, failover detail, task text, query, path, oracle row, or private digest.
+Private authoring completed on the same qualified machine. The first aggregate checkpoint was superseded before treatment because its pre-launch validator did not reproduce the parent B2.3 private-receipt serialization. B2.3 hashes the closed receipt shape with `private_receipt_digest` present and empty; B2.4 had removed that field. The corrected validator now reproduces the parent serialization exactly, and its self-test consumes a receipt built by the parent B2.3 implementation.
 
-The pre-launch gate then exposed a serialization mismatch: B2.3 hashes the closed private-receipt shape with `private_receipt_digest` present and empty, while the B2.4 validator removed that field before hashing. The validator now reproduces the parent serialization exactly and its self-test consumes a receipt built by the parent B2.3 implementation. The prior readiness and private launch authorization are invalidated before any treatment output; the unchanged private manifests must be re-frozen against this corrected runtime and a replacement aggregate readiness checkpoint must pass CI.
+The prior readiness, freeze receipt, and launch authorization were invalidated with zero treatment output. The unchanged private manifests were re-frozen against the corrected runtime. This replacement readiness confirms 12 selected repository snapshots, 48 logical tasks, and 48 oracle records; zero overlap with 24 historical empirical repositories and the closed exclusion registry; 24 excluded repositories and one excluded synthetic source; and zero provider calls, scoring, ranking, or logical treatment records. No repository identity, candidate order, failover detail, task text, query, path, oracle row, or private digest is published.
 
 ## Experimental design
 
@@ -65,8 +66,10 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 - B2.4 holdout-frame digest: `b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07`
 - Inherited execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
 - B2.4 protocol-report digest: `b24protocol_c1afab8cf3c64cfca78f55e5fefd6b84cdd430c9e6c78cd36af2c0bacf7c6b4f`
+- Corrected protocol checkpoint and CI: `66f55e5b334a13045413b668c1b8fb4dff33af7f`, run `29446095850` (`success`)
+- Replacement readiness digest: `b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - Superseded readiness checkpoint and CI: `cc0cbc15476809b735b3c958214b525a2790e0bf`, run `29445399981` (`success`), zero treatment output
 
 ## Next authorized action
 
-Commit this receipt-validation correction and obtain green public CI. Then invalidate the superseded private freeze and launch authorization, re-freeze the unchanged private manifests against the corrected source bundle, publish a replacement aggregate-only readiness checkpoint, and obtain another green CI run. Only then may one new private launch authorization be created and the single standalone tournament attempt begin.
+Commit this replacement aggregate-only readiness checkpoint and obtain green public CI. Then create one new private launch authorization bound to that checkpoint and CI run, revalidate the qualified machine profile and frozen inputs, and start exactly one standalone tournament attempt.
