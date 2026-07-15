@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b24_protocol_ready_no_private_holdout_no_tournament_no_result`
+Status: `product_bakeoff_b24_private_holdout_frozen_no_treatment_output_no_result`
 
-B2.4 is a new confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed its public qualification. This checkpoint contains no private B2.4 repository, task, query, oracle row, treatment output, score, rank, shortlist, or product-default decision.
+B2.4 is a new confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed its public qualification. The private B2.4 holdout and exact runtime are now frozen, while repository identities, task text, queries, oracle rows, and private digests remain private. This checkpoint contains no treatment output, score, rank, shortlist, or product-default decision.
 
 The executable public contract is:
 
@@ -17,6 +17,7 @@ The executable public contract is:
 - [`product_bakeoff_b24_linux_longrun.sh`](../../scripts/product_bakeoff_b24_linux_longrun.sh)
 - [`product-bakeoff-b24-holdout.yml`](../../.github/workflows/product-bakeoff-b24-holdout.yml)
 - [`product_bakeoff_b24_protocol_report.json`](../../artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json)
+- [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 
 ## Parent locks
 
@@ -29,6 +30,12 @@ The same qualified machine instance must be used for the future tournament. Its 
 The final private frame contains 12 repository snapshots and 48 newly authored logical tasks: Rust, Python, and TypeScript crossed with small, medium, large, and xlarge visible-source bands, with four task roles per repository. Every selected repository slug and `(slug, commit)` identity must be absent from both the B2 and B2.1 empirical frames and from the closed preflight/qualification exclusion registry.
 
 Each of the 12 slots has at least two candidates whose order and expected license are frozen before authoring. Failover may occur only before any treatment output. The inherited offline B2 author creates all queries and oracle rows without adapter output. No final task may be executed before the repository, task, oracle, source, runtime, timeout, and qualification bindings are frozen.
+
+## Aggregate readiness checkpoint
+
+Private authoring and freeze completed on the same qualified machine. The aggregate checkpoint confirms 12 selected repository snapshots, 48 logical tasks, and 48 oracle records, with zero overlap against the 24 historical empirical repositories or the closed exclusion registry. It publishes an exclusion count of 24 and one excluded synthetic source, but no repository identity, candidate order, failover detail, task text, query, path, oracle row, or private digest.
+
+The task margins match the preregistration exactly: 16 tasks per language, 12 per size band, 12 per role, 36 one-shot plus 12 two-step tasks, and oracle kinds split 36 deterministic, 6 multi-target, and 6 abstain. Treatment-output, logical-record, provider-network-call, scoring, ranking, and public-result counts are all zero. Tournament execution remains unauthorized until this readiness checkpoint is committed and its public CI succeeds.
 
 ## Experimental design
 
@@ -59,7 +66,9 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 - B2.4 holdout-frame digest: `b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07`
 - Inherited execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
 - B2.4 protocol-report digest: `b24protocol_94b395f9e6b12fc37ca473077ab15fcf4716c3e63928a996c7678f57e41455a5`
+- B2.4 readiness digest: `b24ready_94ef3cc33a025a523825ce0a88f20819694975600c0be6afc9fe959f20bd1596`
+- Protocol checkpoint and CI: `c2891cd3f8eb6880b6edd263914c1582629c44e5`, run `29423106660` (`success`)
 
 ## Next authorized action
 
-Commit this protocol and obtain green public CI. After that, create the private candidate plan and exclusion registry on the qualified Linux machine, author and audit the new 12-repository/48-task holdout, freeze the exact runtime, and publish only the aggregate readiness checkpoint. Do not execute a treatment arm yet.
+Commit this aggregate-only readiness checkpoint and obtain green public CI. After that, bind the readiness commit and CI run into one private launch-authorization receipt, revalidate the qualified machine profile and frozen runtime, and start exactly one standalone tournament attempt. Do not execute a treatment arm before those gates pass.

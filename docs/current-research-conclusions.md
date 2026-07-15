@@ -23,6 +23,7 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.3 runner qualification result / B2.3 runner 资格结果: [EN](en/product-bakeoff-b23-runner-qualification-result.md) / [ZH](zh/product-bakeoff-b23-runner-qualification-result.md)
 - B2.3 qualification aggregate / B2.3 资格汇总: [`artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json`](../artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json)
 - B2.4 fresh qualified holdout protocol / B2.4 全新合格机器盲测协议: [EN](en/product-bakeoff-b24-fresh-holdout.md) / [ZH](zh/product-bakeoff-b24-fresh-holdout.md)
+- B2.4 aggregate holdout readiness / B2.4 聚合盲测就绪检查点: [`artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json`](../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 
 ## Current route closure / 当前路线关闭
 
