@@ -20,6 +20,7 @@ B2.4 已按无锦标赛结果关闭。修正后的启动器只在工作进程进
 - [`product_bakeoff_b24_launcher_preexecution_correction.json`](../../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
 - [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 - [`product_bakeoff_b24_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json)
+- [`product_bakeoff_b24_bm25_tokenizer_repair.json`](../../artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json)
 
 ## 上游锁定
 
@@ -52,6 +53,14 @@ B2.4 锁定 B2.1 的聚合失败关闭结果，包括两次不完整尝试、没
 进程完成了 48 组中的 2 组，最后一个完整组边界为 60 条逻辑记录。未完成的下一组中，生产 BM25 回执报告存在被跳过的无效命中。继承的严格解析器冻结要求 `invalid_hits_skipped == 0`；非零值不能被静默接受，因为这意味着检索结果省略了源码无效的单元。因此受影响的 context 执行变成失败结果，own-parent 可评分边界终止 runner。这不是服务商/模型故障，也不是 CPU、内存、磁盘容量、超时或启动器故障。
 
 完整的 1,440 条记录矩阵不存在。评分前门槛、scorer、排名、shortlist 和默认项决策均未运行。终止退出码为 1，私有失败证据已单独冻结；协议禁止在正式边界之后重启、恢复、选择性重跑、重新计算、放宽完整性门槛或复用不完整输出。
+
+## 关闭后的工程修复
+
+私有终态证据和不使用私有源码的合成复现定位到一个跨层分词契约不一致：B2 出题器和生产 identifier predicate 都允许以下划线开头的精确标识符，而持久 BM25 行级校验器使用独立分词逻辑并丢弃所有以 `_` 开头的 token。Tantivy 仍能返回匹配的索引文档，但行级校验收到空 token 集并把命中计为无效。零无效命中门槛按设计正确拒绝了该 envelope。
+
+修复检查点 `665fd51bba0eae52ade8d5f3c37069217de38916` 删除了独立分词器。持久 BM25 现在解析并复用索引内容字段实际配置的 tokenizer，使索引、查询解析和当前源码行级校验共享同一个 token 契约。回归覆盖普通持久搜索、可复用索引句柄和真实 `bakeoff-query` CLI envelope。核心索引测试 136/136 通过，CLI 测试 52/52 通过，clippy 在禁止警告模式下通过，Linux 检索 CI 运行 `29457607093` 成功。
+
+这项工程修复不会重新打开 B2.4，也不会把不完整输出变成结果。它只授权设计单独预注册的 B2.5：使用全新盲测集，明确排除 B2.4 仓库，在任何方案执行前绑定纯源码查询兼容性门槛，并先完成修复后运行时资格验证。
 
 ## 实验设计
 
@@ -86,6 +95,8 @@ B2.1 两次都在同一个短超时边界失败。B2.3 把外层阶段上限提�
 - 替代就绪摘要：`b24ready_86eb4cfe65fed9e38af6f2ce3c369afb257a05055747c17446cad89028718fc0`
 - 替代就绪检查点与 CI：`20d279a39eda578ba4027fbaec3da6b6065279a1`，运行 `29453549335`（`success`）
 - 失败关闭聚合摘要：`b24failure_a41d6e150a5e5c2752cfb455b0ca5dd1df35687b9489d82e5a888362dc4c4b83`
+- 关闭后 BM25 修复摘要：`b24repair_2a4e664f19e8c72de3f6f4b09f4476f5313c01b547bbb141cb5c26a394473136`
+- BM25 修复检查点与 CI：`665fd51bba0eae52ade8d5f3c37069217de38916`，运行 `29457607093`（`success`）
 - 修正后的协议检查点与 CI：`66f55e5b334a13045413b668c1b8fb4dff33af7f`，运行 `29446095850`（`success`）
 - 修正前已废止的就绪摘要：`b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - 已废止的就绪检查点与 CI：`cc0cbc15476809b735b3c958214b525a2790e0bf`，运行 `29445399981`（`success`），方案输出为 0
@@ -94,4 +105,4 @@ B2.1 两次都在同一个短超时边界失败。B2.3 把外层阶段上限提�
 
 ## 下一项获准工作
 
-将 B2.4 收口为 `failed_closed_no_result`。不得重新启动、恢复、修复、评分或复用其不完整输出及启动授权。任何后续产品锦标赛都必须单独预注册，并且必须在产生任何新方案输出前决定如何预防或处理生产 BM25 的无效命中完整性条件。
+保持 B2.4 为 `failed_closed_no_result`。将 B2.5 设计为单独预注册的锦标赛：使用全新盲测集，排除全部 B2.4 仓库身份，在出题、冻结、就绪和 runner 准入阶段绑定纯源码查询 token 兼容性门槛，并在任何私有出题或方案输出前完成修复后运行时的合成资格验证。

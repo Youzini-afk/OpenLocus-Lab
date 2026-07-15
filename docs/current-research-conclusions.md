@@ -26,6 +26,7 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.4 pre-execution launcher correction / B2.4 执行前启动器修正: [`artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json`](../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
 - B2.4 replacement holdout readiness / B2.4 替代盲测就绪汇总: [`artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json`](../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 - B2.4 failed-closed aggregate / B2.4 失败关闭汇总: [`artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json`](../artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json)
+- B2.4 post-closeout BM25 repair / B2.4 关闭后 BM25 修复: [`artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json`](../artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json)
 
 ## Current route closure / 当前路线关闭
 

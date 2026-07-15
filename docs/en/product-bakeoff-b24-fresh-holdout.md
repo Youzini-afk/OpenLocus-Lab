@@ -20,6 +20,7 @@ The executable public contract is:
 - [`product_bakeoff_b24_launcher_preexecution_correction.json`](../../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
 - [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 - [`product_bakeoff_b24_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json)
+- [`product_bakeoff_b24_bm25_tokenizer_repair.json`](../../artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json)
 
 ## Parent locks
 
@@ -52,6 +53,14 @@ Replacement readiness commit `20d279a39eda578ba4027fbaec3da6b6065279a1` passed C
 The process completed two of 48 groups, with 60 logical records at the last completed-group boundary. During the incomplete next group, the production BM25 receipts reported that invalid hits had been skipped. The inherited strict parser freezes `invalid_hits_skipped == 0`; a nonzero value is not silently accepted because it means the retrieval result omitted source-invalid cells. The affected context executions therefore became failed results, and the own-parent scoreability boundary stopped the runner. This was not a provider/model failure or a CPU, memory, disk-capacity, timeout, or launcher failure.
 
 The full 1,440-record matrix does not exist. No pre-score gate, scorer, ranking, shortlist, or default decision ran. The terminal exit code is 1, private failure evidence has been frozen separately, and the protocol forbids restart, resume, selective rerun, recomputation, integrity-gate relaxation, or reuse of incomplete output after the formal boundary.
+
+## Post-closeout engineering repair
+
+Private terminal evidence and a source-only synthetic reproduction isolated a cross-layer tokenizer mismatch. The B2 author and the production identifier predicate both admitted exact identifiers beginning with an underscore, while the persistent BM25 line verifier used an independent splitter that discarded every token beginning with `_`. Tantivy still retrieved matching indexed documents, but line verification received an empty token set and counted the hits as invalid. The zero-invalid-hit gate behaved correctly by rejecting that envelope.
+
+Repair checkpoint `665fd51bba0eae52ade8d5f3c37069217de38916` removed the independent splitter. Persistent BM25 now resolves and reuses the actual tokenizer configured for the indexed content field, so indexing, query parsing, and current-source line verification share one token contract. Regression coverage includes the ordinary persistent search path, the reusable index handle, and the real `bakeoff-query` CLI envelope. The core index suite passed 136/136, the CLI suite passed 52/52, clippy passed with warnings denied, and Linux retrieval CI run `29457607093` succeeded.
+
+This engineering repair does not reopen B2.4 or convert its incomplete output into a result. It authorizes only the design of a separately preregistered B2.5 with a fresh holdout, explicit B2.4 repository exclusion, a source-only query compatibility gate bound before treatment, and repaired-runtime qualification.
 
 ## Experimental design
 
@@ -86,6 +95,8 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 - Replacement readiness digest: `b24ready_86eb4cfe65fed9e38af6f2ce3c369afb257a05055747c17446cad89028718fc0`
 - Replacement readiness checkpoint and CI: `20d279a39eda578ba4027fbaec3da6b6065279a1`, run `29453549335` (`success`)
 - Failed-closed aggregate digest: `b24failure_a41d6e150a5e5c2752cfb455b0ca5dd1df35687b9489d82e5a888362dc4c4b83`
+- Post-closeout BM25 repair digest: `b24repair_2a4e664f19e8c72de3f6f4b09f4476f5313c01b547bbb141cb5c26a394473136`
+- BM25 repair checkpoint and CI: `665fd51bba0eae52ade8d5f3c37069217de38916`, run `29457607093` (`success`)
 - Corrected protocol checkpoint and CI: `66f55e5b334a13045413b668c1b8fb4dff33af7f`, run `29446095850` (`success`)
 - Superseded pre-correction readiness digest: `b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - Superseded readiness checkpoint and CI: `cc0cbc15476809b735b3c958214b525a2790e0bf`, run `29445399981` (`success`), zero treatment output
@@ -94,4 +105,4 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 
 ## Next authorized action
 
-Close B2.4 as `failed_closed_no_result`. Do not relaunch, resume, repair, score, or reuse its incomplete output or launch authorization. Any later product tournament must be separately preregistered and must decide how the production BM25 invalid-hit integrity condition will be prevented or handled before any new treatment output is produced.
+Keep B2.4 closed as `failed_closed_no_result`. Design B2.5 as a separately preregistered tournament with a fresh holdout, exclusion of every B2.4 repository identity, a source-only query-token compatibility gate bound at authoring, freeze, readiness, and runner admission, and a synthetic qualification of the repaired runtime before any private authoring or treatment output.
