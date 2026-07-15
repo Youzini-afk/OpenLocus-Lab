@@ -181,8 +181,25 @@ def _longrun_runtime_override(
 
 def qualification_private_receipt_digest(receipt: Mapping[str, Any]) -> str:
     payload = dict(receipt)
-    payload.pop("private_receipt_digest", None)
+    # B2.3 generated its private receipt by hashing the closed receipt shape
+    # with this field present and set to the empty string.  Reproduce that
+    # parent serialization exactly; removing the field creates a different
+    # digest and rejects every authentic B2.3 receipt before launch.
+    payload["private_receipt_digest"] = ""
     return _prefixed_digest("b23qpriv_", payload)
+
+
+def _synthetic_parent_qualification_receipt() -> dict[str, Any]:
+    return b23q._private_receipt(
+        profile_before={},
+        profile_after={},
+        profile_recheck_error=None,
+        stable_profile_changes=[],
+        profile_failures=[],
+        io_private={},
+        stress_private={},
+        public_digest=B24_PARENT_B23_QUALIFICATION_DIGEST,
+    )
 
 
 def validate_qualification_private_receipt(raw: Any) -> dict[str, Any]:
@@ -427,22 +444,14 @@ def run_self_test() -> dict[str, Any]:
             ),
         )
     )
-    synthetic = {
-        "schema_version": b23q.B23_PRIVATE_SCHEMA,
-        "qualification_version": b23q.B23_QUALIFICATION_VERSION,
-        "b23_spec_digest": b23q.b23_spec_digest(),
-        "b23_source_bundle_digest": b23q.b23_source_bundle_digest(),
-        "profile_before": {},
-        "profile_after": {},
-        "profile_recheck_error": None,
-        "stable_profile_changes": [],
-        "profile_failure_codes": [],
-        "io": {},
-        "stress": {},
-        "public_qualification_digest": B24_PARENT_B23_QUALIFICATION_DIGEST,
-        "private_receipt_digest": "",
-    }
-    synthetic["private_receipt_digest"] = qualification_private_receipt_digest(synthetic)
+    synthetic = _synthetic_parent_qualification_receipt()
+    checks.append(
+        (
+            "parent_receipt_digest_semantics",
+            synthetic["private_receipt_digest"]
+            == qualification_private_receipt_digest(synthetic),
+        )
+    )
     checks.append(("private_receipt_roundtrip", validate_qualification_private_receipt(synthetic) == synthetic))
     failed = [name for name, passed in checks if not passed]
     return {
@@ -455,22 +464,7 @@ def run_self_test() -> dict[str, Any]:
 
 def run_fault_test() -> dict[str, Any]:
     checks: list[tuple[str, bool]] = []
-    synthetic = {
-        "schema_version": b23q.B23_PRIVATE_SCHEMA,
-        "qualification_version": b23q.B23_QUALIFICATION_VERSION,
-        "b23_spec_digest": b23q.b23_spec_digest(),
-        "b23_source_bundle_digest": b23q.b23_source_bundle_digest(),
-        "profile_before": {},
-        "profile_after": {},
-        "profile_recheck_error": None,
-        "stable_profile_changes": [],
-        "profile_failure_codes": [],
-        "io": {},
-        "stress": {},
-        "public_qualification_digest": B24_PARENT_B23_QUALIFICATION_DIGEST,
-        "private_receipt_digest": "",
-    }
-    synthetic["private_receipt_digest"] = qualification_private_receipt_digest(synthetic)
+    synthetic = _synthetic_parent_qualification_receipt()
     bad = dict(synthetic)
     bad["stable_profile_changes"] = ["cpu_quota_count"]
     try:

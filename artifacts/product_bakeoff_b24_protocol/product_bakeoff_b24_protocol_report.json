@@ -146,7 +146,7 @@
     "task_text_or_query_public": false,
     "terminal_support_count_public_at_arm_aggregate": true
   },
-  "protocol_digest": "b24protocol_94b395f9e6b12fc37ca473077ab15fcf4716c3e63928a996c7678f57e41455a5",
+  "protocol_digest": "b24protocol_c1afab8cf3c64cfca78f55e5fefd6b84cdd430c9e6c78cd36af2c0bacf7c6b4f",
   "runner_binding": {
     "cross_machine_performance_generalization_forbidden": true,
     "dedicated_idle_runner_required": true,
@@ -165,7 +165,7 @@
   "source_locks": {
     "b24_execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
     "b24_holdout_frame_digest": "b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07",
-    "b24_source_bundle_digest": "b24src_191a8ca7d4a61e7f29564b5079776632bd1c147dcce1aedf11fe10a54b91e0bd",
+    "b24_source_bundle_digest": "b24src_9fef21caad5def69af3c381d51018a2d8cfe4a48361babe71458b9f7283eff76",
     "b24_spec_digest": "b24spec_d64f8821238a58ec",
     "line_endings_normalized_for_cross_platform_digest": true
   },
