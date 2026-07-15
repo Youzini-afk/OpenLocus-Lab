@@ -1,0 +1,71 @@
+{
+  "claim_level": "preexecution_launcher_shell_handoff_failure_no_treatment_output_no_tournament_attempt",
+  "classification": {
+    "erroneous_failed_closeout_superseded": true,
+    "formal_tournament_attempt_consumed": false,
+    "holdout_opened_by_any_treatment": false,
+    "holdout_reuse_allowed_after_corrected_runtime_refreeze": true,
+    "new_holdout_required": false,
+    "prior_launch_authorization_must_be_superseded": true,
+    "reason": "The launcher acknowledgement and PID receipt occurred before worker entry, runner admission, or launch release. No full-run process, task treatment, or output boundary was reached.",
+    "runtime_refreeze_required": true
+  },
+  "correction_contract": {
+    "absolute_launcher_path_resolved_before_handoff": true,
+    "background_shell_invoked_explicitly_through_bash": true,
+    "formal_attempt_boundary": "private_launch_release_after_runner_admission",
+    "launcher_success_requires_runner_admission": true,
+    "launcher_success_requires_worker_entry": true,
+    "nonexecutable_100644_shell_handoff_covered_by_ci_probe": true,
+    "private_launch_release_binds_readiness_checkpoint_and_attempt_number": true,
+    "replacement_launch_authorization_required": true,
+    "replacement_readiness_and_green_ci_required": true,
+    "same_unopened_holdout_rebound_without_reauthoring": true,
+    "worker_waits_for_private_launch_release_before_treatment": true
+  },
+  "correction_digest": "b24prelaunchfix_4442014a2b02de507b1a27a3ff3bc4b8cb9d403c2aa67ac49663ad0a7fd21461",
+  "date": "2026-07-16",
+  "next_authorized_action": "Commit the corrected public launcher and attempt-boundary contract and obtain green CI. Then, on the same qualified machine, archive the superseded pre-execution controls and authorization, rebind the unchanged unopened holdout without reauthoring, re-freeze it against the corrected runtime, publish a replacement aggregate-only readiness checkpoint, obtain green CI, create a replacement private launch authorization, and start the one formal tournament attempt only after runner admission and launch release.",
+  "observed_preexecution_event": {
+    "failure_code": "standalone_launcher_direct_exec_permission_denied",
+    "full_run_entrypoint_invoked": false,
+    "launch_release_created": false,
+    "launcher_acknowledged": true,
+    "logical_record_count": 0,
+    "private_launch_authorization_created": true,
+    "provider_network_call_count": 0,
+    "public_result_staging_file_created": false,
+    "runner_admission_written": false,
+    "treatment_output_count": 0,
+    "treatment_runs_directory_created": false,
+    "worker_entered": false,
+    "worker_pid_receipt_created": true
+  },
+  "phase": "product_bakeoff_b24_preexecution_launcher_correction",
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_plan_or_failover_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "private_evidence_digest_public": false,
+    "private_manifest_freeze_or_launch_digest_public": false,
+    "repository_identity_public": false,
+    "source_location_range_or_excerpt_public": false,
+    "task_text_query_oracle_public": false
+  },
+  "schema_version": "product_bakeoff_b24_launcher_preexecution_correction.v1",
+  "source_gate": {
+    "readiness_checkpoint": "e516f059592405289caf0124034759d6cf6769e5",
+    "readiness_ci_conclusion": "success",
+    "readiness_ci_run_id": 29446543053,
+    "readiness_digest": "b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655",
+    "source_bundle_digest_at_event": "b24src_9fef21caad5def69af3c381d51018a2d8cfe4a48361babe71458b9f7283eff76"
+  },
+  "status": "product_bakeoff_b24_preexecution_launcher_corrected_no_treatment_output_no_attempt_consumed",
+  "superseded_closeout": {
+    "checkpoint": "e28275987d05101034ce9c8f6aba42bc986faee8",
+    "ci_conclusion": "success",
+    "ci_run_id": 29447560057,
+    "failure_aggregate_digest": "b24failure_96446da70f2e8d9afd0e6009e04f8b5e3f94699828de88731c37520e292cd672",
+    "superseded_reason": "It treated a launcher acknowledgement before worker entry and runner admission as the formal tournament-attempt boundary. That interpretation was stricter than the experiment's contamination boundary and did not reflect any treatment execution."
+  }
+}

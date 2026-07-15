@@ -63,6 +63,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--fault-test", action="store_true")
     mode.add_argument("--prepare", action="store_true")
+    mode.add_argument("--rebind-preexecution", action="store_true")
     mode.add_argument("--freeze", action="store_true")
     mode.add_argument("--build-readiness", action="store_true")
     mode.add_argument("--authorize-launch", action="store_true")
@@ -145,6 +146,29 @@ def main(argv: list[str] | None = None) -> int:
                 "repository_count": result["repo_count"],
                 "logical_task_count": result["task_count"],
                 "private_values_printed": False,
+            },
+        )
+        return 0
+
+    if args.rebind_preexecution:
+        if args.treatment_runs_dir is None or args.public_out is None:
+            raise SystemExit(
+                "--rebind-preexecution requires --treatment-runs-dir and --public-out"
+            )
+        corpus = importlib.import_module("product_bakeoff_b24_corpus")
+        corpus.rebind_unopened_holdout_for_preexecution_correction(
+            **common,
+            treatment_runs_dir=args.treatment_runs_dir,
+            public_out_path=args.public_out,
+        )
+        _print_result(
+            "b24_preexecution_rebind",
+            {
+                "formal_tournament_attempt_consumed": False,
+                "holdout_material_changed": False,
+                "private_digests_printed": False,
+                "rebound": True,
+                "treatment_output_count": 0,
             },
         )
         return 0

@@ -2,9 +2,9 @@
 
 Date: 2026-07-16
 
-Status: `product_bakeoff_b24_execution_failed_closed_no_result`
+Status: `product_bakeoff_b24_preexecution_launcher_corrected_pending_private_refreeze_no_treatment_output`
 
-B2.4 was a new confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed its public qualification. The private holdout and runtime were frozen, the corrected aggregate readiness checkpoint passed CI, and a private launch authorization was created. The single standalone launch was acknowledged, but its `nohup` worker handoff tried to execute a tracked `100644` shell script directly and was rejected before the worker entered. No runner admission, runs directory, treatment output, score, rank, shortlist, or product-default decision exists. The preregistered one-attempt and infrastructure-failure rules close B2.4 without a result.
+B2.4 remains the same confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed public qualification. A pre-execution `nohup` handoff tried to execute the tracked `100644` shell script directly and was rejected before the worker entered. The earlier public closeout incorrectly treated the launcher acknowledgement as the formal tournament-attempt boundary. Because no worker entry, runner admission, launch release, full-run process, treatment output, score, or rank existed, no tournament attempt was consumed and the still-unopened holdout may be retained after the corrected runtime is re-frozen.
 
 The executable public contract is:
 
@@ -17,8 +17,7 @@ The executable public contract is:
 - [`product_bakeoff_b24_linux_longrun.sh`](../../scripts/product_bakeoff_b24_linux_longrun.sh)
 - [`product-bakeoff-b24-holdout.yml`](../../.github/workflows/product-bakeoff-b24-holdout.yml)
 - [`product_bakeoff_b24_protocol_report.json`](../../artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json)
-- [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
-- [`product_bakeoff_b24_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json)
+- [`product_bakeoff_b24_launcher_preexecution_correction.json`](../../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
 
 ## Parent locks
 
@@ -38,11 +37,11 @@ Private authoring completed on the same qualified machine. The first aggregate c
 
 The prior readiness, freeze receipt, and launch authorization were invalidated with zero treatment output. The unchanged private manifests were re-frozen against the corrected runtime. This replacement readiness confirms 12 selected repository snapshots, 48 logical tasks, and 48 oracle records; zero overlap with 24 historical empirical repositories and the closed exclusion registry; 24 excluded repositories and one excluded synthetic source; and zero provider calls, scoring, ranking, or logical treatment records. No repository identity, candidate order, failover detail, task text, query, path, oracle row, or private digest is published.
 
-## Terminal launch failure and closeout
+## Pre-execution launcher correction
 
-Execution was gated on readiness commit `e516f059592405289caf0124034759d6cf6769e5` and successful CI run `29446543053`. The exact qualified machine profile was revalidated with zero stable changes, and attempt-1 launch authorization was created. The launcher wrote its PID receipt and returned an acknowledgement, but the tracked launcher file was mode `100644`; its background handoff invoked that file directly instead of through `bash`. `nohup` therefore stopped at the operating-system permission boundary. The worker did not enter, the full-run entrypoint did not run, no runner-admission receipt or runs directory was created, and treatment output remained zero.
+The superseded readiness commit `e516f059592405289caf0124034759d6cf6769e5` passed CI run `29446543053`, the exact qualified machine profile was revalidated with zero stable changes, and a private launch authorization was created. The launcher wrote a PID receipt and returned an acknowledgement, but its background handoff invoked the tracked mode-`100644` script directly instead of through `bash`. The operating system rejected the handoff before worker entry. No full-run entrypoint, runner admission, launch release, runs directory, task treatment, or provider call occurred.
 
-B2.4 preregistered one tournament attempt and required infrastructure failure to close without a result. The launch is therefore not repaired or repeated inside B2.4, even though no task was exposed to a treatment. Private failure evidence is frozen separately; only the aggregate boundary above is public.
+The corrected launcher resolves its own absolute path and invokes it explicitly through `bash`. It does not report success after merely writing a PID. The worker first writes a private entry receipt, the runner validates all frozen inputs and the qualified machine and writes its admission receipt, and only then may the launcher atomically issue a private launch release. That release, after runner admission, is the formal tournament-attempt boundary. A CI probe exercises this exact background handoff while the tracked script remains non-executable. The old launch authorization and readiness are superseded; the unchanged holdout must be re-frozen against this corrected source before a replacement readiness checkpoint and authorization are created.
 
 ## Experimental design
 
@@ -58,9 +57,9 @@ This timeout bridge applies identically to every arm and to prepare, index, cont
 
 ## Execution and monitoring
 
-The tournament was configured as one standalone process under `nohup`, not a private GitHub Actions job. Its aggregate-only readiness checkpoint was committed and passed CI before a private launch-authorization receipt bound the readiness commit and CI run to the frozen private inputs and runtime.
+The tournament remains one standalone process under `nohup`, not a private GitHub Actions job. A replacement aggregate-only readiness checkpoint must be committed and pass CI before a replacement private launch authorization binds that checkpoint and CI run to the re-frozen private inputs and corrected runtime.
 
-There was exactly one tournament attempt. The worker handoff failed before treatment output, but the protocol also states that infrastructure failure closes without a result; no second launch, restart, resume, selective rerun, recomputation, launcher edit, timeout edit, or task/oracle edit is authorized inside B2.4. Monitoring exposed only process state and zero progress counts; no interim arm, quality, resource, or ranking metric was inspected.
+There is still exactly one formal tournament attempt. A PID receipt or launcher acknowledgement before worker entry, runner admission, and private launch release does not consume it. After launch release, any infrastructure failure closes B2.4 without a result and no restart, resume, selective rerun, recomputation, launcher edit, timeout edit, or task/oracle edit is allowed. Monitoring remains limited to process state, completed-group count, logical-record count, and terminal state.
 
 ## Privacy and publication
 
@@ -68,16 +67,17 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 
 ## Frozen public identifiers
 
-- B2.4 spec digest: `b24spec_d64f8821238a58ec`
-- B2.4 source bundle digest: `b24src_9fef21caad5def69af3c381d51018a2d8cfe4a48361babe71458b9f7283eff76`
+- B2.4 spec digest: `b24spec_52eefc930fac34f5`
+- B2.4 source bundle digest: `b24src_301e5a211de015d86e2607e68d12f69afaf4474fa5f62fdd68d1c0a58f6c634f`
 - B2.4 holdout-frame digest: `b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07`
 - Inherited execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.4 protocol-report digest: `b24protocol_c1afab8cf3c64cfca78f55e5fefd6b84cdd430c9e6c78cd36af2c0bacf7c6b4f`
+- B2.4 protocol-report digest: `b24protocol_ec4bc650b509781477fde7cf2c6bf5532221d86e3379364a1df8741570a5c222`
 - Corrected protocol checkpoint and CI: `66f55e5b334a13045413b668c1b8fb4dff33af7f`, run `29446095850` (`success`)
-- Replacement readiness digest: `b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
+- Superseded pre-correction readiness digest: `b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - Superseded readiness checkpoint and CI: `cc0cbc15476809b735b3c958214b525a2790e0bf`, run `29445399981` (`success`), zero treatment output
-- Failed-closed aggregate digest: `b24failure_96446da70f2e8d9afd0e6009e04f8b5e3f94699828de88731c37520e292cd672`
+- Pre-execution launcher-correction digest: `b24prelaunchfix_4442014a2b02de507b1a27a3ff3bc4b8cb9d403c2aa67ac49663ad0a7fd21461`
+- Superseded erroneous closeout: checkpoint `e28275987d05101034ce9c8f6aba42bc986faee8`, CI run `29447560057` (`success`), aggregate digest `b24failure_96446da70f2e8d9afd0e6009e04f8b5e3f94699828de88731c37520e292cd672`
 
 ## Next authorized action
 
-Close B2.4 as `failed_closed_no_result`. Do not relaunch, resume, repair, score, or reuse its launch authorization. Any later product tournament must be separately preregistered with an explicit disconnect-safe launcher gate and an explicit, pre-launch decision about whether the still-unopened private holdout may be retained.
+Commit the corrected launcher and attempt-boundary contract and obtain green public CI. Then archive the superseded private pre-execution controls, re-freeze the unchanged unopened holdout against the corrected runtime on the same qualified machine, publish a replacement aggregate-only readiness checkpoint, obtain green CI, create a replacement launch authorization, and cross the one formal attempt boundary only after runner admission.

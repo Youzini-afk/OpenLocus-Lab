@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import os
 import re
 import tempfile
 from pathlib import Path
@@ -43,6 +44,10 @@ B24_FREEZE_RECEIPT_SCHEMA = "product_bakeoff_b24_private_freeze_receipt.v1"
 B24_LAUNCH_AUTHORIZATION_SCHEMA = (
     "product_bakeoff_b24_private_launch_authorization.v1"
 )
+B24_PREEXECUTION_REBIND_SCHEMA = (
+    "product_bakeoff_b24_private_preexecution_rebind.v1"
+)
+B24_PREEXECUTION_SUPERSEDED_SPEC_DIGEST = "b24spec_d64f8821238a58ec"
 HISTORICAL_FRAME_LABELS = ("b2", "b21")
 EXCLUSION_REASONS = frozenset(
     {
@@ -308,6 +313,112 @@ def validate_holdout_binding(
     if not isinstance(raw, dict) or raw != expected:
         raise B24CorpusError("B2.4 holdout binding drifted from current private inputs")
     return raw
+
+
+def _validate_preexecution_rebind(
+    old_binding: Mapping[str, Any],
+    replacement_binding: Mapping[str, Any],
+) -> None:
+    if set(old_binding) != set(replacement_binding):
+        raise B24CorpusError("B2.4 pre-execution binding shape drifted")
+    if old_binding.get("schema_version") != B24_HOLDOUT_BINDING_SCHEMA:
+        raise B24CorpusError("B2.4 pre-execution binding schema drifted")
+    if old_binding.get("corpus_version") != B24_CORPUS_VERSION:
+        raise B24CorpusError("B2.4 pre-execution corpus version drifted")
+    if old_binding.get("b24_spec_digest") != B24_PREEXECUTION_SUPERSEDED_SPEC_DIGEST:
+        raise B24CorpusError("B2.4 pre-execution parent spec binding drifted")
+    if old_binding.get("holdout_binding_digest") != holdout_binding_digest(
+        old_binding
+    ):
+        raise B24CorpusError("B2.4 pre-execution parent binding digest drifted")
+    mutable_keys = {"b24_spec_digest", "holdout_binding_digest"}
+    for key in sorted(set(replacement_binding) - mutable_keys):
+        if old_binding.get(key) != replacement_binding.get(key):
+            raise B24CorpusError(
+                "B2.4 pre-execution correction changed frozen holdout material"
+            )
+
+
+def rebind_unopened_holdout_for_preexecution_correction(
+    *,
+    candidate_plan_path: Path,
+    private_root: Path,
+    historical_repo_lock_paths: Mapping[str, Path],
+    exclusion_registry_path: Path,
+    qualification_report_path: Path,
+    treatment_runs_dir: Path,
+    public_out_path: Path,
+) -> dict[str, Any]:
+    private_root = Path(private_root)
+    binding_path = private_root / "b24_private_holdout_binding.json"
+    superseded_path = (
+        private_root / "b24_private_holdout_binding_superseded_preexecution.json"
+    )
+    receipt_path = private_root / "b24_private_preexecution_rebind_receipt.json"
+    forbidden_controls = (
+        private_root / "b24_private_freeze_receipt.json",
+        private_root / "b24_private_launch_authorization.json",
+        private_root / "b24_private_worker_started.json",
+        private_root / "b24_private_runner_admission.json",
+        private_root / "b24_private_launch_release.json",
+        private_root / "b24_private_admission_scratch",
+    )
+    if any(os.path.lexists(path) for path in forbidden_controls):
+        raise B24CorpusError(
+            "B2.4 superseded private controls must be archived before rebind"
+        )
+    if os.path.lexists(treatment_runs_dir) or os.path.lexists(public_out_path):
+        raise B24CorpusError("B2.4 treatment or result output exists before rebind")
+    if os.path.lexists(superseded_path) or os.path.lexists(receipt_path):
+        raise B24CorpusError("B2.4 pre-execution rebind was already recorded")
+    temporary = binding_path.with_name(binding_path.name + ".tmp")
+    if os.path.lexists(temporary):
+        raise B24CorpusError("B2.4 pre-execution binding temporary already exists")
+    repo_path = private_root / "b2_private_repo_lock.json"
+    task_path = private_root / "b2_private_task_manifest.json"
+    oracle_path = private_root / "b2_private_oracle_manifest.json"
+    old_binding = b2c.load_json(binding_path)
+    candidate_plan = b2c.load_json(candidate_plan_path)
+    historical_locks = {
+        label: b2c.load_json(historical_repo_lock_paths[label])
+        for label in HISTORICAL_FRAME_LABELS
+    }
+    exclusion_registry = validate_exclusion_registry(
+        b2c.load_json(exclusion_registry_path)
+    )
+    replacement = build_holdout_binding(
+        new_repo_lock=b2c.load_json(repo_path),
+        new_task_manifest=b2c.load_json(task_path),
+        new_oracle_manifest=b2c.load_json(oracle_path),
+        candidate_plan=candidate_plan,
+        candidate_plan_path=candidate_plan_path,
+        historical_repo_locks=historical_locks,
+        historical_repo_lock_paths=historical_repo_lock_paths,
+        exclusion_registry=exclusion_registry,
+        exclusion_registry_path=exclusion_registry_path,
+        qualification_report_path=qualification_report_path,
+    )
+    _validate_preexecution_rebind(old_binding, replacement)
+    b2c.write_json(superseded_path, old_binding)
+    b2c.write_json(temporary, replacement)
+    temporary.replace(binding_path)
+    receipt = {
+        "schema_version": B24_PREEXECUTION_REBIND_SCHEMA,
+        "old_spec_digest": old_binding["b24_spec_digest"],
+        "new_spec_digest": replacement["b24_spec_digest"],
+        "old_holdout_binding_digest": old_binding["holdout_binding_digest"],
+        "new_holdout_binding_digest": replacement["holdout_binding_digest"],
+        "repo_lock_file_sha256": b2c.file_sha256(repo_path),
+        "task_manifest_file_sha256": b2c.file_sha256(task_path),
+        "oracle_manifest_file_sha256": b2c.file_sha256(oracle_path),
+        "treatment_output_count": 0,
+        "formal_tournament_attempt_consumed": False,
+        "holdout_material_changed": False,
+        "private_receipt_digest": "",
+    }
+    receipt["private_receipt_digest"] = _prefixed_digest("b24rebind_", receipt)
+    b2c.write_json(receipt_path, receipt)
+    return receipt
 
 
 def prepare_fresh_holdout(
@@ -712,6 +823,25 @@ def run_self_test() -> dict[str, Any]:
         ("registry_valid", validate_exclusion_registry(registry) == registry),
         ("source_digest", b24_source_bundle_digest().startswith("b24src_")),
     ]
+    replacement_binding = {
+        "schema_version": B24_HOLDOUT_BINDING_SCHEMA,
+        "corpus_version": B24_CORPUS_VERSION,
+        "b24_spec_digest": b24_spec_digest(),
+        "new_task_count": 48,
+        "holdout_binding_digest": "",
+    }
+    replacement_binding["holdout_binding_digest"] = holdout_binding_digest(
+        replacement_binding
+    )
+    old_binding = dict(replacement_binding)
+    old_binding["b24_spec_digest"] = B24_PREEXECUTION_SUPERSEDED_SPEC_DIGEST
+    old_binding["holdout_binding_digest"] = holdout_binding_digest(old_binding)
+    try:
+        _validate_preexecution_rebind(old_binding, replacement_binding)
+        preexecution_rebind_valid = True
+    except B24CorpusError:
+        preexecution_rebind_valid = False
+    checks.append(("preexecution_rebind_preserves_holdout", preexecution_rebind_valid))
     with tempfile.TemporaryDirectory(prefix="openlocus-b24-freeze-") as tmp:
         root = Path(tmp)
         files: list[Path] = []
@@ -814,6 +944,30 @@ def run_fault_test() -> dict[str, Any]:
     except B24CorpusError:
         empty_registry_rejected = True
     checks.append(("empty_registry_rejected", empty_registry_rejected))
+    replacement_binding = {
+        "schema_version": B24_HOLDOUT_BINDING_SCHEMA,
+        "corpus_version": B24_CORPUS_VERSION,
+        "b24_spec_digest": b24_spec_digest(),
+        "new_task_count": 48,
+        "holdout_binding_digest": "",
+    }
+    replacement_binding["holdout_binding_digest"] = holdout_binding_digest(
+        replacement_binding
+    )
+    changed_old_binding = dict(replacement_binding)
+    changed_old_binding["b24_spec_digest"] = B24_PREEXECUTION_SUPERSEDED_SPEC_DIGEST
+    changed_old_binding["new_task_count"] = 47
+    changed_old_binding["holdout_binding_digest"] = holdout_binding_digest(
+        changed_old_binding
+    )
+    try:
+        _validate_preexecution_rebind(changed_old_binding, replacement_binding)
+        changed_holdout_rejected = False
+    except B24CorpusError:
+        changed_holdout_rejected = True
+    checks.append(
+        ("preexecution_rebind_holdout_change_rejected", changed_holdout_rejected)
+    )
     with tempfile.TemporaryDirectory(prefix="openlocus-b24-fault-") as tmp:
         root = Path(tmp)
         files = []
@@ -882,11 +1036,13 @@ __all__ = [
     "B24_HOLDOUT_BINDING_SCHEMA",
     "B24_FREEZE_RECEIPT_SCHEMA",
     "B24_LAUNCH_AUTHORIZATION_SCHEMA",
+    "B24_PREEXECUTION_REBIND_SCHEMA",
     "HISTORICAL_FRAME_LABELS",
     "validate_exclusion_registry",
     "validate_fresh_candidate_plan",
     "build_holdout_binding",
     "validate_holdout_binding",
+    "rebind_unopened_holdout_for_preexecution_correction",
     "prepare_fresh_holdout",
     "b24_runtime_bundle_digest",
     "build_freeze_receipt",

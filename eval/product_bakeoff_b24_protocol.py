@@ -50,7 +50,7 @@ B24_SCHEMA_VERSION = "product_bakeoff_b24_protocol.v1"
 B24_REPORT_SCHEMA_VERSION = "product_bakeoff_b24_protocol_report.v1"
 B24_PHASE = "product_bakeoff_b24_fresh_holdout_qualified_linux_tournament_protocol"
 B24_STATUS = (
-    "product_bakeoff_b24_protocol_ready_"
+    "product_bakeoff_b24_preexecution_launcher_correction_ready_"
     "no_private_holdout_no_tournament_no_result"
 )
 B24_CLAIM_LEVEL = "holdout_authoring_and_execution_envelope_design_only"
@@ -180,10 +180,21 @@ B24_RUNNER_BINDING = {
 
 B24_EXECUTION_POLICY = {
     "launcher": "standalone_single_process_under_nohup_or_screen",
+    "launcher_invokes_tracked_script_through_bash": True,
+    "launcher_resolves_absolute_script_path_before_handoff": True,
+    "launcher_success_requires_worker_entry_and_runner_admission": True,
+    "worker_startup_handshake_ci_test_required": True,
     "github_actions_used_for_private_tournament": False,
     "private_holdout_preprovisioned_outside_checkout": True,
     "public_readiness_checkpoint_must_be_committed_and_ci_green_before_launch": True,
     "private_launch_authorization_receipt_required": True,
+    "private_launch_release_required_after_runner_admission": True,
+    "private_launch_release_binds_readiness_checkpoint_and_attempt_number": True,
+    "tournament_attempt_boundary": "private_launch_release_after_runner_admission",
+    "pid_receipt_or_launcher_acknowledgement_alone_consumes_attempt": False,
+    "pre_admission_handoff_failure_with_zero_treatment_output_consumes_attempt": False,
+    "pre_boundary_correction_requires_runtime_refreeze_readiness_ci_and_new_authorization": True,
+    "pre_boundary_correction_rebinds_same_unopened_holdout_without_reauthoring": True,
     "future_tournament_attempt_count": 1,
     "complete_restart_after_any_treatment_output_allowed": False,
     "resume_after_process_or_machine_restart_allowed": False,
@@ -191,7 +202,7 @@ B24_EXECUTION_POLICY = {
     "missing_cell_imputation_allowed": False,
     "completed_cells_may_not_be_recomputed": True,
     "task_query_oracle_timeout_or_rule_edit_after_output_forbidden": True,
-    "infrastructure_failure_closes_without_result": True,
+    "infrastructure_failure_after_attempt_boundary_closes_without_result": True,
     "ssh_disconnect_must_not_terminate_process": True,
     "health_monitor_may_report_progress_counts_only": True,
     "intermediate_arm_or_quality_metrics_forbidden": True,
@@ -395,7 +406,7 @@ def _build_report_without_digest() -> dict[str, Any]:
         "phase": B24_PHASE,
         "status": B24_STATUS,
         "claim_level": B24_CLAIM_LEVEL,
-        "date": "2026-07-15",
+        "date": "2026-07-16",
         "parent_b21_failure": b24_spec_payload()["parent_b21_failure"],
         "parent_b23_qualification": b24_spec_payload()["parent_b23_qualification"],
         "holdout_rules": copy.deepcopy(B24_HOLDOUT_RULES),
@@ -420,17 +431,21 @@ def _build_report_without_digest() -> dict[str, Any]:
             "longrun_request_and_adapter_timeout_bridge_implemented": True,
             "aggregate_only_readiness_validator_implemented": True,
             "standalone_disconnect_safe_launcher_implemented": True,
+            "nonexecutable_shell_handoff_ci_probe_implemented": True,
+            "runner_admission_launch_release_handshake_implemented": True,
+            "preexecution_unopened_holdout_rebind_implemented": True,
             "private_holdout_materialized": False,
             "private_runtime_frozen": False,
             "treatment_output_exists": False,
             "future_tournament_execution_authorized": False,
         },
         "next_authorized_action": (
-            "commit this public B2.4 protocol and obtain green public CI; only then "
-            "freeze a private candidate plan, author a new 12-repository/48-task "
-            "holdout on the already qualified machine, audit it against both "
-            "historical frames and all exclusions, and freeze the exact runtime; "
-            "do not execute any treatment arm"
+            "commit this corrected public B2.4 launcher and attempt-boundary "
+            "contract and obtain green public CI; only then archive the superseded "
+            "pre-execution private controls on the same qualified machine, rebind "
+            "the unchanged unopened holdout without reauthoring, re-freeze the "
+            "corrected runtime, publish replacement aggregate-only readiness, and "
+            "obtain green CI before creating a replacement launch authorization"
         ),
     }
 
@@ -489,6 +504,27 @@ def run_self_test() -> dict[str, Any]:
         ("adapter_timeout_570", B24_ADAPTER_COMMAND_TIMEOUT_SECONDS == 570.0),
         ("nested_timeout", B24_ADAPTER_COMMAND_TIMEOUT_SECONDS < B24_REQUEST_TIMEOUT_SECONDS),
         ("one_attempt", B24_EXECUTION_POLICY["future_tournament_attempt_count"] == 1),
+        (
+            "admission_release_attempt_boundary",
+            B24_EXECUTION_POLICY["tournament_attempt_boundary"]
+            == "private_launch_release_after_runner_admission",
+        ),
+        (
+            "pid_ack_not_attempt",
+            not B24_EXECUTION_POLICY[
+                "pid_receipt_or_launcher_acknowledgement_alone_consumes_attempt"
+            ],
+        ),
+        (
+            "pre_admission_handoff_not_attempt",
+            not B24_EXECUTION_POLICY[
+                "pre_admission_handoff_failure_with_zero_treatment_output_consumes_attempt"
+            ],
+        ),
+        (
+            "explicit_bash_handoff",
+            B24_EXECUTION_POLICY["launcher_invokes_tracked_script_through_bash"],
+        ),
         ("no_private_holdout", not report["implementation_readiness"]["private_holdout_materialized"]),
         ("no_treatment_output", not report["implementation_readiness"]["treatment_output_exists"]),
         ("no_execution_authority", not report["implementation_readiness"]["future_tournament_execution_authorized"]),
@@ -517,6 +553,25 @@ def run_fault_test() -> dict[str, Any]:
     rejected("sharding_enabled", lambda value: value["experimental_design"].__setitem__("multi_runner_group_or_arm_sharding_forbidden", False))
     rejected("interim_look", lambda value: value["experimental_design"].__setitem__("interim_quality_looks", 1))
     rejected("restart_enabled", lambda value: value["execution_policy"].__setitem__("complete_restart_after_any_treatment_output_allowed", True))
+    rejected(
+        "attempt_boundary_drift",
+        lambda value: value["execution_policy"].__setitem__(
+            "tournament_attempt_boundary", "launcher_acknowledgement"
+        ),
+    )
+    rejected(
+        "pid_ack_consumes_attempt",
+        lambda value: value["execution_policy"].__setitem__(
+            "pid_receipt_or_launcher_acknowledgement_alone_consumes_attempt", True
+        ),
+    )
+    rejected(
+        "pre_admission_failure_consumes_attempt",
+        lambda value: value["execution_policy"].__setitem__(
+            "pre_admission_handoff_failure_with_zero_treatment_output_consumes_attempt",
+            True,
+        ),
+    )
     rejected("private_digest_public", lambda value: value["privacy_publication"].__setitem__("b2_b21_or_b24_private_manifest_digest_public", True))
     rejected("execution_overauthorized", lambda value: value["implementation_readiness"].__setitem__("future_tournament_execution_authorized", True))
     rejected("digest_drift", lambda value: value.__setitem__("protocol_digest", "b24protocol_" + "0" * 64))

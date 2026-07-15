@@ -11,6 +11,8 @@ import multiprocessing
 import os
 import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 from typing import Any, Callable, Iterator, Mapping
 
@@ -39,6 +41,9 @@ from product_bakeoff_b24_protocol import (
 B24_RUNNER_VERSION = "product_bakeoff_b24_runner.v1"
 B24_PRIVATE_RUNNER_ADMISSION_SCHEMA = (
     "product_bakeoff_b24_private_runner_admission.v1"
+)
+B24_PRIVATE_LAUNCH_RELEASE_SCHEMA = (
+    "product_bakeoff_b24_private_launch_release.v1"
 )
 _FROZEN_MAKE_B2_REQUEST = b2r.make_b2_request
 _FROZEN_ADAPTER_COMMAND_TIMEOUT = b1a._CLI_TIMEOUT
@@ -280,6 +285,37 @@ def _write_private_runner_admission(path: Path, value: Mapping[str, Any]) -> Non
     b2c.write_json(path, payload)
 
 
+def _wait_for_launch_release(
+    path: Path,
+    *,
+    readiness_checkpoint: str,
+    timeout_seconds: float = 180.0,
+) -> dict[str, Any]:
+    expected = {
+        "schema_version": B24_PRIVATE_LAUNCH_RELEASE_SCHEMA,
+        "release": True,
+        "readiness_checkpoint": readiness_checkpoint,
+        "tournament_attempt_number": 1,
+    }
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        if os.path.lexists(path):
+            if path.is_symlink() or not path.is_file():
+                raise B24RunError("private launch release is missing or unsafe")
+            try:
+                raw = b2c.load_json(path)
+            except Exception as exc:  # noqa: BLE001 - type-only fail-closed boundary
+                raise B24RunError(
+                    "private launch release is unreadable: " + type(exc).__name__
+                ) from exc
+            if raw != expected:
+                raise B24RunError("private launch release has non-closed shape")
+            return raw
+        if time.monotonic() >= deadline:
+            raise B24RunError("private launch release was not received")
+        time.sleep(0.1)
+
+
 def _git_head(repo_root: Path) -> str:
     completed = subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -326,6 +362,9 @@ def run_full_matrix(
     binding_path = private_root / "b24_private_holdout_binding.json"
     freeze_path = private_root / "b24_private_freeze_receipt.json"
     authorization_path = private_root / "b24_private_launch_authorization.json"
+    admission_path = private_root / "b24_private_runner_admission.json"
+    launch_release_path = private_root / "b24_private_launch_release.json"
+    admission_scratch = private_root / "b24_private_admission_scratch"
     freeze = b2c.load_json(freeze_path)
     binding = b2c.load_json(binding_path)
     authorization = b2c.load_json(authorization_path)
@@ -363,19 +402,40 @@ def run_full_matrix(
         readiness_ci_run_id=authorization["readiness_ci_run_id"],
         readiness_ci_conclusion=authorization["readiness_ci_conclusion"],
     )
-    if runs_dir.exists() and any(runs_dir.iterdir()):
-        raise B24RunError("B2.4 runs directory must be absent or empty")
-    runs_dir.mkdir(parents=True, exist_ok=True)
+    for path, label in (
+        (admission_path, "runner admission"),
+        (launch_release_path, "launch release"),
+        (admission_scratch, "admission scratch"),
+    ):
+        if os.path.lexists(path):
+            raise B24RunError(f"B2.4 private {label} must be absent before launch")
+    if os.path.lexists(runs_dir):
+        unsafe_or_nonempty = (
+            runs_dir.is_symlink()
+            or not runs_dir.is_dir()
+            or any(runs_dir.iterdir())
+        )
+        if unsafe_or_nonempty:
+            raise B24RunError("B2.4 runs directory must be absent or empty")
     admission = _admit_qualified_machine(
         qualification_private_receipt_path=qualification_private_receipt_path,
         repo_root=repo_root,
-        scratch_root=runs_dir,
+        scratch_root=admission_scratch,
         cli_path=cli_path,
     )
+    try:
+        admission_scratch.rmdir()
+    except OSError as exc:
+        raise B24RunError("B2.4 private admission scratch was not empty") from exc
     _write_private_runner_admission(
-        private_root / "b24_private_runner_admission.json",
+        admission_path,
         admission,
     )
+    _wait_for_launch_release(
+        launch_release_path,
+        readiness_checkpoint=authorization["readiness_checkpoint"],
+    )
+    runs_dir.mkdir(parents=True, exist_ok=True)
 
     def receipt_validator(raw: Any, **_: Any) -> Mapping[str, Any]:
         if raw != freeze:
@@ -453,6 +513,26 @@ def run_self_test() -> dict[str, Any]:
         )
     )
     checks.append(("private_receipt_roundtrip", validate_qualification_private_receipt(synthetic) == synthetic))
+    with tempfile.TemporaryDirectory() as temporary:
+        release_path = Path(temporary) / "release.json"
+        expected_release = {
+            "schema_version": B24_PRIVATE_LAUNCH_RELEASE_SCHEMA,
+            "release": True,
+            "readiness_checkpoint": "a" * 40,
+            "tournament_attempt_number": 1,
+        }
+        b2c.write_json(release_path, expected_release)
+        checks.append(
+            (
+                "private_launch_release_roundtrip",
+                _wait_for_launch_release(
+                    release_path,
+                    readiness_checkpoint="a" * 40,
+                    timeout_seconds=0.0,
+                )
+                == expected_release,
+            )
+        )
     failed = [name for name, passed in checks if not passed]
     return {
         "passed": not failed,
@@ -493,6 +573,40 @@ def run_fault_test() -> dict[str, Any]:
     finally:
         b1a._CLI_TIMEOUT = original
     checks.append(("preexisting_timeout_override_rejected", preoverride_rejected))
+    with tempfile.TemporaryDirectory() as temporary:
+        release_path = Path(temporary) / "release.json"
+        b2c.write_json(
+            release_path,
+            {
+                "schema_version": B24_PRIVATE_LAUNCH_RELEASE_SCHEMA,
+                "release": False,
+                "readiness_checkpoint": "a" * 40,
+                "tournament_attempt_number": 1,
+            },
+        )
+        try:
+            _wait_for_launch_release(
+                release_path,
+                readiness_checkpoint="a" * 40,
+                timeout_seconds=0.0,
+            )
+            malformed_release_rejected = False
+        except B24RunError:
+            malformed_release_rejected = True
+        checks.append(
+            ("malformed_launch_release_rejected", malformed_release_rejected)
+        )
+    with tempfile.TemporaryDirectory() as temporary:
+        try:
+            _wait_for_launch_release(
+                Path(temporary) / "missing.json",
+                readiness_checkpoint="a" * 40,
+                timeout_seconds=0.0,
+            )
+            missing_release_rejected = False
+        except B24RunError:
+            missing_release_rejected = True
+        checks.append(("missing_launch_release_rejected", missing_release_rejected))
     failed = [name for name, passed in checks if not passed]
     return {
         "passed": not failed,
