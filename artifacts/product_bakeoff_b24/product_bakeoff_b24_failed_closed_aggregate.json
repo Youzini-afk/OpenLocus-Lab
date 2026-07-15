@@ -1,0 +1,84 @@
+{
+  "anti_adaptation": {
+    "completed_or_partial_cells_may_be_recomputed": false,
+    "failed_attempt_may_be_resumed": false,
+    "failed_attempt_may_be_scored": false,
+    "frozen_rule_timeout_or_integrity_gate_may_be_changed_for_b24": false,
+    "missing_cells_may_be_imputed": false,
+    "same_b24_authorization_may_be_reused": false,
+    "second_launch_may_be_performed": false,
+    "task_query_or_oracle_may_be_edited": false
+  },
+  "claim_level": "post_boundary_retrieval_integrity_failure_incomplete_matrix_no_tournament_result",
+  "date": "2026-07-16",
+  "execution": {
+    "complete_matrix_gate_passed": false,
+    "completed_group_count": 2,
+    "expected_group_count": 48,
+    "expected_logical_record_count": 1440,
+    "formal_attempt_boundary_crossed": true,
+    "formal_tournament_attempt_count": 1,
+    "last_completed_group_logical_record_count": 60,
+    "launch_release_created": true,
+    "partial_next_group_details_public": false,
+    "phase_c_shortlist_selected": false,
+    "pre_score_gates_passed": false,
+    "private_holdout_and_runtime_frozen_before_execution": true,
+    "product_default_changed": false,
+    "provider_network_call_count": 0,
+    "public_tournament_result_exists": false,
+    "quality_or_resource_ranking_executed": false,
+    "runner_admitted": true,
+    "terminal_exit_code": 1,
+    "tournament_scoring_executed": false,
+    "worker_entered": true
+  },
+  "failure": {
+    "category": "bm25_invalid_hit_integrity_gate_failure",
+    "description": "During the incomplete next group, production BM25 receipts reported that invalid hits had been skipped. The frozen parser requires the invalid-hit skip count to remain zero, so the affected context executions were rejected and the own-parent scoreability boundary terminated the runner. Because the formal attempt boundary had already been crossed and the complete matrix did not exist, B2.4 fails closed before scoring and has no tournament result. No restart, resume, selective rerun, recomputation, or integrity-gate change is authorized.",
+    "execution_integrity_invalid": true,
+    "failed_closed": true,
+    "infrastructure_capacity_failure": false,
+    "private_failure_evidence_frozen": true,
+    "provider_or_model_failure": false,
+    "strict_zero_invalid_hit_gate_violated": true
+  },
+  "failure_aggregate_digest": "b24failure_a41d6e150a5e5c2752cfb455b0ca5dd1df35687b9489d82e5a888362dc4c4b83",
+  "next_authorized_action": "Close B2.4 as failed_closed_no_result. Do not relaunch, resume, repair, score, or reuse any incomplete B2.4 output or its launch authorization. Any later product tournament must be separately preregistered and must decide how the production BM25 invalid-hit integrity condition will be prevented or handled before any new treatment output is produced.",
+  "phase": "product_bakeoff_b24_fresh_holdout_qualified_linux_tournament",
+  "protocol": {
+    "execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "holdout_frame_digest": "b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07",
+    "protocol_report_digest": "b24protocol_ec4bc650b509781477fde7cf2c6bf5532221d86e3379364a1df8741570a5c222",
+    "source_bundle_digest": "b24src_301e5a211de015d86e2607e68d12f69afaf4474fa5f62fdd68d1c0a58f6c634f",
+    "spec_digest": "b24spec_52eefc930fac34f5"
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_plan_or_failover_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "partial_group_cell_details_public": false,
+    "per_arm_or_task_output_public": false,
+    "private_evidence_digest_public": false,
+    "private_manifest_freeze_or_launch_digest_public": false,
+    "repository_identity_public": false,
+    "source_location_range_or_excerpt_public": false,
+    "task_text_query_oracle_public": false
+  },
+  "schema_version": "product_bakeoff_b24_failed_closed_aggregate.v1",
+  "source_gate": {
+    "ci_conclusion": "success",
+    "ci_run_id": 29453549335,
+    "readiness_checkpoint": "20d279a39eda578ba4027fbaec3da6b6065279a1",
+    "readiness_digest": "b24ready_86eb4cfe65fed9e38af6f2ce3c369afb257a05055747c17446cad89028718fc0"
+  },
+  "status": "product_bakeoff_b24_execution_failed_closed_no_result",
+  "terminal_attempt_boundary": {
+    "launch_authorization_attempt_number": 1,
+    "restart_or_retry_authorized": false,
+    "second_launch_performed": false,
+    "terminal_exit_receipt_created": true,
+    "treatment_output_reused": false
+  }
+}
