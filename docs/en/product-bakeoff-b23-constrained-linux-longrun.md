@@ -73,8 +73,8 @@ Only compilation, protocol self-tests, fault injection, cgroup parser fixtures, 
 ## Frozen identifiers
 
 - B2.3 spec digest: `b23spec_b9281d2e323f8103`
-- B2.3 source bundle digest: `b23src_f79e7ef4e18b71d61494075bdb0670647e26be87cdf3264195523d89d4094702`
-- B2.3 protocol report digest: `b23protocol_d238873449f91768aa85970a825be095b80bad9c0d44ac208955ccf8a118461c`
+- B2.3 source bundle digest: `b23src_ad90913234375d3acfc98dc7d904e61852fc098dd23077baa60375cdbf4899e4`
+- B2.3 protocol report digest: `b23protocol_772ef98e70cf8548e3895ad920c05e3bbac6791b2681b10856a15cc6527d3e7b`
 
 ## Next authorized work
 

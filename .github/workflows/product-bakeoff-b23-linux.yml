@@ -56,8 +56,10 @@ jobs:
         run: |
           python3 eval/product_bakeoff_b23_protocol.py --validate-report artifacts/product_bakeoff_b23_protocol/product_bakeoff_b23_protocol_report.json
           python3 eval/product_bakeoff_b23_protocol.py --check-drift artifacts/product_bakeoff_b23_protocol/product_bakeoff_b23_protocol_report.json
-      - name: Validate bootstrap shell syntax
-        run: bash -n scripts/product_bakeoff_b23_linux_bootstrap.sh
+      - name: Validate bootstrap shell syntax and checksum parser
+        run: |
+          bash -n scripts/product_bakeoff_b23_linux_bootstrap.sh
+          bash scripts/product_bakeoff_b23_linux_bootstrap.sh --self-test
       - name: Validate bilingual documentation mirror
         run: python3 scripts/validate_docs_i18n.py
       - name: Check working tree formatting

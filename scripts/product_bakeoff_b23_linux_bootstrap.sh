@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+parse_sha256_file() {
+  awk 'NR == 1 {print $1}' "$1"
+}
+
+if [[ "${1:-}" == "--self-test" ]]; then
+  sample="$(printf 'a%.0s' {1..64})"
+  observed="$(parse_sha256_file <(printf '%s *./rustup-init\n' "$sample"))"
+  [[ "$observed" == "$sample" ]]
+  printf 'B2.3 bootstrap self-test passed\n'
+  exit 0
+fi
+
 # Idempotent bootstrap for the inspected quota-limited Ubuntu 22.04 container.
 # It installs the pinned Rust toolchain on the paid data volume and deliberately
 # does not register a GitHub runner or read any private B2.3 input.
@@ -22,7 +34,7 @@ if [[ "$(uname -s)" != "Linux" || "$(uname -m)" != "x86_64" ]]; then
   echo "B2.3 bootstrap requires Linux x86_64" >&2
   exit 2
 fi
-for command_name in awk curl git readlink sha256sum tr; do
+for command_name in awk curl git readlink sha256sum; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
     echo "B2.3 bootstrap dependency is unavailable: $command_name" >&2
     exit 2
@@ -74,7 +86,7 @@ if [[ ! -x "$CARGO_HOME/bin/rustup" ]]; then
     "$base" --output "$installer"
   curl --fail --location --proto '=https' --tlsv1.2 --silent --show-error \
     "$base.sha256" --output "$checksum"
-  expected="$(tr -d '[:space:]' < "$checksum")"
+  expected="$(parse_sha256_file "$checksum")"
   observed="$(sha256sum "$installer" | awk '{print $1}')"
   if [[ ! "$expected" =~ ^[0-9a-f]{64}$ || "$observed" != "$expected" ]]; then
     echo "rustup-init checksum verification failed" >&2
