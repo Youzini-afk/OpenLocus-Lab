@@ -482,7 +482,7 @@
     },
     "zero_one_or_multiple_finalists_are_valid_outcomes": true
   },
-  "protocol_digest": "b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb",
+  "protocol_digest": "b21protocol_385333bd86ba0a553229caf0797ceb2ef1acd18f05cae8f9a4edcff16ba5c2e1",
   "randomization": {
     "arm_order_is_constrained_randomization_not_adaptive": true,
     "arm_position_count_each_overall": 32,
@@ -510,7 +510,7 @@
   },
   "schema_version": "product_bakeoff_b21_protocol_report.v1",
   "source_locks": {
-    "b21_source_bundle_digest": "b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf",
+    "b21_source_bundle_digest": "b21src_76cd7f44a8c25d1d6b46493414b1753f4e72e72298d437f2bf3a8a01211d341d",
     "b21_spec_digest": "b21spec_3d656619189a7531",
     "line_endings_normalized_for_cross_platform_source_digest": true,
     "mixed_runtime_bundles_in_one_tournament_forbidden": true,

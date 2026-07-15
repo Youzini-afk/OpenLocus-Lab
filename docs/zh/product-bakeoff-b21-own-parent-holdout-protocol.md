@@ -46,10 +46,10 @@ B2.1 绑定 B2 实现检查点 `55e0ebaaaf6f25c5c7d5c13ffc6ee58825e7d915` 和失
 ## 冻结标识
 
 - B2.1 规格摘要：`b21spec_3d656619189a7531`
-- B2.1 源码包摘要：`b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf`
+- B2.1 源码包摘要：`b21src_76cd7f44a8c25d1d6b46493414b1753f4e72e72298d437f2bf3a8a01211d341d`
 - B2.1 holdout-frame 摘要：`b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9`
 - B2.1 执行调度摘要：`b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.1 协议报告摘要：`b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb`
+- B2.1 协议报告摘要：`b21protocol_385333bd86ba0a553229caf0797ceb2ef1acd18f05cae8f9a4edcff16ba5c2e1`
 
 ## 下一项已授权工作
 

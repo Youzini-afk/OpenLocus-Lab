@@ -46,10 +46,10 @@ Repository identities, task text, queries, paths, ranges, oracle rows, private m
 ## Frozen identifiers
 
 - B2.1 spec digest: `b21spec_3d656619189a7531`
-- B2.1 source bundle digest: `b21src_396d95d5fc098b6cbf7d11ce632d39244be28ac3a93328a803c137c2840ce7cf`
+- B2.1 source bundle digest: `b21src_76cd7f44a8c25d1d6b46493414b1753f4e72e72298d437f2bf3a8a01211d341d`
 - B2.1 holdout-frame digest: `b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9`
 - B2.1 execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.1 protocol-report digest: `b21protocol_6d747e5570920e1f2191fd673b9a55521bee6799de0a9d45ef4c96bf596b21bb`
+- B2.1 protocol-report digest: `b21protocol_385333bd86ba0a553229caf0797ceb2ef1acd18f05cae8f9a4edcff16ba5c2e1`
 
 ## Next authorized work
 

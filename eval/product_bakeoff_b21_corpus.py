@@ -32,6 +32,7 @@ from product_bakeoff_b21_protocol import (
 
 
 B21_CORPUS_VERSION = "product_bakeoff_b21_corpus.v1"
+B21_CANDIDATE_PLAN_SCHEMA = "product_bakeoff_b2_private_candidate_plan.v1"
 B21_HOLDOUT_BINDING_SCHEMA = "product_bakeoff_b21_private_holdout_binding.v1"
 B21_FREEZE_RECEIPT_SCHEMA = "product_bakeoff_b21_private_freeze_receipt.v1"
 B21_PREFLIGHT_EXCLUSION_SCHEMA = "product_bakeoff_b21_preflight_exclusions.v1"
@@ -81,7 +82,7 @@ def validate_fresh_candidate_plan(
         "slots",
     }:
         raise B21CorpusError("candidate plan has non-closed shape")
-    if candidate_plan["schema_version"] != "product_bakeoff_b2_candidate_plan.v1":
+    if candidate_plan["schema_version"] != B21_CANDIDATE_PLAN_SCHEMA:
         raise B21CorpusError("candidate plan schema mismatch")
     if not isinstance(candidate_plan["slots"], list) or len(candidate_plan["slots"]) != 12:
         raise B21CorpusError("candidate plan must contain exactly 12 slot rows")
@@ -260,6 +261,8 @@ def prepare_fresh_holdout(
         preflight_excluded_slugs=preflight_slugs,
     )
     author = importlib.import_module("product_bakeoff_b2_author")
+    if getattr(author, "B2_CANDIDATE_PLAN_SCHEMA", None) != B21_CANDIDATE_PLAN_SCHEMA:
+        raise B21CorpusError("candidate plan schema drifted from the frozen B2 author")
     result = author.prepare_private_manifests(
         candidate_plan=candidate_plan_path,
         private_root=private_root,
@@ -493,7 +496,7 @@ def _synthetic_candidate_plan(*, overlap_slug: str | None = None) -> dict[str, A
             }
         )
     return {
-        "schema_version": "product_bakeoff_b2_candidate_plan.v1",
+        "schema_version": B21_CANDIDATE_PLAN_SCHEMA,
         "slots": slots,
     }
 
@@ -510,6 +513,10 @@ def run_self_test() -> dict[str, Any]:
         excluded_repo_lock=excluded,
     )
     checks.append(("fresh_candidate_plan_valid", len(fresh_candidates) == 12))
+    checks.append((
+        "candidate_plan_schema_matches_frozen_author",
+        B21_CANDIDATE_PLAN_SCHEMA == "product_bakeoff_b2_private_candidate_plan.v1",
+    ))
     checks.append(("runtime_source_digest", b21_source_bundle_digest().startswith("b21src_")))
     checks.append(("frame_digest", b21_task_frame_digest().startswith("b21frame_")))
     with tempfile.TemporaryDirectory(prefix="openlocus-b21-freeze-") as tmp:
@@ -652,6 +659,7 @@ def run_fault_test() -> dict[str, Any]:
 
 __all__ = [
     "B21CorpusError",
+    "B21_CANDIDATE_PLAN_SCHEMA",
     "B21_HOLDOUT_BINDING_SCHEMA",
     "B21_FREEZE_RECEIPT_SCHEMA",
     "validate_fresh_candidate_plan",
