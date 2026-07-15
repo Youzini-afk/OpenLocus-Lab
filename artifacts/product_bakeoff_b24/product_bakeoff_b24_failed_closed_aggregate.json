@@ -1,0 +1,85 @@
+{
+  "anti_adaptation": {
+    "failed_attempt_may_be_resumed": false,
+    "failed_attempt_may_be_scored": false,
+    "frozen_rule_timeout_or_launcher_may_be_changed_for_b24": false,
+    "missing_cells_may_be_imputed": false,
+    "same_b24_authorization_may_be_reused": false,
+    "second_launch_may_be_performed": false,
+    "task_query_or_oracle_may_be_edited": false
+  },
+  "claim_level": "launcher_infrastructure_failure_before_worker_entry_no_treatment_output_no_result",
+  "date": "2026-07-16",
+  "execution": {
+    "complete_matrix_gate_passed": false,
+    "completed_group_count": 0,
+    "expected_group_count": 48,
+    "expected_logical_record_count": 1440,
+    "full_run_entrypoint_invoked": false,
+    "launcher_acknowledged": true,
+    "logical_record_count": 0,
+    "phase_c_shortlist_selected": false,
+    "private_holdout_frozen_before_launch": true,
+    "private_launch_authorization_created": true,
+    "product_default_changed": false,
+    "provider_network_call_count": 0,
+    "public_result_staging_file_created": false,
+    "public_tournament_result_exists": false,
+    "qualified_runner_admission_written": false,
+    "quality_or_resource_ranking_executed": false,
+    "tournament_attempt_count": 1,
+    "tournament_scoring_executed": false,
+    "treatment_output_count": 0,
+    "treatment_runs_directory_created": false,
+    "worker_process_entered": false
+  },
+  "failure": {
+    "category": "standalone_launcher_worker_shell_handoff_permission_denied",
+    "description": "The authorized standalone launcher acknowledged attempt 1 and wrote its PID receipt, but nohup attempted to execute the tracked 100644 shell script directly. The operating system rejected that worker handoff before the worker entered, before runner admission, and before any runs directory or treatment output existed. The preregistered one-attempt and infrastructure-failure rules therefore close B2.4 without a result; the launcher is not repaired or retried inside B2.4.",
+    "failed_closed": true,
+    "infrastructure_invalid": true,
+    "private_input_or_task_failure": false,
+    "provider_or_model_failure": false,
+    "tracked_launcher_file_mode": "100644",
+    "worker_shell_handoff_failed": true
+  },
+  "failure_aggregate_digest": "b24failure_96446da70f2e8d9afd0e6009e04f8b5e3f94699828de88731c37520e292cd672",
+  "next_authorized_action": "Close B2.4 as failed_closed_no_result. Do not relaunch, resume, repair, score, or reuse its launch authorization. Any later product tournament must be separately preregistered with an explicit disconnect-safe launcher gate and an explicit decision about whether the still-unopened private holdout may be retained; that decision must be frozen before any new launch authorization or treatment output.",
+  "phase": "product_bakeoff_b24_fresh_holdout_qualified_linux_tournament",
+  "protocol": {
+    "execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "holdout_frame_digest": "b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07",
+    "protocol_report_digest": "b24protocol_c1afab8cf3c64cfca78f55e5fefd6b84cdd430c9e6c78cd36af2c0bacf7c6b4f",
+    "source_bundle_digest": "b24src_9fef21caad5def69af3c381d51018a2d8cfe4a48361babe71458b9f7283eff76",
+    "spec_digest": "b24spec_d64f8821238a58ec"
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_plan_or_failover_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "per_arm_or_task_output_public": false,
+    "private_evidence_digest_public": false,
+    "private_manifest_freeze_or_launch_digest_public": false,
+    "repository_identity_public": false,
+    "source_location_range_or_excerpt_public": false,
+    "task_text_query_oracle_public": false
+  },
+  "schema_version": "product_bakeoff_b24_failed_closed_aggregate.v1",
+  "source_gate": {
+    "ci_conclusion": "success",
+    "ci_run_id": 29446543053,
+    "readiness_checkpoint": "e516f059592405289caf0124034759d6cf6769e5",
+    "readiness_digest": "b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655"
+  },
+  "status": "product_bakeoff_b24_execution_failed_closed_no_result",
+  "terminal_attempt_boundary": {
+    "launch_authorization_attempt_number": 1,
+    "launcher_log_created": true,
+    "process_alive_after_startup_check": false,
+    "restart_or_retry_authorized": false,
+    "second_launch_performed": false,
+    "terminal_exit_receipt_created": false,
+    "treatment_output_reused": false,
+    "worker_pid_receipt_created": true
+  }
+}

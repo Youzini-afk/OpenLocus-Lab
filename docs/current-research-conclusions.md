@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date / 日期: 2026-07-14
+Date / 日期: 2026-07-16
 
 This root file is only a bilingual index. Do not put research status prose here.
 
@@ -24,6 +24,7 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.3 qualification aggregate / B2.3 资格汇总: [`artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json`](../artifacts/product_bakeoff_b23_runner_qualification/product_bakeoff_b23_runner_qualification.json)
 - B2.4 fresh qualified holdout protocol / B2.4 全新合格机器盲测协议: [EN](en/product-bakeoff-b24-fresh-holdout.md) / [ZH](zh/product-bakeoff-b24-fresh-holdout.md)
 - B2.4 corrected holdout readiness / B2.4 修正后的盲测就绪汇总: [`artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json`](../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
+- B2.4 failed-closed aggregate / B2.4 失败关闭聚合: [`artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json`](../artifacts/product_bakeoff_b24/product_bakeoff_b24_failed_closed_aggregate.json)
 
 ## Current route closure / 当前路线关闭
 
