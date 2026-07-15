@@ -1,0 +1,42 @@
+name: product-bakeoff-b21
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b21_*.py'
+      - 'artifacts/product_bakeoff_b21_protocol/**'
+      - 'docs/en/product-bakeoff-b21-own-parent-holdout-protocol.md'
+      - 'docs/zh/product-bakeoff-b21-own-parent-holdout-protocol.md'
+      - '.github/workflows/product-bakeoff-b21.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  protocol-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile B2.1 protocol
+        run: python3 -m py_compile eval/product_bakeoff_b21_protocol.py
+      - name: Run B2.1 protocol self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b21_protocol.py --self-test
+          python3 eval/product_bakeoff_b21_protocol.py --fault-test
+      - name: Validate B2.1 protocol report and drift
+        run: |
+          python3 eval/product_bakeoff_b21_protocol.py --validate-report artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json
+          python3 eval/product_bakeoff_b21_protocol.py --check-drift artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json
+      - name: Validate bilingual documentation mirror
+        run: python3 scripts/validate_docs_i18n.py
+      - name: Check working tree formatting
+        run: git diff --check
