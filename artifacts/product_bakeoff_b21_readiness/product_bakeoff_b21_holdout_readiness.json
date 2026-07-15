@@ -1,0 +1,76 @@
+{
+  "schema_version": "product_bakeoff_b21_holdout_readiness.v1",
+  "phase": "product_bakeoff_b21_holdout_readiness",
+  "date": "2026-07-15",
+  "status": "product_bakeoff_b21_holdout_prepared_not_frozen_no_arm_output_no_result",
+  "claim_level": "holdout_readiness_only_no_empirical_result",
+  "source_gate": {
+    "checkpoint": "cc09c9e97d3cb04bb7bac4b9e72ee3856677256f",
+    "ci_run_id": 29386937460,
+    "ci_conclusion": "success",
+    "b21_spec_digest": "b21spec_3d656619189a7531",
+    "b21_source_bundle_digest": "b21src_76cd7f44a8c25d1d6b46493414b1753f4e72e72298d437f2bf3a8a01211d341d",
+    "b21_holdout_frame_digest": "b21frame_b27001da8dcecb1552596f887fd4af93a319a95f7ce9ef60eb7f11d720d5c5d9",
+    "b21_execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "b21_protocol_report_digest": "b21protocol_385333bd86ba0a553229caf0797ceb2ef1acd18f05cae8f9a4edcff16ba5c2e1"
+  },
+  "holdout_readiness": {
+    "repository_count": 12,
+    "distinct_repository_identity_count": 12,
+    "task_count": 48,
+    "oracle_record_count": 48,
+    "b2_repository_slug_overlap_count": 0,
+    "real_preflight_repository_slug_overlap_count": 0,
+    "visible_size_bands_valid": true,
+    "language_task_counts": {
+      "python": 16,
+      "rust": 16,
+      "typescript": 16
+    },
+    "size_task_counts": {
+      "large": 12,
+      "medium": 12,
+      "small": 12,
+      "xlarge": 12
+    },
+    "role_task_counts": {
+      "direct": 12,
+      "relational": 12,
+      "restraint": 12,
+      "workflow": 12
+    },
+    "interaction_mode_counts": {
+      "one_shot": 36,
+      "two_step": 12
+    },
+    "oracle_kind_counts": {
+      "abstain": 6,
+      "deterministic": 36,
+      "multi_target": 6
+    },
+    "support_oracle_count": 12,
+    "candidate_failover_completed_before_any_arm_output": true,
+    "private_binding_integrity_valid": true
+  },
+  "execution_state": {
+    "private_holdout_materialized": true,
+    "runtime_bundle_frozen": false,
+    "arm_output_count": 0,
+    "logical_record_count_executed": 0,
+    "provider_or_model_call_count": 0,
+    "scoring_executed": false,
+    "tournament_result_exists": false
+  },
+  "privacy": {
+    "publication_level": "aggregate_only",
+    "minimum_public_stratum_denominator": 12,
+    "repository_identities_public": false,
+    "task_text_or_queries_public": false,
+    "source_locations_or_ranges_public": false,
+    "oracle_records_public": false,
+    "private_manifest_or_freeze_digests_public": false,
+    "private_execution_locations_public": false
+  },
+  "next_authorized_action": "build the release runtime, freeze the prepared private holdout and one runtime bundle after this readiness checkpoint is remotely green, then execute the complete preregistered matrix once without interim quality inspection",
+  "readiness_digest": "b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88"
+}

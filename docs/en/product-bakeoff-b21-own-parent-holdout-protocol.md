@@ -2,9 +2,9 @@
 
 Date: 2026-07-15
 
-Status: `product_bakeoff_b21_implementation_ready_preflight_passed_no_holdout_no_result`
+Status: `product_bakeoff_b21_holdout_prepared_not_frozen_no_arm_output_no_result`
 
-B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. Its holdout exclusion overlay, own-parent runner, terminal support outcome, isolated scorer, and aggregate-only publisher are now implemented. Three scenarios on two repositories excluded from the final holdout produced 36 logical records: ordinary support, six `parent_unavailable` terminals, and natural cross-path target divergence. All preflights passed with zero provider/network calls. The final 12-repository/48-task holdout has not been materialized or executed.
+B2.1 is a new confirmatory holdout tournament, not a repair or continuation of the incomplete B2 matrix. Its holdout exclusion overlay, own-parent runner, terminal support outcome, isolated scorer, and aggregate-only publisher are implemented. Three scenarios on two repositories excluded from the final holdout produced 36 logical records: ordinary support, six `parent_unavailable` terminals, and natural cross-path target divergence. All preflights passed with zero provider/network calls. The final 12-repository/48-task holdout is now privately materialized and aggregate-audited, but it has not been runtime-frozen, executed by any arm, or scored.
 
 The executable protocol and public design report are:
 
@@ -14,6 +14,7 @@ The executable protocol and public design report are:
 - [`product_bakeoff_b21_scorer.py`](../../eval/product_bakeoff_b21_scorer.py)
 - [`product_bakeoff_b21_cli.py`](../../eval/product_bakeoff_b21_cli.py)
 - [`product_bakeoff_b21_protocol_report.json`](../../artifacts/product_bakeoff_b21_protocol/product_bakeoff_b21_protocol_report.json)
+- [`product_bakeoff_b21_holdout_readiness.json`](../../artifacts/product_bakeoff_b21_readiness/product_bakeoff_b21_holdout_readiness.json)
 
 ## Parent lock and non-reuse boundary
 
@@ -43,6 +44,12 @@ No interim quality looks, early elimination, task replacement, selective rerun, 
 
 Repository identities, task text, queries, paths, ranges, oracle rows, private manifest/freeze digests, per-task divergence, per-cell resources, and private run paths remain private. Public output is arm-level and predeclared-stratum aggregate only. B2.1 CI receives no private holdout inputs and runs only public protocol/implementation tests and report validation.
 
+## Holdout readiness checkpoint
+
+The prepared private frame passed the frozen admission and authoring rules with 12 distinct repository identities, 48 task records, and 48 oracle records. Repository-slug overlap is zero against both the B2 frame and the two real-preflight repositories. The public task margins remain exactly preregistered: 16 tasks per language, 12 per size band, 12 per role, 36 one-shot plus 12 two-step tasks, and 36 deterministic plus six multi-target plus six abstention oracles. All visible size bands and the private holdout binding validated.
+
+This checkpoint is gated on source commit `cc09c9e97d3cb04bb7bac4b9e72ee3856677256f` and successful CI run `29386937460`. Candidate failover finished before any arm output. Runtime freeze is still absent, logical records executed remain zero, provider/model calls remain zero, and no B2.1 tournament result exists. The readiness artifact publishes no repository identity, task text, source location, oracle record, private digest, or private execution location. Readiness digest: `b21ready_c2f3821b0fb97cd89495248ed8347d38addaf38eaea4f62e30e8e0aba3219b88`.
+
 ## Frozen identifiers
 
 - B2.1 spec digest: `b21spec_3d656619189a7531`
@@ -53,4 +60,4 @@ Repository identities, task text, queries, paths, ranges, oracle rows, private m
 
 ## Next authorized work
 
-Prepare a new 12-repository/48-task holdout frame excluding every B2 and real-preflight repository. Audit only its aggregate margins, freeze its private manifests and one runtime bundle, and then execute the full matrix once without interim quality inspection. No B2.1 empirical result exists at this checkpoint.
+After this readiness checkpoint is committed, pushed, and remotely green, build the release runtime and freeze the prepared private manifests with exactly one runtime bundle. Then execute the complete matrix once without interim quality inspection. No B2.1 empirical result exists at this checkpoint.
