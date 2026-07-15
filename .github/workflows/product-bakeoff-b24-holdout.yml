@@ -1,0 +1,74 @@
+name: product-bakeoff-b24-holdout
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b24_*.py'
+      - 'scripts/product_bakeoff_b24_linux_longrun.sh'
+      - 'artifacts/product_bakeoff_b24_protocol/**'
+      - 'artifacts/product_bakeoff_b24_readiness/**'
+      - 'docs/en/product-bakeoff-b24-fresh-holdout.md'
+      - 'docs/zh/product-bakeoff-b24-fresh-holdout.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b24-holdout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  public-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out public B2.4 contract
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Compile B2.4 implementation
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b24_protocol.py \
+            eval/product_bakeoff_b24_corpus.py \
+            eval/product_bakeoff_b24_runner.py \
+            eval/product_bakeoff_b24_scorer.py \
+            eval/product_bakeoff_b24_readiness.py \
+            eval/product_bakeoff_b24_cli.py
+      - name: Run B2.4 protocol self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b24_protocol.py --self-test
+          python3 eval/product_bakeoff_b24_protocol.py --fault-test
+      - name: Run B2.4 implementation self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b24_cli.py --self-test
+          python3 eval/product_bakeoff_b24_cli.py --fault-test
+      - name: Validate B2.4 protocol report and drift
+        run: |
+          python3 eval/product_bakeoff_b24_protocol.py \
+            --validate-report \
+            artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json
+          python3 eval/product_bakeoff_b24_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json
+      - name: Validate optional aggregate-only holdout readiness
+        run: |
+          path=artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json
+          if [[ -f "$path" ]]; then
+            python3 eval/product_bakeoff_b24_readiness.py --validate-public "$path"
+          fi
+      - name: Validate disconnect-safe Linux launcher
+        run: |
+          bash -n scripts/product_bakeoff_b24_linux_longrun.sh
+          bash scripts/product_bakeoff_b24_linux_longrun.sh --self-test
+      - name: Validate privacy and bilingual documentation
+        run: |
+          python3 scripts/public_artifact_privacy_audit.py --self-test
+          python3 scripts/public_artifact_privacy_audit.py
+          python3 scripts/validate_docs_i18n.py
+      - name: Check formatting
+        run: git diff --check
