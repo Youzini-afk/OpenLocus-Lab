@@ -2,9 +2,9 @@
 
 日期：2026-07-16
 
-状态：`product_bakeoff_b24_preexecution_launcher_corrected_pending_private_refreeze_no_treatment_output`
+状态：`product_bakeoff_b24_private_holdout_frozen_no_treatment_output_no_result`
 
-B2.4 仍是同一个验证性锦标赛外壳：B2.1 已按失败关闭，B2.3 的受限 Linux 机器已经通过公开资格验证。一次执行前 `nohup` 交接试图直接执行 Git 模式为 `100644` 的脚本，在工作进程进入前被系统拒绝。此前的公开收口错误地把启动器确认当成正式锦标赛尝试边界。由于工作进程、机器准入、启动放行、完整运行、方案输出、评分和排名均未发生，正式尝试没有被消耗；这份仍未被任何方案打开的盲测集可在修正后的运行时重新冻结后继续使用。
+B2.4 仍是同一个验证性锦标赛外壳：B2.1 已按失败关闭，B2.3 的受限 Linux 机器已经通过公开资格验证。执行前启动器修正已经通过公开 CI；同一份尚未被方案打开的盲测集没有重新出题，而是在同一台合格机器上原样重绑定并绑定修正后运行时重新冻结。替代的纯聚合就绪检查点再次确认 12 个仓库、48 个任务、方案输出为 0，且没有锦标赛结论。
 
 可执行的公开契约包括：
 
@@ -18,6 +18,7 @@ B2.4 仍是同一个验证性锦标赛外壳：B2.1 已按失败关闭，B2.3 �
 - [`product-bakeoff-b24-holdout.yml`](../../.github/workflows/product-bakeoff-b24-holdout.yml)
 - [`product_bakeoff_b24_protocol_report.json`](../../artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json)
 - [`product_bakeoff_b24_launcher_preexecution_correction.json`](../../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
+- [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 
 ## 上游锁定
 
@@ -41,7 +42,7 @@ B2.4 锁定 B2.1 的聚合失败关闭结果，包括两次不完整尝试、没
 
 已废止的就绪提交 `e516f059592405289caf0124034759d6cf6769e5` 通过了 CI 运行 `29446543053`，同一台合格机器的稳定字段变化为 0，也创建了私有启动授权。启动器写入 PID 回执并返回确认，但后台交接直接执行了模式为 `100644` 的脚本，而不是通过 `bash` 打开；系统因此在工作进程进入前拒绝交接。完整运行入口、机器准入、启动放行、运行目录、任务方案执行和服务商调用均未发生。
 
-修正后的启动器先解析自身绝对路径，再显式通过 `bash` 启动。它不再因为写入 PID 就报告成功：工作进程先写入私有进入回执，runner 再校验全部冻结输入和合格机器并写入准入回执，之后启动器才可原子写入私有启动放行。runner 准入后的这次放行才是正式锦标赛尝试边界。CI 会在脚本保持不可直接执行时真实测试这条后台交接路径。旧启动授权和就绪文件均被废止；必须把不变的盲测集绑定修正后的源码重新冻结，再发布替代就绪检查点和授权。
+修正后的启动器先解析自身绝对路径，再显式通过 `bash` 启动。它不再因为写入 PID 就报告成功：工作进程先写入私有进入回执，runner 再校验全部冻结输入和合格机器并写入准入回执，之后启动器才可原子写入私有启动放行。runner 准入后的这次放行才是正式锦标赛尝试边界。CI 会在脚本保持不可直接执行时真实测试这条后台交接路径。旧启动授权和就绪文件均被废止；不变的盲测集现已在不重新出题的前提下重绑定、绑定修正后源码重新冻结，并由上述替代就绪文件表示。
 
 ## 实验设计
 
@@ -72,6 +73,8 @@ B2.1 两次都在同一个短超时边界失败。B2.3 把外层阶段上限提�
 - B2.4 盲测框架摘要：`b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07`
 - 继承的执行调度摘要：`b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
 - B2.4 协议报告摘要：`b24protocol_ec4bc650b509781477fde7cf2c6bf5532221d86e3379364a1df8741570a5c222`
+- 启动器修正检查点与 CI：`dbeb244f96d9da7aa47b256153d5f5af0e14e481`，运行 `29449579106`（`success`）
+- 替代就绪摘要：`b24ready_86eb4cfe65fed9e38af6f2ce3c369afb257a05055747c17446cad89028718fc0`
 - 修正后的协议检查点与 CI：`66f55e5b334a13045413b668c1b8fb4dff33af7f`，运行 `29446095850`（`success`）
 - 修正前已废止的就绪摘要：`b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - 已废止的就绪检查点与 CI：`cc0cbc15476809b735b3c958214b525a2790e0bf`，运行 `29445399981`（`success`），方案输出为 0
@@ -80,4 +83,4 @@ B2.1 两次都在同一个短超时边界失败。B2.3 把外层阶段上限提�
 
 ## 下一项获准工作
 
-提交修正后的启动器和尝试边界契约并取得绿色公开 CI。之后在同一台合格机器上归档已废止的私有执行前控制文件，把不变且未被方案打开的盲测集绑定修正后的运行时重新冻结，发布替代的纯聚合就绪检查点并通过 CI，创建替代启动授权，并且只在 runner 准入后跨越唯一一次正式尝试边界。
+提交本替代纯聚合就绪检查点并取得绿色公开 CI。之后创建替代的私有启动授权，重新核验合格机器，并且只在工作进程进入和 runner 准入后跨越唯一一次正式锦标赛尝试边界。

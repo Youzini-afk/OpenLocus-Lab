@@ -2,9 +2,9 @@
 
 Date: 2026-07-16
 
-Status: `product_bakeoff_b24_preexecution_launcher_corrected_pending_private_refreeze_no_treatment_output`
+Status: `product_bakeoff_b24_private_holdout_frozen_no_treatment_output_no_result`
 
-B2.4 remains the same confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed public qualification. A pre-execution `nohup` handoff tried to execute the tracked `100644` shell script directly and was rejected before the worker entered. The earlier public closeout incorrectly treated the launcher acknowledgement as the formal tournament-attempt boundary. Because no worker entry, runner admission, launch release, full-run process, treatment output, score, or rank existed, no tournament attempt was consumed and the still-unopened holdout may be retained after the corrected runtime is re-frozen.
+B2.4 remains the same confirmatory tournament envelope after B2.1 failed closed and the B2.3 constrained Linux runner passed public qualification. The pre-execution launcher correction passed public CI; the unchanged unopened holdout was rebound without reauthoring and re-frozen against that corrected runtime on the same qualified machine. The replacement aggregate-only readiness checkpoint again confirms 12 repositories, 48 tasks, zero treatment output, and no tournament result.
 
 The executable public contract is:
 
@@ -18,6 +18,7 @@ The executable public contract is:
 - [`product-bakeoff-b24-holdout.yml`](../../.github/workflows/product-bakeoff-b24-holdout.yml)
 - [`product_bakeoff_b24_protocol_report.json`](../../artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json)
 - [`product_bakeoff_b24_launcher_preexecution_correction.json`](../../artifacts/product_bakeoff_b24_prelaunch_correction/product_bakeoff_b24_launcher_preexecution_correction.json)
+- [`product_bakeoff_b24_holdout_readiness.json`](../../artifacts/product_bakeoff_b24_readiness/product_bakeoff_b24_holdout_readiness.json)
 
 ## Parent locks
 
@@ -41,7 +42,7 @@ The prior readiness, freeze receipt, and launch authorization were invalidated w
 
 The superseded readiness commit `e516f059592405289caf0124034759d6cf6769e5` passed CI run `29446543053`, the exact qualified machine profile was revalidated with zero stable changes, and a private launch authorization was created. The launcher wrote a PID receipt and returned an acknowledgement, but its background handoff invoked the tracked mode-`100644` script directly instead of through `bash`. The operating system rejected the handoff before worker entry. No full-run entrypoint, runner admission, launch release, runs directory, task treatment, or provider call occurred.
 
-The corrected launcher resolves its own absolute path and invokes it explicitly through `bash`. It does not report success after merely writing a PID. The worker first writes a private entry receipt, the runner validates all frozen inputs and the qualified machine and writes its admission receipt, and only then may the launcher atomically issue a private launch release. That release, after runner admission, is the formal tournament-attempt boundary. A CI probe exercises this exact background handoff while the tracked script remains non-executable. The old launch authorization and readiness are superseded; the unchanged holdout must be re-frozen against this corrected source before a replacement readiness checkpoint and authorization are created.
+The corrected launcher resolves its own absolute path and invokes it explicitly through `bash`. It does not report success after merely writing a PID. The worker first writes a private entry receipt, the runner validates all frozen inputs and the qualified machine and writes its admission receipt, and only then may the launcher atomically issue a private launch release. That release, after runner admission, is the formal tournament-attempt boundary. A CI probe exercises this exact background handoff while the tracked script remains non-executable. The old launch authorization and readiness are superseded; the unchanged holdout has now been rebound without reauthoring, re-frozen against the corrected source, and represented by the replacement readiness artifact above.
 
 ## Experimental design
 
@@ -72,6 +73,8 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 - B2.4 holdout-frame digest: `b24frame_429a87368330b5c33c8c30a771fd5f62c2f445d9408598bf25cbf0d0fad64d07`
 - Inherited execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
 - B2.4 protocol-report digest: `b24protocol_ec4bc650b509781477fde7cf2c6bf5532221d86e3379364a1df8741570a5c222`
+- Launcher-correction checkpoint and CI: `dbeb244f96d9da7aa47b256153d5f5af0e14e481`, run `29449579106` (`success`)
+- Replacement readiness digest: `b24ready_86eb4cfe65fed9e38af6f2ce3c369afb257a05055747c17446cad89028718fc0`
 - Corrected protocol checkpoint and CI: `66f55e5b334a13045413b668c1b8fb4dff33af7f`, run `29446095850` (`success`)
 - Superseded pre-correction readiness digest: `b24ready_9655d18430c0e8f7e2248a79a403a3847dc378de431ddf6d16867ff21ed31655`
 - Superseded readiness checkpoint and CI: `cc0cbc15476809b735b3c958214b525a2790e0bf`, run `29445399981` (`success`), zero treatment output
@@ -80,4 +83,4 @@ Repository identities, candidate order and failover, task text, queries, paths, 
 
 ## Next authorized action
 
-Commit the corrected launcher and attempt-boundary contract and obtain green public CI. Then archive the superseded private pre-execution controls, re-freeze the unchanged unopened holdout against the corrected runtime on the same qualified machine, publish a replacement aggregate-only readiness checkpoint, obtain green CI, create a replacement launch authorization, and cross the one formal attempt boundary only after runner admission.
+Commit this replacement aggregate-only readiness checkpoint and obtain green public CI. Then create a replacement private launch authorization, revalidate the qualified machine, and cross the one formal tournament-attempt boundary only after worker entry and runner admission.
