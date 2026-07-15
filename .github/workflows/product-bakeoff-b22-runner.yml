@@ -1,0 +1,141 @@
+name: product-bakeoff-b22-runner
+
+# The self-hosted job is MANUAL ONLY. Pull requests exercise only the public
+# contract job and can never route work to the private runner.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b22_*.py'
+      - 'artifacts/product_bakeoff_b22_protocol/**'
+      - 'docs/en/product-bakeoff-b22-self-hosted-execution-design.md'
+      - 'docs/zh/product-bakeoff-b22-self-hosted-execution-design.md'
+      - '.github/workflows/product-bakeoff-b22-runner.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Public contract validation or strong-runner qualification
+        required: true
+        default: public_contract
+        type: choice
+        options:
+          - public_contract
+          - runner_qualification
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b22-${{ github.ref }}-${{ inputs.mode || 'public_contract' }}
+  cancel-in-progress: false
+
+jobs:
+  public-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out frozen public source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Compile B2.2 protocol and qualifier
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b22_protocol.py \
+            eval/product_bakeoff_b22_runner_qualification.py
+      - name: Run B2.2 protocol self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b22_protocol.py --self-test
+          python3 eval/product_bakeoff_b22_protocol.py --fault-test
+      - name: Run runner-qualification self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b22_runner_qualification.py --self-test
+          python3 eval/product_bakeoff_b22_runner_qualification.py --fault-test
+      - name: Validate B2.2 protocol report and drift
+        run: |
+          python3 eval/product_bakeoff_b22_protocol.py --validate-report artifacts/product_bakeoff_b22_protocol/product_bakeoff_b22_protocol_report.json
+          python3 eval/product_bakeoff_b22_protocol.py --check-drift artifacts/product_bakeoff_b22_protocol/product_bakeoff_b22_protocol_report.json
+      - name: Validate bilingual documentation mirror
+        run: python3 scripts/validate_docs_i18n.py
+      - name: Check working tree formatting
+        run: git diff --check
+
+  self-hosted-qualification:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'runner_qualification'
+    environment: b22-private-execution
+    runs-on: [self-hosted, windows, x64, openlocus-b22-private]
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Refuse non-main or non-manual execution
+        run: |
+          if ($env:GITHUB_EVENT_NAME -ne 'workflow_dispatch') {
+            throw 'B2.2 self-hosted qualification is manual only'
+          }
+          if ($env:GITHUB_REF -ne 'refs/heads/main') {
+            throw 'B2.2 self-hosted qualification is main-only'
+          }
+          if ([string]::IsNullOrWhiteSpace($env:OPENLOCUS_B22_SCRATCH_ROOT)) {
+            throw 'OPENLOCUS_B22_SCRATCH_ROOT is not configured on the runner'
+          }
+      - name: Check out frozen public source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          clean: true
+      - name: Build release runtime from the checked-out commit
+        run: cargo build --release --locked
+      - name: Revalidate public B2.2 contract on the runner
+        run: |
+          python eval/product_bakeoff_b22_protocol.py --self-test
+          python eval/product_bakeoff_b22_protocol.py --fault-test
+          python eval/product_bakeoff_b22_runner_qualification.py --self-test
+          python eval/product_bakeoff_b22_runner_qualification.py --fault-test
+          python eval/product_bakeoff_b22_protocol.py --check-drift artifacts/product_bakeoff_b22_protocol/product_bakeoff_b22_protocol_report.json
+      - name: Run profile, I/O, and three-group synthetic qualification
+        id: qualification
+        continue-on-error: true
+        run: |
+          $publicDir = Join-Path $env:RUNNER_TEMP 'b22-public'
+          New-Item -ItemType Directory -Force -Path $publicDir | Out-Null
+          $publicOut = Join-Path $publicDir 'product_bakeoff_b22_runner_qualification.json'
+          $privateReceipt = Join-Path $env:OPENLOCUS_B22_SCRATCH_ROOT 'b22_private_runner_qualification_receipt.json'
+          python eval/product_bakeoff_b22_runner_qualification.py `
+            --qualify `
+            --repo-root $env:GITHUB_WORKSPACE `
+            --scratch-root $env:OPENLOCUS_B22_SCRATCH_ROOT `
+            --openlocus (Join-Path $env:GITHUB_WORKSPACE 'target/release/openlocus.exe') `
+            --private-receipt $privateReceipt `
+            --public-out $publicOut
+      - name: Validate the exact public aggregate
+        id: validate_aggregate
+        if: always()
+        run: |
+          $publicOut = Join-Path $env:RUNNER_TEMP 'b22-public/product_bakeoff_b22_runner_qualification.json'
+          if (-not (Test-Path -LiteralPath $publicOut -PathType Leaf)) {
+            throw 'B2.2 public qualification aggregate was not written'
+          }
+          python eval/product_bakeoff_b22_runner_qualification.py --validate-public $publicOut
+      - name: Upload only the validated aggregate
+        if: always() && steps.validate_aggregate.outcome == 'success'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: product-bakeoff-b22-runner-qualification
+          path: ${{ runner.temp }}/b22-public/product_bakeoff_b22_runner_qualification.json
+          if-no-files-found: error
+          include-hidden-files: false
+          retention-days: 14
+          compression-level: 9
+      - name: Enforce qualification decision
+        if: always()
+        run: |
+          $publicOut = Join-Path $env:RUNNER_TEMP 'b22-public/product_bakeoff_b22_runner_qualification.json'
+          $report = Get-Content -Raw -LiteralPath $publicOut | ConvertFrom-Json
+          if ($report.decision.runner_qualified -ne $true) {
+            throw 'B2.2 runner qualification failed closed'
+          }
+          if ('${{ steps.qualification.outcome }}' -ne 'success') {
+            throw 'B2.2 qualification process returned nonzero despite a passing report'
+          }
