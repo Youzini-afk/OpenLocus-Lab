@@ -5,8 +5,9 @@ B2.5 is a new confirmatory envelope.  It does not reopen B2.4 and cannot
 reuse its incomplete output or exposed holdout.  It preserves the frozen
 B2.1 execution/scoring design, excludes the B2, B2.1, and B2.4 repository
 frames, adds a source-only query/token compatibility gate, and requires the
-repaired production binary to pass a synthetic qualification on the admitted
-Linux machine before any new private authoring.
+repaired production binary to pass a synthetic qualification on a compatible
+Linux runner before any new private authoring.  After that qualification, the
+current B2.5 runner is frozen for the tournament.
 
 This public module reads no private input and authorizes no tournament run.
 """
@@ -47,8 +48,8 @@ B24_REPAIR_REL = (
     "product_bakeoff_b24_bm25_tokenizer_repair.json"
 )
 
-B25_SCHEMA_VERSION = "product_bakeoff_b25_protocol.v1"
-B25_REPORT_SCHEMA_VERSION = "product_bakeoff_b25_protocol_report.v1"
+B25_SCHEMA_VERSION = "product_bakeoff_b25_protocol.v2"
+B25_REPORT_SCHEMA_VERSION = "product_bakeoff_b25_protocol_report.v2"
 B25_PHASE = "product_bakeoff_b25_fresh_tokenizer_qualified_linux_tournament_protocol"
 B25_STATUS = (
     "product_bakeoff_b25_protocol_ready_runtime_qualification_pending_"
@@ -154,10 +155,14 @@ B25_QUERY_COMPATIBILITY = {
 }
 
 B25_RUNTIME_QUALIFICATION = {
-    "qualification_version": "product_bakeoff_b25_runtime_qualification.v1",
+    "qualification_version": "product_bakeoff_b25_runtime_qualification.v2",
     "must_precede_private_authoring": True,
     "must_use_current_production_openlocus_binary": True,
-    "must_run_on_b23_admitted_machine_instance": True,
+    "parent_b23_exact_machine_reuse_required": False,
+    "parent_b23_runner_class_lineage_required": True,
+    "parent_machine_stable_fields_exact_except_cgroup_memory_limit": True,
+    "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate": True,
+    "b25_qualified_machine_fixed_after_runtime_qualification": True,
     "synthetic_only_no_private_input": True,
     "synthetic_case_categories": [
         "ordinary_identifier",
@@ -212,17 +217,20 @@ B25_INHERITED_ENGINE = {
 B25_RUNNER_BINDING = {
     "parent_runner_qualification_digest": B25_PARENT_B23_QUALIFICATION_DIGEST,
     "parent_runner_qualification_sha256": B25_PARENT_B23_QUALIFICATION_SHA256,
-    "qualified_machine_instance_must_be_reused": True,
+    "parent_qualified_machine_instance_must_be_reused": False,
+    "parent_machine_stable_fields_exact_except_cgroup_memory_limit": True,
+    "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate": True,
+    "b25_qualified_machine_instance_must_be_reused_after_runtime_qualification": True,
     "repaired_runtime_qualification_must_match_current_cli_bytes": True,
     "runner_profile_revalidated_before_runtime_qualification": True,
     "runner_profile_revalidated_immediately_before_tournament": True,
-    "stable_runner_profile_must_match_private_b23_qualification_receipt": True,
+    "current_profile_must_match_private_b25_runtime_receipt_before_tournament": True,
     "minimum_open_file_soft_limit": 65_535,
     "zero_active_swap_required": True,
     "dedicated_idle_runner_required": True,
     "scratch_and_checkout_on_qualified_data_volume": True,
     "provider_physical_host_exclusivity_not_claimed": True,
-    "performance_claim_scope": "within_this_qualified_machine_only",
+    "performance_claim_scope": "within_the_b25_runtime_qualified_machine_only",
     "cross_machine_performance_generalization_forbidden": True,
 }
 
@@ -527,9 +535,9 @@ def _build_report_without_digest() -> dict[str, Any]:
         "next_authorized_action": (
             "commit this B2.5 public protocol and implementation and obtain green "
             "CI; then run the synthetic repaired-runtime qualification on the "
-            "B2.3-admitted Linux machine without private input, publish only its "
-            "aggregate report, and obtain green CI before any fresh private "
-            "holdout authoring"
+            "B2.3 runner-class-compatible Linux machine without private input, "
+            "publish only its aggregate report, and obtain green CI before any "
+            "fresh private holdout authoring"
         ),
     }
 
@@ -588,6 +596,24 @@ def run_self_test() -> dict[str, Any]:
         ("shared_ranks", B25_EXPERIMENTAL_DESIGN["tie_policy"]["exact_equal_quality_vector"] == "shared_competition_rank"),
         ("query_gate_source_only", B25_QUERY_COMPATIBILITY["source_only"]),
         ("runtime_qualification_precedes_authoring", B25_RUNTIME_QUALIFICATION["must_precede_private_authoring"]),
+        (
+            "relocation_variance_is_memory_only",
+            B25_RUNTIME_QUALIFICATION[
+                "parent_machine_stable_fields_exact_except_cgroup_memory_limit"
+            ],
+        ),
+        (
+            "relocated_memory_still_meets_runner_class",
+            B25_RUNTIME_QUALIFICATION[
+                "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate"
+            ],
+        ),
+        (
+            "b25_machine_fixed_after_runtime_qualification",
+            B25_RUNTIME_QUALIFICATION[
+                "b25_qualified_machine_fixed_after_runtime_qualification"
+            ],
+        ),
         ("request_timeout_600", B25_REQUEST_TIMEOUT_SECONDS == 600.0),
         ("adapter_timeout_570", B25_ADAPTER_COMMAND_TIMEOUT_SECONDS == 570.0),
         ("one_attempt", B25_EXECUTION_POLICY["future_tournament_attempt_count"] == 1),
@@ -621,6 +647,20 @@ def run_fault_test() -> dict[str, Any]:
     rejected("historical_reuse", lambda value: value["holdout_rules"].__setitem__("all_repository_slugs_absent_from_b2_b21_and_b24_frames", False))
     rejected("query_retrieval_enabled", lambda value: value["query_compatibility"].__setitem__("retrieval_execution_forbidden", False))
     rejected("runtime_qualification_after_authoring", lambda value: value["runtime_qualification"].__setitem__("must_precede_private_authoring", False))
+    rejected(
+        "memory_variance_unbounded",
+        lambda value: value["runtime_qualification"].__setitem__(
+            "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate",
+            False,
+        ),
+    )
+    rejected(
+        "postqualification_machine_migration",
+        lambda value: value["runner_binding"].__setitem__(
+            "b25_qualified_machine_instance_must_be_reused_after_runtime_qualification",
+            False,
+        ),
+    )
     rejected("short_timeout", lambda value: value["inherited_engine"].__setitem__("adapter_command_timeout_seconds", 25.0))
     rejected("sharding_enabled", lambda value: value["experimental_design"].__setitem__("multi_runner_group_or_arm_sharding_forbidden", False))
     rejected("interim_look", lambda value: value["experimental_design"].__setitem__("interim_quality_looks", 1))

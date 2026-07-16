@@ -38,7 +38,9 @@ The frozen B2 offline author remains the only task author. Candidate failover mu
 
 ## Repaired-runtime qualification before private authoring
 
-No private holdout may be authored until the repaired production binary passes a synthetic qualification on the previously B2.3-qualified Linux machine. B2.3 machine fields are rechecked, while the OpenLocus binary bytes are deliberately requalified rather than required to match the pre-repair binary.
+No private holdout may be authored until the repaired production binary passes a synthetic qualification on a Linux runner compatible with the frozen B2.3 runner class. Every stable parent-machine field except `cgroup_memory_limit_bytes` must match exactly. The memory limit may differ only when the current profile still passes the frozen B2.3 memory-limit and available-memory gates; CPU, storage, OS, toolchain, swap, and file-limit drift remain fail-closed. The OpenLocus binary bytes are deliberately requalified rather than required to match the pre-repair binary.
+
+This narrow relocation allowance exists only before B2.5 runtime qualification. The resulting private B2.5 receipt freezes the complete current runner profile and binary, and runner admission immediately before the tournament must match that receipt exactly. No later machine migration is allowed.
 
 The qualification uses no private input. It builds a tiny synthetic index and runs the actual production `bakeoff-query` surface through the strict production parser for four frozen categories:
 
@@ -79,18 +81,18 @@ The oracle and scorer remain unloaded until the complete matrix and every pre-sc
 
 ## Frozen public identifiers
 
-- B2.5 spec digest: `b25spec_aa1623c384374c42`
-- B2.5 source bundle digest: `b25src_81357f30f9198397dcec1c7ba3510c46ef8888fd73007df4583d0cbfe0d983bd`
+- B2.5 spec digest: `b25spec_1603e85ac197760b`
+- B2.5 source bundle digest: `b25src_f293d24c0f3aab207af3571ea3d0bd7a3d7992818f879c217ce5042883cd66d4`
 - B2.5 holdout-frame digest: `b25frame_23661bee3726c4b52d6381bee3ad7ea857ca396acb77ee91482b0701978d4e17`
 - Inherited execution-schedule digest: `b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3`
-- B2.5 protocol-report digest: `b25protocol_774b35fae8563128f0338869a6f9bdb2b70561293ec7515c7128077f332206e0`
+- B2.5 protocol-report digest: `b25protocol_cdb3ec1eb55acd1bf5ba1de39a76deccc525b0dbf6f0d7e74d2ee2b2c20e8ba7`
 
 ## Current authorized sequence
 
 The server is not needed while this public implementation is being reviewed. The authorized sequence is:
 
 1. commit the B2.5 protocol, implementation, documentation, and protocol report, then obtain green public CI;
-2. start the qualified Linux server and run only the four-case synthetic repaired-runtime qualification;
+2. start the B2.3-class-compatible Linux server and run only the four-case synthetic repaired-runtime qualification;
 3. commit its aggregate-only public report and obtain green CI;
 4. author the fresh private holdout, run and re-run the source-only query gate, freeze the runtime, and generate aggregate readiness;
 5. commit readiness and obtain green CI;

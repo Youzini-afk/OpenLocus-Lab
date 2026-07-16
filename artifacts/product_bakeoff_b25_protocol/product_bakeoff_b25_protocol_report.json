@@ -124,7 +124,7 @@
     "timeout_override_applies_to_prepare_index_context_and_support": true,
     "timeout_values_frozen_before_private_authoring": true
   },
-  "next_authorized_action": "commit this B2.5 public protocol and implementation and obtain green CI; then run the synthetic repaired-runtime qualification on the B2.3-admitted Linux machine without private input, publish only its aggregate report, and obtain green CI before any fresh private holdout authoring",
+  "next_authorized_action": "commit this B2.5 public protocol and implementation and obtain green CI; then run the synthetic repaired-runtime qualification on the B2.3 runner-class-compatible Linux machine without private input, publish only its aggregate report, and obtain green CI before any fresh private holdout authoring",
   "parent_b23_qualification": {
     "aggregate_sha256": "b22229479ed3744321a4a6b09e454d06dc873f08d366069c738e6109c72a7e95",
     "qualification_digest": "b23qual_0ba839c5e02c96a7c8c879532ad354f19a6405cd6dd3f9885baa2ea3c1a499a1"
@@ -176,7 +176,7 @@
     "task_text_or_query_public": false,
     "terminal_support_count_public_at_arm_aggregate": true
   },
-  "protocol_digest": "b25protocol_774b35fae8563128f0338869a6f9bdb2b70561293ec7515c7128077f332206e0",
+  "protocol_digest": "b25protocol_cdb3ec1eb55acd1bf5ba1de39a76deccc525b0dbf6f0d7e74d2ee2b2c20e8ba7",
   "query_compatibility": {
     "adapter_execution_forbidden": true,
     "analyzer_contract": {
@@ -202,32 +202,39 @@
     "source_only": true
   },
   "runner_binding": {
+    "b25_qualified_machine_instance_must_be_reused_after_runtime_qualification": true,
+    "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate": true,
     "cross_machine_performance_generalization_forbidden": true,
+    "current_profile_must_match_private_b25_runtime_receipt_before_tournament": true,
     "dedicated_idle_runner_required": true,
     "minimum_open_file_soft_limit": 65535,
+    "parent_machine_stable_fields_exact_except_cgroup_memory_limit": true,
+    "parent_qualified_machine_instance_must_be_reused": false,
     "parent_runner_qualification_digest": "b23qual_0ba839c5e02c96a7c8c879532ad354f19a6405cd6dd3f9885baa2ea3c1a499a1",
     "parent_runner_qualification_sha256": "b22229479ed3744321a4a6b09e454d06dc873f08d366069c738e6109c72a7e95",
-    "performance_claim_scope": "within_this_qualified_machine_only",
+    "performance_claim_scope": "within_the_b25_runtime_qualified_machine_only",
     "provider_physical_host_exclusivity_not_claimed": true,
-    "qualified_machine_instance_must_be_reused": true,
     "repaired_runtime_qualification_must_match_current_cli_bytes": true,
     "runner_profile_revalidated_before_runtime_qualification": true,
     "runner_profile_revalidated_immediately_before_tournament": true,
     "scratch_and_checkout_on_qualified_data_volume": true,
-    "stable_runner_profile_must_match_private_b23_qualification_receipt": true,
     "zero_active_swap_required": true
   },
   "runtime_qualification": {
     "all_cases_require_current_evidence": true,
     "all_cases_require_zero_invalid_hits_skipped": true,
     "all_cases_require_zero_stale_hits_skipped": true,
+    "b25_qualified_machine_fixed_after_runtime_qualification": true,
+    "cgroup_memory_limit_variance_requires_current_b23_runner_class_gate": true,
     "exact_query_source_profile_path_or_private_receipt_digest_public": false,
     "must_precede_private_authoring": true,
-    "must_run_on_b23_admitted_machine_instance": true,
     "must_use_current_production_openlocus_binary": true,
+    "parent_b23_exact_machine_reuse_required": false,
+    "parent_b23_runner_class_lineage_required": true,
+    "parent_machine_stable_fields_exact_except_cgroup_memory_limit": true,
     "provider_network_call_count_must_be_zero": true,
     "qualification_publication_requires_green_ci_before_authoring": true,
-    "qualification_version": "product_bakeoff_b25_runtime_qualification.v1",
+    "qualification_version": "product_bakeoff_b25_runtime_qualification.v2",
     "synthetic_case_categories": [
       "ordinary_identifier",
       "leading_underscore_identifier",
@@ -236,12 +243,12 @@
     ],
     "synthetic_only_no_private_input": true
   },
-  "schema_version": "product_bakeoff_b25_protocol_report.v1",
+  "schema_version": "product_bakeoff_b25_protocol_report.v2",
   "source_locks": {
     "b25_execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
     "b25_holdout_frame_digest": "b25frame_23661bee3726c4b52d6381bee3ad7ea857ca396acb77ee91482b0701978d4e17",
-    "b25_source_bundle_digest": "b25src_81357f30f9198397dcec1c7ba3510c46ef8888fd73007df4583d0cbfe0d983bd",
-    "b25_spec_digest": "b25spec_aa1623c384374c42",
+    "b25_source_bundle_digest": "b25src_f293d24c0f3aab207af3571ea3d0bd7a3d7992818f879c217ce5042883cd66d4",
+    "b25_spec_digest": "b25spec_1603e85ac197760b",
     "line_endings_normalized_for_cross_platform_digest": true
   },
   "status": "product_bakeoff_b25_protocol_ready_runtime_qualification_pending_no_private_holdout_no_tournament_no_result"

@@ -42,12 +42,12 @@ from product_bakeoff_b25_protocol import (
 )
 
 
-B25_RUNTIME_QUALIFICATION_VERSION = "product_bakeoff_b25_runtime_qualification.v1"
+B25_RUNTIME_QUALIFICATION_VERSION = "product_bakeoff_b25_runtime_qualification.v2"
 B25_RUNTIME_QUALIFICATION_SCHEMA = (
-    "product_bakeoff_b25_runtime_qualification_report.v1"
+    "product_bakeoff_b25_runtime_qualification_report.v2"
 )
 B25_RUNTIME_PRIVATE_SCHEMA = (
-    "product_bakeoff_b25_private_runtime_qualification_receipt.v1"
+    "product_bakeoff_b25_private_runtime_qualification_receipt.v2"
 )
 B25_RUNTIME_QUALIFICATION_STATUS = (
     "product_bakeoff_b25_repaired_runtime_synthetically_qualified_"
@@ -99,8 +99,12 @@ B25_RUNTIME_CASES = (
         "line": 1,
     },
 )
-B25_PARENT_MACHINE_STABLE_KEYS = tuple(
-    key for key in b23q.STABLE_PROFILE_KEYS if not key.startswith("openlocus_")
+B25_PARENT_MACHINE_ALLOWED_VARIANCE_KEYS = ("cgroup_memory_limit_bytes",)
+B25_PARENT_MACHINE_EXACT_KEYS = tuple(
+    key
+    for key in b23q.STABLE_PROFILE_KEYS
+    if not key.startswith("openlocus_")
+    and key not in B25_PARENT_MACHINE_ALLOWED_VARIANCE_KEYS
 )
 
 
@@ -161,12 +165,29 @@ def _validate_protocol_checkpoint(checkpoint: str) -> None:
 def _parent_machine_profile_changes(
     before: Mapping[str, Any], after: Mapping[str, Any]
 ) -> list[str]:
-    """Compare the B2.3 machine while deliberately requalifying CLI bytes."""
+    """Compare exact parent fields while requalifying CLI bytes and memory."""
     return [
         key
-        for key in B25_PARENT_MACHINE_STABLE_KEYS
+        for key in B25_PARENT_MACHINE_EXACT_KEYS
         if before.get(key) != after.get(key)
     ]
+
+
+def _parent_memory_gate_errors(
+    before: Mapping[str, Any], after: Mapping[str, Any]
+) -> list[str]:
+    """Allow only memory-limit variance that remains inside the frozen class."""
+    minimum = int(b23q.B23_RUNNER_CLASS["minimum_cgroup_memory_limit_bytes"])
+    errors: list[str] = []
+    for label, profile in (("parent", before), ("current", after)):
+        observed = profile.get("cgroup_memory_limit_bytes")
+        if (
+            not isinstance(observed, int)
+            or isinstance(observed, bool)
+            or observed < minimum
+        ):
+            errors.append(f"{label}_cgroup_memory_limit_below_runner_class")
+    return errors
 
 
 def qualification_digest(report: Mapping[str, Any]) -> str:
@@ -219,8 +240,11 @@ def _build_public_report(
         },
         "runner_gate": {
             "parent_b23_qualification_digest": B25_PARENT_B23_QUALIFICATION_DIGEST,
-            "same_qualified_machine_admitted": True,
+            "parent_runner_class_lineage_admitted": True,
+            "all_noncapacity_stable_fields_exact": True,
+            "memory_limit_meets_frozen_b23_runner_class": True,
             "current_runner_profile_gate_passed": True,
+            "current_machine_frozen_for_b25_after_qualification": True,
             "exact_runner_profile_public": False,
         },
         "synthetic_matrix": {
@@ -324,8 +348,11 @@ def validate_public_report(report: Any) -> list[str]:
         errors.append("runtime qualification repair gate drifted")
     expected_runner = {
         "parent_b23_qualification_digest": B25_PARENT_B23_QUALIFICATION_DIGEST,
-        "same_qualified_machine_admitted": True,
+        "parent_runner_class_lineage_admitted": True,
+        "all_noncapacity_stable_fields_exact": True,
+        "memory_limit_meets_frozen_b23_runner_class": True,
         "current_runner_profile_gate_passed": True,
+        "current_machine_frozen_for_b25_after_qualification": True,
         "exact_runner_profile_public": False,
     }
     if report.get("runner_gate") != expected_runner:
@@ -399,6 +426,15 @@ def _build_private_receipt(
         "parent_b23_private_receipt_digest": parent_private_receipt[
             "private_receipt_digest"
         ],
+        "parent_runner_class_admission": {
+            "allowed_variance_keys": list(
+                B25_PARENT_MACHINE_ALLOWED_VARIANCE_KEYS
+            ),
+            "all_other_stable_fields_exact": True,
+            "parent_memory_gate_passed": True,
+            "current_memory_gate_passed": True,
+            "current_machine_frozen_by_receipt": True,
+        },
         "profile_after": copy.deepcopy(dict(profile)),
         "cli_bytes": cli_path.stat().st_size,
         "cli_sha256": _file_sha256(cli_path),
@@ -428,6 +464,7 @@ def validate_private_receipt(receipt: Any) -> list[str]:
         "source_checkpoint",
         "parent_b23_public_qualification_digest",
         "parent_b23_private_receipt_digest",
+        "parent_runner_class_admission",
         "profile_after",
         "cli_bytes",
         "cli_sha256",
@@ -456,6 +493,15 @@ def validate_private_receipt(receipt: Any) -> list[str]:
         receipt.get("parent_b23_private_receipt_digest")
     ).startswith("b23qpriv_"):
         errors.append("private runtime qualification parent private binding malformed")
+    expected_parent_admission = {
+        "allowed_variance_keys": list(B25_PARENT_MACHINE_ALLOWED_VARIANCE_KEYS),
+        "all_other_stable_fields_exact": True,
+        "parent_memory_gate_passed": True,
+        "current_memory_gate_passed": True,
+        "current_machine_frozen_by_receipt": True,
+    }
+    if receipt.get("parent_runner_class_admission") != expected_parent_admission:
+        errors.append("private runtime qualification parent runner admission drifted")
     if not isinstance(receipt.get("profile_after"), dict):
         errors.append("private runtime qualification profile missing")
     if not isinstance(receipt.get("cli_bytes"), int) or receipt.get("cli_bytes", 0) <= 0:
@@ -731,8 +777,13 @@ def qualify_runtime(
     )
     failures = b23q.validate_runner_profile(profile)
     changes = _parent_machine_profile_changes(parent_private["profile_after"], profile)
-    if failures or changes:
-        raise B25RuntimeQualificationError("B2.3-qualified machine admission failed")
+    memory_errors = _parent_memory_gate_errors(
+        parent_private["profile_after"], profile
+    )
+    if failures or changes or memory_errors:
+        raise B25RuntimeQualificationError(
+            "B2.3 runner-class-compatible machine admission failed"
+        )
     fixture_root = scratch_root / "b25_synthetic_tokenizer_fixture"
     try:
         case_rows = _run_synthetic_cases(cli_path, fixture_root)
@@ -883,6 +934,14 @@ def validate_runtime_binding(
         "parent_b23_private_receipt_digest"
     ]:
         raise B25RuntimeQualificationError("runtime qualification parent receipt drifted")
+    if _parent_machine_profile_changes(
+        parent_private["profile_after"], private["profile_after"]
+    ) or _parent_memory_gate_errors(
+        parent_private["profile_after"], private["profile_after"]
+    ):
+        raise B25RuntimeQualificationError(
+            "runtime qualification parent runner-class admission drifted"
+        )
     current = b23q.collect_runner_profile(
         repo_root=repo_root,
         scratch_root=Path(scratch_root),
@@ -950,6 +1009,31 @@ def run_self_test() -> dict[str, Any]:
             ),
         ),
         (
+            "memory_is_only_parent_variance",
+            B25_PARENT_MACHINE_ALLOWED_VARIANCE_KEYS
+            == ("cgroup_memory_limit_bytes",),
+        ),
+        (
+            "qualified_memory_variance_allowed",
+            not _parent_machine_profile_changes(
+                {"cgroup_memory_limit_bytes": 64 * 1024**3},
+                {"cgroup_memory_limit_bytes": 32 * 1024**3},
+            )
+            and not _parent_memory_gate_errors(
+                {"cgroup_memory_limit_bytes": 64 * 1024**3},
+                {"cgroup_memory_limit_bytes": 32 * 1024**3},
+            ),
+        ),
+        (
+            "subclass_memory_rejected",
+            bool(
+                _parent_memory_gate_errors(
+                    {"cgroup_memory_limit_bytes": 64 * 1024**3},
+                    {"cgroup_memory_limit_bytes": 31 * 1024**3},
+                )
+            ),
+        ),
+        (
             "parent_machine_drift_still_detected",
             _parent_machine_profile_changes(
                 {"effective_cpu_quota_count": 12},
@@ -996,6 +1080,9 @@ def run_fault_test() -> dict[str, Any]:
         ),
         "case_missing": lambda value: value["synthetic_matrix"].__setitem__(
             "case_count", 3
+        ),
+        "runner_memory_gate_missing": lambda value: value["runner_gate"].__setitem__(
+            "memory_limit_meets_frozen_b23_runner_class", False
         ),
         "query_leaked": lambda value: value.__setitem__("leak", "_hidden_symbol"),
         "digest_drift": lambda value: value.__setitem__(
