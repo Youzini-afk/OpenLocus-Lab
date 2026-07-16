@@ -98,4 +98,4 @@ The server is not needed while this public implementation is being reviewed. The
 5. commit readiness and obtain green CI;
 6. create one private launch authorization, re-admit the runner, and release exactly one complete long run.
 
-At the current checkpoint, step 1 is in progress. No runtime qualification, private B2.5 holdout, treatment output, scoring, result, or tournament execution authorization exists.
+Steps 1 and 2 are complete at the runtime-qualification artifact. Step 4 may begin only after the commit containing that aggregate passes public CI. No private B2.5 holdout, treatment output, scoring, result, or tournament execution authorization existed when the qualification was authored.

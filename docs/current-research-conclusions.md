@@ -29,6 +29,7 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.4 post-closeout BM25 repair / B2.4 关闭后 BM25 修复: [`artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json`](../artifacts/product_bakeoff_b24_repair/product_bakeoff_b24_bm25_tokenizer_repair.json)
 - B2.5 fresh tokenizer-qualified holdout / B2.5 全新分词器合格盲测: [EN](en/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md) / [ZH](zh/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md)
 - B2.5 protocol report / B2.5 协议报告: [`artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json`](../artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json)
+- B2.5 repaired-runtime qualification / B2.5 修复后运行时资格聚合: [`artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json`](../artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json)
 
 ## Current route closure / 当前路线关闭
 

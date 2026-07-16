@@ -1,0 +1,65 @@
+{
+  "claim_level": "synthetic_runtime_integrity_only_no_private_holdout_no_tournament_result",
+  "date": "2026-07-16",
+  "decision": {
+    "fresh_private_holdout_authoring_allowed_after_green_publication_ci": true,
+    "private_holdout_read": false,
+    "repaired_runtime_qualified": true,
+    "tournament_execution_authorized": false,
+    "tournament_result_exists": false
+  },
+  "next_authorized_action": "commit this aggregate-only runtime qualification, obtain green public CI, and only then author a fresh B2.5 private holdout that excludes all B2, B2.1, and B2.4 repositories",
+  "phase": "product_bakeoff_b25_repaired_runtime_qualification",
+  "protocol_gate": {
+    "b25_source_bundle_digest": "b25src_f293d24c0f3aab207af3571ea3d0bd7a3d7992818f879c217ce5042883cd66d4",
+    "b25_spec_digest": "b25spec_1603e85ac197760b",
+    "checkpoint": "c5b31e97bd242c62979cf94bf0e75bcee395747a",
+    "ci_conclusion": "success",
+    "ci_run_id": 29486994268
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "binary_or_runtime_fingerprint_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "exact_synthetic_query_or_source_public": false,
+    "private_receipt_digest_public": false,
+    "private_repository_task_or_oracle_public": false
+  },
+  "qualification_digest": "b25qual_c908d1a1598fc44da290c1129b01d054ab2ed2cafe0b99a8b08234daa1ec7230",
+  "qualification_version": "product_bakeoff_b25_runtime_qualification.v2",
+  "repair_gate": {
+    "production_tokenizer_repair_bound": true,
+    "repair_digest": "b24repair_2a4e664f19e8c72de3f6f4b09f4476f5313c01b547bbb141cb5c26a394473136",
+    "repair_file_sha256": "709c94cee11dec685e10f5079599f006e968ab72e99c7478dd501e2b8cf07862",
+    "repair_source_checkpoint": "665fd51bba0eae52ade8d5f3c37069217de38916"
+  },
+  "runner_gate": {
+    "all_noncapacity_stable_fields_exact": true,
+    "current_machine_frozen_for_b25_after_qualification": true,
+    "current_runner_profile_gate_passed": true,
+    "exact_runner_profile_public": false,
+    "memory_limit_meets_frozen_b23_runner_class": true,
+    "parent_b23_qualification_digest": "b23qual_0ba839c5e02c96a7c8c879532ad354f19a6405cd6dd3f9885baa2ea3c1a499a1",
+    "parent_runner_class_lineage_admitted": true
+  },
+  "schema_version": "product_bakeoff_b25_runtime_qualification_report.v2",
+  "status": "product_bakeoff_b25_repaired_runtime_synthetically_qualified_private_authoring_allowed_tournament_not_authorized",
+  "synthetic_matrix": {
+    "actual_production_bakeoff_query_parser_used": true,
+    "actual_production_cli_used": true,
+    "all_bm25_receipts_executed": true,
+    "all_cases_returned_current_evidence": true,
+    "all_invalid_hits_skipped_zero": true,
+    "all_stale_hits_skipped_zero": true,
+    "case_categories": [
+      "ordinary_identifier",
+      "leading_underscore_identifier",
+      "punctuation_split_identifier",
+      "one_character_identifier"
+    ],
+    "case_count": 4,
+    "passed_case_count": 4,
+    "private_input_read": false,
+    "provider_network_call_count": 0
+  }
+}
