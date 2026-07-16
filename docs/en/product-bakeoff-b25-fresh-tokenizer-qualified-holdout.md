@@ -2,7 +2,7 @@
 
 Date: 2026-07-16
 
-Status: `product_bakeoff_b25_protocol_ready_runtime_qualification_pending_no_private_holdout_no_tournament_no_result`
+Status: `product_bakeoff_b25_private_holdout_frozen_public_readiness_published_no_tournament_no_result`
 
 B2.5 is a separately preregistered tournament. It does not reopen B2.4, score its incomplete output, reuse its exposed holdout, or reuse its launch authorization. The only inherited material is the already frozen B2.1 execution/scoring design and the aggregate engineering evidence that explains why B2.4 failed and how the production BM25 verifier was repaired.
 
@@ -89,7 +89,7 @@ The oracle and scorer remain unloaded until the complete matrix and every pre-sc
 
 ## Current authorized sequence
 
-The server is not needed while this public implementation is being reviewed. The authorized sequence is:
+The fresh private holdout is frozen and the aggregate readiness artifact is published. The authorized sequence is:
 
 1. commit the B2.5 protocol, implementation, documentation, and protocol report, then obtain green public CI;
 2. start the B2.3-class-compatible Linux server and run only the four-case synthetic repaired-runtime qualification;
@@ -98,4 +98,4 @@ The server is not needed while this public implementation is being reviewed. The
 5. commit readiness and obtain green CI;
 6. create one private launch authorization, re-admit the runner, and release exactly one complete long run.
 
-Steps 1 and 2 are complete at the runtime-qualification artifact. Step 4 may begin only after the commit containing that aggregate passes public CI. No private B2.5 holdout, treatment output, scoring, result, or tournament execution authorization existed when the qualification was authored.
+Steps 1–4 are complete at this readiness artifact. Step 5 is the active public gate: tournament execution remains unauthorized until the readiness checkpoint passes public CI and one private launch authorization is created. No treatment output, scoring, ranking, or tournament result exists at readiness publication.

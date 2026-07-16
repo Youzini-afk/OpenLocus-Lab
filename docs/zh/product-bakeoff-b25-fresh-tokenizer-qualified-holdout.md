@@ -2,7 +2,7 @@
 
 日期：2026-07-16
 
-状态：`product_bakeoff_b25_protocol_ready_runtime_qualification_pending_no_private_holdout_no_tournament_no_result`
+状态：`product_bakeoff_b25_private_holdout_frozen_public_readiness_published_no_tournament_no_result`
 
 B2.5 是一场单独预注册的新锦标赛。它不会重新打开 B2.4，不会给 B2.4 的不完整输出评分，不会复用已经暴露的 B2.4 盲测集，也不会复用旧启动授权。它只继承已经冻结的 B2.1 执行/评分设计，以及解释 B2.4 为何失败、生产 BM25 校验器如何修复的公开聚合工程证据。
 
@@ -89,7 +89,7 @@ release 之前，如果交接或校验失败且方案输出仍为 0，不消耗�
 
 ## 当前获准顺序
 
-在公开实现接受审查期间不需要开启服务器。获准顺序是：
+全新私有盲测已经冻结，聚合 readiness 已发布。获准顺序是：
 
 1. 提交 B2.5 协议、实现、文档和协议报告，并取得公开 CI 全绿；
 2. 开启符合 B2.3 runner 等级的 Linux 服务器，只运行四类合成的修复后运行时资格验证；
@@ -98,4 +98,4 @@ release 之前，如果交接或校验失败且方案输出仍为 0，不消耗�
 5. 提交 readiness 并取得 CI 全绿；
 6. 创建一次私有启动授权，重新准入 runner，并只释放一次完整长跑。
 
-运行时资格聚合生成时，第 1、2 步已经完成。只有包含该聚合的提交通过公开 CI 后，才能开始第 4 步。生成资格聚合时，尚不存在 B2.5 私有盲测、方案输出、评分、锦标赛结果或执行授权。
+在本次 readiness 发布时，第 1–4 步已经完成。第 5 步是当前公开门槛：只有 readiness 检查点通过公开 CI 并创建一次私有启动授权后，才允许执行锦标赛。readiness 发布时仍不存在方案输出、评分、排名或锦标赛结果。

@@ -1,0 +1,113 @@
+{
+  "claim_level": "private_holdout_readiness_only_no_tournament_result",
+  "date": "2026-07-16",
+  "decision": {
+    "future_tournament_execution_authorized": false,
+    "launch_authorization_may_be_created_after_readiness_commit_and_green_ci": true,
+    "private_holdout_frozen": true,
+    "query_compatibility_gate_passed": true,
+    "repaired_runtime_qualified": true,
+    "treatment_output_exists": false
+  },
+  "execution_state": {
+    "logical_record_count": 0,
+    "provider_network_call_count": 0,
+    "public_tournament_result_exists": false,
+    "ranking_executed": false,
+    "scoring_executed": false,
+    "treatment_output_count": 0
+  },
+  "historical_closeout_gate": {
+    "b24_failure_digest": "b24failure_a41d6e150a5e5c2752cfb455b0ca5dd1df35687b9489d82e5a888362dc4c4b83",
+    "b24_incomplete_output_reused": false,
+    "b24_repair_digest": "b24repair_2a4e664f19e8c72de3f6f4b09f4476f5313c01b547bbb141cb5c26a394473136",
+    "b24_result_reopened": false
+  },
+  "next_authorized_action": "commit this aggregate-only readiness checkpoint, obtain green public CI, create one private launch authorization bound to that checkpoint and CI run, revalidate the qualified machine, and then cross the formal attempt boundary exactly once",
+  "phase": "product_bakeoff_b25_fresh_holdout_freeze",
+  "preauthoring_publication_gate": {
+    "b25_execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "b25_holdout_frame_digest": "b25frame_23661bee3726c4b52d6381bee3ad7ea857ca396acb77ee91482b0701978d4e17",
+    "b25_source_bundle_digest": "b25src_f293d24c0f3aab207af3571ea3d0bd7a3d7992818f879c217ce5042883cd66d4",
+    "b25_spec_digest": "b25spec_1603e85ac197760b",
+    "checkpoint": "dde99499cf12c46676e7e5b0564910b2a932ab7b",
+    "ci_conclusion": "success",
+    "ci_run_id": 29487544929
+  },
+  "private_holdout": {
+    "candidate_failover_complete": true,
+    "excluded_repository_count": 63,
+    "excluded_synthetic_source_count": 1,
+    "exclusion_registry_overlap_count": 0,
+    "historical_repository_count": 36,
+    "historical_repository_identity_overlap_count": 0,
+    "historical_repository_slug_overlap_count": 0,
+    "logical_task_count": 48,
+    "oracle_record_count": 48,
+    "private_digests_public": false,
+    "repository_count": 12,
+    "repository_or_task_identity_public": false,
+    "runtime_frozen": true,
+    "selected_candidate_membership_count": 12
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_plan_or_failover_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "private_manifest_query_freeze_or_runtime_digest_public": false,
+    "repository_identity_public": false,
+    "source_location_range_or_excerpt_public": false,
+    "task_text_query_oracle_public": false
+  },
+  "query_compatibility_gate": {
+    "abstain_task_count": 6,
+    "all_positive_spans_compatible": true,
+    "all_queries_tokenizable": true,
+    "answerable_task_count": 42,
+    "compatible_positive_span_count": 49,
+    "positive_span_count": 49,
+    "private_query_path_or_gate_digest_public": false,
+    "source_only_no_retrieval_or_adapter_execution": true,
+    "task_count": 48,
+    "tokenizable_query_count": 48
+  },
+  "readiness_digest": "b25ready_b9c2010e61e804ab3e0499ab60489edfe90ab7300c1e6dff5651da891f468531",
+  "runner_qualification_gate": {
+    "exact_runner_profile_public": false,
+    "parent_b23_qualification_digest": "b23qual_0ba839c5e02c96a7c8c879532ad354f19a6405cd6dd3f9885baa2ea3c1a499a1",
+    "repaired_runtime_qualified": true,
+    "runtime_qualification_digest": "b25qual_c908d1a1598fc44da290c1129b01d054ab2ed2cafe0b99a8b08234daa1ec7230",
+    "runtime_qualification_file_sha256": "3a59fccb7599d9999ac5312af2c9546a7ee1946e2350330e41e6a65df81555f3",
+    "same_machine_instance_required_for_future_tournament": true
+  },
+  "schema_version": "product_bakeoff_b25_holdout_readiness.v1",
+  "status": "product_bakeoff_b25_private_holdout_frozen_query_compatible_no_treatment_output_no_result",
+  "task_margins": {
+    "interaction_modes": {
+      "one_shot": 36,
+      "two_step": 12
+    },
+    "languages": {
+      "python": 16,
+      "rust": 16,
+      "typescript": 16
+    },
+    "oracle_kinds": {
+      "abstain": 6,
+      "deterministic": 36,
+      "multi_target": 6
+    },
+    "roles": {
+      "direct": 12,
+      "relational": 12,
+      "restraint": 12,
+      "workflow": 12
+    },
+    "size_bands": {
+      "large": 12,
+      "medium": 12,
+      "small": 12,
+      "xlarge": 12
+    }
+  }
+}
