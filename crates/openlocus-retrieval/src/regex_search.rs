@@ -69,8 +69,15 @@ where
 {
     let mut results = Vec::new();
     let channel = Channel::Regex;
+    let mut ordered_records: Vec<&FileRecord> = records.iter().collect();
+    ordered_records.sort_by(|a, b| {
+        a.path
+            .cmp(&b.path)
+            .then_with(|| a.content_sha.cmp(&b.content_sha))
+            .then_with(|| a.language.cmp(&b.language))
+    });
 
-    for record in records {
+    for record in ordered_records {
         if results.len() >= max_results {
             break;
         }
@@ -156,6 +163,34 @@ mod tests {
             results[1].core.end_line, 1001,
             "span should be narrow (single line)"
         );
+    }
+
+    #[test]
+    fn text_search_limit_is_independent_of_record_order() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        let mut records = Vec::new();
+        for index in 0..8 {
+            let path = format!("file_{index:02}.rs");
+            let content = "stable literal marker\n";
+            std::fs::write(root.join(&path), content).unwrap();
+            records.push(FileRecord {
+                path,
+                size: content.len() as u64,
+                content_sha: blake3::hash(content.as_bytes()).to_hex().to_string(),
+                language: "rust".into(),
+            });
+        }
+        let first = text_search(root, &records, "stable literal marker", 3).unwrap();
+        records.reverse();
+        let second = text_search(root, &records, "stable literal marker", 3).unwrap();
+        let signature = |items: Vec<Evidence>| {
+            items
+                .into_iter()
+                .map(|item| (item.core.path, item.core.start_line, item.core.end_line))
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(signature(first), signature(second));
     }
 
     #[test]

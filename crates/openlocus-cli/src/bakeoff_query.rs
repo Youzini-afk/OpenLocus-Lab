@@ -526,11 +526,11 @@ fn canonicalize_component_evidence(
     evidence.sort_by(|a, b| {
         b.core
             .score
-            .partial_cmp(&a.core.score)
-            .unwrap_or(std::cmp::Ordering::Equal)
+            .total_cmp(&a.core.score)
             .then_with(|| a.core.path.cmp(&b.core.path))
             .then_with(|| a.core.start_line.cmp(&b.core.start_line))
             .then_with(|| a.core.end_line.cmp(&b.core.end_line))
+            .then_with(|| a.core.content_sha.cmp(&b.core.content_sha))
     });
     let mut seen: HashSet<(String, u64, u64)> = HashSet::new();
     evidence.retain(|item| {
@@ -976,6 +976,9 @@ fn exec_support(
             .then_with(|| a.source_line.cmp(&b.source_line))
             .then_with(|| a.source_end_line.cmp(&b.source_end_line))
             .then_with(|| a.target_path.cmp(&b.target_path))
+            .then_with(|| a.edge_text.cmp(&b.edge_text))
+            .then_with(|| a.source_content_sha.cmp(&b.source_content_sha))
+            .then_with(|| a.source_language.cmp(&b.source_language))
     });
     import_edges.truncate(max_results);
 

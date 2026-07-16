@@ -21,8 +21,7 @@ from typing import Any, Callable, Mapping
 
 import product_bakeoff_b2_corpus as b2c
 import product_bakeoff_b2_protocol as b2p
-import product_bakeoff_b25_protocol as b25p
-import product_bakeoff_b25_readiness as b25r
+import product_bakeoff_terminal_archive as archive
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -101,14 +100,11 @@ def _digest(value: Mapping[str, Any]) -> str:
 
 
 def _load_public_parents() -> tuple[dict[str, Any], dict[str, Any]]:
+    archive_errors = archive.validate_archive("b25_parents")
+    if archive_errors:
+        raise B25FailureCloseoutError("B2.5 terminal parent archive is invalid")
     readiness = b2c.load_json(READINESS_PATH)
-    readiness_errors = b25r.validate_public_readiness(readiness)
-    if readiness_errors:
-        raise B25FailureCloseoutError("B2.5 readiness parent is invalid")
     protocol = b2c.load_json(PROTOCOL_REPORT_PATH)
-    protocol_errors = b25p.validate_report(protocol)
-    if protocol_errors:
-        raise B25FailureCloseoutError("B2.5 protocol parent is invalid")
     return readiness, protocol
 
 

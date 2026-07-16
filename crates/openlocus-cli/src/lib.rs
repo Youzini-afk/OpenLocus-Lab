@@ -1863,8 +1863,15 @@ fn ast_symbol_search(
     max_results: usize,
 ) -> Result<Vec<Evidence>> {
     let mut results = Vec::new();
+    let mut ordered_records: Vec<&openlocus_repo::scan::FileRecord> = records.iter().collect();
+    ordered_records.sort_by(|a, b| {
+        a.path
+            .cmp(&b.path)
+            .then_with(|| a.content_sha.cmp(&b.content_sha))
+            .then_with(|| a.language.cmp(&b.language))
+    });
 
-    for record in records {
+    for record in ordered_records {
         if results.len() >= max_results {
             break;
         }
@@ -2901,6 +2908,24 @@ fn dense_purge(repo_root: &Path) -> Result<DensePurgeResult> {
 mod tests {
     use super::*;
     use tempfile::TempDir;
+
+    #[test]
+    fn ast_symbol_search_limit_is_independent_of_record_order() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        std::fs::write(root.join("b.rs"), "pub fn stable_symbol() {}\n").unwrap();
+        std::fs::write(root.join("a.rs"), "pub fn stable_symbol() {}\n").unwrap();
+        let policy = openlocus_core::Policy::default();
+        let mut records = scan_repo(root, &policy).unwrap();
+
+        let first = ast_symbol_search(root, &records, "stable_symbol", 1).unwrap();
+        records.reverse();
+        let second = ast_symbol_search(root, &records, "stable_symbol", 1).unwrap();
+        assert_eq!(first.len(), 1);
+        assert_eq!(second.len(), 1);
+        assert_eq!(first[0].core.path, "a.rs");
+        assert_eq!(second[0].core.path, "a.rs");
+    }
 
     #[cfg(unix)]
     fn symlink_dir(src: &Path, dst: &Path) -> std::io::Result<()> {

@@ -12,7 +12,7 @@
 use anyhow::Result;
 use openlocus_repo::scan::FileRecord;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -70,7 +70,7 @@ struct SafeRecord {
 pub struct GraphBuildResult {
     pub node_count: usize,
     pub edge_count: usize,
-    pub edges_by_kind: HashMap<String, usize>,
+    pub edges_by_kind: BTreeMap<String, usize>,
     pub skipped_stale: usize,
     pub skipped_path_unsafe: usize,
 }
@@ -153,6 +153,22 @@ pub fn build_graph(
         });
     }
 
+    // `build_graph` is public and must not inherit caller iteration order.
+    // `scan_repo` is sorted today, but tests and other callers can supply
+    // any record order; normalize here before building capped edge sets.
+    safe_records.sort_by(|a, b| {
+        a.path
+            .cmp(&b.path)
+            .then_with(|| a.content_sha.cmp(&b.content_sha))
+            .then_with(|| a.language.cmp(&b.language))
+    });
+    nodes.sort_by(|a, b| {
+        a.path
+            .cmp(&b.path)
+            .then_with(|| a.content_sha.cmp(&b.content_sha))
+            .then_with(|| a.language.cmp(&b.language))
+    });
+
     // Phase 2: Build path_set and basename_index from safe records only
     let path_set: std::collections::HashSet<String> =
         safe_records.iter().map(|r| r.path.clone()).collect();
@@ -197,8 +213,20 @@ pub fn build_graph(
     let config_edges = build_config_edges(&safe_records, &path_set);
     edges.extend(config_edges);
 
+    edges.sort_by(|a, b| {
+        a.source_path
+            .cmp(&b.source_path)
+            .then_with(|| a.target_path.cmp(&b.target_path))
+            .then_with(|| edge_kind_order(&a.kind).cmp(&edge_kind_order(&b.kind)))
+            .then_with(|| a.source_line.cmp(&b.source_line))
+            .then_with(|| a.source_end_line.cmp(&b.source_end_line))
+            .then_with(|| a.edge_text.cmp(&b.edge_text))
+            .then_with(|| a.source_content_sha.cmp(&b.source_content_sha))
+            .then_with(|| a.source_language.cmp(&b.source_language))
+    });
+
     // Count by kind
-    let mut edges_by_kind: HashMap<String, usize> = HashMap::new();
+    let mut edges_by_kind: BTreeMap<String, usize> = BTreeMap::new();
     for edge in &edges {
         *edges_by_kind
             .entry(match edge.kind {
@@ -720,8 +748,10 @@ fn build_config_edges(
             .map(|p| p.to_string_lossy().to_string())
             .unwrap_or_default();
 
+        let mut ordered_paths: Vec<&String> = path_set.iter().collect();
+        ordered_paths.sort();
         let mut count = 0;
-        for other in path_set {
+        for other in ordered_paths {
             if count >= 50 {
                 break;
             }
@@ -758,6 +788,14 @@ fn build_config_edges(
     }
 
     edges
+}
+
+fn edge_kind_order(kind: &EdgeKind) -> u8 {
+    match kind {
+        EdgeKind::Imports => 0,
+        EdgeKind::Tests => 1,
+        EdgeKind::Configures => 2,
+    }
 }
 
 fn is_config_file(name: &str) -> bool {
@@ -974,6 +1012,67 @@ mod tests {
             result.edges_by_kind.contains_key("imports")
                 || result.edges_by_kind.contains_key("configures")
         );
+    }
+
+    #[test]
+    fn config_edge_cap_is_deterministic_and_lexicographic() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        std::fs::write(root.join("Cargo.toml"), "[package]\nname = \"demo\"\n").unwrap();
+        std::fs::create_dir_all(root.join("src")).unwrap();
+        for index in 0..80 {
+            std::fs::write(
+                root.join(format!("src/file_{index:03}.rs")),
+                format!("pub fn value_{index:03}() {{}}\n"),
+            )
+            .unwrap();
+        }
+
+        let policy = Policy::default();
+        let records = scan_repo(root, &policy).unwrap();
+        let expected: Vec<String> = (0..50)
+            .map(|index| format!("src/file_{index:03}.rs"))
+            .collect();
+        let mut baseline_edge_signature = None;
+        for iteration in 0..32 {
+            let mut input = records.clone();
+            if iteration % 2 == 1 {
+                input.reverse();
+            }
+            let (_, edges, result) = build_graph(root, &input).unwrap();
+            let edge_signature: Vec<_> = edges
+                .iter()
+                .map(|edge| {
+                    (
+                        edge.source_path.clone(),
+                        edge.target_path.clone(),
+                        edge.kind.clone(),
+                        edge.source_line,
+                        edge.source_end_line,
+                        edge.edge_text.clone(),
+                        edge.source_content_sha.clone(),
+                        edge.source_language.clone(),
+                    )
+                })
+                .collect();
+            let targets: Vec<String> = edges
+                .iter()
+                .filter(|edge| {
+                    edge.kind == EdgeKind::Configures && edge.source_path == "Cargo.toml"
+                })
+                .map(|edge| edge.target_path.clone())
+                .collect();
+            assert_eq!(targets, expected);
+            if let Some(previous) = &baseline_edge_signature {
+                assert_eq!(&edge_signature, previous);
+            } else {
+                baseline_edge_signature = Some(edge_signature);
+            }
+            assert_eq!(
+                serde_json::to_string(&result.edges_by_kind).unwrap(),
+                r#"{"configures":50}"#
+            );
+        }
     }
 
     #[test]

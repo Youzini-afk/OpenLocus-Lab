@@ -4,16 +4,21 @@
 //!
 //! Precision-biased dedup:
 //! - Exact same (path, start_line, end_line) → merge why/score/channels.
-//! - Overlapping spans on same path → keep the narrower one, discard the wider.
-//!   The wider's why and channels are merged into the narrower survivor
-//!   (no span widening). Score contributions from the wider are also absorbed.
+//! - Strictly containing spans on the same path → keep minimal descendants and
+//!   discard wider ancestors (no span widening). An unambiguous ancestor vote
+//!   is absorbed by the sole narrow survivor; an ambiguous ancestor vote is
+//!   split evenly across all minimal descendants so total score is conserved
+//!   without a positional tie bias. Why/channels follow the same descendants.
 //! - RRF only changes ranking/score, never widens spans.
 
 use openlocus_core::{Channel, Evidence, EvidenceCore, EvidenceMeta, ScoreParts};
-use std::collections::HashMap;
+use std::cmp::Ordering;
+use std::collections::BTreeMap;
 
 /// RRF constant
 const K: u64 = 60;
+
+type EvidenceKey = (String, u64, u64);
 
 /// Combine evidence from multiple channels using RRF.
 ///
@@ -54,11 +59,12 @@ pub fn rrf_combine_with_rank_ties_and_channel_weights(
 }
 
 fn rrf_combine_impl(
-    channel_evidence: Vec<(Vec<Evidence>, Channel, u64)>,
+    mut channel_evidence: Vec<(Vec<Evidence>, Channel, u64)>,
     equal_scores_share_rank: bool,
 ) -> Vec<Evidence> {
+    channel_evidence.sort_by(compare_channel_inputs);
     // Key: (path, start_line, end_line) → accumulated RRF score + metadata
-    let mut merged: HashMap<(String, u64, u64), MergedEntry> = HashMap::new();
+    let mut merged: BTreeMap<EvidenceKey, MergedEntry> = BTreeMap::new();
 
     for (evidences, _channel, channel_weight) in &channel_evidence {
         let mut competition_rank = 1usize;
@@ -92,46 +98,13 @@ fn rrf_combine_impl(
         }
     }
 
-    // Overlap dedup: for same path, if one span fully contains another:
-    // - The narrower survives.
-    // - The wider's why, channels, and RRF score are merged into the narrower.
-    // - The wider is then removed.
-    let keys: Vec<_> = merged.keys().cloned().collect();
-    for i in 0..keys.len() {
-        for j in 0..keys.len() {
-            if i == j {
-                continue;
-            }
-            let key_i = &keys[i]; // potentially wider
-            let key_j = &keys[j]; // potentially narrower
-            if key_i.0 != key_j.0 {
-                continue;
-            }
-            // Check if key_i strictly contains key_j
-            if key_i.1 <= key_j.1 && key_i.2 >= key_j.2 && (key_i.1 < key_j.1 || key_i.2 > key_j.2)
-            {
-                // key_i is wider, key_j is narrower
-                // Merge wider's metadata into narrower, then remove wider
-                if let Some(wider) = merged.get(key_i).cloned()
-                    && let Some(narrower) = merged.get_mut(key_j)
-                {
-                    narrower.rrf_score += wider.rrf_score;
-                    narrower.whys.extend(wider.whys.iter().cloned());
-                    for ch in wider.channels {
-                        if !narrower.channels.contains(&ch) {
-                            narrower.channels.push(ch);
-                        }
-                    }
-                }
-                merged.remove(key_i);
-            }
-        }
-    }
+    collapse_overlaps(&mut merged);
 
     // Build final evidence with RRF scores
     let mut results: Vec<Evidence> = merged
         .into_values()
-        .map(|entry| {
+        .map(|mut entry| {
+            entry.normalize_metadata();
             let mut evidence = Evidence::new(
                 entry.core.path,
                 entry.core.start_line,
@@ -157,14 +130,41 @@ fn rrf_combine_impl(
     results.sort_by(|a, b| {
         b.core
             .score
-            .partial_cmp(&a.core.score)
-            .unwrap_or(std::cmp::Ordering::Equal)
+            .total_cmp(&a.core.score)
             .then_with(|| a.core.path.cmp(&b.core.path))
             .then_with(|| a.core.start_line.cmp(&b.core.start_line))
             .then_with(|| a.core.end_line.cmp(&b.core.end_line))
     });
 
     results
+}
+
+fn compare_channel_inputs(
+    left: &(Vec<Evidence>, Channel, u64),
+    right: &(Vec<Evidence>, Channel, u64),
+) -> Ordering {
+    left.1
+        .as_str()
+        .cmp(right.1.as_str())
+        .then_with(|| left.2.cmp(&right.2))
+        .then_with(|| compare_evidence_lists(&left.0, &right.0))
+}
+
+fn compare_evidence_lists(left: &[Evidence], right: &[Evidence]) -> Ordering {
+    for (left_item, right_item) in left.iter().zip(right) {
+        let ordering = left_item
+            .core
+            .path
+            .cmp(&right_item.core.path)
+            .then_with(|| left_item.core.start_line.cmp(&right_item.core.start_line))
+            .then_with(|| left_item.core.end_line.cmp(&right_item.core.end_line))
+            .then_with(|| left_item.core.content_sha.cmp(&right_item.core.content_sha))
+            .then_with(|| left_item.core.score.total_cmp(&right_item.core.score));
+        if !ordering.is_eq() {
+            return ordering;
+        }
+    }
+    left.len().cmp(&right.len())
 }
 
 #[derive(Clone)]
@@ -177,13 +177,82 @@ struct MergedEntry {
 }
 
 fn dedup_channels(channels: Vec<Channel>) -> Vec<Channel> {
-    let mut seen = Vec::new();
-    for ch in channels {
-        if !seen.contains(&ch) {
-            seen.push(ch);
+    let mut channels = channels;
+    channels.sort_by_key(Channel::as_str);
+    channels.dedup();
+    channels
+}
+
+fn strictly_contains(outer: &EvidenceKey, inner: &EvidenceKey) -> bool {
+    outer.0 == inner.0
+        && outer.1 <= inner.1
+        && outer.2 >= inner.2
+        && (outer.1 < inner.1 || outer.2 > inner.2)
+}
+
+fn minimal_overlap_survivors(keys: &[EvidenceKey], outer: &EvidenceKey) -> Vec<EvidenceKey> {
+    let mut survivors: Vec<EvidenceKey> = keys
+        .iter()
+        .filter(|candidate| strictly_contains(outer, candidate))
+        .filter(|candidate| !keys.iter().any(|other| strictly_contains(candidate, other)))
+        .cloned()
+        .collect();
+    survivors.sort_by_key(|candidate| {
+        (
+            candidate.2.saturating_sub(candidate.1),
+            candidate.1,
+            candidate.2,
+        )
+    });
+    survivors
+}
+
+/// Collapse containment once from an immutable key snapshot.
+///
+/// A wider span can contain several disjoint narrow spans.  The old
+/// mutation-while-iterating implementation assigned the wider contribution
+/// to whichever child happened to appear first in a randomized `HashMap`
+/// key order.  Each non-minimal span now transfers exactly once to the full
+/// set of minimal descendants.  An unambiguous chain transfers all of its
+/// contribution to the narrowest span; ambiguous siblings split the score
+/// evenly so total RRF mass is conserved without inventing a positional
+/// winner.  Metadata is copied to every descendant covered by the wider span.
+fn collapse_overlaps(merged: &mut BTreeMap<EvidenceKey, MergedEntry>) {
+    let keys: Vec<EvidenceKey> = merged.keys().cloned().collect();
+    let transfers: Vec<(EvidenceKey, Vec<EvidenceKey>)> = keys
+        .iter()
+        .filter_map(|source| {
+            let recipients = minimal_overlap_survivors(&keys, source);
+            (!recipients.is_empty()).then(|| (source.clone(), recipients))
+        })
+        .collect();
+
+    for (source, recipients) in transfers {
+        let wider = merged
+            .remove(&source)
+            .expect("overlap source must exist in the immutable key snapshot");
+        let score_share = wider.rrf_score / recipients.len() as f64;
+        for recipient in recipients {
+            let narrower = merged
+                .get_mut(&recipient)
+                .expect("overlap recipient must be a minimal survivor");
+            narrower.absorb_share(&wider, score_share);
         }
     }
-    seen
+}
+
+impl MergedEntry {
+    fn absorb_share(&mut self, other: &MergedEntry, score_share: f64) {
+        self.rrf_score += score_share;
+        self.whys.extend(other.whys.iter().cloned());
+        self.channels.extend(other.channels.iter().cloned());
+    }
+
+    fn normalize_metadata(&mut self) {
+        self.whys.sort();
+        self.whys.dedup();
+        self.channels = dedup_channels(std::mem::take(&mut self.channels));
+    }
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────
@@ -400,6 +469,206 @@ mod tests {
             narrow_ev.core.why.iter().any(|w| w.contains("narrow")),
             "narrower should keep its own why"
         );
+    }
+
+    #[test]
+    fn rrf_overlap_siblings_split_ambiguous_contribution_evenly() {
+        fn evidence(start: u64, end: u64, label: &str, channel: Channel) -> Vec<Evidence> {
+            vec![Evidence::new(
+                "a.rs",
+                start,
+                end,
+                "sha",
+                1.0,
+                vec![label.into()],
+                vec![channel],
+            )]
+        }
+
+        let permutations = [
+            [0usize, 1, 2],
+            [0, 2, 1],
+            [1, 0, 2],
+            [1, 2, 0],
+            [2, 0, 1],
+            [2, 1, 0],
+        ];
+        let mut baseline = None;
+        for _ in 0..32 {
+            for permutation in permutations {
+                let inputs = [
+                    (evidence(1, 20, "wide", Channel::Bm25), Channel::Bm25),
+                    (evidence(5, 7, "left", Channel::Regex), Channel::Regex),
+                    (
+                        evidence(10, 12, "right", Channel::TreeSitter),
+                        Channel::TreeSitter,
+                    ),
+                ];
+                let result = rrf_combine(
+                    permutation
+                        .into_iter()
+                        .map(|index| inputs[index].clone())
+                        .collect(),
+                );
+                let signature: Vec<_> = result
+                    .iter()
+                    .map(|item| {
+                        (
+                            item.core.start_line,
+                            item.core.end_line,
+                            item.core.score.to_bits(),
+                            item.core.channels.clone(),
+                            item.core.why.clone(),
+                        )
+                    })
+                    .collect();
+                if let Some(expected) = &baseline {
+                    assert_eq!(&signature, expected);
+                } else {
+                    baseline = Some(signature);
+                }
+
+                let left = result
+                    .iter()
+                    .find(|item| item.core.start_line == 5 && item.core.end_line == 7)
+                    .unwrap();
+                let right = result
+                    .iter()
+                    .find(|item| item.core.start_line == 10 && item.core.end_line == 12)
+                    .unwrap();
+                assert_eq!(left.core.score, 1.5 / 61.0);
+                assert_eq!(right.core.score, 1.5 / 61.0);
+                assert!(
+                    (result.iter().map(|item| item.core.score).sum::<f64>() - 3.0 / 61.0).abs()
+                        < f64::EPSILON
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn rrf_overlap_chain_transfers_every_contribution_to_narrowest() {
+        let result = rrf_combine(vec![
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    1,
+                    30,
+                    "sha",
+                    1.0,
+                    vec!["wide".into()],
+                    vec![Channel::Bm25],
+                )],
+                Channel::Bm25,
+            ),
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    5,
+                    20,
+                    "sha",
+                    1.0,
+                    vec!["middle".into()],
+                    vec![Channel::Regex],
+                )],
+                Channel::Regex,
+            ),
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    8,
+                    10,
+                    "sha",
+                    1.0,
+                    vec!["narrow".into()],
+                    vec![Channel::TreeSitter],
+                )],
+                Channel::TreeSitter,
+            ),
+        ]);
+
+        assert_eq!(result.len(), 1);
+        assert_eq!(
+            (result[0].core.start_line, result[0].core.end_line),
+            (8, 10)
+        );
+        assert_eq!(result[0].core.score, 3.0 / 61.0);
+        assert_eq!(result[0].core.why, vec!["middle", "narrow", "wide"]);
+    }
+
+    #[test]
+    fn rrf_exact_span_is_stable_across_channel_permutations() {
+        let inputs = [
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    3,
+                    3,
+                    "sha",
+                    4.0,
+                    vec!["bm25".into()],
+                    vec![Channel::Bm25],
+                )],
+                Channel::Bm25,
+            ),
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    3,
+                    3,
+                    "sha",
+                    3.0,
+                    vec!["graph".into()],
+                    vec![Channel::Graph],
+                )],
+                Channel::Graph,
+            ),
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    3,
+                    3,
+                    "sha",
+                    2.0,
+                    vec!["regex".into()],
+                    vec![Channel::Regex],
+                )],
+                Channel::Regex,
+            ),
+            (
+                vec![Evidence::new(
+                    "a.rs",
+                    3,
+                    3,
+                    "sha",
+                    1.0,
+                    vec!["symbol".into()],
+                    vec![Channel::TreeSitter],
+                )],
+                Channel::TreeSitter,
+            ),
+        ];
+        let permutations = [[0usize, 1, 2, 3], [3, 2, 1, 0], [1, 3, 0, 2], [2, 0, 3, 1]];
+        let mut baseline = None;
+        for permutation in permutations {
+            let result = rrf_combine(
+                permutation
+                    .into_iter()
+                    .map(|index| inputs[index].clone())
+                    .collect(),
+            );
+            assert_eq!(result.len(), 1);
+            let signature = (
+                result[0].core.score.to_bits(),
+                result[0].core.channels.clone(),
+                result[0].core.why.clone(),
+            );
+            if let Some(expected) = &baseline {
+                assert_eq!(&signature, expected);
+            } else {
+                baseline = Some(signature);
+            }
+        }
     }
 
     #[test]

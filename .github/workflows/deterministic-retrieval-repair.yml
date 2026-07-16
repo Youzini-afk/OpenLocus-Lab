@@ -1,0 +1,140 @@
+name: deterministic-retrieval-repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'crates/openlocus-context/**'
+      - 'crates/openlocus-graph/**'
+      - 'crates/openlocus-index/**'
+      - 'crates/openlocus-retrieval/**'
+      - 'crates/openlocus-cli/**'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'eval/product_bakeoff_b25_failure_closeout.py'
+      - 'eval/product_bakeoff_postcloseout_comparability.py'
+      - 'artifacts/product_bakeoff_determinism_repair/**'
+      - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
+      - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
+      - '.github/workflows/deterministic-retrieval-repair.yml'
+      - '.github/workflows/retrieval-benchmark.yml'
+      - '.github/workflows/product-bakeoff-b25-closeout.yml'
+      - '.github/workflows/product-bakeoff-b25-holdout.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'crates/openlocus-context/**'
+      - 'crates/openlocus-graph/**'
+      - 'crates/openlocus-index/**'
+      - 'crates/openlocus-retrieval/**'
+      - 'crates/openlocus-cli/**'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'eval/product_bakeoff_b25_failure_closeout.py'
+      - 'eval/product_bakeoff_postcloseout_comparability.py'
+      - 'artifacts/product_bakeoff_determinism_repair/**'
+      - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
+      - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
+      - '.github/workflows/deterministic-retrieval-repair.yml'
+      - '.github/workflows/retrieval-benchmark.yml'
+      - '.github/workflows/product-bakeoff-b25-closeout.yml'
+      - '.github/workflows/product-bakeoff-b25-holdout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deterministic-retrieval-repair-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  package-tests:
+    name: package-tests-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - name: Check out repair source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Run locked package tests
+        run: |
+          cargo test --locked \
+            -p openlocus-ast \
+            -p openlocus-core \
+            -p openlocus-graph \
+            -p openlocus-index \
+            -p openlocus-retrieval \
+            -p openlocus-context \
+            -p openlocus-cli
+
+  deterministic-stress-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - name: Check out repair source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+      - name: Deny warnings in the repaired surface
+        run: |
+          cargo clippy --locked --all-targets \
+            -p openlocus-graph \
+            -p openlocus-index \
+            -p openlocus-retrieval \
+            -p openlocus-context \
+            -p openlocus-cli \
+            -- -D warnings
+      - name: Repeat deterministic boundary regressions across fresh test processes
+        run: |
+          for iteration in $(seq 1 8); do
+            echo "determinism iteration ${iteration}/8"
+            cargo test --locked -p openlocus-index \
+              persistent_bm25_equal_score_boundary_ignores_index_insertion_order
+            cargo test --locked -p openlocus-retrieval \
+              bm25_equal_score_boundary_ignores_record_insertion_order
+            cargo test --locked -p openlocus-retrieval \
+              rrf_overlap_siblings_split_ambiguous_contribution_evenly
+            cargo test --locked -p openlocus-graph \
+              config_edge_cap_is_deterministic_and_lexicographic
+            cargo test --locked -p openlocus-context \
+              top_file_paths_breaks_equal_frequency_and_score_ties_by_path
+            cargo test --locked -p openlocus-cli \
+              ast_symbol_search_limit_is_independent_of_record_order
+          done
+      - name: Validate terminal archives without rebinding to current source
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_terminal_archive.py \
+            eval/product_bakeoff_b25_failure_closeout.py \
+            eval/product_bakeoff_postcloseout_comparability.py
+          python3 eval/product_bakeoff_terminal_archive.py --self-test
+          python3 eval/product_bakeoff_terminal_archive.py --fault-test
+          python3 eval/product_bakeoff_terminal_archive.py --validate b25
+          python3 eval/product_bakeoff_postcloseout_comparability.py --self-test
+          python3 eval/product_bakeoff_postcloseout_comparability.py --fault-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py \
+            --validate-public \
+            artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json
+      - name: Run public privacy and bilingual documentation audits
+        run: |
+          python3 scripts/public_artifact_privacy_audit.py --self-test
+          python3 scripts/public_artifact_privacy_audit.py
+          python3 scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

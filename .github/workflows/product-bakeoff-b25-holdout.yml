@@ -1,10 +1,11 @@
-name: product-bakeoff-b25-holdout
+name: product-bakeoff-b25-terminal-archive
 
 on:
   pull_request:
     branches: [main]
     paths:
       - 'eval/product_bakeoff_b25_*.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
       - 'scripts/product_bakeoff_b25_linux_longrun.sh'
       - 'artifacts/product_bakeoff_b25_protocol/**'
       - 'artifacts/product_bakeoff_b25_runtime_qualification/**'
@@ -23,7 +24,7 @@ defaults:
     shell: bash
 
 jobs:
-  public-contract:
+  terminal-archive:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -31,50 +32,21 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - name: Compile B2.5 implementation
+      - name: Compile terminal B2.5 archive tooling
         run: |
           python3 -m py_compile \
-            eval/product_bakeoff_b25_protocol.py \
-            eval/product_bakeoff_b25_query_gate.py \
-            eval/product_bakeoff_b25_runtime_qualification.py \
-            eval/product_bakeoff_b25_corpus.py \
-            eval/product_bakeoff_b25_runner.py \
-            eval/product_bakeoff_b25_scorer.py \
-            eval/product_bakeoff_b25_readiness.py \
-            eval/product_bakeoff_b25_cli.py
-      - name: Run B2.5 protocol self-test and fault injection
+            eval/product_bakeoff_terminal_archive.py \
+            eval/product_bakeoff_b25_failure_closeout.py
+      - name: Validate terminal B2.5 archive and closeout
         run: |
-          python3 eval/product_bakeoff_b25_protocol.py --self-test
-          python3 eval/product_bakeoff_b25_protocol.py --fault-test
-      - name: Run B2.5 implementation self-test and fault injection
-        run: |
-          python3 eval/product_bakeoff_b25_cli.py --self-test
-          python3 eval/product_bakeoff_b25_cli.py --fault-test
-      - name: Validate B2.5 protocol report and drift
-        run: |
-          python3 eval/product_bakeoff_b25_protocol.py \
-            --validate-report \
-            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
-          python3 eval/product_bakeoff_b25_protocol.py \
-            --check-drift \
-            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
-      - name: Preserve B2.4 historical lock
-        run: |
-          python3 eval/product_bakeoff_b24_protocol.py \
-            --check-drift \
-            artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json
-      - name: Validate optional repaired-runtime qualification
-        run: |
-          path=artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json
-          if [[ -f "$path" ]]; then
-            python3 eval/product_bakeoff_b25_runtime_qualification.py --validate-public "$path"
-          fi
-      - name: Validate optional aggregate-only holdout readiness
-        run: |
-          path=artifacts/product_bakeoff_b25_readiness/product_bakeoff_b25_holdout_readiness.json
-          if [[ -f "$path" ]]; then
-            python3 eval/product_bakeoff_b25_readiness.py --validate-public "$path"
-          fi
+          python3 eval/product_bakeoff_terminal_archive.py --self-test
+          python3 eval/product_bakeoff_terminal_archive.py --fault-test
+          python3 eval/product_bakeoff_terminal_archive.py --validate b25
+          python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py \
+            --validate-public \
+            artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json
       - name: Validate disconnect-safe Linux launcher
         run: |
           bash -n scripts/product_bakeoff_b25_linux_longrun.sh

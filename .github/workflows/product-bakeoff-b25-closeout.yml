@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'eval/product_bakeoff_b25_failure_closeout.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
       - 'artifacts/product_bakeoff_b25/**'
       - 'docs/en/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md'
       - 'docs/zh/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md'
@@ -31,30 +32,17 @@ jobs:
       - name: Compile terminal publication tooling
         run: |
           python3 -m py_compile \
-            eval/product_bakeoff_b25_failure_closeout.py
+            eval/product_bakeoff_b25_failure_closeout.py \
+            eval/product_bakeoff_terminal_archive.py
       - name: Run terminal closeout self-test and fault injection
         run: |
           python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
           python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
-      - name: Validate frozen B2.5 public parents
+      - name: Validate frozen terminal archive without rebinding to current source
         run: |
-          python3 eval/product_bakeoff_b25_protocol.py \
-            --validate-report \
-            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
-          python3 eval/product_bakeoff_b25_protocol.py \
-            --check-drift \
-            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
-          python3 eval/product_bakeoff_b25_runtime_qualification.py \
-            --validate-public \
-            artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json
-          python3 eval/product_bakeoff_b25_readiness.py \
-            --validate-public \
-            artifacts/product_bakeoff_b25_readiness/product_bakeoff_b25_holdout_readiness.json
-      - name: Preserve B2.4 historical lock
-        run: |
-          python3 eval/product_bakeoff_b24_protocol.py \
-            --check-drift \
-            artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json
+          python3 eval/product_bakeoff_terminal_archive.py --self-test
+          python3 eval/product_bakeoff_terminal_archive.py --fault-test
+          python3 eval/product_bakeoff_terminal_archive.py --validate b25_parents
       - name: Validate aggregate-only terminal closeout
         run: |
           python3 eval/product_bakeoff_b25_failure_closeout.py \

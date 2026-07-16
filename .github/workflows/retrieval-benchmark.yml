@@ -87,7 +87,7 @@ jobs:
       - name: Product bakeoff Phase A report drift check
         run: python3 eval/product_bakeoff_conformance.py --check-drift artifacts/product_bakeoff_a/product_bakeoff_a_report.json
       - name: Run locked OpenLocus package tests (Linux; POSIX symlink cases non-vacuous)
-        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-cli
+        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-context -p openlocus-cli
       - name: Run product bakeoff B1 mechanics self-test and fault injection
         run: |
           cargo build --locked -p openlocus-cli
@@ -103,13 +103,13 @@ jobs:
             eval/product_bakeoff_b2_adapters.py \
             eval/product_bakeoff_b2_runner.py \
             eval/product_bakeoff_b2_scorer.py \
-            eval/product_bakeoff_b2_cli.py
+            eval/product_bakeoff_b2_cli.py \
+            eval/product_bakeoff_terminal_archive.py
           python3 eval/product_bakeoff_b2_cli.py --self-test
           python3 eval/product_bakeoff_b2_cli.py --fault-test
           python3 eval/product_bakeoff_b2_protocol.py --self-test
           python3 eval/product_bakeoff_b2_protocol.py --fault-test
-          python3 eval/product_bakeoff_b2_protocol.py --validate-report artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json
-          python3 eval/product_bakeoff_b2_protocol.py --check-drift artifacts/product_bakeoff_b2_protocol/product_bakeoff_b2_protocol_report.json
+          python3 eval/product_bakeoff_terminal_archive.py --validate b2
       - name: Validate bilingual documentation mirror
         run: python3 scripts/validate_docs_i18n.py
       - id: stage
@@ -207,8 +207,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Run locked package tests (ast + core + graph + index + retrieval + cli)
-        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-cli
+      - name: Run locked package tests (ast + core + graph + index + retrieval + context + cli)
+        run: cargo test --locked -p openlocus-ast -p openlocus-core -p openlocus-graph -p openlocus-index -p openlocus-retrieval -p openlocus-context -p openlocus-cli
 
   benchmark:
     needs: plan

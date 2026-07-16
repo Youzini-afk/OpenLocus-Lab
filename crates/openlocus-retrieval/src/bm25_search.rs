@@ -15,11 +15,12 @@
 use anyhow::Result;
 use openlocus_core::{Channel, Evidence, Freshness, ScoreParts};
 use openlocus_repo::scan::FileRecord;
+use std::collections::BTreeMap;
 use std::path::Path;
 use tantivy::collector::TopDocs;
-use tantivy::query::QueryParser;
+use tantivy::query::{Query, QueryParser};
 use tantivy::schema::*;
-use tantivy::{Index, ReloadPolicy, doc};
+use tantivy::{DocAddress, Index, ReloadPolicy, Score, Searcher, doc};
 
 /// Maximum chunk size in lines for indexing.
 const MAX_CHUNK_LINES: u64 = 30;
@@ -27,6 +28,80 @@ const MAX_CHUNK_LINES: u64 = 30;
 const CONTEXT_LINES: u64 = 2;
 /// Maximum evidence span in lines.
 const MAX_EVIDENCE_SPAN: u64 = 7;
+
+fn collect_deterministic_top_docs(
+    searcher: &Searcher,
+    query: &dyn Query,
+    requested_limit: usize,
+) -> Result<Vec<(Score, DocAddress)>> {
+    if requested_limit == 0 {
+        return Ok(Vec::new());
+    }
+    let document_count = usize::try_from(searcher.num_docs()).unwrap_or(usize::MAX);
+    if document_count == 0 {
+        return Ok(Vec::new());
+    }
+
+    let target = requested_limit.min(document_count);
+    let mut probe_limit = target;
+    loop {
+        let documents = searcher.search(query, &TopDocs::with_limit(probe_limit))?;
+        if documents.len() < probe_limit || probe_limit >= document_count {
+            return Ok(documents);
+        }
+        let boundary_score = documents[target - 1].0;
+        let tail_score = documents
+            .last()
+            .expect("a full positive TopDocs probe must have a tail")
+            .0;
+        if boundary_score.total_cmp(&tail_score).is_gt() {
+            return Ok(documents);
+        }
+        let next_limit = probe_limit.saturating_mul(2).min(document_count);
+        if next_limit == probe_limit {
+            return Ok(documents);
+        }
+        probe_limit = next_limit;
+    }
+}
+
+fn sort_dedup_and_truncate(results: &mut Vec<Evidence>, max_results: usize) {
+    let mut best_by_cell: BTreeMap<(String, u64, u64, String), Evidence> = BTreeMap::new();
+    for evidence in results.drain(..) {
+        let key = (
+            evidence.core.path.clone(),
+            evidence.core.start_line,
+            evidence.core.end_line,
+            evidence.core.content_sha.clone(),
+        );
+        match best_by_cell.entry(key) {
+            std::collections::btree_map::Entry::Vacant(entry) => {
+                entry.insert(evidence);
+            }
+            std::collections::btree_map::Entry::Occupied(mut entry) => {
+                if evidence
+                    .core
+                    .score
+                    .total_cmp(&entry.get().core.score)
+                    .is_gt()
+                {
+                    entry.insert(evidence);
+                }
+            }
+        }
+    }
+    results.extend(best_by_cell.into_values());
+    results.sort_by(|a, b| {
+        b.core
+            .score
+            .total_cmp(&a.core.score)
+            .then_with(|| a.core.path.cmp(&b.core.path))
+            .then_with(|| a.core.start_line.cmp(&b.core.start_line))
+            .then_with(|| a.core.end_line.cmp(&b.core.end_line))
+            .then_with(|| a.core.content_sha.cmp(&b.core.content_sha))
+    });
+    results.truncate(max_results);
+}
 
 /// BM25 search over scanned files. Returns Evidence with Channel::Bm25,
 /// narrow spans (≤7 lines), content_sha from current file, and excerpt.
@@ -109,7 +184,11 @@ pub fn bm25_search(
         }
     };
 
-    let top_docs = searcher.search(&parsed_query, &TopDocs::with_limit(max_results * 2))?;
+    let top_docs = collect_deterministic_top_docs(
+        &searcher,
+        parsed_query.as_ref(),
+        max_results.saturating_mul(2),
+    )?;
 
     // Tokenize query for line-level scoring
     let query_tokens = tokenize_query(query);
@@ -117,10 +196,6 @@ pub fn bm25_search(
     let mut results = Vec::new();
 
     for (_score, doc_address) in top_docs {
-        if results.len() >= max_results {
-            break;
-        }
-
         let doc: TantivyDocument = searcher.doc(doc_address)?;
         let path_val = doc
             .get_first(path_field)
@@ -223,6 +298,8 @@ pub fn bm25_search(
 
         results.push(evidence);
     }
+
+    sort_dedup_and_truncate(&mut results, max_results);
 
     Ok(results)
 }
@@ -331,6 +408,55 @@ mod tests {
             "span should be <= {}, got {}",
             MAX_EVIDENCE_SPAN,
             span
+        );
+    }
+
+    #[test]
+    fn bm25_equal_score_boundary_ignores_record_insertion_order() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        for index in 0..48 {
+            std::fs::write(
+                root.join(format!("item_{index:03}.rs")),
+                "pub fn stableboundarytoken() {}\n",
+            )
+            .unwrap();
+        }
+        let mut records: Vec<FileRecord> = (0..48)
+            .map(|index| {
+                let path = format!("item_{index:03}.rs");
+                FileRecord {
+                    path: path.clone(),
+                    size: 0,
+                    content_sha: compute_sha(root, &path),
+                    language: "rust".into(),
+                }
+            })
+            .collect();
+
+        let signature = |input: &[FileRecord]| {
+            bm25_search(root, input, "stableboundarytoken", 5)
+                .unwrap()
+                .into_iter()
+                .map(|item| {
+                    (
+                        item.core.path,
+                        item.core.start_line,
+                        item.core.end_line,
+                        item.core.score.to_bits(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        };
+        let first = signature(&records);
+        records.reverse();
+        let second = signature(&records);
+        assert_eq!(first, second);
+        assert_eq!(
+            first.iter().map(|item| item.0.clone()).collect::<Vec<_>>(),
+            (0..5)
+                .map(|index| format!("item_{index:03}.rs"))
+                .collect::<Vec<_>>()
         );
     }
 

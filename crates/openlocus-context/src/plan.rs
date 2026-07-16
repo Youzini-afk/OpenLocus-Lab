@@ -538,11 +538,10 @@ fn top_file_paths(channel_evidence: &[(Vec<Evidence>, Channel)], n: usize) -> Ve
 
     let mut files: Vec<_> = file_counts.into_iter().collect();
     files.sort_by(|a, b| {
-        b.1.0.cmp(&a.1.0).then_with(|| {
-            b.1.1
-                .partial_cmp(&a.1.1)
-                .unwrap_or(std::cmp::Ordering::Equal)
-        })
+        b.1.0
+            .cmp(&a.1.0)
+            .then_with(|| b.1.1.total_cmp(&a.1.1))
+            .then_with(|| a.0.cmp(&b.0))
     });
 
     files.into_iter().take(n).map(|(path, _)| path).collect()
@@ -680,6 +679,33 @@ mod tests {
         assert_eq!(paths.len(), 2);
         assert_eq!(paths[0], "src/lib.rs"); // 2 hits vs 1
         assert_eq!(paths[1], "src/other.rs");
+    }
+
+    #[test]
+    fn top_file_paths_breaks_equal_frequency_and_score_ties_by_path() {
+        let make = |path: &str| {
+            Evidence::new(
+                path,
+                1,
+                1,
+                "sha",
+                0.5,
+                vec!["test".into()],
+                vec![Channel::Regex],
+            )
+        };
+        let forward = vec![(
+            vec![make("src/c.rs"), make("src/a.rs"), make("src/b.rs")],
+            Channel::Regex,
+        )];
+        let reverse = vec![(
+            vec![make("src/b.rs"), make("src/a.rs"), make("src/c.rs")],
+            Channel::Regex,
+        )];
+
+        let expected = vec!["src/a.rs".to_string(), "src/b.rs".to_string()];
+        assert_eq!(top_file_paths(&forward, 2), expected);
+        assert_eq!(top_file_paths(&reverse, 2), expected);
     }
 
     #[test]
