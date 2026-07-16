@@ -1,0 +1,87 @@
+{
+  "anti_adaptation": {
+    "failed_attempt_may_be_restarted_resumed_or_retried": false,
+    "failed_complete_matrix_may_be_scored_or_ranked": false,
+    "failed_or_losing_cells_may_be_selectively_rerun": false,
+    "frozen_comparability_gate_may_be_changed_for_b25": false,
+    "missing_or_rejected_values_may_be_imputed": false,
+    "same_b25_launch_authorization_may_be_reused": false,
+    "second_b25_launch_may_be_performed": false,
+    "task_query_or_oracle_may_be_edited": false
+  },
+  "claim_level": "complete_matrix_comparability_gate_failure_pre_score_no_tournament_result",
+  "date": "2026-07-17",
+  "execution": {
+    "complete_matrix_gate_passed": true,
+    "completed_group_count": 48,
+    "expected_group_count": 48,
+    "expected_logical_record_count": 1440,
+    "formal_attempt_boundary_crossed": true,
+    "formal_tournament_attempt_count": 1,
+    "launch_release_created": true,
+    "logical_record_count": 1440,
+    "phase_c_shortlist_selected": false,
+    "pre_score_failure_gate_count": 1,
+    "pre_score_gates_passed": false,
+    "private_holdout_and_runtime_frozen_before_execution": true,
+    "product_default_changed": false,
+    "provider_network_call_count": 0,
+    "public_tournament_result_exists": false,
+    "quality_or_resource_ranking_executed": false,
+    "runner_admitted": true,
+    "terminal_exit_code": 1,
+    "tournament_scoring_executed": false,
+    "worker_entered": true
+  },
+  "failure": {
+    "category": "complete_matrix_comparability_gate_failure",
+    "comparability_gate_family_failed": true,
+    "complete_matrix_invalid_for_scoring": true,
+    "complete_matrix_present": true,
+    "description": "All 48 groups and all 1,440 logical records completed, but one frozen pre-score comparability gate failed. The scorer remained unexecuted, so no arm score, rank, shortlist, product-default decision, or tournament result exists. The exact failed gate and its private evidence remain non-public. No restart, resume, selective rerun, gate change, or post-failure scoring is authorized.",
+    "exact_failed_gate_public": false,
+    "failed_closed": true,
+    "infrastructure_capacity_failure": false,
+    "private_failure_evidence_frozen": true,
+    "provider_or_model_failure": false
+  },
+  "failure_aggregate_digest": "b25failure_012f59fc4d7d717b4f1d4f0da5513430637d4a6cc6eaf8a326a35adc339302fd",
+  "next_authorized_action": "Close B2.5 as failed_closed_no_result. Do not relaunch, resume, repair, score, rank, or reuse the B2.5 matrix or launch authorization. Any later product tournament must be separately preregistered with a fresh holdout and must freeze its comparability policy before any treatment output.",
+  "phase": "product_bakeoff_b25_fresh_tokenizer_qualified_holdout_tournament",
+  "protocol": {
+    "execution_schedule_digest": "b21sched_a023b8ccc4b38f62289a40527bec01b2e3eba47ec6b16754108efee90ac27ad3",
+    "holdout_frame_digest": "b25frame_23661bee3726c4b52d6381bee3ad7ea857ca396acb77ee91482b0701978d4e17",
+    "protocol_report_digest": "b25protocol_cdb3ec1eb55acd1bf5ba1de39a76deccc525b0dbf6f0d7e74d2ee2b2c20e8ba7",
+    "source_bundle_digest": "b25src_f293d24c0f3aab207af3571ea3d0bd7a3d7992818f879c217ce5042883cd66d4",
+    "spec_digest": "b25spec_1603e85ac197760b"
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_plan_or_failover_public": false,
+    "exact_failed_gate_or_private_detail_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "per_arm_or_task_output_public": false,
+    "private_evidence_digest_public": false,
+    "private_manifest_freeze_launch_or_run_digest_public": false,
+    "repository_identity_public": false,
+    "source_location_range_or_excerpt_public": false,
+    "task_text_query_oracle_public": false
+  },
+  "schema_version": "product_bakeoff_b25_failed_closed_aggregate.v1",
+  "source_gate": {
+    "ci_conclusion": "success",
+    "ci_run_id": 29500666349,
+    "readiness_checkpoint": "7523d9673afff867f69d8a87338b8d651952dd96",
+    "readiness_digest": "b25ready_b9c2010e61e804ab3e0499ab60489edfe90ab7300c1e6dff5651da891f468531"
+  },
+  "status": "product_bakeoff_b25_execution_failed_closed_no_result",
+  "terminal_attempt_boundary": {
+    "complete_matrix_retained_private": true,
+    "launch_authorization_attempt_number": 1,
+    "restart_or_retry_authorized": false,
+    "second_launch_performed": false,
+    "terminal_exit_receipt_created": true,
+    "treatment_output_reused": false
+  }
+}

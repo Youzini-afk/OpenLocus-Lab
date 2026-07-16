@@ -1,6 +1,6 @@
 # OpenLocus Current Research Conclusions / OpenLocus 当前研究结论
 
-Date / 日期: 2026-07-16
+Date / 日期: 2026-07-17
 
 This root file is only a bilingual index. Do not put research status prose here.
 
@@ -31,6 +31,7 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.5 protocol report / B2.5 协议报告: [`artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json`](../artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json)
 - B2.5 repaired-runtime qualification / B2.5 修复后运行时资格聚合: [`artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json`](../artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json)
 - B2.5 fresh-holdout readiness / B2.5 全新盲测就绪汇总: [`artifacts/product_bakeoff_b25_readiness/product_bakeoff_b25_holdout_readiness.json`](../artifacts/product_bakeoff_b25_readiness/product_bakeoff_b25_holdout_readiness.json)
+- B2.5 failed-closed terminal aggregate / B2.5 失败关闭终态聚合: [`artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json`](../artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json)
 
 ## Current route closure / 当前路线关闭
 

@@ -1,0 +1,69 @@
+name: product-bakeoff-b25-closeout
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b25_failure_closeout.py'
+      - 'artifacts/product_bakeoff_b25/**'
+      - 'docs/en/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md'
+      - 'docs/zh/product-bakeoff-b25-fresh-tokenizer-qualified-holdout.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b25-closeout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  public-closeout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out public B2.5 closeout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Compile terminal publication tooling
+        run: |
+          python3 -m py_compile \
+            eval/product_bakeoff_b25_failure_closeout.py
+      - name: Run terminal closeout self-test and fault injection
+        run: |
+          python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
+          python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
+      - name: Validate frozen B2.5 public parents
+        run: |
+          python3 eval/product_bakeoff_b25_protocol.py \
+            --validate-report \
+            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
+          python3 eval/product_bakeoff_b25_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json
+          python3 eval/product_bakeoff_b25_runtime_qualification.py \
+            --validate-public \
+            artifacts/product_bakeoff_b25_runtime_qualification/product_bakeoff_b25_runtime_qualification.json
+          python3 eval/product_bakeoff_b25_readiness.py \
+            --validate-public \
+            artifacts/product_bakeoff_b25_readiness/product_bakeoff_b25_holdout_readiness.json
+      - name: Preserve B2.4 historical lock
+        run: |
+          python3 eval/product_bakeoff_b24_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b24_protocol/product_bakeoff_b24_protocol_report.json
+      - name: Validate aggregate-only terminal closeout
+        run: |
+          python3 eval/product_bakeoff_b25_failure_closeout.py \
+            --validate-public \
+            artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json
+      - name: Validate privacy and bilingual documentation
+        run: |
+          python3 scripts/public_artifact_privacy_audit.py --self-test
+          python3 scripts/public_artifact_privacy_audit.py
+          python3 scripts/validate_docs_i18n.py
+      - name: Check formatting
+        run: git diff --check

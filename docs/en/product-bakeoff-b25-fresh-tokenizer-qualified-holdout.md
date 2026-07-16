@@ -1,8 +1,8 @@
 # Product Stack Bakeoff — B2.5 Fresh Tokenizer-Qualified Holdout
 
-Date: 2026-07-16
+Date: 2026-07-17
 
-Status: `product_bakeoff_b25_private_holdout_frozen_public_readiness_published_no_tournament_no_result`
+Status: `product_bakeoff_b25_execution_failed_closed_no_result`
 
 B2.5 is a separately preregistered tournament. It does not reopen B2.4, score its incomplete output, reuse its exposed holdout, or reuse its launch authorization. The only inherited material is the already frozen B2.1 execution/scoring design and the aggregate engineering evidence that explains why B2.4 failed and how the production BM25 verifier was repaired.
 
@@ -15,10 +15,13 @@ The executable public contract is:
 - [`product_bakeoff_b25_runner.py`](../../eval/product_bakeoff_b25_runner.py)
 - [`product_bakeoff_b25_scorer.py`](../../eval/product_bakeoff_b25_scorer.py)
 - [`product_bakeoff_b25_readiness.py`](../../eval/product_bakeoff_b25_readiness.py)
+- [`product_bakeoff_b25_failure_closeout.py`](../../eval/product_bakeoff_b25_failure_closeout.py)
 - [`product_bakeoff_b25_cli.py`](../../eval/product_bakeoff_b25_cli.py)
 - [`product_bakeoff_b25_linux_longrun.sh`](../../scripts/product_bakeoff_b25_linux_longrun.sh)
 - [`product-bakeoff-b25-holdout.yml`](../../.github/workflows/product-bakeoff-b25-holdout.yml)
+- [`product-bakeoff-b25-closeout.yml`](../../.github/workflows/product-bakeoff-b25-closeout.yml)
 - [`product_bakeoff_b25_protocol_report.json`](../../artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json)
+- [`product_bakeoff_b25_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json)
 
 ## Why B2.5 is a new tournament
 
@@ -79,6 +82,12 @@ The complete expected matrix contains 1,440 logical records and the inherited ex
 
 The oracle and scorer remain unloaded until the complete matrix and every pre-score integrity gate pass. Only then may the inherited B2.1 scorer produce an aggregate-only B2.5 result. Repository-level, task-level, per-cell, query, oracle, source-location, exact-runner, and private-digest output remains forbidden.
 
+## Terminal failed-closed outcome
+
+The single authorized formal attempt completed all 48 task groups and all 1,440 logical records with zero provider or outbound network calls. The complete matrix then failed one frozen pre-score gate in the comparability family. The exact subgate and its supporting evidence remain private.
+
+Because that gate failed, the oracle/scorer path did not execute. No quality or resource ranking, shortlist, product-default change, or tournament result exists. The terminal attempt is failed-closed: its private evidence is frozen, and no restart, resume, selective rerun, gate change, post-failure scoring, or second B2.5 launch is authorized.
+
 ## Frozen public identifiers
 
 - B2.5 spec digest: `b25spec_1603e85ac197760b`
@@ -89,7 +98,7 @@ The oracle and scorer remain unloaded until the complete matrix and every pre-sc
 
 ## Current authorized sequence
 
-The fresh private holdout is frozen and the aggregate readiness artifact is published. The authorized sequence is:
+The preregistered sequence was:
 
 1. commit the B2.5 protocol, implementation, documentation, and protocol report, then obtain green public CI;
 2. start the B2.3-class-compatible Linux server and run only the four-case synthetic repaired-runtime qualification;
@@ -98,4 +107,4 @@ The fresh private holdout is frozen and the aggregate readiness artifact is publ
 5. commit readiness and obtain green CI;
 6. create one private launch authorization, re-admit the runner, and release exactly one complete long run.
 
-Steps 1–4 are complete at this readiness artifact. Step 5 is the active public gate: tournament execution remains unauthorized until the readiness checkpoint passes public CI and one private launch authorization is created. No treatment output, scoring, ranking, or tournament result exists at readiness publication.
+All six steps were completed once. The released attempt reached the complete matrix but failed the frozen comparability-family pre-score gate, so B2.5 is now terminally closed without a result. There is no remaining B2.5 execution step and step 6 must not be repeated. Any later tournament requires a separately preregistered protocol, a fresh holdout, and a new authorization boundary.

@@ -1,8 +1,8 @@
 # 产品栈 Bakeoff — B2.5 全新分词器合格盲测
 
-日期：2026-07-16
+日期：2026-07-17
 
-状态：`product_bakeoff_b25_private_holdout_frozen_public_readiness_published_no_tournament_no_result`
+状态：`product_bakeoff_b25_execution_failed_closed_no_result`
 
 B2.5 是一场单独预注册的新锦标赛。它不会重新打开 B2.4，不会给 B2.4 的不完整输出评分，不会复用已经暴露的 B2.4 盲测集，也不会复用旧启动授权。它只继承已经冻结的 B2.1 执行/评分设计，以及解释 B2.4 为何失败、生产 BM25 校验器如何修复的公开聚合工程证据。
 
@@ -15,10 +15,13 @@ B2.5 是一场单独预注册的新锦标赛。它不会重新打开 B2.4，不�
 - [`product_bakeoff_b25_runner.py`](../../eval/product_bakeoff_b25_runner.py)
 - [`product_bakeoff_b25_scorer.py`](../../eval/product_bakeoff_b25_scorer.py)
 - [`product_bakeoff_b25_readiness.py`](../../eval/product_bakeoff_b25_readiness.py)
+- [`product_bakeoff_b25_failure_closeout.py`](../../eval/product_bakeoff_b25_failure_closeout.py)
 - [`product_bakeoff_b25_cli.py`](../../eval/product_bakeoff_b25_cli.py)
 - [`product_bakeoff_b25_linux_longrun.sh`](../../scripts/product_bakeoff_b25_linux_longrun.sh)
 - [`product-bakeoff-b25-holdout.yml`](../../.github/workflows/product-bakeoff-b25-holdout.yml)
+- [`product-bakeoff-b25-closeout.yml`](../../.github/workflows/product-bakeoff-b25-closeout.yml)
 - [`product_bakeoff_b25_protocol_report.json`](../../artifacts/product_bakeoff_b25_protocol/product_bakeoff_b25_protocol_report.json)
+- [`product_bakeoff_b25_failed_closed_aggregate.json`](../../artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json)
 
 ## 为什么 B2.5 必须是新锦标赛
 
@@ -79,6 +82,12 @@ release 之前，如果交接或校验失败且方案输出仍为 0，不消耗�
 
 只有完整矩阵和全部评分前完整性门槛通过后，才允许导入 oracle 与 scorer。之后继承的 B2.1 scorer 才能生成纯聚合的 B2.5 结果。仓库级、任务级、单元级、查询、oracle、源码位置、精确机器配置和私有摘要都不得公开。
 
+## 终态失败关闭结果
+
+唯一一次获准的正式尝试完成了全部 48 个任务组和 1,440 条逻辑记录，服务商与出站网络调用均为 0。完整矩阵随后在冻结的评分前可比性门槛族中有一项未通过；具体子门槛及其支持证据保持私有。
+
+由于该门槛未通过，oracle/scorer 路径没有执行。因此不存在质量或资源排名、shortlist、产品默认项变更或锦标赛结果。本次正式尝试已失败关闭：私有证据已经冻结，不允许重启、恢复、选择性重跑、修改门槛、失败后补评分或再次启动 B2.5。
+
 ## 冻结的公开标识
 
 - B2.5 规范摘要：`b25spec_1603e85ac197760b`
@@ -89,7 +98,7 @@ release 之前，如果交接或校验失败且方案输出仍为 0，不消耗�
 
 ## 当前获准顺序
 
-全新私有盲测已经冻结，聚合 readiness 已发布。获准顺序是：
+预注册的获准顺序是：
 
 1. 提交 B2.5 协议、实现、文档和协议报告，并取得公开 CI 全绿；
 2. 开启符合 B2.3 runner 等级的 Linux 服务器，只运行四类合成的修复后运行时资格验证；
@@ -98,4 +107,4 @@ release 之前，如果交接或校验失败且方案输出仍为 0，不消耗�
 5. 提交 readiness 并取得 CI 全绿；
 6. 创建一次私有启动授权，重新准入 runner，并只释放一次完整长跑。
 
-在本次 readiness 发布时，第 1–4 步已经完成。第 5 步是当前公开门槛：只有 readiness 检查点通过公开 CI 并创建一次私有启动授权后，才允许执行锦标赛。readiness 发布时仍不存在方案输出、评分、排名或锦标赛结果。
+上述六步已经且只完成了一次。正式尝试到达完整矩阵后，在冻结的评分前可比性门槛族中失败，因此 B2.5 现已无结果终态关闭。B2.5 已无剩余执行步骤，第 6 步不得重复。任何后续锦标赛都必须单独预注册、使用全新盲测并建立新的授权边界。
