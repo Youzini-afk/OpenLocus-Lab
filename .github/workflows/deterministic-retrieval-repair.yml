@@ -13,6 +13,7 @@ on:
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
       - 'eval/product_bakeoff_determinism_repair.py'
+      - 'scripts/product_bakeoff_determinism_linux_stress.sh'
       - 'artifacts/product_bakeoff_determinism_repair/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
@@ -32,6 +33,7 @@ on:
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
       - 'eval/product_bakeoff_determinism_repair.py'
+      - 'scripts/product_bakeoff_determinism_linux_stress.sh'
       - 'artifacts/product_bakeoff_determinism_repair/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
@@ -117,6 +119,10 @@ jobs:
             cargo test --locked -p openlocus-cli \
               ast_symbol_search_limit_is_independent_of_record_order
           done
+      - name: Run bounded Linux scale-harness self-test
+        run: |
+          bash -n scripts/product_bakeoff_determinism_linux_stress.sh
+          bash scripts/product_bakeoff_determinism_linux_stress.sh --self-test
       - name: Validate terminal archives without rebinding to current source
         run: |
           python3 -m py_compile \

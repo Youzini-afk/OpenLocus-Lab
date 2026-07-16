@@ -3081,6 +3081,107 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "large synthetic determinism stress; run via the Linux stress script"]
+    fn persistent_bm25_large_equal_score_boundary_stress() {
+        let file_count = std::env::var("OPENLOCUS_DETERMINISM_STRESS_FILES")
+            .ok()
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(20_000);
+        assert!((32..=100_000).contains(&file_count));
+
+        let dir = tempfile::tempdir().unwrap();
+        let source_root = dir.path().join("source");
+        let state_a = dir.path().join("state-a");
+        let state_b = dir.path().join("state-b");
+        std::fs::create_dir_all(source_root.join("src")).unwrap();
+        std::fs::create_dir_all(&state_a).unwrap();
+        std::fs::create_dir_all(&state_b).unwrap();
+
+        for index in 0..file_count {
+            write_file(
+                &source_root,
+                &format!("src/item_{index:06}.rs"),
+                "pub fn stableboundarytoken() {}\n",
+            );
+        }
+        let mut records: Vec<FileRecord> = (0..file_count)
+            .map(|index| file_record(&source_root, &format!("src/item_{index:06}.rs")))
+            .collect();
+        let policy = Policy::default();
+        build_index_at_state_root(
+            &source_root,
+            &state_a,
+            &records,
+            &policy,
+            ChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+        records.reverse();
+        build_index_at_state_root(
+            &source_root,
+            &state_b,
+            &records,
+            &policy,
+            ChunkStrategy::LineWindowV1,
+        )
+        .unwrap();
+
+        let signature = |state_root: &Path| {
+            let (evidence, stats) = search_persistent_bm25_at_state_root(
+                &source_root,
+                state_root,
+                "stableboundarytoken",
+                64,
+                &policy,
+            )
+            .unwrap();
+            assert_eq!(stats.stale_hits_skipped, 0);
+            assert_eq!(stats.invalid_hits_skipped, 0);
+            evidence
+                .into_iter()
+                .map(|item| {
+                    (
+                        item.core.path,
+                        item.core.start_line,
+                        item.core.end_line,
+                        item.core.score.to_bits(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        };
+        let first = signature(&state_a);
+        assert_eq!(signature(&state_b), first);
+        assert_eq!(
+            first.iter().map(|item| item.0.clone()).collect::<Vec<_>>(),
+            (0..64)
+                .map(|index| format!("src/item_{index:06}.rs"))
+                .collect::<Vec<_>>()
+        );
+
+        for state_root in [&state_a, &state_b] {
+            let handle =
+                PersistentBm25Index::open_at_state_root(&source_root, state_root, &policy).unwrap();
+            let (evidence, stats) = handle
+                .search_at_source_root(&source_root, "stableboundarytoken", 64)
+                .unwrap();
+            assert_eq!(stats.stale_hits_skipped, 0);
+            assert_eq!(stats.invalid_hits_skipped, 0);
+            let handle_signature = evidence
+                .into_iter()
+                .map(|item| {
+                    (
+                        item.core.path,
+                        item.core.start_line,
+                        item.core.end_line,
+                        item.core.score.to_bits(),
+                    )
+                })
+                .collect::<Vec<_>>();
+            assert_eq!(handle_signature, first);
+        }
+    }
+
+    #[test]
     fn separated_open_and_search_at_state_root() {
         let src_dir = tempfile::tempdir().unwrap();
         let state_dir = tempfile::tempdir().unwrap();

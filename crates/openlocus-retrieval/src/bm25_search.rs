@@ -461,6 +461,58 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "large synthetic determinism stress; run via the Linux stress script"]
+    fn bm25_large_equal_score_boundary_stress() {
+        let file_count = std::env::var("OPENLOCUS_DETERMINISM_STRESS_FILES")
+            .ok()
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(20_000);
+        assert!((32..=100_000).contains(&file_count));
+
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path();
+        const CONTENT: &str = "pub fn stableboundarytoken() {}\n";
+        for index in 0..file_count {
+            std::fs::write(root.join(format!("item_{index:06}.rs")), CONTENT).unwrap();
+        }
+        let mut records: Vec<FileRecord> = (0..file_count)
+            .map(|index| {
+                let path = format!("item_{index:06}.rs");
+                FileRecord {
+                    path: path.clone(),
+                    size: CONTENT.len() as u64,
+                    content_sha: compute_sha(root, &path),
+                    language: "rust".into(),
+                }
+            })
+            .collect();
+
+        let signature = |input: &[FileRecord]| {
+            bm25_search(root, input, "stableboundarytoken", 64)
+                .unwrap()
+                .into_iter()
+                .map(|item| {
+                    (
+                        item.core.path,
+                        item.core.start_line,
+                        item.core.end_line,
+                        item.core.score.to_bits(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        };
+        let first = signature(&records);
+        records.reverse();
+        assert_eq!(signature(&records), first);
+        assert_eq!(
+            first.iter().map(|item| item.0.clone()).collect::<Vec<_>>(),
+            (0..64)
+                .map(|index| format!("item_{index:06}.rs"))
+                .collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
     fn bm25_content_sha_from_file() {
         let dir = tempfile::tempdir().unwrap();
         let root = dir.path();

@@ -672,6 +672,55 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "large synthetic determinism stress; run via the Linux stress script"]
+    fn rrf_large_ambiguous_overlap_conserves_score_without_positional_bias() {
+        let span_count = std::env::var("OPENLOCUS_DETERMINISM_STRESS_RRF_SPANS")
+            .ok()
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(4_096);
+        assert!((32..=20_000).contains(&span_count));
+
+        let wide = vec![Evidence::new(
+            "a.rs",
+            1,
+            (span_count * 2) as u64,
+            "sha",
+            1.0,
+            vec!["wide".into()],
+            vec![Channel::Bm25],
+        )];
+        let siblings: Vec<Evidence> = (0..span_count)
+            .map(|index| {
+                let line = (index * 2 + 1) as u64;
+                Evidence::new(
+                    "a.rs",
+                    line,
+                    line,
+                    "sha",
+                    1.0,
+                    vec![format!("sibling-{index}")],
+                    vec![Channel::Regex],
+                )
+            })
+            .collect();
+        let result =
+            rrf_combine_with_rank_ties(vec![(wide, Channel::Bm25), (siblings, Channel::Regex)]);
+        assert_eq!(result.len(), span_count);
+        let expected_each = 1.0 / 61.0 + 1.0 / (61.0 * span_count as f64);
+        for (index, item) in result.iter().enumerate() {
+            let expected_line = (index * 2 + 1) as u64;
+            assert_eq!(
+                (item.core.start_line, item.core.end_line),
+                (expected_line, expected_line)
+            );
+            assert!((item.core.score - expected_each).abs() < 1e-12);
+        }
+        let expected_total = (span_count as f64 + 1.0) / 61.0;
+        let actual_total = result.iter().map(|item| item.core.score).sum::<f64>();
+        assert!((actual_total - expected_total).abs() < 1e-9);
+    }
+
+    #[test]
     fn rrf_same_span_merges_channels() {
         let ev1 = vec![
             Evidence::new(
