@@ -1,0 +1,108 @@
+{
+  "claim_level": "engineering_determinism_and_gate_design_only_no_tournament_result",
+  "comparability_review": {
+    "b25_closeout_remains_authoritative": true,
+    "b25_failure_reclassified_as_diagnostic_only": false,
+    "b25_gate_relaxed_retroactively": false,
+    "diagnostic_only_drift_can_be_scorer_equivalent": true,
+    "diagnostic_only_examples_excluded_from_future_score_projection": [
+      "candidate_native_score_and_order",
+      "duplicate_span_segmentation",
+      "excerpt_channel_and_explanation_metadata",
+      "pack_status_reason_text"
+    ],
+    "future_context_projection_includes": [
+      "admission_envelope",
+      "candidate_set_empty_or_nonempty",
+      "pack_status",
+      "evidence_line_union",
+      "target_line_union",
+      "support_set_empty_or_nonempty"
+    ],
+    "future_policy_is_oracle_blind_and_scorer_equivalent": true,
+    "future_policy_must_be_preregistered_before_treatment_output": true,
+    "future_scorer_must_use_the_same_repeatability_projection": true,
+    "future_support_projection_includes": [
+      "admission_envelope",
+      "relation_kind",
+      "parent_target_id",
+      "support_path_and_line_union"
+    ],
+    "historical_exact_semantic_hash_overinclusive_in_principle": true,
+    "source_currentness_lineage_fairness_and_provider_isolation_remain_separate_gates": true
+  },
+  "date": "2026-07-17",
+  "engineering_repairs": {
+    "bm25_complete_boundary_tie_expansion_before_stable_sort": true,
+    "bm25_exact_cell_dedup_before_cap": true,
+    "bm25_stable_score_path_range_and_content_tiebreak": true,
+    "capped_text_symbol_ast_and_context_seed_paths_ordered": true,
+    "graph_records_edges_caps_and_serialized_kind_counts_ordered": true,
+    "rrf_ambiguous_wider_vote_split_evenly_across_minimal_descendants": true,
+    "rrf_sorted_channel_and_exact_cell_accumulation": true,
+    "rrf_total_score_mass_conserved": true,
+    "terminal_archive_current_source_rebinding_used": false,
+    "terminal_archive_uses_canonical_artifact_locks_and_cross_links": true
+  },
+  "historical_archive": {
+    "canonical_json_locks_verified": true,
+    "cross_phase_public_bindings_verified": true,
+    "private_input_read": false,
+    "public_artifact_count": 15,
+    "self_digests_verified_where_canonically_constructed": true
+  },
+  "next_authorized_action": "Keep B2.5 closed as failed_closed_no_result. Before any separately preregistered future tournament, run public synthetic Linux scale and cross-process stress for the repaired retrieval boundaries, freeze the scorer-equivalent comparability policy before treatment output, qualify the exact future runtime, and author a fresh holdout that reuses no B2.5 treatment output or launch authorization.",
+  "parent_closeout": {
+    "b25_launch_authorization_reused": false,
+    "b25_matrix_scored_or_ranked": false,
+    "b25_result_reopened": false,
+    "checkpoint": "9d5df3fca8e952f8933ff8694113d83e7cf82b9e",
+    "ci_conclusion": "success",
+    "ci_run_id": 29530318657,
+    "failure_aggregate_digest": "b25failure_012f59fc4d7d717b4f1d4f0da5513430637d4a6cc6eaf8a326a35adc339302fd"
+  },
+  "phase": "product_bakeoff_postcloseout_retrieval_determinism_and_comparability_repair",
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_or_repository_identity_public": false,
+    "exact_private_failed_gate_or_divergence_public": false,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "private_manifest_freeze_launch_or_run_digest_public": false,
+    "private_run_path_or_runner_identity_public": false,
+    "source_location_range_excerpt_or_query_public": false
+  },
+  "remaining_limits": {
+    "future_holdout_authored": false,
+    "future_runtime_qualified": false,
+    "future_tournament_authorized": false,
+    "product_default_changed": false,
+    "production_scale_linux_stress_completed": false,
+    "public_tournament_result_created": false
+  },
+  "repair_checkpoint": {
+    "bilingual_docs_validation_passed": true,
+    "ci_conclusion": "success",
+    "ci_run_id": 29537075918,
+    "deterministic_boundary_tests_per_iteration": 6,
+    "deterministic_process_iterations": 8,
+    "linux_package_tests_passed": true,
+    "package_test_count_per_os": 297,
+    "package_test_os_count": 2,
+    "public_privacy_audit_passed": true,
+    "rustfmt_passed": true,
+    "source_checkpoint": "85f284a5248d5b066e11405a2453c85f84fc1e6a",
+    "warnings_denied_clippy_passed": true,
+    "windows_package_tests_passed": true
+  },
+  "repair_digest": "detrepair_b05b51b37631baa5e7d744be511e3368e4e56bab4f37a0a3cfb8748b853cedeb",
+  "root_cause_classes": {
+    "capped_text_symbol_ast_and_context_seed_paths_inherited_input_order": true,
+    "graph_config_edge_cap_selected_from_unordered_set": true,
+    "persistent_bm25_equal_score_boundary_used_document_address_ties": true,
+    "rrf_containment_transfer_depended_on_unordered_map_iteration": true,
+    "temporary_bm25_equal_score_boundary_used_document_address_ties": true,
+    "terminal_artifact_validation_rebound_historical_source_to_current_head": true
+  },
+  "schema_version": "product_bakeoff_postcloseout_determinism_repair.v1",
+  "status": "product_bakeoff_postcloseout_determinism_repair_complete_no_b25_result_change"
+}

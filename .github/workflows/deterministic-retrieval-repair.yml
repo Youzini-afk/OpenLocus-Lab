@@ -12,6 +12,7 @@ on:
       - 'eval/product_bakeoff_terminal_archive.py'
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
+      - 'eval/product_bakeoff_determinism_repair.py'
       - 'artifacts/product_bakeoff_determinism_repair/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
@@ -30,6 +31,7 @@ on:
       - 'eval/product_bakeoff_terminal_archive.py'
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
+      - 'eval/product_bakeoff_determinism_repair.py'
       - 'artifacts/product_bakeoff_determinism_repair/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
@@ -120,12 +122,18 @@ jobs:
           python3 -m py_compile \
             eval/product_bakeoff_terminal_archive.py \
             eval/product_bakeoff_b25_failure_closeout.py \
-            eval/product_bakeoff_postcloseout_comparability.py
+            eval/product_bakeoff_postcloseout_comparability.py \
+            eval/product_bakeoff_determinism_repair.py
           python3 eval/product_bakeoff_terminal_archive.py --self-test
           python3 eval/product_bakeoff_terminal_archive.py --fault-test
           python3 eval/product_bakeoff_terminal_archive.py --validate b25
           python3 eval/product_bakeoff_postcloseout_comparability.py --self-test
           python3 eval/product_bakeoff_postcloseout_comparability.py --fault-test
+          python3 eval/product_bakeoff_determinism_repair.py --self-test
+          python3 eval/product_bakeoff_determinism_repair.py --fault-test
+          python3 eval/product_bakeoff_determinism_repair.py \
+            --validate-public \
+            artifacts/product_bakeoff_determinism_repair/product_bakeoff_postcloseout_determinism_repair.json
           python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
           python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
           python3 eval/product_bakeoff_b25_failure_closeout.py \
