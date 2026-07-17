@@ -111,7 +111,7 @@ source currentness、记录验证与可评分性、工作区严格性、split-pl
 
 协议自检覆盖 192 条调度行、360 个完整逻辑组和 1,440 个预期观测。它检查 Williams 位置与前序平衡、仓库聚类表述、门槛/评分共用策略、target 数量路由、同分处理、父终态锁，以及零输出与边界后失败的区分。故障注入会拒绝整组缺失、重复 repetition、评分相关漂移、target 数量漂移、父锁漂移、伪重复表述、关闭前序平衡、边界后重试、扩大隐私公开、过度授权执行和 digest 漂移。
 
-公开协议 digest 为 `b3protocol_d823432f1db3dedbf51e344dee25eddf41d67fd4ce33f0f284cae5fed66a3a92`；spec digest 为 `b3spec_bee900dd30fe0ce7`。
+公开协议 digest 为 `b3protocol_d65a62e6755eaac93c1792df906b1d23ade494044d03377c74559c9bddfd2ec9`；spec digest 为 `b3spec_df6c9be0648df4bc`。
 
 ## 剩余限制
 

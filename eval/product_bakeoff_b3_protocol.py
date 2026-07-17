@@ -75,20 +75,20 @@ B3_STATUS = (
 B3_CLAIM_LEVEL = "future_preregistered_design_and_synthetic_selftest_only"
 B3_DATE = "2026-07-17"
 
-B3_PARENT_B25_FAILURE_SHA256 = (
-    "8901b1cfaf7f47f12671e26e7976d1795747ee763128a31f43a75508113e1834"
+B3_PARENT_B25_FAILURE_CANONICAL_SHA256 = (
+    "f1d3d6999e8c3f05cbdd1927b379f97fca7e7a9ca935748dcdecce07b7fd57e7"
 )
 B3_PARENT_B25_FAILURE_DIGEST = (
     "b25failure_012f59fc4d7d717b4f1d4f0da5513430637d4a6cc6eaf8a326a35adc339302fd"
 )
-B3_PARENT_DETERMINISM_REPAIR_SHA256 = (
-    "bfce93f09664f75e4700978a9acbf10f4e8a995155b7426e765699994fca4949"
+B3_PARENT_DETERMINISM_REPAIR_CANONICAL_SHA256 = (
+    "5c282426e24973bff34c63b04012692d0f35add5ee2720d96655b9c8b218b205"
 )
 B3_PARENT_DETERMINISM_REPAIR_DIGEST = (
     "detrepair_b05b51b37631baa5e7d744be511e3368e4e56bab4f37a0a3cfb8748b853cedeb"
 )
-B3_PARENT_DETERMINISM_SCALE_SHA256 = (
-    "830a2e2f727d8668d0af5fca8e513323319349edc93d77022c77a9b080070bf3"
+B3_PARENT_DETERMINISM_SCALE_CANONICAL_SHA256 = (
+    "7929046c49451e7aacfe15a1d27d21b5618dca5f693048362b2c0e375c9b7922"
 )
 B3_PARENT_DETERMINISM_SCALE_DIGEST = (
     "detlinux_b82d0262881b5f2623b866e3f9ea504e68cc591b1c23ac43c20349816af7bcfc"
@@ -331,10 +331,6 @@ def _canonical(value: Any) -> bytes:
 def _prefixed_digest(prefix: str, value: Any, *, length: int | None = None) -> str:
     digest = hashlib.sha256(_canonical(value)).hexdigest()
     return prefix + (digest if length is None else digest[:length])
-
-
-def _file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -717,7 +713,7 @@ def validate_parent_locks(repo_root: Path | None = None) -> list[str]:
     locks = (
         (
             root / B25_FAILURE_PATH.relative_to(REPO),
-            B3_PARENT_B25_FAILURE_SHA256,
+            B3_PARENT_B25_FAILURE_CANONICAL_SHA256,
             "product_bakeoff_b25_failed_closed_aggregate.v1",
             "product_bakeoff_b25_execution_failed_closed_no_result",
             "failure_aggregate_digest",
@@ -725,7 +721,7 @@ def validate_parent_locks(repo_root: Path | None = None) -> list[str]:
         ),
         (
             root / DETERMINISM_REPAIR_PATH.relative_to(REPO),
-            B3_PARENT_DETERMINISM_REPAIR_SHA256,
+            B3_PARENT_DETERMINISM_REPAIR_CANONICAL_SHA256,
             "product_bakeoff_postcloseout_determinism_repair.v1",
             "product_bakeoff_postcloseout_determinism_repair_complete_no_b25_result_change",
             "repair_digest",
@@ -733,22 +729,22 @@ def validate_parent_locks(repo_root: Path | None = None) -> list[str]:
         ),
         (
             root / DETERMINISM_SCALE_PATH.relative_to(REPO),
-            B3_PARENT_DETERMINISM_SCALE_SHA256,
+            B3_PARENT_DETERMINISM_SCALE_CANONICAL_SHA256,
             "product_bakeoff_postcloseout_determinism_linux_scale.v1",
             "product_bakeoff_postcloseout_determinism_linux_scale_complete_no_tournament_authorization",
             "scale_digest",
             B3_PARENT_DETERMINISM_SCALE_DIGEST,
         ),
     )
-    for artifact, sha256, schema, status, digest_key, digest in locks:
+    for artifact, canonical_sha256, schema, status, digest_key, digest in locks:
         try:
             if artifact.is_symlink() or not artifact.is_file():
                 errors.append(f"missing parent public artifact: {artifact.name}")
                 continue
-            if _file_sha256(artifact) != sha256:
-                errors.append(f"parent artifact bytes drifted: {artifact.name}")
-                continue
             value = _load_json(artifact)
+            if hashlib.sha256(_canonical(value)).hexdigest() != canonical_sha256:
+                errors.append(f"parent artifact canonical JSON drifted: {artifact.name}")
+                continue
             if value.get("schema_version") != schema:
                 errors.append(f"parent artifact schema drifted: {artifact.name}")
             if value.get("status") != status:
@@ -786,11 +782,11 @@ def spec_payload() -> dict[str, Any]:
     return {
         "schema_version": B3_SCHEMA_VERSION,
         "parent_locks": {
-            "b25_failure_sha256": B3_PARENT_B25_FAILURE_SHA256,
+            "b25_failure_canonical_sha256": B3_PARENT_B25_FAILURE_CANONICAL_SHA256,
             "b25_failure_digest": B3_PARENT_B25_FAILURE_DIGEST,
-            "determinism_repair_sha256": B3_PARENT_DETERMINISM_REPAIR_SHA256,
+            "determinism_repair_canonical_sha256": B3_PARENT_DETERMINISM_REPAIR_CANONICAL_SHA256,
             "determinism_repair_digest": B3_PARENT_DETERMINISM_REPAIR_DIGEST,
-            "determinism_scale_sha256": B3_PARENT_DETERMINISM_SCALE_SHA256,
+            "determinism_scale_canonical_sha256": B3_PARENT_DETERMINISM_SCALE_CANONICAL_SHA256,
             "determinism_scale_digest": B3_PARENT_DETERMINISM_SCALE_DIGEST,
             "b2_spec_digest": B3_PARENT_B2_SPEC_DIGEST,
             "b2_task_slot_digest": B3_PARENT_B2_TASK_SLOT_DIGEST,

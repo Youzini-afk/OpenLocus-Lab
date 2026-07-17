@@ -111,7 +111,7 @@ Current readiness stops at step 1. The B3 runner and scorer are not yet integrat
 
 The protocol self-test validates 192 schedule rows, 360 complete logical groups, and 1,440 expected observations. It checks Williams position and predecessor balance, repository clustering statements, the shared gate/scorer policy, target-cardinality routing, tie handling, parent terminal locks, and the zero-output versus post-output boundary. Fault injection rejects missing groups, duplicated repetitions, scorer-relevant drift, target-cardinality drift, parent-lock drift, pseudoreplication claims, disabled carryover balance, post-output retry, privacy expansion, execution over-authorization, and digest drift.
 
-The public protocol digest is `b3protocol_d823432f1db3dedbf51e344dee25eddf41d67fd4ce33f0f284cae5fed66a3a92`; the spec digest is `b3spec_bee900dd30fe0ce7`.
+The public protocol digest is `b3protocol_d65a62e6755eaac93c1792df906b1d23ade494044d03377c74559c9bddfd2ec9`; the spec digest is `b3spec_df6c9be0648df4bc`.
 
 ## Remaining limit
 

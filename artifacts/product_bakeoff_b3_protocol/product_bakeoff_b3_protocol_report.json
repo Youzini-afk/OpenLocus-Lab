@@ -144,17 +144,17 @@
   "next_authorized_action": "Keep the server off while implementing the B3 runner/scorer integration and public synthetic qualification locally. After those sources and fault tests are frozen and CI-green, qualify the exact Linux runtime, then author a fresh private holdout. Do not reuse any B2.5 treatment output, private holdout, or launch authorization.",
   "parent_locks": {
     "b21_spec_digest": "b21spec_3d656619189a7531",
+    "b25_failure_canonical_sha256": "f1d3d6999e8c3f05cbdd1927b379f97fca7e7a9ca935748dcdecce07b7fd57e7",
     "b25_failure_digest": "b25failure_012f59fc4d7d717b4f1d4f0da5513430637d4a6cc6eaf8a326a35adc339302fd",
-    "b25_failure_sha256": "8901b1cfaf7f47f12671e26e7976d1795747ee763128a31f43a75508113e1834",
     "b2_spec_digest": "b2spec_358b77c924fbe3f1",
     "b2_task_slot_digest": "b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff",
+    "determinism_repair_canonical_sha256": "5c282426e24973bff34c63b04012692d0f35add5ee2720d96655b9c8b218b205",
     "determinism_repair_digest": "detrepair_b05b51b37631baa5e7d744be511e3368e4e56bab4f37a0a3cfb8748b853cedeb",
-    "determinism_repair_sha256": "bfce93f09664f75e4700978a9acbf10f4e8a995155b7426e765699994fca4949",
-    "determinism_scale_digest": "detlinux_b82d0262881b5f2623b866e3f9ea504e68cc591b1c23ac43c20349816af7bcfc",
-    "determinism_scale_sha256": "830a2e2f727d8668d0af5fca8e513323319349edc93d77022c77a9b080070bf3"
+    "determinism_scale_canonical_sha256": "7929046c49451e7aacfe15a1d27d21b5618dca5f693048362b2c0e375c9b7922",
+    "determinism_scale_digest": "detlinux_b82d0262881b5f2623b866e3f9ea504e68cc591b1c23ac43c20349816af7bcfc"
   },
   "phase": "product_bakeoff_b3_fresh_cluster_aware_williams_tournament_protocol",
-  "protocol_digest": "b3protocol_d823432f1db3dedbf51e344dee25eddf41d67fd4ce33f0f284cae5fed66a3a92",
+  "protocol_digest": "b3protocol_d65a62e6755eaac93c1792df906b1d23ade494044d03377c74559c9bddfd2ec9",
   "publication_policy": {
     "final_arm_aggregate_public_only_after_all_gates": true,
     "intermediate_arm_quality_resource_or_ranking_metric_public": false,
@@ -255,7 +255,7 @@
     ]
   },
   "schema_version": "product_bakeoff_b3_protocol_report.v1",
-  "source_bundle_digest": "b3src_b7ba85bab40e2b33ad5b80bc01972186d2ce6117b3b674f80907ee7d7d277cac",
-  "spec_digest": "b3spec_bee900dd30fe0ce7",
+  "source_bundle_digest": "b3src_6fbff8a5fd8804fd24833bf8a9bf296c8a1b17a2bf471155e5beb81e362d20c5",
+  "spec_digest": "b3spec_df6c9be0648df4bc",
   "status": "product_bakeoff_b3_protocol_frozen_no_runtime_no_holdout_no_execution_no_result"
 }
