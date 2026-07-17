@@ -1,6 +1,6 @@
 # Product Bakeoff B3 Offline Control Plane
 
-Date: 2026-07-17
+Date: 2026-07-18
 
 Status: `product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification`
 
@@ -14,9 +14,13 @@ B3 does not require the identity of a historical server. The current Linux runne
 
 The exact current profile and CLI bytes are written only to a private receipt. The public report contains the minimum class, aggregate pass/fail gates, case categories, and zero-provider-call result. Before authoring, freezing, and formal RUN admission, the current profile is collected again and compared exactly on the frozen stable fields while transient available-memory, free-space, and idle-load values are separately rechecked against minimum gates.
 
+B3 no longer inherits the historical 300 GiB scratch floor. Its scratch gate is derived from the actual serial peak: six byte-identical arm snapshots of the largest permitted visible repository, a four-times snapshot/index allowance, 4 GiB of checkpoint/control margin, 4 GiB of filesystem safety margin, and 2 GiB of rounding/measurement margin. This yields a 16 GiB minimum free-scratch gate. All non-storage B2.3 runner gates remain unchanged. Candidate clones are checkpointed separately and are not converted into a speculative fixed scratch reservation.
+
 ## Fresh holdout and readiness
 
 The candidate plan must exclude the disjoint B2, B2.1, B2.4, and B2.5 repository frames: 48 historical repository slugs and identity/commit pairs in total. It must also exclude every registered real preflight source and synthetic qualification source. Each of the 12 repository slots requires at least two unique frozen candidates before authoring.
+
+Authoring now writes one durable checkpoint per completed repository slot. A resumed authoring pass validates the slot-local candidate-plan digest, selected candidate index, repository/license binding, exact Git commit, clean tracked worktree, and four authored task drafts before it skips that slot. A prior clone may be reused only at the exact frozen slot/index/repository location and is put through the complete admission and source scan again. If cache integrity fails, the same candidate is cloned afresh before the next candidate can be considered. Therefore interruption, damaged cache, or a late candidate replacement no longer discards unrelated completed work or changes selection order, while eligibility rules, selected commits, final 12-repository frame, and all 48 tasks remain unchanged.
 
 The private holdout binding covers the selected repository lock, 48 tasks, 48 oracle rows, source-only tokenizer compatibility report, candidate plan, four historical locks, exclusion registry, exact runtime qualification, CLI bytes, B3 Williams schedule, complete 360-group/1,440-observation plan, and shared repeatability policy. Freeze output is exclusive and durably written.
 
@@ -42,6 +46,6 @@ Pre-boundary zero-observation work state is only audited as potentially recovera
 
 ## Validation and next action
 
-Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
+Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, the computed scratch budget, removal of the inherited 300 GiB floor, verified-cache reuse without recloning, checkpoint resume without repeated authoring, checkpoint source/plan drift rejection, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
 
 No exact Linux runtime is qualified yet, no B3 private holdout exists, no launch authorization exists, and the attempt boundary has not been crossed. After this control-plane checkpoint and public CI are green, the server should be started for the exact Linux qualification. Private authoring remains forbidden until the aggregate qualification itself is committed and CI-green.

@@ -94,7 +94,7 @@ def build_report() -> dict[str, Any]:
         "phase": "product_bakeoff_b3_offline_control_plane_integration",
         "status": B3_CONTROL_STATUS,
         "claim_level": "engineering_and_synthetic_fault_tests_only_no_private_input",
-        "date": "2026-07-17",
+        "date": "2026-07-18",
         "parent_engine": {
             "integration_digest": parent["integration_digest"],
             "canonical_sha256": hashlib.sha256(_canonical(parent)).hexdigest(),
@@ -114,6 +114,9 @@ def build_report() -> dict[str, Any]:
             "historical_machine_identity_dependency_removed": True,
             "aggregate_runtime_qualification_publication": True,
             "private_holdout_authoring_binding_and_freeze": True,
+            "per_slot_authoring_checkpoints_and_deterministic_resume": True,
+            "verified_prior_clone_cache_without_slot_reselection": True,
+            "serial_peak_working_set_scratch_capacity_policy": True,
             "aggregate_readiness_publication": True,
             "green_readiness_ci_bound_private_launch_authorization": True,
             "disconnect_safe_worker_admission_and_release": True,
@@ -136,6 +139,9 @@ def build_report() -> dict[str, Any]:
             "persisted_observation_without_receipt_crosses_boundary": True,
             "boundary_receipt_without_observation_rejected": True,
             "b25_repository_reuse_rejected": True,
+            "author_checkpoint_candidate_plan_drift_rejected": True,
+            "invalid_cache_reclone_preserves_candidate_order": True,
+            "legacy_300_gib_scratch_floor_not_inherited_by_b3": True,
             "public_failure_contains_no_arm_quality_resource_or_rank_metrics": True,
         },
         "implementation_readiness": {

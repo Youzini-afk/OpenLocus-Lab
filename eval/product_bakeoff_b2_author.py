@@ -713,57 +713,151 @@ def _validate_candidate_plan(raw: Any) -> list[dict[str, Any]]:
     return raw["slots"]
 
 
-def _prepare_one_repo(
-    *, repo_slot: str, candidates: Sequence[Mapping[str, str]], clone_root: Path,
+def _candidate_destination(
+    clone_root: Path,
+    *,
+    repo_slot: str,
+    candidate_index: int,
+    repo_slug: str,
+) -> Path:
+    safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "__", repo_slug)
+    return Path(clone_root) / f"{repo_slot}__{candidate_index:02d}__{safe_name}"
+
+
+def _author_existing_candidate(
+    *,
+    repo_slot: str,
+    candidate: Mapping[str, str],
+    root: Path,
 ) -> AuthoredRepo:
     slot = next(slot for slot in build_task_slots() if slot.repo_slot == repo_slot)
+    repo_slug = candidate["repo"]
+    root = Path(root)
+
+    commit = _require_candidate_checkout_integrity(root)
+    detected = detect_license(str(root))
+    mismatch = check_license(detected, candidate["expected_license"])
+    if mismatch:
+        raise B2AuthorError(mismatch)
+    records = scan_repository(root)
+    low, _ = B2_SIZE_BAND_VISIBLE_BYTES[slot.size_band]
+    if sum(row.bytes for row in records) < low:
+        raise B2AuthorError("eligible visible source is below size-band lower bound")
+    drafts, exclusions = _build_drafts(
+        repo_slot=repo_slot,
+        language=slot.language,
+        size_band=slot.size_band,
+        repo_slug=repo_slug,
+        records=records,
+        root=root,
+    )
+    selected = _select_visible_files(
+        records=records,
+        drafts=drafts,
+        exclusions=exclusions,
+        language=slot.language,
+        size_band=slot.size_band,
+        repo_slot=repo_slot,
+    )
+    repo_row = {
+        "repo_slot": repo_slot,
+        "language": slot.language,
+        "size_band": slot.size_band,
+        "source": {
+            "type": "github_public",
+            "repo": repo_slug,
+            "clone_root": str(root.resolve()),
+        },
+        "commit": commit,
+        "license": {
+            "detected": sorted(set(detected)),
+            "expected": candidate["expected_license"],
+        },
+        "visible": {
+            "file_count": len(selected),
+            "bytes": sum(row.bytes for row in selected),
+            "manifest_digest": visible_manifest_digest(selected),
+            "files": [row.to_dict() for row in selected],
+        },
+    }
+    return AuthoredRepo(repo_row=repo_row, drafts=drafts)
+
+
+def _require_candidate_checkout_integrity(root: Path) -> str:
+    root = Path(root)
+    if root.is_symlink() or not root.is_dir():
+        raise B2AuthorError("candidate checkout is missing or unsafe")
+    commit = git_commit(root)
+    require_git_worktree_clean(root)
+    return commit
+
+
+def _prepare_one_repo(
+    *,
+    repo_slot: str,
+    candidates: Sequence[Mapping[str, str]],
+    clone_root: Path,
+    cache_clone_roots: Sequence[Path] = (),
+) -> AuthoredRepo:
     failures: list[str] = []
+    checked_cache_roots = tuple(Path(root) for root in cache_clone_roots)
+    for cache_root in checked_cache_roots:
+        if cache_root.is_symlink() or not cache_root.is_dir():
+            raise B2AuthorError("candidate cache directory is missing or unsafe")
     for index, candidate in enumerate(candidates, start=1):
         repo_slug = candidate["repo"]
-        safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "__", repo_slug)
-        destination = clone_root / f"{repo_slot}__{index:02d}__{safe_name}"
+        destination = _candidate_destination(
+            clone_root,
+            repo_slot=repo_slot,
+            candidate_index=index,
+            repo_slug=repo_slug,
+        )
+        cached = next(
+            (
+                _candidate_destination(
+                    root,
+                    repo_slot=repo_slot,
+                    candidate_index=index,
+                    repo_slug=repo_slug,
+                )
+                for root in checked_cache_roots
+                if _candidate_destination(
+                    root,
+                    repo_slot=repo_slot,
+                    candidate_index=index,
+                    repo_slug=repo_slug,
+                ).is_dir()
+            ),
+            None,
+        )
+        if cached is not None:
+            try:
+                _require_candidate_checkout_integrity(cached)
+            except (B2AuthorError, B2CorpusError, OSError, ValueError) as exc:
+                failures.append(
+                    f"candidate_{index}_cache_integrity:"
+                    f"{type(exc).__name__}:{str(exc)[:180]}"
+                )
+            else:
+                try:
+                    return _author_existing_candidate(
+                        repo_slot=repo_slot,
+                        candidate=candidate,
+                        root=cached,
+                    )
+                except (B2AuthorError, B2CorpusError, OSError, ValueError) as exc:
+                    failures.append(
+                        f"candidate_{index}_cache:"
+                        f"{type(exc).__name__}:{str(exc)[:180]}"
+                    )
+                    continue
         try:
             root = clone_public_repo(repo_slug, destination)
-            commit = git_commit(root)
-            require_git_worktree_clean(root)
-            detected = detect_license(str(root))
-            mismatch = check_license(detected, candidate["expected_license"])
-            if mismatch:
-                raise B2AuthorError(mismatch)
-            records = scan_repository(root)
-            low, _ = B2_SIZE_BAND_VISIBLE_BYTES[slot.size_band]
-            if sum(row.bytes for row in records) < low:
-                raise B2AuthorError("eligible visible source is below size-band lower bound")
-            drafts, exclusions = _build_drafts(
-                repo_slot=repo_slot, language=slot.language, size_band=slot.size_band,
-                repo_slug=repo_slug, records=records, root=root,
+            return _author_existing_candidate(
+                repo_slot=repo_slot,
+                candidate=candidate,
+                root=root,
             )
-            selected = _select_visible_files(
-                records=records, drafts=drafts, exclusions=exclusions,
-                language=slot.language, size_band=slot.size_band, repo_slot=repo_slot,
-            )
-            repo_row = {
-                "repo_slot": repo_slot,
-                "language": slot.language,
-                "size_band": slot.size_band,
-                "source": {
-                    "type": "github_public",
-                    "repo": repo_slug,
-                    "clone_root": str(root.resolve()),
-                },
-                "commit": commit,
-                "license": {
-                    "detected": sorted(set(detected)),
-                    "expected": candidate["expected_license"],
-                },
-                "visible": {
-                    "file_count": len(selected),
-                    "bytes": sum(row.bytes for row in selected),
-                    "manifest_digest": visible_manifest_digest(selected),
-                    "files": [row.to_dict() for row in selected],
-                },
-            }
-            return AuthoredRepo(repo_row=repo_row, drafts=drafts)
         except (B2AuthorError, B2CorpusError, OSError, ValueError) as exc:
             failures.append(f"candidate_{index}:{type(exc).__name__}:{str(exc)[:180]}")
     raise B2AuthorError(
@@ -771,21 +865,14 @@ def _prepare_one_repo(
     )
 
 
-def prepare_private_manifests(
-    *, candidate_plan: Path, private_root: Path,
-) -> dict[str, Any]:
-    """Clone/audit 12 repos and freeze repo/task/oracle manifests."""
-    slots = _validate_candidate_plan(load_json(candidate_plan))
-    private_root.mkdir(parents=True, exist_ok=True)
-    clone_root = private_root / "clones"
-    authored: list[AuthoredRepo] = []
-    for slot_row in slots:
-        authored.append(_prepare_one_repo(
-            repo_slot=slot_row["repo_slot"],
-            candidates=slot_row["candidates"],
-            clone_root=clone_root,
-        ))
-    authored.sort(key=lambda item: item.repo_row["repo_slot"])
+def _build_manifest_payloads(
+    authored_repositories: Sequence[AuthoredRepo],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    authored = sorted(
+        authored_repositories, key=lambda item: item.repo_row["repo_slot"]
+    )
+    if len(authored) != len({slot.repo_slot for slot in build_task_slots()}):
+        raise B2AuthorError("authored repository slot count drift")
 
     repo_lock: dict[str, Any] = {
         "schema_version": B2_REPO_LOCK_SCHEMA,
@@ -833,6 +920,24 @@ def prepare_private_manifests(
         oracle_manifest, tasks=tasks, repo_lock=repo_lock,
         task_manifest_digest=task_manifest["task_manifest_digest"],
     )
+    return repo_lock, task_manifest, oracle_manifest
+
+
+def prepare_private_manifests(
+    *, candidate_plan: Path, private_root: Path,
+) -> dict[str, Any]:
+    """Clone/audit 12 repos and freeze repo/task/oracle manifests."""
+    slots = _validate_candidate_plan(load_json(candidate_plan))
+    private_root.mkdir(parents=True, exist_ok=True)
+    clone_root = private_root / "clones"
+    authored: list[AuthoredRepo] = []
+    for slot_row in slots:
+        authored.append(_prepare_one_repo(
+            repo_slot=slot_row["repo_slot"],
+            candidates=slot_row["candidates"],
+            clone_root=clone_root,
+        ))
+    repo_lock, task_manifest, oracle_manifest = _build_manifest_payloads(authored)
 
     repo_path = private_root / "b2_private_repo_lock.json"
     task_path = private_root / "b2_private_task_manifest.json"
@@ -849,7 +954,7 @@ def prepare_private_manifests(
         "task_manifest_digest": task_manifest["task_manifest_digest"],
         "oracle_manifest_digest": oracle_manifest["oracle_manifest_digest"],
         "repo_count": len(repo_lock["repos"]),
-        "task_count": len(tasks),
+        "task_count": len(task_manifest["tasks"]),
     }
 
 

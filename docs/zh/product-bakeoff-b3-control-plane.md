@@ -1,6 +1,6 @@
 # 产品栈对比 B3 离线控制平面
 
-日期：2026-07-17
+日期：2026-07-18
 
 状态：`product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification`
 
@@ -14,9 +14,13 @@ B3 不再依赖任何历史服务器的机器身份。当前 Linux runner 必须
 
 当前机器的精确 profile 和 CLI 字节只写入私有 receipt。公开报告只包含最低资源级别、聚合门槛、用例类别和零 provider 调用结果。在 authoring、freeze 和正式 RUN admission 前，系统都会重新采集当前 profile：稳定字段必须与 qualification 时完全一致，而可用内存、剩余空间和空闲负载等瞬时值则重新通过最低门槛。
 
+B3 不再继承历史的 300 GiB scratch 下限。新的 scratch 门槛由实际串行峰值计算：最大允许可见仓库的六份逐字节一致实验臂快照、四倍快照/索引余量、4 GiB checkpoint/控制余量、4 GiB 文件系统安全余量，以及 2 GiB 取整/测量余量，最终得到 16 GiB 最低剩余 scratch 门槛。B2.3 的所有非存储 runner 门槛保持不变。候选克隆单独采用 checkpoint 管理，不再被换算成臆测的固定 scratch 预留。
+
 ## 全新留出集与 readiness
 
 候选计划必须排除互不重叠的 B2、B2.1、B2.4 和 B2.5 仓库帧，总计 48 个历史仓库 slug 与 identity/commit 对；同时排除所有登记过的真实 preflight 来源和合成 qualification 来源。12 个仓库槽位中的每一个都必须在 authoring 前冻结至少两个互不重复的候选。
+
+Authoring 现在会为每个已完成仓库槽位写入一份持久化 checkpoint。恢复时，只有槽位局部候选计划 digest、所选候选序号、仓库/许可证绑定、精确 Git commit、已跟踪工作树整洁性以及四份任务草稿全部验证通过，才会跳过该槽位。旧克隆也只有在冻结的槽位/序号/仓库位置完全匹配时才可复用，并且仍会重新执行完整准入和源代码扫描；若缓存完整性不合格，必须先重新克隆同一候选，之后才允许考察下一个候选。因此，中断、缓存损坏或后续只替换一个失败候选时，不再丢弃其他已完成工作，也不会改变选择顺序；合格规则、所选 commit、最终 12 仓库帧和全部 48 个任务均不改变。
 
 私有 holdout binding 覆盖所选仓库锁、48 个任务、48 条 oracle、仅源代码 tokenizer compatibility 报告、候选计划、四份历史锁、排除登记表、精确 runtime qualification、CLI 字节、B3 Williams 调度、完整的 360 组 / 1,440 观测计划，以及共用重复性策略。freeze 输出采用排他、持久化写入。
 
@@ -42,6 +46,6 @@ Linux launcher 使用 `nohup`、PID 文件、退出码文件、私有日志、wo
 
 ## 验证与下一步
 
-跨模块 self-test 和 fault-test 覆盖：源代码闭包、runtime 公开/私有 schema、48 个历史仓库排除、readiness 隐私、成功/失败发布、hook 恢复、只有 release 没有观测、已有观测但缺 receipt 的重建、只有 receipt 没有观测的拒绝，以及边界后禁止重试。Linux launcher 另行通过 13 步握手及重启/PID 复用身份测试。
+跨模块 self-test 和 fault-test 覆盖：源代码闭包、runtime 公开/私有 schema、计算得到的 scratch 预算、取消继承 300 GiB 下限、验证缓存复用且不重新克隆、checkpoint 恢复且不重复 authoring、checkpoint 源/计划漂移拒绝、48 个历史仓库排除、readiness 隐私、成功/失败发布、hook 恢复、只有 release 没有观测、已有观测但缺 receipt 的重建、只有 receipt 没有观测的拒绝，以及边界后禁止重试。Linux launcher 另行通过 13 步握手及重启/PID 复用身份测试。
 
 当前尚未 qualification 精确 Linux runtime，尚无 B3 私有留出集、launch authorization 或正式尝试。只有本控制平面检查点及公开 CI 通过后，才应开启服务器执行精确 Linux qualification；该聚合 qualification 自身提交并通过 CI 之前，仍禁止私有 authoring。

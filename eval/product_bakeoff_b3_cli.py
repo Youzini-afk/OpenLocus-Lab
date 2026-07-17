@@ -73,6 +73,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
     prepare = sub.add_parser("prepare-holdout")
     _add_frozen_inputs(prepare)
+    prepare.add_argument(
+        "--authoring-cache-root",
+        type=Path,
+        action="append",
+        default=[],
+        help="Prior private authoring root or clones directory to revalidate as cache",
+    )
 
     freeze = sub.add_parser("freeze-holdout")
     _add_frozen_inputs(freeze)
@@ -187,12 +194,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return 0
         if args.command == "prepare-holdout":
-            result = b3c.prepare_fresh_holdout(**_frozen_kwargs(args))
+            result = b3c.prepare_fresh_holdout(
+                **_frozen_kwargs(args),
+                authoring_cache_roots=tuple(args.authoring_cache_root),
+            )
             _print(
                 {
                     "status": "private_holdout_authored",
                     "repository_count": result["repo_count"],
                     "logical_task_count": result["task_count"],
+                    "checkpoint_count": result["checkpoint_count"],
+                    "resumed_checkpoint_count": result[
+                        "resumed_checkpoint_count"
+                    ],
                     "private_paths_or_digests_printed": False,
                 }
             )

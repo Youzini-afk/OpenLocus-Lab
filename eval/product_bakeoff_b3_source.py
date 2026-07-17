@@ -19,7 +19,7 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 
-B3_CONTROL_SOURCE_VERSION = "product_bakeoff_b3_control_source.v1"
+B3_CONTROL_SOURCE_VERSION = "product_bakeoff_b3_control_source.v2"
 B3_CONTROL_SOURCE_PATHS = (
     ".github/workflows/product-bakeoff-b3-control.yml",
     "Cargo.lock",

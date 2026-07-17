@@ -16,7 +16,7 @@ import re
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 import product_bakeoff_b2_corpus as b2c
 import product_bakeoff_b2_protocol as b2p
@@ -41,6 +41,8 @@ B3_FREEZE_RECEIPT_SCHEMA = "product_bakeoff_b3_private_freeze_receipt.v1"
 B3_LAUNCH_AUTHORIZATION_SCHEMA = (
     "product_bakeoff_b3_private_launch_authorization.v1"
 )
+B3_AUTHOR_CHECKPOINT_SCHEMA = "product_bakeoff_b3_author_slot_checkpoint.v1"
+B3_AUTHOR_COMPLETE_SCHEMA = "product_bakeoff_b3_author_complete.v1"
 B3_HISTORICAL_FRAME_LABELS = ("b2", "b21", "b24", "b25")
 
 
@@ -124,6 +126,37 @@ def _write_private_json_exclusive(path: Path, value: Mapping[str, Any]) -> None:
         temporary.chmod(0o600)
         if os.path.lexists(target):
             raise B3CorpusError("private B3 output appeared concurrently")
+        os.replace(temporary, target)
+        if os.name != "nt":
+            directory_fd = os.open(parent, os.O_RDONLY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
+def _write_private_json_replace(path: Path, value: Mapping[str, Any]) -> None:
+    """Durably replace a derived private JSON file with canonical bytes."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    parent = path.parent.resolve(strict=True)
+    target = parent / path.name
+    if target.is_symlink():
+        raise B3CorpusError(f"private B3 output is an unsafe link: {path.name}")
+    raw = (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    descriptor, temporary_raw = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=parent
+    )
+    temporary = Path(temporary_raw)
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(raw)
+            handle.flush()
+            os.fsync(handle.fileno())
+        temporary.chmod(0o600)
         os.replace(temporary, target)
         if os.name != "nt":
             directory_fd = os.open(parent, os.O_RDONLY)
@@ -272,6 +305,263 @@ def validate_fresh_candidate_plan(
     return tuple(candidates)
 
 
+def _slot_candidate_digest(slot: Mapping[str, Any]) -> str:
+    return _digest(
+        "b3slotplan_",
+        {
+            "repo_slot": slot["repo_slot"],
+            "candidates": list(slot["candidates"]),
+        },
+    )
+
+
+def _author_checkpoint_digest(checkpoint: Mapping[str, Any]) -> str:
+    payload = dict(checkpoint)
+    payload.pop("checkpoint_digest", None)
+    return _digest("b3authorcp_", payload)
+
+
+def _draft_to_dict(draft: Any) -> dict[str, Any]:
+    return {
+        "slot_id": draft.slot_id,
+        "repo_slot": draft.repo_slot,
+        "language": draft.language,
+        "size_band": draft.size_band,
+        "role": draft.role,
+        "task_family": draft.task_family,
+        "interaction_mode": draft.interaction_mode,
+        "oracle_kind": draft.oracle_kind,
+        "query": draft.query,
+        "positives": [span.to_dict() for span in draft.positives],
+        "negatives": [span.to_dict() for span in draft.negatives],
+        "support": [relation.to_dict() for relation in draft.support],
+    }
+
+
+def _draft_from_dict(author: Any, raw: Any) -> Any:
+    expected = {
+        "slot_id",
+        "repo_slot",
+        "language",
+        "size_band",
+        "role",
+        "task_family",
+        "interaction_mode",
+        "oracle_kind",
+        "query",
+        "positives",
+        "negatives",
+        "support",
+    }
+    if not isinstance(raw, dict) or set(raw) != expected:
+        raise B3CorpusError("B3 author checkpoint draft shape drifted")
+    try:
+        return author.TaskDraft(
+            slot_id=raw["slot_id"],
+            repo_slot=raw["repo_slot"],
+            language=raw["language"],
+            size_band=raw["size_band"],
+            role=raw["role"],
+            task_family=raw["task_family"],
+            interaction_mode=raw["interaction_mode"],
+            oracle_kind=raw["oracle_kind"],
+            query=raw["query"],
+            positives=tuple(author.B2Span.from_dict(row) for row in raw["positives"]),
+            negatives=tuple(author.B2Span.from_dict(row) for row in raw["negatives"]),
+            support=tuple(
+                author.B2SupportRelation.from_dict(row) for row in raw["support"]
+            ),
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise B3CorpusError("B3 author checkpoint draft is invalid") from exc
+
+
+def _build_author_checkpoint(
+    *,
+    author: Any,
+    slot: Mapping[str, Any],
+    authored: Any,
+) -> dict[str, Any]:
+    source = authored.repo_row.get("source") or {}
+    selected_repo = source.get("repo")
+    selected = [
+        index
+        for index, candidate in enumerate(slot["candidates"], start=1)
+        if candidate["repo"] == selected_repo
+    ]
+    if len(selected) != 1:
+        raise B3CorpusError("B3 authored repository is absent from its frozen slot")
+    checkpoint: dict[str, Any] = {
+        "schema_version": B3_AUTHOR_CHECKPOINT_SCHEMA,
+        "repo_slot": slot["repo_slot"],
+        "slot_candidate_digest": _slot_candidate_digest(slot),
+        "selected_candidate_index": selected[0],
+        "repo_row": authored.repo_row,
+        "drafts": [_draft_to_dict(draft) for draft in authored.drafts],
+        "checkpoint_digest": "",
+    }
+    checkpoint["checkpoint_digest"] = _author_checkpoint_digest(checkpoint)
+    return checkpoint
+
+
+def _validate_author_checkpoint(
+    *,
+    author: Any,
+    raw: Any,
+    slot: Mapping[str, Any],
+) -> Any:
+    expected = {
+        "schema_version",
+        "repo_slot",
+        "slot_candidate_digest",
+        "selected_candidate_index",
+        "repo_row",
+        "drafts",
+        "checkpoint_digest",
+    }
+    if not isinstance(raw, dict) or set(raw) != expected:
+        raise B3CorpusError("B3 author checkpoint shape drifted")
+    if raw["schema_version"] != B3_AUTHOR_CHECKPOINT_SCHEMA:
+        raise B3CorpusError("B3 author checkpoint schema drifted")
+    if raw["repo_slot"] != slot["repo_slot"]:
+        raise B3CorpusError("B3 author checkpoint slot drifted")
+    if raw["slot_candidate_digest"] != _slot_candidate_digest(slot):
+        raise B3CorpusError("B3 author checkpoint candidate plan drifted")
+    if raw["checkpoint_digest"] != _author_checkpoint_digest(raw):
+        raise B3CorpusError("B3 author checkpoint digest drifted")
+    selected = raw["selected_candidate_index"]
+    if not isinstance(selected, int) or isinstance(selected, bool):
+        raise B3CorpusError("B3 author checkpoint selected candidate is invalid")
+    if not 1 <= selected <= len(slot["candidates"]):
+        raise B3CorpusError("B3 author checkpoint selected candidate is out of range")
+    repo_row = raw["repo_row"]
+    if not isinstance(repo_row, dict) or repo_row.get("repo_slot") != slot["repo_slot"]:
+        raise B3CorpusError("B3 author checkpoint repository row drifted")
+    source = repo_row.get("source") or {}
+    candidate = slot["candidates"][selected - 1]
+    if source.get("repo") != candidate["repo"]:
+        raise B3CorpusError("B3 author checkpoint repository identity drifted")
+    if (repo_row.get("license") or {}).get("expected") != candidate[
+        "expected_license"
+    ]:
+        raise B3CorpusError("B3 author checkpoint license binding drifted")
+    clone_root = Path(str(source.get("clone_root", "")))
+    if (
+        clone_root.is_symlink()
+        or not clone_root.is_dir()
+        or _paths_overlap(clone_root, REPO)
+    ):
+        raise B3CorpusError("B3 author checkpoint clone root is unsafe")
+    try:
+        if b2c.git_commit(clone_root) != repo_row.get("commit"):
+            raise B3CorpusError("B3 author checkpoint commit drifted")
+        b2c.require_git_worktree_clean(clone_root)
+        drafts = tuple(_draft_from_dict(author, row) for row in raw["drafts"])
+    except b2c.B2CorpusError as exc:
+        raise B3CorpusError("B3 author checkpoint source drifted") from exc
+    if len(drafts) != 4 or any(draft.repo_slot != slot["repo_slot"] for draft in drafts):
+        raise B3CorpusError("B3 author checkpoint task count drifted")
+    return author.AuthoredRepo(repo_row=repo_row, drafts=drafts)
+
+
+def _normalize_cache_clone_roots(
+    roots: Sequence[Path], *, private_root: Path
+) -> tuple[Path, ...]:
+    normalized: list[Path] = []
+    for supplied in roots:
+        root = Path(supplied)
+        candidate = root / "clones" if (root / "clones").is_dir() else root
+        if (
+            candidate.is_symlink()
+            or not candidate.is_dir()
+            or _paths_overlap(candidate, REPO)
+            or _paths_overlap(candidate, private_root)
+        ):
+            raise B3CorpusError("B3 authoring cache root is missing or unsafe")
+        resolved = candidate.resolve(strict=True)
+        if resolved not in normalized:
+            normalized.append(resolved)
+    return tuple(normalized)
+
+
+def _prepare_checkpointed_manifests(
+    *,
+    author: Any,
+    slots: Sequence[Mapping[str, Any]],
+    private_root: Path,
+    cache_clone_roots: Sequence[Path],
+) -> dict[str, Any]:
+    private_root.mkdir(parents=True, exist_ok=True)
+    clone_root = private_root / "clones"
+    checkpoints = private_root / "authoring_checkpoints"
+    clone_root.mkdir(exist_ok=True)
+    checkpoints.mkdir(exist_ok=True)
+    authored: list[Any] = []
+    resumed = 0
+    for slot in slots:
+        checkpoint_path = checkpoints / f"{slot['repo_slot']}.json"
+        if checkpoint_path.is_file() and not checkpoint_path.is_symlink():
+            authored.append(
+                _validate_author_checkpoint(
+                    author=author,
+                    raw=b2c.load_json(checkpoint_path),
+                    slot=slot,
+                )
+            )
+            resumed += 1
+            continue
+        if os.path.lexists(checkpoint_path):
+            raise B3CorpusError("B3 author checkpoint path is unsafe")
+        prepared = author._prepare_one_repo(
+            repo_slot=slot["repo_slot"],
+            candidates=slot["candidates"],
+            clone_root=clone_root,
+            cache_clone_roots=cache_clone_roots,
+        )
+        checkpoint = _build_author_checkpoint(
+            author=author,
+            slot=slot,
+            authored=prepared,
+        )
+        _write_private_json_exclusive(checkpoint_path, checkpoint)
+        authored.append(prepared)
+    repo_lock, task_manifest, oracle_manifest = author._build_manifest_payloads(authored)
+    repo_path = private_root / "b2_private_repo_lock.json"
+    task_path = private_root / "b2_private_task_manifest.json"
+    oracle_path = private_root / "b2_private_oracle_manifest.json"
+    _write_private_json_replace(repo_path, repo_lock)
+    _write_private_json_replace(task_path, task_manifest)
+    _write_private_json_replace(oracle_path, oracle_manifest)
+    complete = {
+        "schema_version": B3_AUTHOR_COMPLETE_SCHEMA,
+        "checkpoint_count": len(slots),
+        "repo_lock_digest": repo_lock["repo_lock_digest"],
+        "task_manifest_digest": task_manifest["task_manifest_digest"],
+        "oracle_manifest_digest": oracle_manifest["oracle_manifest_digest"],
+        "authoring_complete_digest": "",
+    }
+    complete["authoring_complete_digest"] = _digest("b3author_", complete)
+    complete_path = private_root / "b3_private_authoring_complete.json"
+    if complete_path.is_file() and not complete_path.is_symlink():
+        if b2c.load_json(complete_path) != complete:
+            raise B3CorpusError("B3 author completion receipt drifted")
+    else:
+        _write_private_json_exclusive(complete_path, complete)
+    return {
+        "author_version": author.B2_AUTHOR_VERSION,
+        "repo_lock_path": str(repo_path.resolve()),
+        "task_manifest_path": str(task_path.resolve()),
+        "oracle_manifest_path": str(oracle_path.resolve()),
+        "repo_lock_digest": repo_lock["repo_lock_digest"],
+        "task_manifest_digest": task_manifest["task_manifest_digest"],
+        "oracle_manifest_digest": oracle_manifest["oracle_manifest_digest"],
+        "repo_count": len(repo_lock["repos"]),
+        "task_count": len(task_manifest["tasks"]),
+        "checkpoint_count": len(slots),
+        "resumed_checkpoint_count": resumed,
+    }
+
+
 def holdout_binding_digest(binding: Mapping[str, Any]) -> str:
     payload = dict(binding)
     payload.pop("holdout_binding_digest", None)
@@ -418,11 +708,26 @@ def prepare_fresh_holdout(
     runtime_publication_ci_run_id: int,
     runtime_publication_ci_conclusion: str,
     cli_path: Path,
+    authoring_cache_roots: Sequence[Path] = (),
 ) -> dict[str, Any]:
     private_root = Path(private_root)
     validate_private_layout(private_root, runtime_scratch)
-    if private_root.exists() and any(private_root.iterdir()):
-        raise B3CorpusError("B3 private root must be absent or empty before authoring")
+    allowed_private_entries = {
+        "clones",
+        "authoring_checkpoints",
+        "b2_private_repo_lock.json",
+        "b2_private_task_manifest.json",
+        "b2_private_oracle_manifest.json",
+        "b3_private_authoring_complete.json",
+        "b3_private_query_compatibility.json",
+        "b3_private_holdout_binding.json",
+    }
+    if private_root.exists():
+        if private_root.is_symlink() or not private_root.is_dir():
+            raise B3CorpusError("B3 private root is missing or unsafe")
+        unexpected = {path.name for path in private_root.iterdir()} - allowed_private_entries
+        if unexpected:
+            raise B3CorpusError("B3 private root contains unexpected authoring state")
     validate_publication_gate(
         artifact_path=runtime_public_path,
         checkpoint=runtime_publication_checkpoint,
@@ -460,8 +765,16 @@ def prepare_fresh_holdout(
     author = importlib.import_module("product_bakeoff_b2_author")
     if getattr(author, "B2_CANDIDATE_PLAN_SCHEMA", None) != B3_CANDIDATE_PLAN_SCHEMA:
         raise B3CorpusError("candidate plan schema drifted from frozen author")
-    result = author.prepare_private_manifests(
-        candidate_plan=candidate_plan_path, private_root=private_root
+    slots = author._validate_candidate_plan(candidate_plan)
+    cache_clone_roots = _normalize_cache_clone_roots(
+        authoring_cache_roots,
+        private_root=private_root,
+    )
+    result = _prepare_checkpointed_manifests(
+        author=author,
+        slots=slots,
+        private_root=private_root,
+        cache_clone_roots=cache_clone_roots,
     )
     repo_path = private_root / "b2_private_repo_lock.json"
     task_path = private_root / "b2_private_task_manifest.json"
@@ -473,7 +786,11 @@ def prepare_fresh_holdout(
         task_manifest=b2c.load_json(task_path),
         oracle_manifest=b2c.load_json(oracle_path),
     )
-    b25q.write_private_report(query_path, query_report)
+    if query_path.is_file() and not query_path.is_symlink():
+        if b2c.load_json(query_path) != query_report:
+            raise B3CorpusError("B3 private query compatibility report drifted")
+    else:
+        b25q.write_private_report(query_path, query_report)
     binding = build_holdout_binding(
         new_repo_lock=b2c.load_json(repo_path),
         new_task_manifest=b2c.load_json(task_path),
@@ -494,7 +811,11 @@ def prepare_fresh_holdout(
         runtime_publication_ci_run_id=runtime_publication_ci_run_id,
         runtime_publication_ci_conclusion=runtime_publication_ci_conclusion,
     )
-    _write_private_json_exclusive(binding_path, binding)
+    if binding_path.is_file() and not binding_path.is_symlink():
+        if b2c.load_json(binding_path) != binding:
+            raise B3CorpusError("B3 private holdout binding drifted")
+    else:
+        _write_private_json_exclusive(binding_path, binding)
     return {
         **result,
         "repo_count": 12,
@@ -1151,6 +1472,180 @@ def run_self_test() -> dict[str, Any]:
             )
         finally:
             globals()["validate_publication_gate"] = original_gate
+        author = importlib.import_module("product_bakeoff_b2_author")
+        cache_root = root / "candidate-cache"
+        cache_repo = author._candidate_destination(
+            cache_root,
+            repo_slot="b2_repo_python_small",
+            candidate_index=1,
+            repo_slug="example/checkpoint-cache",
+        )
+        cache_repo.mkdir(parents=True)
+        author._synthetic_python_repo(cache_repo)
+        (cache_repo / "LICENSE").write_text(
+            "Permission is hereby granted, free of charge, to any person obtaining a copy.\n",
+            encoding="utf-8",
+        )
+        subprocess.run(["git", "init", "-q"], cwd=cache_repo, check=True)
+        subprocess.run(
+            ["git", "config", "user.email", "b3-checkpoint@example.invalid"],
+            cwd=cache_repo,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "B3 Checkpoint Test"],
+            cwd=cache_repo,
+            check=True,
+        )
+        subprocess.run(["git", "add", "."], cwd=cache_repo, check=True)
+        subprocess.run(
+            ["git", "commit", "-qm", "checkpoint fixture"],
+            cwd=cache_repo,
+            check=True,
+        )
+        checkpoint_slot = {
+            "repo_slot": "b2_repo_python_small",
+            "candidates": [
+                {"repo": "example/checkpoint-cache", "expected_license": "MIT"},
+                {"repo": "example/checkpoint-fallback", "expected_license": "MIT"},
+            ],
+        }
+        checkpoint_authored = author._author_existing_candidate(
+            repo_slot=checkpoint_slot["repo_slot"],
+            candidate=checkpoint_slot["candidates"][0],
+            root=cache_repo,
+        )
+        original_clone = author.clone_public_repo
+        author.clone_public_repo = lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("verified cache unexpectedly recloned")
+        )
+        try:
+            cached_authored = author._prepare_one_repo(
+                repo_slot=checkpoint_slot["repo_slot"],
+                candidates=checkpoint_slot["candidates"],
+                clone_root=root / "unused-clone-root",
+                cache_clone_roots=(cache_root,),
+            )
+        finally:
+            author.clone_public_repo = original_clone
+        checks["verified_cache_avoids_reclone"] = (
+            cached_authored == checkpoint_authored
+        )
+        fresh_repo = root / "fresh-candidate"
+        subprocess.run(
+            ["git", "clone", "-q", str(cache_repo), str(fresh_repo)],
+            check=True,
+        )
+        cache_tracked = cache_repo / "pkg" / "alpha.py"
+        cache_tracked_original = cache_tracked.read_bytes()
+        cache_tracked.write_bytes(cache_tracked_original + b"# cache drift\n")
+        fresh_clone_calls = 0
+
+        def fake_clone(_repo: str, _destination: Path) -> Path:
+            nonlocal fresh_clone_calls
+            fresh_clone_calls += 1
+            return fresh_repo
+
+        original_clone = author.clone_public_repo
+        author.clone_public_repo = fake_clone
+        try:
+            fallback_authored = author._prepare_one_repo(
+                repo_slot=checkpoint_slot["repo_slot"],
+                candidates=checkpoint_slot["candidates"],
+                clone_root=root / "fresh-clone-root",
+                cache_clone_roots=(cache_root,),
+            )
+        finally:
+            author.clone_public_repo = original_clone
+            cache_tracked.write_bytes(cache_tracked_original)
+        checks["invalid_cache_falls_back_without_reselection"] = (
+            fresh_clone_calls == 1
+            and Path(fallback_authored.repo_row["source"]["clone_root"])
+            == fresh_repo.resolve()
+            and fallback_authored.repo_row["source"]["repo"]
+            == checkpoint_slot["candidates"][0]["repo"]
+        )
+        checkpoint = _build_author_checkpoint(
+            author=author,
+            slot=checkpoint_slot,
+            authored=checkpoint_authored,
+        )
+        resumed = _validate_author_checkpoint(
+            author=author,
+            raw=checkpoint,
+            slot=checkpoint_slot,
+        )
+        checks["slot_checkpoint_roundtrip"] = (
+            resumed.repo_row == checkpoint_authored.repo_row
+            and resumed.drafts == checkpoint_authored.drafts
+        )
+        checks["slot_checkpoint_plan_local"] = checkpoint[
+            "slot_candidate_digest"
+        ] == _slot_candidate_digest(checkpoint_slot)
+        original_prepare = author._prepare_one_repo
+        original_build = author._build_manifest_payloads
+        author_calls = 0
+
+        def fake_prepare(**_kwargs: Any) -> Any:
+            nonlocal author_calls
+            author_calls += 1
+            return checkpoint_authored
+
+        def fake_build(_authored: Sequence[Any]) -> tuple[dict[str, Any], ...]:
+            return (
+                {
+                    "repos": [checkpoint_authored.repo_row],
+                    "repo_lock_digest": "b2repos_" + "1" * 64,
+                },
+                {
+                    "tasks": [{"slot_id": "checkpoint-task"}],
+                    "task_manifest_digest": "b2tasks_" + "2" * 64,
+                },
+                {"oracle_manifest_digest": "b2oracles_" + "3" * 64},
+            )
+
+        resume_root = root / "checkpoint-resume"
+        try:
+            author._prepare_one_repo = fake_prepare
+            author._build_manifest_payloads = fake_build
+            first_pass = _prepare_checkpointed_manifests(
+                author=author,
+                slots=(checkpoint_slot,),
+                private_root=resume_root,
+                cache_clone_roots=(cache_root,),
+            )
+            author._prepare_one_repo = lambda **_kwargs: (_ for _ in ()).throw(
+                AssertionError("completed slot was authored twice")
+            )
+            second_pass = _prepare_checkpointed_manifests(
+                author=author,
+                slots=(checkpoint_slot,),
+                private_root=resume_root,
+                cache_clone_roots=(cache_root,),
+            )
+        finally:
+            author._prepare_one_repo = original_prepare
+            author._build_manifest_payloads = original_build
+        checks["checkpoint_resume_skips_completed_slot"] = (
+            author_calls == 1
+            and first_pass["resumed_checkpoint_count"] == 0
+            and second_pass["resumed_checkpoint_count"] == 1
+            and first_pass["repo_lock_digest"] == second_pass["repo_lock_digest"]
+        )
+        drift_file = cache_repo / "pkg" / "alpha.py"
+        drift_original = drift_file.read_bytes()
+        drift_file.write_bytes(drift_original + b"# checkpoint drift\n")
+        try:
+            _validate_author_checkpoint(
+                author=author,
+                raw=checkpoint,
+                slot=checkpoint_slot,
+            )
+            checks["checkpoint_source_drift_rejected"] = False
+        except B3CorpusError:
+            checks["checkpoint_source_drift_rejected"] = True
+        finally:
+            drift_file.write_bytes(drift_original)
     failed = sorted(name for name, passed in checks.items() if not passed)
     return {
         "passed": not failed,
@@ -1188,6 +1683,25 @@ def run_fault_test() -> dict[str, Any]:
         cases["missing_history_rejected"] = False
     except B3CorpusError:
         cases["missing_history_rejected"] = True
+    synthetic_slot = _synthetic_candidate_plan()["slots"][0]
+    synthetic_checkpoint = {
+        "schema_version": B3_AUTHOR_CHECKPOINT_SCHEMA,
+        "repo_slot": synthetic_slot["repo_slot"],
+        "slot_candidate_digest": "b3slotplan_" + "0" * 64,
+        "selected_candidate_index": 1,
+        "repo_row": {},
+        "drafts": [],
+        "checkpoint_digest": "b3authorcp_" + "0" * 64,
+    }
+    try:
+        _validate_author_checkpoint(
+            author=importlib.import_module("product_bakeoff_b2_author"),
+            raw=synthetic_checkpoint,
+            slot=synthetic_slot,
+        )
+        cases["checkpoint_plan_drift_rejected"] = False
+    except B3CorpusError:
+        cases["checkpoint_plan_drift_rejected"] = True
     failed = sorted(name for name, passed in cases.items() if not passed)
     return {
         "passed": not failed,

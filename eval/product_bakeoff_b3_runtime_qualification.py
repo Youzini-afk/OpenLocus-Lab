@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import product_bakeoff_b2_corpus as b2c
+import product_bakeoff_b2_protocol as b2p
 import product_bakeoff_b23_runner_qualification as b23q
 import product_bakeoff_b25_runtime_qualification as b25rq
 import product_bakeoff_b3_protocol as b3p
@@ -37,9 +38,9 @@ PROTOCOL_REPORT = (
     / "product_bakeoff_b3_protocol_report.json"
 )
 
-B3_RUNTIME_VERSION = "product_bakeoff_b3_runtime_qualification.v1"
-B3_RUNTIME_PUBLIC_SCHEMA = "product_bakeoff_b3_runtime_qualification_public.v1"
-B3_RUNTIME_PRIVATE_SCHEMA = "product_bakeoff_b3_runtime_qualification_private.v1"
+B3_RUNTIME_VERSION = "product_bakeoff_b3_runtime_qualification.v2"
+B3_RUNTIME_PUBLIC_SCHEMA = "product_bakeoff_b3_runtime_qualification_public.v2"
+B3_RUNTIME_PRIVATE_SCHEMA = "product_bakeoff_b3_runtime_qualification_private.v2"
 B3_RUNTIME_STATUS = (
     "product_bakeoff_b3_exact_linux_runtime_qualified_"
     "private_authoring_allowed_after_publication_ci"
@@ -47,6 +48,35 @@ B3_RUNTIME_STATUS = (
 B3_RUNTIME_CLAIM = "public_synthetic_runtime_integrity_only_no_private_holdout"
 B3_RUNTIME_CASE_CATEGORIES = tuple(
     str(row["category"]) for row in b25rq.B25_RUNTIME_CASES
+)
+GIB = 1024**3
+B3_SCRATCH_CAPACITY_POLICY = {
+    "policy_version": "product_bakeoff_b3_serial_peak_working_set.v1",
+    "largest_visible_snapshot_bytes": max(
+        upper - 1 for _, upper in b2p.B2_SIZE_BAND_VISIBLE_BYTES.values()
+    ),
+    "concurrent_arm_snapshot_count": len(b2p.B2_ADAPTER_IDS),
+    "snapshot_and_index_overhead_multiplier": 4,
+    "checkpoint_and_control_margin_bytes": 4 * GIB,
+    "filesystem_safety_margin_bytes": 4 * GIB,
+    "rounding_and_measurement_margin_bytes": 2 * GIB,
+    "groups_are_serial_and_deleted_after_completion": True,
+    "authoring_clone_storage_is_checkpointed_separately": True,
+}
+B3_SCRATCH_CAPACITY_POLICY["calculated_peak_working_set_bytes"] = (
+    B3_SCRATCH_CAPACITY_POLICY["largest_visible_snapshot_bytes"]
+    * B3_SCRATCH_CAPACITY_POLICY["concurrent_arm_snapshot_count"]
+    * B3_SCRATCH_CAPACITY_POLICY["snapshot_and_index_overhead_multiplier"]
+    + B3_SCRATCH_CAPACITY_POLICY["checkpoint_and_control_margin_bytes"]
+    + B3_SCRATCH_CAPACITY_POLICY["filesystem_safety_margin_bytes"]
+)
+B3_SCRATCH_CAPACITY_POLICY["minimum_free_local_scratch_bytes_at_start"] = (
+    B3_SCRATCH_CAPACITY_POLICY["calculated_peak_working_set_bytes"]
+    + B3_SCRATCH_CAPACITY_POLICY["rounding_and_measurement_margin_bytes"]
+)
+B3_MINIMUM_RUNNER_CLASS = copy.deepcopy(b23q.B23_RUNNER_CLASS)
+B3_MINIMUM_RUNNER_CLASS["minimum_free_local_scratch_bytes_at_start"] = (
+    B3_SCRATCH_CAPACITY_POLICY["minimum_free_local_scratch_bytes_at_start"]
 )
 B3_RUNTIME_PROFILE_KEYS = frozenset(
     {
@@ -71,6 +101,24 @@ B3_RUNTIME_PUBLICATION_LIMITS = {
 
 class B3RuntimeQualificationError(ValueError):
     """Fail-closed B3 runtime qualification error."""
+
+
+def validate_b3_runner_profile(profile: Mapping[str, Any]) -> list[str]:
+    """Apply the B2.3 runner gates with B3's serial working-set budget."""
+
+    failures = set(b23q.validate_runner_profile(profile))
+    failures.discard("scratch_free_space_below_minimum")
+    observed = profile.get("scratch_free_bytes")
+    required = B3_SCRATCH_CAPACITY_POLICY[
+        "minimum_free_local_scratch_bytes_at_start"
+    ]
+    if (
+        not isinstance(observed, int)
+        or isinstance(observed, bool)
+        or observed < required
+    ):
+        failures.add("scratch_free_space_below_b3_working_set")
+    return sorted(failures)
 
 
 def _canonical(value: Any) -> bytes:
@@ -160,7 +208,7 @@ def _build_public_report(
         "phase": "product_bakeoff_b3_exact_linux_runtime_qualification",
         "status": B3_RUNTIME_STATUS,
         "claim_level": B3_RUNTIME_CLAIM,
-        "date": "2026-07-17",
+        "date": "2026-07-18",
         "source_gate": {
             "checkpoint": source_checkpoint,
             "ci_run_id": source_ci_run_id,
@@ -169,7 +217,8 @@ def _build_public_report(
             "b3_control_source_bundle_digest": b3src.control_source_bundle_digest(),
         },
         "runner_gate": {
-            "minimum_runner_class": copy.deepcopy(b23q.B23_RUNNER_CLASS),
+            "minimum_runner_class": copy.deepcopy(B3_MINIMUM_RUNNER_CLASS),
+            "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
             "current_runner_class_admitted": True,
             "stable_profile_unchanged_during_qualification": True,
             "exact_current_profile_frozen_privately": True,
@@ -270,7 +319,8 @@ def validate_public_report(report: Any) -> list[str]:
     if source.get("b3_control_source_bundle_digest") != b3src.control_source_bundle_digest():
         errors.append("B3 runtime control source binding drifted")
     expected_runner = {
-        "minimum_runner_class": copy.deepcopy(b23q.B23_RUNNER_CLASS),
+        "minimum_runner_class": copy.deepcopy(B3_MINIMUM_RUNNER_CLASS),
+        "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
         "current_runner_class_admitted": True,
         "stable_profile_unchanged_during_qualification": True,
         "exact_current_profile_frozen_privately": True,
@@ -343,6 +393,7 @@ def _build_private_receipt(
         "control_source_bundle_digest": b3src.control_source_bundle_digest(),
         "profile_before": dict(profile_before),
         "profile_after": dict(profile_after),
+        "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
         "stable_profile_changes": b23q.stable_runner_profile_changes(
             profile_before, profile_after
         ),
@@ -372,6 +423,7 @@ def validate_private_receipt(receipt: Any) -> list[str]:
         "control_source_bundle_digest",
         "profile_before",
         "profile_after",
+        "scratch_capacity_policy",
         "stable_profile_changes",
         "cli_bytes",
         "cli_sha256",
@@ -399,12 +451,14 @@ def validate_private_receipt(receipt: Any) -> list[str]:
     else:
         if set(before) != B3_RUNTIME_PROFILE_KEYS or set(after) != B3_RUNTIME_PROFILE_KEYS:
             errors.append("B3 runtime profile shape drifted")
-        if b23q.validate_runner_profile(before) or b23q.validate_runner_profile(after):
+        if validate_b3_runner_profile(before) or validate_b3_runner_profile(after):
             errors.append("B3 runtime private profile failed runner class")
         if b23q.stable_runner_profile_changes(before, after):
             errors.append("B3 runtime stable profile changed")
     if receipt.get("stable_profile_changes") != []:
         errors.append("B3 runtime private stable change list is nonempty")
+    if receipt.get("scratch_capacity_policy") != B3_SCRATCH_CAPACITY_POLICY:
+        errors.append("B3 runtime private scratch capacity policy drifted")
     if not isinstance(receipt.get("cli_bytes"), int) or receipt.get("cli_bytes", 0) <= 0:
         errors.append("B3 runtime private CLI byte count malformed")
     if not re.fullmatch(r"[0-9a-f]{64}", str(receipt.get("cli_sha256", ""))):
@@ -491,7 +545,7 @@ def qualify_runtime(
     profile_before = b23q.collect_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
-    failures = b23q.validate_runner_profile(profile_before)
+    failures = validate_b3_runner_profile(profile_before)
     if failures:
         raise B3RuntimeQualificationError("current runner class admission failed")
     fixture_root = scratch_root / "b3_public_synthetic_runtime_fixture"
@@ -505,7 +559,7 @@ def qualify_runtime(
     profile_after = b23q.collect_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
-    if b23q.validate_runner_profile(profile_after):
+    if validate_b3_runner_profile(profile_after):
         raise B3RuntimeQualificationError("post-matrix runner class admission failed")
     if b23q.stable_runner_profile_changes(profile_before, profile_after):
         raise B3RuntimeQualificationError("stable runner profile changed during qualification")
@@ -649,7 +703,7 @@ def validate_runtime_binding(
     current = b23q.collect_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
-    if b23q.validate_runner_profile(current):
+    if validate_b3_runner_profile(current):
         raise B3RuntimeQualificationError("current runner profile gate failed")
     if b23q.stable_runner_profile_changes(private["profile_after"], current):
         raise B3RuntimeQualificationError("current runner differs from qualified profile")
@@ -700,6 +754,13 @@ def run_self_test() -> dict[str, Any]:
     checks = {
         "public_valid": not validate_public_report(public),
         "private_valid": not validate_private_receipt(private),
+        "serial_capacity_budget_is_computed": B3_SCRATCH_CAPACITY_POLICY[
+            "minimum_free_local_scratch_bytes_at_start"
+        ]
+        >= B3_SCRATCH_CAPACITY_POLICY["calculated_peak_working_set_bytes"],
+        "b3_does_not_inherit_300_gib_gate": not validate_b3_runner_profile(
+            b23q._mock_profile(scratch_free_bytes=80 * GIB)
+        ),
         "historical_machine_not_required": public["runner_gate"][
             "historical_machine_identity_required"
         ]
@@ -744,9 +805,21 @@ def run_fault_test() -> dict[str, Any]:
         )
     private_drift = copy.deepcopy(private)
     private_drift["profile_after"]["effective_cpu_quota_count"] = 9
+    capacity_drift = copy.deepcopy(public)
+    capacity_drift["runner_gate"]["scratch_capacity_policy"][
+        "minimum_free_local_scratch_bytes_at_start"
+    ] += GIB
     checks = {
         "public_case_loss_rejected": bool(validate_public_report(drifted)),
         "private_profile_drift_rejected": bool(validate_private_receipt(private_drift)),
+        "capacity_policy_drift_rejected": bool(
+            validate_public_report(capacity_drift)
+        ),
+        "below_b3_working_set_rejected": bool(
+            validate_b3_runner_profile(
+                b23q._mock_profile(scratch_free_bytes=15 * GIB)
+            )
+        ),
         "failed_case_rejected": bool(
             validate_public_report(
                 _build_public_report(
@@ -790,13 +863,16 @@ if __name__ == "__main__":
 
 
 __all__ = [
+    "B3_MINIMUM_RUNNER_CLASS",
     "B3_RUNTIME_PRIVATE_SCHEMA",
     "B3_RUNTIME_PUBLIC_SCHEMA",
     "B3_RUNTIME_VERSION",
+    "B3_SCRATCH_CAPACITY_POLICY",
     "B3RuntimeQualificationError",
     "private_receipt_digest",
     "qualification_digest",
     "qualify_runtime",
+    "validate_b3_runner_profile",
     "validate_private_receipt",
     "validate_public_report",
     "validate_runtime_binding",

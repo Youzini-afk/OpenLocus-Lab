@@ -1,7 +1,7 @@
 {
   "claim_level": "engineering_and_synthetic_fault_tests_only_no_private_input",
-  "control_source_bundle_digest": "b3controlsrc_01000c75446bd2ec977acab8d357a58c40209da1458956d8ef8aa7c4e7acc6a4",
-  "date": "2026-07-17",
+  "control_source_bundle_digest": "b3controlsrc_5f7a070cf770322a406ffded8e7d1146780dda27b5baa5a7647e8bb29cc711b4",
+  "date": "2026-07-18",
   "historical_boundary": {
     "b25_closeout_remains_failed_closed_no_result": true,
     "b25_private_holdout_output_or_authorization_reused": false,
@@ -31,11 +31,14 @@
     "freshness_against_b2_b21_b24_b25_frames": true,
     "green_readiness_ci_bound_private_launch_authorization": true,
     "historical_machine_identity_dependency_removed": true,
+    "per_slot_authoring_checkpoints_and_deterministic_resume": true,
     "post_boundary_restart_resume_retry_recompute_forbidden": true,
     "preboundary_zero_observation_recovery_audit_no_auto_delete": true,
-    "private_holdout_authoring_binding_and_freeze": true
+    "private_holdout_authoring_binding_and_freeze": true,
+    "serial_peak_working_set_scratch_capacity_policy": true,
+    "verified_prior_clone_cache_without_slot_reselection": true
   },
-  "integration_digest": "b3control_4a9ac3c38faf7d11b6a2ee6df5846dafa30defa095a7680ca25a838cf0ad0024",
+  "integration_digest": "b3control_411f874b6b7c9aaeedce5f349dbf470616efc06230644208f71496ac80262caa",
   "next_authorized_action": "Start the Linux server only now: build the frozen CLI at this exact checkpoint, run the public synthetic runtime qualification, privately freeze the exact admitted profile, then commit only the aggregate report and wait for green CI before any private holdout authoring.",
   "parent_engine": {
     "canonical_sha256": "10357d5647c29eefe53d7cb1d133a601631973d3bd29cf5868bffdb70523cf24",
@@ -65,13 +68,16 @@
   "schema_version": "product_bakeoff_b3_control_integration.v1",
   "status": "product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification",
   "synthetic_validation": {
+    "author_checkpoint_candidate_plan_drift_rejected": true,
     "b25_repository_reuse_rejected": true,
     "boundary_receipt_without_observation_rejected": true,
-    "fault_test_check_count": 16,
+    "fault_test_check_count": 19,
+    "invalid_cache_reclone_preserves_candidate_order": true,
     "launch_release_without_observation_does_not_cross_boundary": true,
+    "legacy_300_gib_scratch_floor_not_inherited_by_b3": true,
     "module_count": 6,
     "persisted_observation_without_receipt_crosses_boundary": true,
     "public_failure_contains_no_arm_quality_resource_or_rank_metrics": true,
-    "self_test_check_count": 34
+    "self_test_check_count": 42
   }
 }
