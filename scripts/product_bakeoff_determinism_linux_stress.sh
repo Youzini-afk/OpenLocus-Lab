@@ -40,12 +40,18 @@ run_stress() {
       cargo test --quiet --locked "${profile_flag[@]}" -p openlocus-retrieval \
         rrf_large_ambiguous_overlap_conserves_score_without_positional_bias -- \
         --ignored --test-threads=1
+    OPENLOCUS_DETERMINISM_STRESS_RRF_SPANS="$rrf_spans" \
+      cargo test --quiet --locked "${profile_flag[@]}" -p openlocus-cli \
+        bakeoff_rrf_large_ambiguous_overlap_normalization_stress -- \
+        --ignored --test-threads=1
   done
 
   printf '{"schema_version":"product_bakeoff_determinism_linux_stress.v1",'
   printf '"synthetic_only":true,"private_input_read":false,'
   printf '"file_count":%d,"rrf_span_count":%d,' "$file_count" "$rrf_spans"
-  printf '"process_iterations":%d,"passed":true}\n' "$process_iterations"
+  printf '"process_iterations":%d,"test_invocations_per_process":4,' \
+    "$process_iterations"
+  printf '"bakeoff_overlap_normalization_included":true,"passed":true}\n'
 }
 
 case "$mode" in

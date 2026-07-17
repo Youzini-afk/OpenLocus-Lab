@@ -112,6 +112,8 @@ jobs:
               bm25_equal_score_boundary_ignores_record_insertion_order
             cargo test --locked -p openlocus-retrieval \
               rrf_overlap_siblings_split_ambiguous_contribution_evenly
+            cargo test --locked -p openlocus-cli \
+              ambiguous_overlap_normalization_defers_to_rrf_even_split
             cargo test --locked -p openlocus-graph \
               config_edge_cap_is_deterministic_and_lexicographic
             cargo test --locked -p openlocus-context \

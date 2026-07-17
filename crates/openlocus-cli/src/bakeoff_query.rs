@@ -544,11 +544,43 @@ fn canonicalize_component_evidence(
     Ok(evidence)
 }
 
+type EvidenceCell = (String, u64, u64);
+
+fn cell_strictly_contains(outer: &EvidenceCell, inner: &EvidenceCell) -> bool {
+    outer.0 == inner.0
+        && outer.1 <= inner.1
+        && outer.2 >= inner.2
+        && (outer.1 < inner.1 || outer.2 > inner.2)
+}
+
+/// Return a descendant only when the containment order has one unique
+/// minimal cell. If several incomparable minimal descendants exist, retain
+/// the wider item so production RRF can divide its vote across all of them.
+fn unique_minimal_descendant(cells: &[EvidenceCell], outer: &EvidenceCell) -> Option<EvidenceCell> {
+    let descendants: Vec<EvidenceCell> = cells
+        .iter()
+        .filter(|candidate| cell_strictly_contains(outer, candidate))
+        .cloned()
+        .collect();
+    let mut minimal: Vec<EvidenceCell> = descendants
+        .iter()
+        .filter(|candidate| {
+            !descendants
+                .iter()
+                .any(|other| cell_strictly_contains(candidate, other))
+        })
+        .cloned()
+        .collect();
+    minimal.sort();
+    minimal.dedup();
+    (minimal.len() == 1).then(|| minimal.remove(0))
+}
+
 fn canonicalize_rrf_input_overlaps(
     channel_evidence: &mut [(Vec<Evidence>, Channel)],
     max_results: usize,
 ) -> Result<usize> {
-    let cells: Vec<(String, u64, u64)> = channel_evidence
+    let cells: Vec<EvidenceCell> = channel_evidence
         .iter()
         .flat_map(|(items, _)| {
             items.iter().map(|item| {
@@ -563,18 +595,15 @@ fn canonicalize_rrf_input_overlaps(
     let mut rewrites = 0usize;
     for (items, _) in channel_evidence.iter_mut() {
         for item in items.iter_mut() {
-            let canonical = cells
-                .iter()
-                .filter(|(path, start, end)| {
-                    path == &item.core.path
-                        && *start >= item.core.start_line
-                        && *end <= item.core.end_line
-                        && (*start > item.core.start_line || *end < item.core.end_line)
-                })
-                .min_by_key(|(_, start, end)| (end - start, *start, *end));
+            let cell = (
+                item.core.path.clone(),
+                item.core.start_line,
+                item.core.end_line,
+            );
+            let canonical = unique_minimal_descendant(&cells, &cell);
             if let Some((_, start, end)) = canonical {
-                item.core.start_line = *start;
-                item.core.end_line = *end;
+                item.core.start_line = start;
+                item.core.end_line = end;
                 item.meta = None;
                 rewrites += 1;
             }
@@ -1571,8 +1600,152 @@ mod tests {
                 env.rrf.input_normalization,
                 BAKEOFF_QUERY_INPUT_NORMALIZATION
             );
-            assert!(env.rrf.input_rewrites >= 1);
+            assert_eq!(
+                env.rrf.input_rewrites, 0,
+                "incomparable minimal spans must remain for RRF score splitting"
+            );
         }
+    }
+
+    #[test]
+    fn unique_overlap_normalization_rewrites_to_single_minimal_descendant() {
+        let wide = vec![Evidence::new(
+            "a.rs",
+            1,
+            6,
+            "sha",
+            1.0,
+            vec!["wide".into()],
+            vec![Channel::Bm25],
+        )];
+        let narrow = vec![Evidence::new(
+            "a.rs",
+            3,
+            3,
+            "sha",
+            1.0,
+            vec!["narrow".into()],
+            vec![Channel::Regex],
+        )];
+        let mut channel_evidence = vec![(wide, Channel::Bm25), (narrow, Channel::Regex)];
+
+        let rewrites = canonicalize_rrf_input_overlaps(&mut channel_evidence, 8).unwrap();
+        assert_eq!(rewrites, 1);
+        assert_eq!(channel_evidence[0].0[0].core.start_line, 3);
+        assert_eq!(channel_evidence[0].0[0].core.end_line, 3);
+    }
+
+    #[test]
+    fn ambiguous_overlap_normalization_defers_to_rrf_even_split() {
+        let wide = vec![Evidence::new(
+            "a.rs",
+            1,
+            6,
+            "sha",
+            1.0,
+            vec!["wide".into()],
+            vec![Channel::Bm25],
+        )];
+        let siblings = vec![
+            Evidence::new(
+                "a.rs",
+                1,
+                1,
+                "sha",
+                1.0,
+                vec!["left".into()],
+                vec![Channel::Regex],
+            ),
+            Evidence::new(
+                "a.rs",
+                5,
+                5,
+                "sha",
+                1.0,
+                vec!["right".into()],
+                vec![Channel::Regex],
+            ),
+        ];
+        let mut channel_evidence = vec![(wide, Channel::Bm25), (siblings, Channel::Regex)];
+
+        let rewrites = canonicalize_rrf_input_overlaps(&mut channel_evidence, 8).unwrap();
+        assert_eq!(rewrites, 0);
+        assert_eq!(channel_evidence[0].0[0].core.start_line, 1);
+        assert_eq!(channel_evidence[0].0[0].core.end_line, 6);
+
+        let weighted = channel_evidence
+            .into_iter()
+            .map(|(evidence, channel)| (evidence, channel, 1))
+            .collect();
+        let result = rrf_combine_with_rank_ties_and_channel_weights(weighted);
+        assert_eq!(result.len(), 2);
+        assert_eq!(
+            result[0].core.score.to_bits(),
+            result[1].core.score.to_bits()
+        );
+        assert_eq!(
+            result
+                .iter()
+                .map(|item| (item.core.start_line, item.core.end_line))
+                .collect::<Vec<_>>(),
+            vec![(1, 1), (5, 5)]
+        );
+    }
+
+    #[test]
+    #[ignore = "large synthetic determinism stress; run via the Linux stress script"]
+    fn bakeoff_rrf_large_ambiguous_overlap_normalization_stress() {
+        let span_count = std::env::var("OPENLOCUS_DETERMINISM_STRESS_RRF_SPANS")
+            .ok()
+            .and_then(|value| value.parse::<usize>().ok())
+            .unwrap_or(4_096);
+        assert!((32..=20_000).contains(&span_count));
+
+        let wide = vec![Evidence::new(
+            "a.rs",
+            1,
+            (span_count * 2) as u64,
+            "sha",
+            1.0,
+            vec!["wide".into()],
+            vec![Channel::Bm25],
+        )];
+        let siblings: Vec<Evidence> = (0..span_count)
+            .map(|index| {
+                let line = (index * 2 + 1) as u64;
+                Evidence::new(
+                    "a.rs",
+                    line,
+                    line,
+                    "sha",
+                    1.0,
+                    vec![format!("sibling-{index}")],
+                    vec![Channel::Regex],
+                )
+            })
+            .collect();
+        let mut channel_evidence = vec![(wide, Channel::Bm25), (siblings, Channel::Regex)];
+
+        let rewrites = canonicalize_rrf_input_overlaps(&mut channel_evidence, span_count).unwrap();
+        assert_eq!(rewrites, 0);
+        let weighted = channel_evidence
+            .into_iter()
+            .map(|(evidence, channel)| (evidence, channel, 1))
+            .collect();
+        let result = rrf_combine_with_rank_ties_and_channel_weights(weighted);
+        assert_eq!(result.len(), span_count);
+        let expected_each = 1.0 / 61.0 + 1.0 / (61.0 * span_count as f64);
+        for (index, item) in result.iter().enumerate() {
+            let expected_line = (index * 2 + 1) as u64;
+            assert_eq!(
+                (item.core.start_line, item.core.end_line),
+                (expected_line, expected_line)
+            );
+            assert!((item.core.score - expected_each).abs() < 1e-12);
+        }
+        let expected_total = (span_count as f64 + 1.0) / 61.0;
+        let actual_total = result.iter().map(|item| item.core.score).sum::<f64>();
+        assert!((actual_total - expected_total).abs() < 1e-9);
     }
 
     #[test]
