@@ -13,10 +13,14 @@ on:
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
       - 'eval/product_bakeoff_determinism_repair.py'
+      - 'eval/product_bakeoff_determinism_linux_scale.py'
       - 'scripts/product_bakeoff_determinism_linux_stress.sh'
       - 'artifacts/product_bakeoff_determinism_repair/**'
+      - 'artifacts/product_bakeoff_determinism_linux_scale/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
+      - 'docs/en/product-bakeoff-postcloseout-determinism-linux-scale.md'
+      - 'docs/zh/product-bakeoff-postcloseout-determinism-linux-scale.md'
       - '.github/workflows/deterministic-retrieval-repair.yml'
       - '.github/workflows/retrieval-benchmark.yml'
       - '.github/workflows/product-bakeoff-b25-closeout.yml'
@@ -33,10 +37,14 @@ on:
       - 'eval/product_bakeoff_b25_failure_closeout.py'
       - 'eval/product_bakeoff_postcloseout_comparability.py'
       - 'eval/product_bakeoff_determinism_repair.py'
+      - 'eval/product_bakeoff_determinism_linux_scale.py'
       - 'scripts/product_bakeoff_determinism_linux_stress.sh'
       - 'artifacts/product_bakeoff_determinism_repair/**'
+      - 'artifacts/product_bakeoff_determinism_linux_scale/**'
       - 'docs/en/product-bakeoff-postcloseout-determinism-repair.md'
       - 'docs/zh/product-bakeoff-postcloseout-determinism-repair.md'
+      - 'docs/en/product-bakeoff-postcloseout-determinism-linux-scale.md'
+      - 'docs/zh/product-bakeoff-postcloseout-determinism-linux-scale.md'
       - '.github/workflows/deterministic-retrieval-repair.yml'
       - '.github/workflows/retrieval-benchmark.yml'
       - '.github/workflows/product-bakeoff-b25-closeout.yml'
@@ -131,7 +139,8 @@ jobs:
             eval/product_bakeoff_terminal_archive.py \
             eval/product_bakeoff_b25_failure_closeout.py \
             eval/product_bakeoff_postcloseout_comparability.py \
-            eval/product_bakeoff_determinism_repair.py
+            eval/product_bakeoff_determinism_repair.py \
+            eval/product_bakeoff_determinism_linux_scale.py
           python3 eval/product_bakeoff_terminal_archive.py --self-test
           python3 eval/product_bakeoff_terminal_archive.py --fault-test
           python3 eval/product_bakeoff_terminal_archive.py --validate b25
@@ -142,6 +151,11 @@ jobs:
           python3 eval/product_bakeoff_determinism_repair.py \
             --validate-public \
             artifacts/product_bakeoff_determinism_repair/product_bakeoff_postcloseout_determinism_repair.json
+          python3 eval/product_bakeoff_determinism_linux_scale.py --self-test
+          python3 eval/product_bakeoff_determinism_linux_scale.py --fault-test
+          python3 eval/product_bakeoff_determinism_linux_scale.py \
+            --validate-public \
+            artifacts/product_bakeoff_determinism_linux_scale/product_bakeoff_postcloseout_determinism_linux_scale.json
           python3 eval/product_bakeoff_b25_failure_closeout.py --self-test
           python3 eval/product_bakeoff_b25_failure_closeout.py --fault-test
           python3 eval/product_bakeoff_b25_failure_closeout.py \

@@ -34,6 +34,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B2.5 failed-closed terminal aggregate / B2.5 失败关闭终态聚合: [`artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json`](../artifacts/product_bakeoff_b25/product_bakeoff_b25_failed_closed_aggregate.json)
 - Post-closeout retrieval determinism repair / 关闭后检索确定性修复: [EN](en/product-bakeoff-postcloseout-determinism-repair.md) / [ZH](zh/product-bakeoff-postcloseout-determinism-repair.md)
 - Post-closeout determinism repair aggregate / 关闭后确定性修复汇总: [`artifacts/product_bakeoff_determinism_repair/product_bakeoff_postcloseout_determinism_repair.json`](../artifacts/product_bakeoff_determinism_repair/product_bakeoff_postcloseout_determinism_repair.json)
+- Post-closeout determinism Linux scale closure / 关闭后确定性 Linux 规模验证收口: [EN](en/product-bakeoff-postcloseout-determinism-linux-scale.md) / [ZH](zh/product-bakeoff-postcloseout-determinism-linux-scale.md)
+- Post-closeout determinism Linux scale aggregate / 关闭后确定性 Linux 规模验证聚合: [`artifacts/product_bakeoff_determinism_linux_scale/product_bakeoff_postcloseout_determinism_linux_scale.json`](../artifacts/product_bakeoff_determinism_linux_scale/product_bakeoff_postcloseout_determinism_linux_scale.json)
 
 ## Current route closure / 当前路线关闭
 

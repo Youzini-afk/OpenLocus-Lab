@@ -1,0 +1,129 @@
+{
+  "claim_level": "engineering_scale_validation_only_no_tournament_result",
+  "comprehensive_review": {
+    "known_remaining_order_dependent_cap_in_reviewed_scope": false,
+    "reviewed_scope": "exact_B2_through_B2_5_frozen_tournament_component_path",
+    "reviewed_surfaces": [
+      "persistent_and_temporary_bm25_boundary_collection",
+      "literal_symbol_and_ast_capped_ordering",
+      "graph_build_expansion_support_ordering_and_caps",
+      "bakeoff_component_canonicalization_and_pre_fusion_overlap_handling",
+      "rrf_rank_ties_exact_cells_containment_and_final_order",
+      "adapter_candidate_order_and_two_step_support_projection",
+      "future_scorer_equivalent_comparability_projection",
+      "terminal_public_archive_validation"
+    ],
+    "unrelated_non_tournament_product_surface_changed": false,
+    "whole_repository_determinism_claim_made": false
+  },
+  "date": "2026-07-17",
+  "linux_scale_stress": {
+    "all_tiers_passed": true,
+    "declared_parameter_ceiling_exercised": true,
+    "fresh_process_iterations_total": 6,
+    "hardware_identity_or_exact_resource_metric_public": false,
+    "ignored_runs_used_as_input": false,
+    "private_input_read": false,
+    "release_profile": true,
+    "runner_identity_or_remote_path_public": false,
+    "stress_schema_version": "product_bakeoff_determinism_linux_stress.v1",
+    "synthetic_only": true,
+    "test_invocations_total": 24,
+    "test_surfaces": [
+      "persistent_bm25_complete_equal_score_boundary",
+      "temporary_bm25_complete_equal_score_boundary",
+      "rrf_ambiguous_overlap_score_conservation",
+      "bakeoff_pre_fusion_ambiguous_overlap_normalization"
+    ],
+    "tiers": [
+      {
+        "file_count": 20000,
+        "passed": true,
+        "process_iterations": 3,
+        "rrf_span_count": 4096,
+        "test_invocations_per_process": 4,
+        "test_invocations_total": 12,
+        "tier_id": "default_production_scale"
+      },
+      {
+        "file_count": 50000,
+        "passed": true,
+        "process_iterations": 2,
+        "rrf_span_count": 8192,
+        "test_invocations_per_process": 4,
+        "test_invocations_total": 8,
+        "tier_id": "elevated_scale"
+      },
+      {
+        "file_count": 100000,
+        "passed": true,
+        "process_iterations": 1,
+        "rrf_span_count": 20000,
+        "test_invocations_per_process": 4,
+        "test_invocations_total": 4,
+        "tier_id": "declared_parameter_ceiling"
+      }
+    ]
+  },
+  "next_authorized_action": "Keep B2.5 closed as failed_closed_no_result. For a separately preregistered future tournament, freeze the scorer-equivalent repeatability projection in both the pre-score gate and scorer, qualify the exact future runtime, and author a fresh holdout without reusing B2.5 treatment output or launch authorization.",
+  "parent_repair": {
+    "b25_failure_reclassified_as_diagnostic_only": false,
+    "b25_launch_authorization_reused": false,
+    "b25_result_reopened": false,
+    "publication_checkpoint": "9fb3012b85b786cb63ec83ba4cb81be1ce123760",
+    "publication_ci_run_id": 29537550039,
+    "repair_digest": "detrepair_b05b51b37631baa5e7d744be511e3368e4e56bab4f37a0a3cfb8748b853cedeb"
+  },
+  "phase": "product_bakeoff_postcloseout_determinism_linux_scale_closure",
+  "publication_limits": {
+    "aggregate_only": true,
+    "candidate_or_repository_identity_public": false,
+    "exact_private_failed_gate_or_divergence_public": false,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "private_manifest_freeze_launch_or_run_digest_public": false,
+    "private_run_path_or_runner_identity_public": false,
+    "source_location_range_excerpt_or_query_public": false
+  },
+  "remaining_limits": {
+    "future_holdout_authored": false,
+    "future_runtime_qualified": false,
+    "future_tournament_authorized": false,
+    "product_default_changed": false,
+    "production_scale_linux_stress_completed": true,
+    "public_tournament_result_created": false
+  },
+  "research_interpretation": {
+    "b25_closeout_remains_authoritative": true,
+    "b25_failure_reclassified_as_diagnostic_only": false,
+    "b25_matrix_scored_or_ranked": false,
+    "future_gate_and_scorer_must_share_projection": true,
+    "historical_exact_semantic_gate_overinclusive_in_principle": true,
+    "public_tournament_result_created": false
+  },
+  "residual_path_repair": {
+    "ambiguous_descendants_now_deferred_to_rrf_even_split": true,
+    "positional_or_hash_order_winner_created": false,
+    "pre_fusion_ambiguous_containment_selected_one_position": true,
+    "residual_issue_found_during_comprehensive_review": true,
+    "rrf_total_score_mass_conserved": true,
+    "unique_minimal_descendant_canonicalization_retained": true
+  },
+  "scale_digest": "detlinux_b82d0262881b5f2623b866e3f9ea504e68cc591b1c23ac43c20349816af7bcfc",
+  "schema_version": "product_bakeoff_postcloseout_determinism_linux_scale.v1",
+  "source_and_ci": {
+    "bilingual_docs_validation_passed": true,
+    "final_scale_source_checkpoint": "59275615e15578a56dcc0ee6133629bb55f85019",
+    "final_scale_source_ci_conclusion": "success",
+    "final_scale_source_ci_run_id": 29559398560,
+    "initial_scale_harness_checkpoint": "3cf0567cc53367ff7bcdbd8be9a94f22b12bd2c4",
+    "initial_scale_harness_ci_run_id": 29537958748,
+    "linux_package_tests_passed": true,
+    "linux_relevant_package_test_count": 291,
+    "public_privacy_audit_passed": true,
+    "rustfmt_passed": true,
+    "warnings_denied_clippy_passed": true,
+    "windows_package_tests_passed": true,
+    "windows_relevant_package_test_count": 299
+  },
+  "status": "product_bakeoff_postcloseout_determinism_linux_scale_complete_no_tournament_authorization"
+}
