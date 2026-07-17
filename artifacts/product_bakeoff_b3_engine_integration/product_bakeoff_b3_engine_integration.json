@@ -1,0 +1,85 @@
+{
+  "claim_level": "engineering_integration_and_synthetic_fault_tests_only",
+  "date": "2026-07-17",
+  "historical_boundary": {
+    "b25_closeout_remains_failed_closed_no_result": true,
+    "b25_matrix_restarted_resumed_scored_or_ranked": false,
+    "b25_private_holdout_or_launch_authorization_reused": false,
+    "historical_b2_b21_b24_b25_modules_modified": false
+  },
+  "implementation_readiness": {
+    "attempt_boundary_receipt_implemented": false,
+    "b3_runner_engine_integrated": true,
+    "b3_scorer_shared_core_integrated": true,
+    "disconnect_safe_launcher_implemented": false,
+    "exact_linux_runtime_qualified": false,
+    "future_tournament_execution_authorized": false,
+    "private_freeze_and_readiness_implemented": false,
+    "private_holdout_authored_or_frozen": false,
+    "public_synthetic_runtime_qualification_complete": false,
+    "tournament_result_exists": false,
+    "treatment_output_exists": false
+  },
+  "integration_digest": "b3engine_a61e54a2fe426f00ac081345ce379300b4cf8c59bdbcc43eca99f9f104579535",
+  "next_authorized_action": "Keep the server off while implementing the B3 private freeze/readiness, launch-admission, first-durable-observation attempt receipt, CLI, and disconnect-safe launcher. After those local surfaces and public CI pass, start the server only for exact Linux runtime qualification.",
+  "parent_protocol": {
+    "canonical_sha256": "350041bb2eb3bafc891a1d92e2ee3e2689427a3fb4296d5ae8bb9bec81301363",
+    "checkpoint": "291c5a0041d94224a6dfff10838c6ed50110ddb4",
+    "ci_conclusion": "success",
+    "ci_run_id": 29565270451,
+    "protocol_digest": "b3protocol_d65a62e6755eaac93c1792df906b1d23ade494044d03377c74559c9bddfd2ec9",
+    "spec_digest": "b3spec_df6c9be0648df4bc"
+  },
+  "phase": "product_bakeoff_b3_shared_gate_scorer_engine_integration",
+  "publication_limits": {
+    "aggregate_only": true,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "per_task_per_repository_or_per_cell_empirical_detail_public": false,
+    "private_holdout_manifest_or_freeze_digest_public": false,
+    "private_runner_identity_endpoint_or_working_location_public": false,
+    "provider_payload_secret_or_credential_public": false,
+    "repository_task_query_or_oracle_identity_public": false,
+    "source_location_range_excerpt_or_raw_output_public": false
+  },
+  "runner_integration": {
+    "b21_source_currentness_scoreability_split_plot_lineage_fairness_provider_gates_retained": true,
+    "b24_longrun_timeout_and_adapter_envelope_reused": true,
+    "closed_future_freeze_receipt_validator_required": true,
+    "engine_policy_version": "product_bakeoff_b3_b21_engine_integration.v1",
+    "historical_b21_execution_loop_reused": true,
+    "historical_function_references_restored_on_success_and_exception": true,
+    "private_launch_and_attempt_boundary_owned_by_future_outer_envelope": true,
+    "runner_version": "product_bakeoff_b3_runner.v1",
+    "scoped_shared_repeatability_gate_override": true,
+    "scoped_williams_schedule_override": true
+  },
+  "schema_version": "product_bakeoff_b3_engine_integration.v1",
+  "scorer_integration": {
+    "frozen_arm_aggregation_resource_percentiles_and_tournament_decision_reused": true,
+    "frozen_b21_own_parent_terminal_scoring_reused": true,
+    "frozen_b2_task_scoring_reused": true,
+    "historical_b21_exact_hash_canonicalizers_called": false,
+    "public_tournament_result_builder_implemented": false,
+    "same_canonicalize_for_scoring_entry_point_as_gate_core": true,
+    "scorer_version": "product_bakeoff_b3_scorer.v1",
+    "shared_repeatability_policy_digest": "b3repeatpolicy_6e90f19680e0bb9773e85f57b4b625311a63050f8ffec75138c8072edcbdc447"
+  },
+  "source_bundle_digest": "b3engsrc_c1e38a53315b18aad5ba83400a93f2bb68f723213ca1e4759848cf6254c25454",
+  "status": "product_bakeoff_b3_runner_scorer_integration_complete_no_runtime_no_holdout_no_execution_no_result",
+  "synthetic_validation": {
+    "b3_shared_gate_proven_to_pass_the_same_fixture": true,
+    "diagnostic_hash_drift_groups_accepted_when_score_and_routing_equal": 360,
+    "historical_exact_gate_proven_to_fail_the_equivalent_diagnostic_fixture": true,
+    "historical_exact_scorer_canonicalizers_poisoned_and_not_called": true,
+    "inherited_b21_runner_fault_checks": 4,
+    "inherited_b21_runner_self_test_checks": 9,
+    "logical_group_count": 360,
+    "missing_group_and_repetition_signature_drift_rejected": true,
+    "observation_count": 1440,
+    "runner_fault_checks": 5,
+    "runner_self_test_checks": 14,
+    "scorer_fault_checks": 5,
+    "scorer_self_test_checks": 9,
+    "target_cardinality_routing_drift_rejected": true
+  }
+}

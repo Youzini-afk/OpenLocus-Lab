@@ -1,0 +1,133 @@
+name: product-bakeoff-b3-engine
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_contract.py'
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b2_runner.py'
+      - 'eval/product_bakeoff_b2_scorer.py'
+      - 'eval/product_bakeoff_b21_protocol.py'
+      - 'eval/product_bakeoff_b21_runner.py'
+      - 'eval/product_bakeoff_b21_scorer.py'
+      - 'eval/product_bakeoff_b24_runner.py'
+      - 'eval/product_bakeoff_b3_protocol.py'
+      - 'eval/product_bakeoff_b3_repeatability.py'
+      - 'eval/product_bakeoff_b3_runner.py'
+      - 'eval/product_bakeoff_b3_scorer.py'
+      - 'eval/product_bakeoff_b3_engine_integration.py'
+      - 'artifacts/product_bakeoff_b3_engine_integration/**'
+      - 'docs/en/product-bakeoff-b3-engine-integration.md'
+      - 'docs/zh/product-bakeoff-b3-engine-integration.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-engine.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_contract.py'
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b2_runner.py'
+      - 'eval/product_bakeoff_b2_scorer.py'
+      - 'eval/product_bakeoff_b21_protocol.py'
+      - 'eval/product_bakeoff_b21_runner.py'
+      - 'eval/product_bakeoff_b21_scorer.py'
+      - 'eval/product_bakeoff_b24_runner.py'
+      - 'eval/product_bakeoff_b3_protocol.py'
+      - 'eval/product_bakeoff_b3_repeatability.py'
+      - 'eval/product_bakeoff_b3_runner.py'
+      - 'eval/product_bakeoff_b3_scorer.py'
+      - 'eval/product_bakeoff_b3_engine_integration.py'
+      - 'artifacts/product_bakeoff_b3_engine_integration/**'
+      - 'docs/en/product-bakeoff-b3-engine-integration.md'
+      - 'docs/zh/product-bakeoff-b3-engine-integration.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-engine.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b3-engine-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  engine-integration:
+    name: engine-integration-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out B3 engine integration
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile B3 engine tooling
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b3_repeatability.py \
+            eval/product_bakeoff_b3_protocol.py \
+            eval/product_bakeoff_b3_runner.py \
+            eval/product_bakeoff_b3_scorer.py \
+            eval/product_bakeoff_b3_engine_integration.py
+      - name: Validate frozen B2.1 mechanics
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          sys.path.insert(0, "eval")
+          import product_bakeoff_b21_runner as runner
+          import product_bakeoff_b21_scorer as scorer
+          reports = {
+              "runner_self": runner.run_self_test(),
+              "runner_fault": runner.run_fault_test(),
+              "scorer_self": scorer.run_self_test(),
+              "scorer_fault": scorer.run_fault_test(),
+          }
+          print(json.dumps(reports, sort_keys=True))
+          if not all(report["passed"] for report in reports.values()):
+              raise SystemExit(1)
+          PY
+      - name: Validate B3 protocol parent
+        run: |
+          python eval/product_bakeoff_b3_protocol.py --self-test
+          python eval/product_bakeoff_b3_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json
+      - name: Run B3 runner and scorer integration tests
+        run: |
+          python eval/product_bakeoff_b3_runner.py --self-test
+          python eval/product_bakeoff_b3_runner.py --fault-test
+          python eval/product_bakeoff_b3_scorer.py --self-test
+          python eval/product_bakeoff_b3_scorer.py --fault-test
+      - name: Validate aggregate-only engine integration
+        run: |
+          python eval/product_bakeoff_b3_engine_integration.py --self-test
+          python eval/product_bakeoff_b3_engine_integration.py --fault-test
+          python eval/product_bakeoff_b3_engine_integration.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json
+      - name: Run public privacy and bilingual documentation audits
+        if: runner.os == 'Linux'
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

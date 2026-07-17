@@ -38,6 +38,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 - Post-closeout determinism Linux scale aggregate / 关闭后确定性 Linux 规模验证聚合: [`artifacts/product_bakeoff_determinism_linux_scale/product_bakeoff_postcloseout_determinism_linux_scale.json`](../artifacts/product_bakeoff_determinism_linux_scale/product_bakeoff_postcloseout_determinism_linux_scale.json)
 - B3 preregistered future tournament / B3 未来锦标赛预注册: [EN](en/product-bakeoff-b3-preregistered-future-tournament.md) / [ZH](zh/product-bakeoff-b3-preregistered-future-tournament.md)
 - B3 protocol report / B3 协议报告: [`artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json`](../artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json)
+- B3 runner/scorer engine integration / B3 runner/scorer 引擎集成: [EN](en/product-bakeoff-b3-engine-integration.md) / [ZH](zh/product-bakeoff-b3-engine-integration.md)
+- B3 engine integration report / B3 引擎集成报告: [`artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json`](../artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json)
 
 ## Current route closure / 当前路线关闭
 
