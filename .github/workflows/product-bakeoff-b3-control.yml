@@ -1,0 +1,165 @@
+name: product-bakeoff-b3-control
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'crates/openlocus-*/src/**'
+      - 'eval/product_bakeoff_b*.py'
+      - 'eval/ci_clone_and_lock_repo.py'
+      - 'eval/product_bakeoff_conformance.py'
+      - 'eval/product_bakeoff_oracle.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'scripts/product_bakeoff_b3_linux_longrun.sh'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - 'artifacts/product_bakeoff_b3_control_integration/**'
+      - 'artifacts/product_bakeoff_b3_runtime_qualification/**'
+      - 'artifacts/product_bakeoff_b3_readiness/**'
+      - 'artifacts/product_bakeoff_b3_result/**'
+      - 'docs/en/product-bakeoff-b3-control-plane.md'
+      - 'docs/zh/product-bakeoff-b3-control-plane.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-control.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'crates/openlocus-*/src/**'
+      - 'eval/product_bakeoff_b*.py'
+      - 'eval/ci_clone_and_lock_repo.py'
+      - 'eval/product_bakeoff_conformance.py'
+      - 'eval/product_bakeoff_oracle.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'scripts/product_bakeoff_b3_linux_longrun.sh'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - 'artifacts/product_bakeoff_b3_control_integration/**'
+      - 'artifacts/product_bakeoff_b3_runtime_qualification/**'
+      - 'artifacts/product_bakeoff_b3_readiness/**'
+      - 'artifacts/product_bakeoff_b3_result/**'
+      - 'docs/en/product-bakeoff-b3-control-plane.md'
+      - 'docs/zh/product-bakeoff-b3-control-plane.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-control.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b3-control-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  control-plane:
+    name: control-plane-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out B3 control plane
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile B3 control tooling
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b3_source.py \
+            eval/product_bakeoff_b3_runtime_qualification.py \
+            eval/product_bakeoff_b3_corpus.py \
+            eval/product_bakeoff_b3_readiness.py \
+            eval/product_bakeoff_b3_publication.py \
+            eval/product_bakeoff_b3_execution.py \
+            eval/product_bakeoff_b3_cli.py \
+            eval/product_bakeoff_b3_control_integration.py
+      - name: Revalidate B3 protocol and engine parents
+        run: |
+          python eval/product_bakeoff_b3_protocol.py --self-test
+          python eval/product_bakeoff_b3_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json
+          python eval/product_bakeoff_b3_runner.py --self-test
+          python eval/product_bakeoff_b3_runner.py --fault-test
+          python eval/product_bakeoff_b3_scorer.py --self-test
+          python eval/product_bakeoff_b3_scorer.py --fault-test
+          python eval/product_bakeoff_b3_engine_integration.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json
+      - name: Run B3 control and fault tests
+        run: |
+          python - <<'PY'
+          import subprocess
+          import sys
+          sys.path.insert(0, "eval")
+          import product_bakeoff_b3_source as source
+          checkpoint = subprocess.check_output(
+              ["git", "rev-parse", "HEAD"], text=True
+          ).strip()
+          source.validate_source_checkpoint(checkpoint)
+          print(source.control_source_bundle_digest())
+          PY
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "eval")
+          import product_bakeoff_b3_cli  # noqa: F401
+          forbidden = {
+              "product_bakeoff_b2_author",
+              "product_bakeoff_b2_oracle",
+              "product_bakeoff_b2_scorer",
+              "product_bakeoff_b21_scorer",
+              "product_bakeoff_b24_scorer",
+              "product_bakeoff_b25_scorer",
+              "product_bakeoff_b3_scorer",
+              "product_bakeoff_b3_publication",
+          }
+          loaded = sorted(forbidden & set(sys.modules))
+          if loaded:
+              raise SystemExit(f"B3 RUN CLI import boundary contaminated: {loaded}")
+          print("B3 RUN CLI import boundary clean")
+          PY
+          python eval/product_bakeoff_b3_cli.py self-test
+          python eval/product_bakeoff_b3_cli.py fault-test
+          python eval/product_bakeoff_b3_control_integration.py --self-test
+          python eval/product_bakeoff_b3_control_integration.py --fault-test
+          python eval/product_bakeoff_b3_control_integration.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_control_integration/product_bakeoff_b3_control_integration.json
+      - name: Validate disconnect-safe Linux handshake
+        if: runner.os == 'Linux'
+        run: bash scripts/product_bakeoff_b3_linux_longrun.sh --self-test
+      - name: Validate any later B3 public phase artifact
+        run: |
+          for artifact in \
+            artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json \
+            artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json \
+            artifacts/product_bakeoff_b3_result/product_bakeoff_b3_result.json \
+            artifacts/product_bakeoff_b3_result/product_bakeoff_b3_failure.json; do
+            if [[ -f "$artifact" ]]; then
+              python eval/product_bakeoff_b3_cli.py check-public "$artifact"
+            fi
+          done
+      - name: Run public privacy and bilingual documentation audits
+        if: runner.os == 'Linux'
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

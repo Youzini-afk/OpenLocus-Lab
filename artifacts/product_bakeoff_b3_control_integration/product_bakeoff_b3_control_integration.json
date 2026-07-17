@@ -1,0 +1,77 @@
+{
+  "claim_level": "engineering_and_synthetic_fault_tests_only_no_private_input",
+  "control_source_bundle_digest": "b3controlsrc_01000c75446bd2ec977acab8d357a58c40209da1458956d8ef8aa7c4e7acc6a4",
+  "date": "2026-07-17",
+  "historical_boundary": {
+    "b25_closeout_remains_failed_closed_no_result": true,
+    "b25_private_holdout_output_or_authorization_reused": false,
+    "b25_run_restarted_resumed_scored_ranked_or_reinterpreted": false
+  },
+  "implementation_readiness": {
+    "attempt_boundary_crossed": false,
+    "exact_linux_runtime_qualified": false,
+    "future_tournament_execution_authorized": false,
+    "offline_control_source_complete": true,
+    "private_holdout_authored_or_frozen": false,
+    "private_launch_authorization_created": false,
+    "public_readiness_committed_and_ci_green": false,
+    "public_synthetic_runtime_qualification_tooling_complete": true,
+    "tournament_result_exists": false,
+    "treatment_output_exists": false
+  },
+  "implemented_surfaces": {
+    "aggregate_failure_closeout_without_arm_metrics": true,
+    "aggregate_readiness_publication": true,
+    "aggregate_runtime_qualification_publication": true,
+    "aggregate_success_publication": true,
+    "crash_window_observation_without_receipt_reconciliation": true,
+    "disconnect_safe_worker_admission_and_release": true,
+    "exact_current_linux_profile_and_cli_private_freeze": true,
+    "first_persisted_normal_or_terminal_observation_receipt": true,
+    "freshness_against_b2_b21_b24_b25_frames": true,
+    "green_readiness_ci_bound_private_launch_authorization": true,
+    "historical_machine_identity_dependency_removed": true,
+    "post_boundary_restart_resume_retry_recompute_forbidden": true,
+    "preboundary_zero_observation_recovery_audit_no_auto_delete": true,
+    "private_holdout_authoring_binding_and_freeze": true
+  },
+  "integration_digest": "b3control_4a9ac3c38faf7d11b6a2ee6df5846dafa30defa095a7680ca25a838cf0ad0024",
+  "next_authorized_action": "Start the Linux server only now: build the frozen CLI at this exact checkpoint, run the public synthetic runtime qualification, privately freeze the exact admitted profile, then commit only the aggregate report and wait for green CI before any private holdout authoring.",
+  "parent_engine": {
+    "canonical_sha256": "10357d5647c29eefe53d7cb1d133a601631973d3bd29cf5868bffdb70523cf24",
+    "integration_digest": "b3engine_a61e54a2fe426f00ac081345ce379300b4cf8c59bdbcc43eca99f9f104579535",
+    "runner_and_scorer_integrated": true
+  },
+  "phase": "product_bakeoff_b3_offline_control_plane_integration",
+  "protocol_binding": {
+    "attempt_boundary": "first_durable_treatment_observation",
+    "b3_execution_schedule_digest": "b3sched_0566e14fe8b4acdc7d45e269764ff358102aacf543c7ea36541a2014000676ea",
+    "b3_expected_observation_plan_digest": "b3repeatplan_352058d88cc6828d6a30724bb5f3e830d890950af24079ccd20f81f8b78ce9de",
+    "b3_spec_digest": "b3spec_df6c9be0648df4bc",
+    "launch_release_alone_consumes_attempt": false
+  },
+  "publication_limits": {
+    "final_arm_aggregate_public_only_after_all_gates": true,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "per_task_per_repository_or_per_cell_empirical_detail_public": false,
+    "private_holdout_manifest_or_freeze_digest_public": false,
+    "private_runner_identity_endpoint_or_working_location_public": false,
+    "protocol_schedule_and_policy_digests_public": true,
+    "provider_payload_secret_or_credential_public": false,
+    "publication_level": "aggregate_only",
+    "repository_candidate_task_query_or_oracle_identity_public": false,
+    "source_location_range_excerpt_or_raw_output_public": false
+  },
+  "schema_version": "product_bakeoff_b3_control_integration.v1",
+  "status": "product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification",
+  "synthetic_validation": {
+    "b25_repository_reuse_rejected": true,
+    "boundary_receipt_without_observation_rejected": true,
+    "fault_test_check_count": 16,
+    "launch_release_without_observation_does_not_cross_boundary": true,
+    "module_count": 6,
+    "persisted_observation_without_receipt_crosses_boundary": true,
+    "public_failure_contains_no_arm_quality_resource_or_rank_metrics": true,
+    "self_test_check_count": 34
+  }
+}

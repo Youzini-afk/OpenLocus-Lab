@@ -1,0 +1,47 @@
+# Product Bakeoff B3 Offline Control Plane
+
+Date: 2026-07-17
+
+Status: `product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification`
+
+The executable B3 control plane is complete and fault-tested without reading a private holdout or producing treatment output. The public aggregate is [`product_bakeoff_b3_control_integration.json`](../../artifacts/product_bakeoff_b3_control_integration/product_bakeoff_b3_control_integration.json).
+
+This phase implements the surfaces that were deliberately absent from the earlier runner/scorer integration: exact Linux runtime qualification, fresh holdout admission against all four historical frames, private freeze, aggregate readiness, CI-bound launch authorization, disconnect-safe launch, the first-durable-observation attempt receipt, aggregate success publication, and aggregate failed-closeout publication.
+
+## Runtime qualification
+
+B3 does not require the identity of a historical server. The current Linux runner must independently satisfy the frozen minimum runner class, execute the actual production CLI and strict `bakeoff-query` parser on the public synthetic tokenizer matrix, and retain an unchanged stable profile across that matrix.
+
+The exact current profile and CLI bytes are written only to a private receipt. The public report contains the minimum class, aggregate pass/fail gates, case categories, and zero-provider-call result. Before authoring, freezing, and formal RUN admission, the current profile is collected again and compared exactly on the frozen stable fields while transient available-memory, free-space, and idle-load values are separately rechecked against minimum gates.
+
+## Fresh holdout and readiness
+
+The candidate plan must exclude the disjoint B2, B2.1, B2.4, and B2.5 repository frames: 48 historical repository slugs and identity/commit pairs in total. It must also exclude every registered real preflight source and synthetic qualification source. Each of the 12 repository slots requires at least two unique frozen candidates before authoring.
+
+The private holdout binding covers the selected repository lock, 48 tasks, 48 oracle rows, source-only tokenizer compatibility report, candidate plan, four historical locks, exclusion registry, exact runtime qualification, CLI bytes, B3 Williams schedule, complete 360-group/1,440-observation plan, and shared repeatability policy. Freeze output is exclusive and durably written.
+
+The public readiness report exposes only fixed counts, margins, booleans, public protocol/runtime digests, and a self-digest. It requires zero treatment output, no launch release, no scoring or ranking, and no public tournament result. A private launch authorization may be created only after that exact readiness file is committed and its CI succeeds.
+
+## Attempt boundary and disconnect safety
+
+Worker entry, runner admission, and launch release are three pre-boundary states. None consumes the formal attempt.
+
+The frozen B2.1 append functions are wrapped only during B3 engine execution. A normal or terminal observation is first persisted by the historical writer, then its file and containing directory are synchronized, and only then is the private attempt receipt written atomically. This is the first durable treatment observation and the sole attempt boundary.
+
+If the process dies after the observation file is durable but before the receipt is written, reconciliation detects the exact normal/terminal observation directories and reconstructs the receipt. Therefore this crash window cannot be misclassified as a zero-output launch. A receipt without any durable observation is rejected. After the boundary, restart, resume, selective retry, imputation, and recomputation remain forbidden.
+
+The Linux launcher uses `nohup`, a PID file, an exit-code file, a private log, worker-entry and admission handshakes, and a separate launch release. Its status command emits only worker state, launch/boundary booleans, completed-group count, logical-record count, and exit code; it never emits private paths, identities, queries, metrics, or ranks.
+
+## Success and failure publication
+
+After all 1,440 records and every pre-score gate pass, the scorer is imported lazily, uses the shared B3 canonicalizer, writes the complete score privately, and publishes only six final arm aggregates plus the frozen tournament decision. Exact equal quality or resource vectors share competition rank; a unique winner is not forced.
+
+Any post-boundary failure closes without retry. Its public artifact contains only a closed failure class, completed-group count, validated logical-record count, durable treatment-artifact count, the frozen protocol boundary, and booleans confirming that no arm quality, resource, or ranking metric is present. The separate artifact count also closes the rare case where a crash leaves a durable but incomplete observation file. A hard worker or machine termination can be closed later from the durable private observation inventory without rerunning the matrix.
+
+Pre-boundary zero-observation work state is only audited as potentially recoverable; the tooling never deletes it automatically. Replacing the runner requires a new public runtime qualification and readiness cycle.
+
+## Validation and next action
+
+Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
+
+No exact Linux runtime is qualified yet, no B3 private holdout exists, no launch authorization exists, and the attempt boundary has not been crossed. After this control-plane checkpoint and public CI are green, the server should be started for the exact Linux qualification. Private authoring remains forbidden until the aggregate qualification itself is committed and CI-green.
