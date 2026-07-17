@@ -1,0 +1,125 @@
+name: product-bakeoff-b3-protocol
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'crates/openlocus-cli/src/bakeoff_query.rs'
+      - 'crates/openlocus-cli/src/lib.rs'
+      - 'crates/openlocus-ast/src/symbol.rs'
+      - 'crates/openlocus-context/src/plan.rs'
+      - 'crates/openlocus-graph/src/graph.rs'
+      - 'crates/openlocus-index/src/persistent.rs'
+      - 'crates/openlocus-retrieval/src/bm25_search.rs'
+      - 'crates/openlocus-retrieval/src/regex_search.rs'
+      - 'crates/openlocus-retrieval/src/rrf.rs'
+      - 'crates/openlocus-retrieval/src/symbol_search.rs'
+      - 'eval/product_bakeoff_contract.py'
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b2_runner.py'
+      - 'eval/product_bakeoff_b2_scorer.py'
+      - 'eval/product_bakeoff_b21_protocol.py'
+      - 'eval/product_bakeoff_b21_runner.py'
+      - 'eval/product_bakeoff_b21_scorer.py'
+      - 'eval/product_bakeoff_b3_repeatability.py'
+      - 'eval/product_bakeoff_b3_protocol.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'artifacts/product_bakeoff_b3_protocol/**'
+      - 'docs/en/product-bakeoff-b3-preregistered-future-tournament.md'
+      - 'docs/zh/product-bakeoff-b3-preregistered-future-tournament.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-protocol.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Cargo.lock'
+      - 'crates/openlocus-cli/src/bakeoff_query.rs'
+      - 'crates/openlocus-cli/src/lib.rs'
+      - 'crates/openlocus-ast/src/symbol.rs'
+      - 'crates/openlocus-context/src/plan.rs'
+      - 'crates/openlocus-graph/src/graph.rs'
+      - 'crates/openlocus-index/src/persistent.rs'
+      - 'crates/openlocus-retrieval/src/bm25_search.rs'
+      - 'crates/openlocus-retrieval/src/regex_search.rs'
+      - 'crates/openlocus-retrieval/src/rrf.rs'
+      - 'crates/openlocus-retrieval/src/symbol_search.rs'
+      - 'eval/product_bakeoff_contract.py'
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b2_runner.py'
+      - 'eval/product_bakeoff_b2_scorer.py'
+      - 'eval/product_bakeoff_b21_protocol.py'
+      - 'eval/product_bakeoff_b21_runner.py'
+      - 'eval/product_bakeoff_b21_scorer.py'
+      - 'eval/product_bakeoff_b3_repeatability.py'
+      - 'eval/product_bakeoff_b3_protocol.py'
+      - 'eval/product_bakeoff_terminal_archive.py'
+      - 'artifacts/product_bakeoff_b3_protocol/**'
+      - 'docs/en/product-bakeoff-b3-preregistered-future-tournament.md'
+      - 'docs/zh/product-bakeoff-b3-preregistered-future-tournament.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'docs/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b3-protocol.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b3-protocol-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  protocol-and-repeatability:
+    name: protocol-and-repeatability-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out B3 preregistration
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile public protocol tooling
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b3_repeatability.py \
+            eval/product_bakeoff_b3_protocol.py
+      - name: Run shared gate/scorer canonicalization tests
+        run: |
+          python eval/product_bakeoff_b3_repeatability.py --self-test
+          python eval/product_bakeoff_b3_repeatability.py --fault-test
+      - name: Run B3 protocol and randomization tests
+        run: |
+          python eval/product_bakeoff_b3_protocol.py --self-test
+          python eval/product_bakeoff_b3_protocol.py --fault-test
+          python eval/product_bakeoff_b3_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json
+      - name: Validate inherited terminal boundary
+        run: |
+          python eval/product_bakeoff_terminal_archive.py --self-test
+          python eval/product_bakeoff_terminal_archive.py --fault-test
+          python eval/product_bakeoff_terminal_archive.py --validate b25
+      - name: Run public privacy and bilingual documentation audits
+        if: runner.os == 'Linux'
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

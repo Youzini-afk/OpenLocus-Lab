@@ -1,0 +1,261 @@
+{
+  "analysis_rules": {
+    "decision_equivalent_arms_may_all_advance": true,
+    "exact_equal_quality_vectors_share_competition_rank": true,
+    "exact_equal_resource_vectors_share_competition_rank": true,
+    "forced_unique_winner": false,
+    "no_opaque_single_composite_score": true,
+    "no_post_output_metric_threshold_weight_or_order_change": true,
+    "paired_task_level_quality_comparison": true,
+    "quality_and_resource_ranks_reported_separately": true,
+    "quality_metrics_and_thresholds_inherited_from_b2": true,
+    "repository_cluster_sensitivity_is_descriptive_only": true,
+    "same_arm_own_parent_lineage_inherited_from_b21": true,
+    "technical_repetitions_do_not_increase_quality_sample_size": true
+  },
+  "claim_level": "future_preregistered_design_and_synthetic_selftest_only",
+  "date": "2026-07-17",
+  "design_corrections": {
+    "arm_position_and_first_order_predecessor_effects_both_balanced": true,
+    "b25_closeout_remains_terminal_failed_closed_no_result": true,
+    "b25_matrix_restarted_resumed_scored_or_ranked": false,
+    "b25_private_holdout_or_launch_authorization_reused": false,
+    "forty_eight_tasks_no_longer_described_as_forty_eight_independent_repositories": true,
+    "gate_and_scorer_share_one_repeatability_core": true,
+    "missing_whole_groups_and_duplicate_repetitions_fail_closed": true,
+    "pre_output_zero_output_recovery_separated_from_post_output_retry": true,
+    "repository_cluster_count_explicitly_frozen_at_twelve": true,
+    "target_cardinality_retained_because_it_controls_support_routing": true
+  },
+  "execution_boundary": {
+    "attempt_boundary": "first_durable_treatment_observation",
+    "completed_cell_recomputation_allowed": false,
+    "intermediate_quality_resource_or_ranking_metrics_visible": false,
+    "maximum_attempts_with_any_durable_treatment_observation": 1,
+    "missing_cell_imputation_allowed": false,
+    "post_boundary_complete_restart_allowed": false,
+    "post_boundary_failure_closes_without_result": true,
+    "post_boundary_resume_after_process_or_machine_loss_allowed": false,
+    "post_boundary_selective_cell_retry_allowed": false,
+    "pre_boundary_recovery_discards_and_recreates_all_working_state": true,
+    "pre_boundary_recovery_requires_audited_zero_treatment_record_or_output": true,
+    "pre_boundary_recovery_requires_no_operator_visible_treatment_payload": true,
+    "pre_boundary_recovery_requires_unchanged_frozen_holdout_and_protocol": true,
+    "pre_boundary_runner_replacement_requires_new_public_qualification_and_readiness": true,
+    "pre_boundary_zero_output_recovery_allowed": true,
+    "private_launch_release_alone_consumes_attempt": false
+  },
+  "experimental_design": {
+    "adaptive_arm_elimination_forbidden": true,
+    "cache_and_repetition_are_technical_repeated_measures": true,
+    "complete_six_treatment_block_within_every_task": true,
+    "design_type": "complete_within_task_six_treatment_blocks_with_repository_cluster_and_split_plot_runtime_lifecycle",
+    "forty_eight_tasks_are_not_claimed_as_independent_repositories": true,
+    "interim_quality_looks": 0,
+    "logical_task_count": 48,
+    "one_cold_plus_three_warm_observations_per_task_treatment": true,
+    "population_hypothesis_claim": false,
+    "primary_claim_scope": "fixed_frozen_frame_product_decision",
+    "primary_quality_analysis_unit": "logical_task",
+    "quality_scored_once_per_task_after_repeatability_gate": true,
+    "repository_cluster_count": 12,
+    "repository_dependence_cluster": "frozen_repository_snapshot",
+    "repository_snapshots_are_stratified_fixed_frame_not_random_population_sample": true,
+    "repository_treatment_repetition_index_is_split_plot_whole_plot": true,
+    "resource_observations_remain_repeated_measurements": true,
+    "same_task_receives_all_treatments": true,
+    "single_final_quality_analysis_only": true,
+    "tasks_per_repository_cluster": 4,
+    "technical_repetition_count": 4,
+    "tie_policy": {
+      "competition_rank_example": [
+        1,
+        1,
+        3
+      ],
+      "decision_equivalent_arms_may_all_advance": true,
+      "exact_equal_quality_vector": "shared_competition_rank",
+      "exact_equal_resource_vector": "shared_competition_rank",
+      "forced_unique_winner": false,
+      "maximum_finalist_count": null,
+      "quality_values": "unrounded_integer_counts_and_fixed_point_sums_only"
+    },
+    "treatment_application_unit": "logical_task_within_repository_snapshot",
+    "unadjusted_task_independence_p_values_forbidden": true
+  },
+  "hard_gates": {
+    "all_normal_and_terminal_records_valid_and_scoreable": true,
+    "complete_frozen_execution_schedule": true,
+    "cross_arm_static_fairness": true,
+    "determinism_repair_and_linux_scale_locks_valid": true,
+    "exact_runtime_and_source_bundle_qualified_before_authoring": true,
+    "exact_split_plot_lifecycle": true,
+    "fresh_private_holdout_and_oracle_frozen_before_execution": true,
+    "provider_network_call_count_zero": true,
+    "same_arm_own_parent_lineage": true,
+    "scorer_and_oracle_unloaded_until_all_pre_score_gates_pass": true,
+    "shared_score_and_routing_repeatability_policy": true,
+    "source_currentness_and_workspace_strictness": true,
+    "terminal_b25_closeout_lock_valid": true
+  },
+  "holdout_rules": {
+    "all_b25_treatment_output_reuse_forbidden": true,
+    "all_real_preflight_runtime_and_scale_repositories_excluded": true,
+    "all_repository_identity_commit_pairs_absent_from_all_historical_frames": true,
+    "all_repository_slugs_absent_from_all_historical_frames": true,
+    "all_synthetic_qualification_sources_excluded": true,
+    "all_task_query_and_oracle_rows_new": true,
+    "b25_private_holdout_and_launch_authorization_reuse_forbidden": true,
+    "candidate_failover_complete_before_private_freeze": true,
+    "historical_repository_count": 48,
+    "historical_repository_frame_labels": [
+      "b2",
+      "b21",
+      "b24",
+      "b25"
+    ],
+    "language_count": 3,
+    "logical_task_count": 48,
+    "no_query_or_oracle_edit_after_private_freeze": true,
+    "no_task_add_drop_replace_after_private_freeze": true,
+    "private_holdout_identity_or_digest_public": false,
+    "repository_snapshot_count": 12,
+    "size_band_count": 4,
+    "task_and_oracle_authoring_complete_before_any_treatment_output": true,
+    "task_roles_per_repository": 4,
+    "tasks_per_repository_snapshot": 4
+  },
+  "implementation_readiness": {
+    "b3_runner_integrated": false,
+    "b3_scorer_integrated": false,
+    "exact_linux_runtime_qualified": false,
+    "future_tournament_execution_authorized": false,
+    "private_holdout_authored": false,
+    "private_holdout_frozen": false,
+    "private_launch_authorization_created": false,
+    "protocol_module_implemented": true,
+    "public_readiness_committed_and_ci_green": false,
+    "public_synthetic_runtime_qualification_complete": false,
+    "shared_repeatability_module_implemented": true,
+    "synthetic_schedule_and_fault_tests_implemented": true,
+    "tournament_result_exists": false,
+    "treatment_output_exists": false
+  },
+  "next_authorized_action": "Keep the server off while implementing the B3 runner/scorer integration and public synthetic qualification locally. After those sources and fault tests are frozen and CI-green, qualify the exact Linux runtime, then author a fresh private holdout. Do not reuse any B2.5 treatment output, private holdout, or launch authorization.",
+  "parent_locks": {
+    "b21_spec_digest": "b21spec_3d656619189a7531",
+    "b25_failure_digest": "b25failure_012f59fc4d7d717b4f1d4f0da5513430637d4a6cc6eaf8a326a35adc339302fd",
+    "b25_failure_sha256": "8901b1cfaf7f47f12671e26e7976d1795747ee763128a31f43a75508113e1834",
+    "b2_spec_digest": "b2spec_358b77c924fbe3f1",
+    "b2_task_slot_digest": "b2slots_a92720057d2f931e1f84c2b3d49af5a4e2efe08661d7c49e375e8835a80149ff",
+    "determinism_repair_digest": "detrepair_b05b51b37631baa5e7d744be511e3368e4e56bab4f37a0a3cfb8748b853cedeb",
+    "determinism_repair_sha256": "bfce93f09664f75e4700978a9acbf10f4e8a995155b7426e765699994fca4949",
+    "determinism_scale_digest": "detlinux_b82d0262881b5f2623b866e3f9ea504e68cc591b1c23ac43c20349816af7bcfc",
+    "determinism_scale_sha256": "830a2e2f727d8668d0af5fca8e513323319349edc93d77022c77a9b080070bf3"
+  },
+  "phase": "product_bakeoff_b3_fresh_cluster_aware_williams_tournament_protocol",
+  "protocol_digest": "b3protocol_d823432f1db3dedbf51e344dee25eddf41d67fd4ce33f0f284cae5fed66a3a92",
+  "publication_policy": {
+    "final_arm_aggregate_public_only_after_all_gates": true,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "per_task_per_repository_or_per_cell_empirical_detail_public": false,
+    "private_holdout_manifest_or_freeze_digest_public": false,
+    "private_runner_identity_endpoint_or_working_location_public": false,
+    "protocol_schedule_and_policy_digests_public": true,
+    "provider_payload_secret_or_credential_public": false,
+    "publication_level": "aggregate_only",
+    "repository_candidate_task_query_or_oracle_identity_public": false,
+    "source_location_range_excerpt_or_raw_output_public": false
+  },
+  "randomization": {
+    "expected_logical_group_count": 360,
+    "expected_observation_count": 1440,
+    "expected_observation_plan_digest": "b3repeatplan_352058d88cc6828d6a30724bb5f3e830d890950af24079ccd20f81f8b78ce9de",
+    "first_order_predecessor_balance_exact_overall_repetition_size_and_role": true,
+    "language_sequence_count_range": [
+      10,
+      12
+    ],
+    "policy": "seeded_repo_order_plus_williams6_position_and_first_order_balance_v1",
+    "position_balance_exact_overall_repetition_size_and_role": true,
+    "schedule_digest": "b3sched_0566e14fe8b4acdc7d45e269764ff358102aacf543c7ea36541a2014000676ea",
+    "schedule_row_count": 192,
+    "seed": "openlocus-b3-20260717-williams6-splitplot-v1",
+    "sequence_coefficients_mod_6": {
+      "language": 2,
+      "repetition": 2,
+      "role": 1,
+      "size_band": 1
+    },
+    "williams_sequence_count": 6
+  },
+  "repeatability_binding": {
+    "complete_expected_group_set_required": true,
+    "diagnostic_hash_drift_recorded_privately_but_not_quality_gate_failure": true,
+    "exact_repetition_and_cache_signatures_required": true,
+    "gate_entry_point": "product_bakeoff_b3_repeatability.repeatability_gate",
+    "policy_digest": "b3repeatpolicy_6e90f19680e0bb9773e85f57b4b625311a63050f8ffec75138c8072edcbdc447",
+    "policy_version": "product_bakeoff_b3_repeatability.v1",
+    "scorer_entry_point": "product_bakeoff_b3_repeatability.canonicalize_for_scoring",
+    "shared_internal_canonicalization_core": true,
+    "source_currentness_scoreability_lineage_fairness_provider_are_separate_gates": true,
+    "target_cardinality_class_retained_for_support_routing": true
+  },
+  "repeatability_policy": {
+    "complete_expected_group_set_required": true,
+    "context_projection": [
+      "accepted_scoreable_admission_class",
+      "candidate_set_empty_or_nonempty",
+      "pack_status",
+      "evidence_line_union",
+      "target_line_union",
+      "target_cardinality_empty_single_or_multiple",
+      "support_set_empty_or_nonempty"
+    ],
+    "diagnostic_hash_drift_recorded_but_not_score_gate_failure": true,
+    "diagnostic_only_fields_excluded": [
+      "candidate_native_score_and_order_when_nonempty",
+      "evidence_and_support_duplicate_segmentation",
+      "excerpt_channel_explanation_and_status_reason_text",
+      "exact_pack_serialization_and_diagnostic_receipts"
+    ],
+    "exact_repetition_and_cache_signatures_required": true,
+    "expected_cache_counts": {
+      "cold": 1,
+      "warm": 3
+    },
+    "expected_repetitions": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "gate_and_scorer_share_one_canonicalization_core": true,
+    "policy_version": "product_bakeoff_b3_repeatability.v1",
+    "quality_canonical_representative": "lowest_repetition_after_equivalence",
+    "resource_measurements_are_not_canonicalized_or_required_equal": true,
+    "separate_mandatory_gates": [
+      "complete_execution_schedule",
+      "record_validation_and_scoreability",
+      "source_currentness_and_workspace_strictness",
+      "same_arm_parent_lineage",
+      "cross_arm_static_fairness",
+      "provider_network_isolation"
+    ],
+    "support_projection": [
+      "accepted_scoreable_admission_class",
+      "relation_kind",
+      "parent_target_id",
+      "support_path_and_line_union"
+    ],
+    "terminal_projection": [
+      "validated_terminal_admission_class",
+      "terminal_reason",
+      "context_score_and_routing_projection"
+    ]
+  },
+  "schema_version": "product_bakeoff_b3_protocol_report.v1",
+  "source_bundle_digest": "b3src_b7ba85bab40e2b33ad5b80bc01972186d2ce6117b3b674f80907ee7d7d277cac",
+  "spec_digest": "b3spec_bee900dd30fe0ce7",
+  "status": "product_bakeoff_b3_protocol_frozen_no_runtime_no_holdout_no_execution_no_result"
+}

@@ -1,6 +1,8 @@
 # OpenLocus 当前研究结论
 
-日期：2026-07-14
+日期：2026-07-17
+
+产品栈对比 B3 已作为全新的未来实验完成预注册，状态为 `product_bakeoff_b3_protocol_frozen_no_runtime_no_holdout_no_execution_no_result`。它保持 B2.5 的终态 `failed_closed_no_result`，把 48 个任务视为嵌套在 12 个仓库相关性簇中的成对分析单位，而不是 48 个独立仓库；用六序列 Williams 设计替代只平衡位置的循环顺序，同时平衡一阶前序效应；并冻结一套由评分前门槛和评分器共用、要求完整观测计划的评分/路由规范化实现。target 数量被保留，因为单 target 与多 target 会改变同臂 support 路由；纯诊断序列化漂移可以私下记录，而不会自动变成质量失败。仅创建 launch release 不会消耗尝试，但第一条持久化的 accepted 或 rejected 治疗观测会跨越边界；此后禁止重启、恢复、选择性重试、填补和重算。这目前只是设计与合成自检证据：B3 runner/scorer 尚未集成，runtime 尚未 qualification，私有留出集不存在，执行也未获授权。参见 [`product-bakeoff-b3-preregistered-future-tournament.md`](./product-bakeoff-b3-preregistered-future-tournament.md) 与 [`product_bakeoff_b3_protocol_report.json`](../../artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json)。
 
 产品栈对比 B1 机械能力筛查已正式收口，状态为 `b1_mechanics_screen_complete_aggregate_only_no_product_winner_claim`。在源码检查点 `0b6f2e13b1dbc679eb1f827c28a8abd5403dcd58` 上，冻结的 B1 v2.4 完整运行通过 504/504 条记录，0 拒绝，六个内部栈全部通过，哨兵 2,256/2,256 通过，资源/可评分覆盖完整，双步血缘有效，冷/热与重复确定性确认，provider/网络调用为 0，私有 canary 仅保留在私有输出中。这只是合成机械能力证据：不对栈排序，不选择默认，不证明检索质量，不验证真实仓库，也不建立生产资源边界。参见 [`product-bakeoff-b1-mechanics-screen.md`](./product-bakeoff-b1-mechanics-screen.md) 与闭合公开聚合 [`product_bakeoff_b1_mechanics_screen_aggregate.json`](../../artifacts/product_bakeoff_b1/product_bakeoff_b1_mechanics_screen_aggregate.json)。
 
