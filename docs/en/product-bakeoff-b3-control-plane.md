@@ -16,6 +16,8 @@ The exact current profile and CLI bytes are written only to a private receipt. T
 
 B3 no longer inherits the historical 300 GiB scratch floor. Its scratch gate is derived from the actual serial peak: six byte-identical arm snapshots of the largest permitted visible repository, a four-times snapshot/index allowance, 4 GiB of checkpoint/control margin, 4 GiB of filesystem safety margin, and 2 GiB of rounding/measurement margin. This yields a 16 GiB minimum free-scratch gate. All non-storage B2.3 runner gates remain unchanged. Candidate clones are checkpointed separately and are not converted into a speculative fixed scratch reservation.
 
+The 24 GiB cgroup memory-headroom requirement is retained, but B3 measures effective headroom as raw limit-minus-current usage plus only the kernel's `inactive_file` cache, capped at the cgroup limit. This corrects the cgroup-v1 accounting artifact where clean, reclaimable build/source pages were treated as permanently occupied memory. Active file cache, anonymous memory, shared memory, dirty pages, and writeback are not credited.
+
 ## Fresh holdout and readiness
 
 The candidate plan must exclude the disjoint B2, B2.1, B2.4, and B2.5 repository frames: 48 historical repository slugs and identity/commit pairs in total. It must also exclude every registered real preflight source and synthetic qualification source. Each of the 12 repository slots requires at least two unique frozen candidates before authoring.
@@ -46,6 +48,6 @@ Pre-boundary zero-observation work state is only audited as potentially recovera
 
 ## Validation and next action
 
-Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, the computed scratch budget, removal of the inherited 300 GiB floor, verified-cache reuse without recloning, checkpoint resume without repeated authoring, checkpoint source/plan drift rejection, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
+Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, the computed scratch budget, removal of the inherited 300 GiB floor, cgroup-v1 inactive-file parsing and conservative reclaimable-memory admission, verified-cache reuse without recloning, checkpoint resume without repeated authoring, checkpoint source/plan drift rejection, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
 
 No exact Linux runtime is qualified yet, no B3 private holdout exists, no launch authorization exists, and the attempt boundary has not been crossed. After this control-plane checkpoint and public CI are green, the server should be started for the exact Linux qualification. Private authoring remains forbidden until the aggregate qualification itself is committed and CI-green.

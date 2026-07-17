@@ -38,9 +38,9 @@ PROTOCOL_REPORT = (
     / "product_bakeoff_b3_protocol_report.json"
 )
 
-B3_RUNTIME_VERSION = "product_bakeoff_b3_runtime_qualification.v2"
-B3_RUNTIME_PUBLIC_SCHEMA = "product_bakeoff_b3_runtime_qualification_public.v2"
-B3_RUNTIME_PRIVATE_SCHEMA = "product_bakeoff_b3_runtime_qualification_private.v2"
+B3_RUNTIME_VERSION = "product_bakeoff_b3_runtime_qualification.v3"
+B3_RUNTIME_PUBLIC_SCHEMA = "product_bakeoff_b3_runtime_qualification_public.v3"
+B3_RUNTIME_PRIVATE_SCHEMA = "product_bakeoff_b3_runtime_qualification_private.v3"
 B3_RUNTIME_STATUS = (
     "product_bakeoff_b3_exact_linux_runtime_qualified_"
     "private_authoring_allowed_after_publication_ci"
@@ -78,6 +78,20 @@ B3_MINIMUM_RUNNER_CLASS = copy.deepcopy(b23q.B23_RUNNER_CLASS)
 B3_MINIMUM_RUNNER_CLASS["minimum_free_local_scratch_bytes_at_start"] = (
     B3_SCRATCH_CAPACITY_POLICY["minimum_free_local_scratch_bytes_at_start"]
 )
+B3_MINIMUM_RUNNER_CLASS["cgroup_available_memory_measurement"] = (
+    "raw_limit_headroom_plus_inactive_file_cache_capped_at_limit"
+)
+B3_MEMORY_CAPACITY_POLICY = {
+    "policy_version": "product_bakeoff_b3_reclaimable_memory_headroom.v1",
+    "minimum_effective_available_memory_bytes_at_start": b23q.B23_RUNNER_CLASS[
+        "minimum_cgroup_available_memory_bytes_at_start"
+    ],
+    "raw_limit_headroom_included": True,
+    "inactive_file_cache_included_as_reclaimable": True,
+    "active_file_cache_included": False,
+    "anonymous_or_shared_memory_included": False,
+    "effective_available_capped_at_cgroup_limit": True,
+}
 B3_RUNTIME_PROFILE_KEYS = frozenset(
     {
         *b23q.STABLE_PROFILE_KEYS,
@@ -85,6 +99,8 @@ B3_RUNTIME_PROFILE_KEYS = frozenset(
         "host_available_memory_bytes",
         "cgroup_memory_current_bytes",
         "cgroup_available_memory_bytes",
+        "cgroup_reclaimable_inactive_file_bytes",
+        "cgroup_effective_available_memory_bytes",
         "scratch_free_bytes",
         "active_idle_cgroup_cpu_millicores",
     }
@@ -103,11 +119,71 @@ class B3RuntimeQualificationError(ValueError):
     """Fail-closed B3 runtime qualification error."""
 
 
+def _cgroup_reclaimable_inactive_file_bytes(
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+) -> int:
+    if (cgroup_root / "memory.max").is_file():
+        stat_path = cgroup_root / "memory.stat"
+        preferred = ("inactive_file",)
+    else:
+        stat_path = cgroup_root / "memory" / "memory.stat"
+        preferred = ("total_inactive_file", "inactive_file")
+    if not stat_path.is_file() or stat_path.is_symlink():
+        return 0
+    rows: dict[str, int] = {}
+    try:
+        for line in stat_path.read_text(encoding="ascii").splitlines():
+            key, separator, raw = line.partition(" ")
+            if separator:
+                rows[key] = max(0, int(raw.strip()))
+    except (OSError, UnicodeError, ValueError):
+        return 0
+    return next((rows[key] for key in preferred if key in rows), 0)
+
+
+def collect_b3_runner_profile(
+    *, repo_root: Path, scratch_root: Path, cli_path: Path
+) -> dict[str, Any]:
+    profile = dict(
+        b23q.collect_runner_profile(
+            repo_root=repo_root,
+            scratch_root=scratch_root,
+            cli_path=cli_path,
+        )
+    )
+    reclaimable = _cgroup_reclaimable_inactive_file_bytes()
+    raw_available = profile.get("cgroup_available_memory_bytes")
+    limit = profile.get("cgroup_memory_limit_bytes")
+    if (
+        isinstance(raw_available, int)
+        and not isinstance(raw_available, bool)
+        and isinstance(limit, int)
+        and not isinstance(limit, bool)
+    ):
+        effective = min(limit, max(0, raw_available) + reclaimable)
+    else:
+        effective = raw_available
+    profile["cgroup_reclaimable_inactive_file_bytes"] = reclaimable
+    profile["cgroup_effective_available_memory_bytes"] = effective
+    return profile
+
+
 def validate_b3_runner_profile(profile: Mapping[str, Any]) -> list[str]:
     """Apply the B2.3 runner gates with B3's serial working-set budget."""
 
     failures = set(b23q.validate_runner_profile(profile))
     failures.discard("scratch_free_space_below_minimum")
+    failures.discard("cgroup_available_memory_below_minimum")
+    effective_memory = profile.get("cgroup_effective_available_memory_bytes")
+    required_memory = B3_MEMORY_CAPACITY_POLICY[
+        "minimum_effective_available_memory_bytes_at_start"
+    ]
+    if (
+        not isinstance(effective_memory, int)
+        or isinstance(effective_memory, bool)
+        or effective_memory < required_memory
+    ):
+        failures.add("cgroup_effective_available_memory_below_minimum")
     observed = profile.get("scratch_free_bytes")
     required = B3_SCRATCH_CAPACITY_POLICY[
         "minimum_free_local_scratch_bytes_at_start"
@@ -219,6 +295,7 @@ def _build_public_report(
         "runner_gate": {
             "minimum_runner_class": copy.deepcopy(B3_MINIMUM_RUNNER_CLASS),
             "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
+            "memory_capacity_policy": copy.deepcopy(B3_MEMORY_CAPACITY_POLICY),
             "current_runner_class_admitted": True,
             "stable_profile_unchanged_during_qualification": True,
             "exact_current_profile_frozen_privately": True,
@@ -321,6 +398,7 @@ def validate_public_report(report: Any) -> list[str]:
     expected_runner = {
         "minimum_runner_class": copy.deepcopy(B3_MINIMUM_RUNNER_CLASS),
         "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
+        "memory_capacity_policy": copy.deepcopy(B3_MEMORY_CAPACITY_POLICY),
         "current_runner_class_admitted": True,
         "stable_profile_unchanged_during_qualification": True,
         "exact_current_profile_frozen_privately": True,
@@ -394,6 +472,7 @@ def _build_private_receipt(
         "profile_before": dict(profile_before),
         "profile_after": dict(profile_after),
         "scratch_capacity_policy": copy.deepcopy(B3_SCRATCH_CAPACITY_POLICY),
+        "memory_capacity_policy": copy.deepcopy(B3_MEMORY_CAPACITY_POLICY),
         "stable_profile_changes": b23q.stable_runner_profile_changes(
             profile_before, profile_after
         ),
@@ -424,6 +503,7 @@ def validate_private_receipt(receipt: Any) -> list[str]:
         "profile_before",
         "profile_after",
         "scratch_capacity_policy",
+        "memory_capacity_policy",
         "stable_profile_changes",
         "cli_bytes",
         "cli_sha256",
@@ -459,6 +539,8 @@ def validate_private_receipt(receipt: Any) -> list[str]:
         errors.append("B3 runtime private stable change list is nonempty")
     if receipt.get("scratch_capacity_policy") != B3_SCRATCH_CAPACITY_POLICY:
         errors.append("B3 runtime private scratch capacity policy drifted")
+    if receipt.get("memory_capacity_policy") != B3_MEMORY_CAPACITY_POLICY:
+        errors.append("B3 runtime private memory capacity policy drifted")
     if not isinstance(receipt.get("cli_bytes"), int) or receipt.get("cli_bytes", 0) <= 0:
         errors.append("B3 runtime private CLI byte count malformed")
     if not re.fullmatch(r"[0-9a-f]{64}", str(receipt.get("cli_sha256", ""))):
@@ -542,7 +624,7 @@ def qualify_runtime(
     ):
         raise B3RuntimeQualificationError("runtime scratch must be absent or empty")
     scratch_root.mkdir(parents=True, exist_ok=True)
-    profile_before = b23q.collect_runner_profile(
+    profile_before = collect_b3_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
     failures = validate_b3_runner_profile(profile_before)
@@ -556,7 +638,7 @@ def qualify_runtime(
             resolved = fixture_root.resolve(strict=True)
             resolved.relative_to(scratch_root.resolve(strict=True))
             shutil.rmtree(resolved)
-    profile_after = b23q.collect_runner_profile(
+    profile_after = collect_b3_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
     if validate_b3_runner_profile(profile_after):
@@ -700,7 +782,7 @@ def validate_runtime_binding(
     ):
         raise B3RuntimeQualificationError("runtime admission scratch must be absent or empty")
     scratch_root.mkdir(parents=True, exist_ok=True)
-    current = b23q.collect_runner_profile(
+    current = collect_b3_runner_profile(
         repo_root=REPO, scratch_root=scratch_root, cli_path=cli_path
     )
     if validate_b3_runner_profile(current):
@@ -731,6 +813,19 @@ def _synthetic_case_rows() -> list[dict[str, Any]]:
     ]
 
 
+def _mock_b3_profile(**overrides: Any) -> dict[str, Any]:
+    profile = b23q._mock_profile()
+    profile["cgroup_reclaimable_inactive_file_bytes"] = 0
+    profile.update(overrides)
+    if "cgroup_effective_available_memory_bytes" not in overrides:
+        profile["cgroup_effective_available_memory_bytes"] = min(
+            int(profile["cgroup_memory_limit_bytes"]),
+            int(profile["cgroup_available_memory_bytes"])
+            + int(profile["cgroup_reclaimable_inactive_file_bytes"]),
+        )
+    return profile
+
+
 def run_self_test() -> dict[str, Any]:
     rows = _synthetic_case_rows()
     public = _build_public_report(
@@ -739,10 +834,17 @@ def run_self_test() -> dict[str, Any]:
         source_ci_conclusion="success",
         case_rows=rows,
     )
-    profile = b23q._mock_profile()
+    profile = _mock_b3_profile()
     with tempfile.TemporaryDirectory(prefix="openlocus-b3-runtime-test-") as temporary:
         cli = Path(temporary) / "openlocus"
         cli.write_bytes(b"synthetic-cli")
+        cgroup = Path(temporary) / "cgroup"
+        (cgroup / "memory").mkdir(parents=True)
+        (cgroup / "memory" / "memory.stat").write_text(
+            f"inactive_file {2 * GIB}\ntotal_inactive_file {5 * GIB}\n",
+            encoding="ascii",
+        )
+        parsed_reclaimable = _cgroup_reclaimable_inactive_file_bytes(cgroup)
         private = _build_private_receipt(
             public_report=public,
             public_report_file_sha256="b" * 64,
@@ -759,7 +861,14 @@ def run_self_test() -> dict[str, Any]:
         ]
         >= B3_SCRATCH_CAPACITY_POLICY["calculated_peak_working_set_bytes"],
         "b3_does_not_inherit_300_gib_gate": not validate_b3_runner_profile(
-            b23q._mock_profile(scratch_free_bytes=80 * GIB)
+            _mock_b3_profile(scratch_free_bytes=80 * GIB)
+        ),
+        "v1_inactive_file_cache_parser": parsed_reclaimable == 5 * GIB,
+        "reclaimable_inactive_file_admitted": not validate_b3_runner_profile(
+            _mock_b3_profile(
+                cgroup_available_memory_bytes=20 * GIB,
+                cgroup_reclaimable_inactive_file_bytes=5 * GIB,
+            )
         ),
         "historical_machine_not_required": public["runner_gate"][
             "historical_machine_identity_required"
@@ -791,7 +900,7 @@ def run_fault_test() -> dict[str, Any]:
     )
     drifted = copy.deepcopy(public)
     drifted["synthetic_matrix"]["passed_case_count"] = 3
-    profile = b23q._mock_profile()
+    profile = _mock_b3_profile()
     with tempfile.TemporaryDirectory(prefix="openlocus-b3-runtime-fault-") as temporary:
         cli = Path(temporary) / "openlocus"
         cli.write_bytes(b"synthetic-cli")
@@ -809,15 +918,28 @@ def run_fault_test() -> dict[str, Any]:
     capacity_drift["runner_gate"]["scratch_capacity_policy"][
         "minimum_free_local_scratch_bytes_at_start"
     ] += GIB
+    memory_drift = copy.deepcopy(public)
+    memory_drift["runner_gate"]["memory_capacity_policy"][
+        "active_file_cache_included"
+    ] = True
     checks = {
         "public_case_loss_rejected": bool(validate_public_report(drifted)),
         "private_profile_drift_rejected": bool(validate_private_receipt(private_drift)),
         "capacity_policy_drift_rejected": bool(
             validate_public_report(capacity_drift)
         ),
+        "memory_policy_drift_rejected": bool(validate_public_report(memory_drift)),
         "below_b3_working_set_rejected": bool(
             validate_b3_runner_profile(
-                b23q._mock_profile(scratch_free_bytes=15 * GIB)
+                _mock_b3_profile(scratch_free_bytes=15 * GIB)
+            )
+        ),
+        "below_effective_memory_rejected": bool(
+            validate_b3_runner_profile(
+                _mock_b3_profile(
+                    cgroup_available_memory_bytes=20 * GIB,
+                    cgroup_reclaimable_inactive_file_bytes=3 * GIB,
+                )
             )
         ),
         "failed_case_rejected": bool(
@@ -863,12 +985,14 @@ if __name__ == "__main__":
 
 
 __all__ = [
+    "B3_MEMORY_CAPACITY_POLICY",
     "B3_MINIMUM_RUNNER_CLASS",
     "B3_RUNTIME_PRIVATE_SCHEMA",
     "B3_RUNTIME_PUBLIC_SCHEMA",
     "B3_RUNTIME_VERSION",
     "B3_SCRATCH_CAPACITY_POLICY",
     "B3RuntimeQualificationError",
+    "collect_b3_runner_profile",
     "private_receipt_digest",
     "qualification_digest",
     "qualify_runtime",

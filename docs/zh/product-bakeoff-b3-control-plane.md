@@ -16,6 +16,8 @@ B3 不再依赖任何历史服务器的机器身份。当前 Linux runner 必须
 
 B3 不再继承历史的 300 GiB scratch 下限。新的 scratch 门槛由实际串行峰值计算：最大允许可见仓库的六份逐字节一致实验臂快照、四倍快照/索引余量、4 GiB checkpoint/控制余量、4 GiB 文件系统安全余量，以及 2 GiB 取整/测量余量，最终得到 16 GiB 最低剩余 scratch 门槛。B2.3 的所有非存储 runner 门槛保持不变。候选克隆单独采用 checkpoint 管理，不再被换算成臆测的固定 scratch 预留。
 
+24 GiB cgroup 内存余量要求仍然保留，但 B3 将有效余量计算为“limit 减 current 的原始余量 + 内核明确标记的 `inactive_file` 缓存”，且结果不超过 cgroup limit。这修正了 cgroup v1 把干净、可回收的构建/源码页缓存当成永久占用内存的计量问题。Active file cache、匿名内存、共享内存、脏页和 writeback 均不计入可用余量。
+
 ## 全新留出集与 readiness
 
 候选计划必须排除互不重叠的 B2、B2.1、B2.4 和 B2.5 仓库帧，总计 48 个历史仓库 slug 与 identity/commit 对；同时排除所有登记过的真实 preflight 来源和合成 qualification 来源。12 个仓库槽位中的每一个都必须在 authoring 前冻结至少两个互不重复的候选。
@@ -46,6 +48,6 @@ Linux launcher 使用 `nohup`、PID 文件、退出码文件、私有日志、wo
 
 ## 验证与下一步
 
-跨模块 self-test 和 fault-test 覆盖：源代码闭包、runtime 公开/私有 schema、计算得到的 scratch 预算、取消继承 300 GiB 下限、验证缓存复用且不重新克隆、checkpoint 恢复且不重复 authoring、checkpoint 源/计划漂移拒绝、48 个历史仓库排除、readiness 隐私、成功/失败发布、hook 恢复、只有 release 没有观测、已有观测但缺 receipt 的重建、只有 receipt 没有观测的拒绝，以及边界后禁止重试。Linux launcher 另行通过 13 步握手及重启/PID 复用身份测试。
+跨模块 self-test 和 fault-test 覆盖：源代码闭包、runtime 公开/私有 schema、计算得到的 scratch 预算、取消继承 300 GiB 下限、cgroup v1 inactive-file 解析及保守的可回收内存准入、验证缓存复用且不重新克隆、checkpoint 恢复且不重复 authoring、checkpoint 源/计划漂移拒绝、48 个历史仓库排除、readiness 隐私、成功/失败发布、hook 恢复、只有 release 没有观测、已有观测但缺 receipt 的重建、只有 receipt 没有观测的拒绝，以及边界后禁止重试。Linux launcher 另行通过 13 步握手及重启/PID 复用身份测试。
 
 当前尚未 qualification 精确 Linux runtime，尚无 B3 私有留出集、launch authorization 或正式尝试。只有本控制平面检查点及公开 CI 通过后，才应开启服务器执行精确 Linux qualification；该聚合 qualification 自身提交并通过 CI 之前，仍禁止私有 authoring。
