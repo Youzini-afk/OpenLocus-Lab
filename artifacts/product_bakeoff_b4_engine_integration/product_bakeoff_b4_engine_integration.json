@@ -1,0 +1,126 @@
+{
+  "claim_level": "engineering_contract_and_synthetic_fault_tests_only",
+  "date": "2026-07-18",
+  "implementation_readiness": {
+    "aggregate_success_and_failure_publication_implemented": true,
+    "closed_task_outcome_matrix_implemented": true,
+    "cluster_analysis_and_ranking_implemented": true,
+    "empirical_b4_result_exists": false,
+    "exact_linux_runtime_qualified": false,
+    "formal_execution_authorized": false,
+    "private_holdout_authored_or_frozen": false,
+    "raw_repository_execution_adapter_implemented": false,
+    "source_runtime_corpus_readiness_execution_control_implemented": false,
+    "treatment_output_exists": false
+  },
+  "integration_digest": "b4engine_16e18e83ce78a8bdc9f026643f5b42f00c722620b3d31e41bf30282c2af78e02",
+  "next_authorized_action": "implement_and_fault_test_the_b4_raw_repository_execution_adapter_and_offline_source_runtime_corpus_readiness_execution_control_without_creating_a_private_holdout_or_treatment_output",
+  "parent_protocol": {
+    "canonical_sha256": "4bb3a0d1c673ee684e39e8a3c323cd796d46f27bda5638e209e01b21c6a83f42",
+    "checkpoint": "e5e72cf8dcca0d1a1426fc22ef3133cb0ba0d747",
+    "ci_conclusion": "success",
+    "ci_run_id": 29639800266,
+    "file_sha256": "8521232e02ab32fed0d275aa77c6135c892671887171d3f0f138308e8ae00108",
+    "protocol_digest": "b4protocol_07289b69f07cefe05ccd0b171a8e437739de8ac5a20fd035c0d73baba02b112e"
+  },
+  "phase": "product_bakeoff_b4_closed_matrix_cluster_analysis_publication",
+  "publication_contract": {
+    "aggregate_failed_closeout_validator_implemented": true,
+    "aggregate_success_validator_implemented": true,
+    "failure_schema": "product_bakeoff_b4_failed_closeout.v1",
+    "gate_failure_cannot_erase_comparative_result": true,
+    "postboundary_failure_cannot_authorize_retry_resume_or_recompute": true,
+    "preboundary_failure_cannot_publish_treatment_counts": true,
+    "success_always_contains_effects_intervals_ranks_pareto_and_gates": true,
+    "success_schema": "product_bakeoff_b4_replication_result.v1"
+  },
+  "publication_limits": {
+    "aggregate_only": true,
+    "intermediate_arm_quality_resource_or_ranking_metric_public": false,
+    "per_task_per_repository_or_per_cell_empirical_detail_public": false,
+    "private_holdout_manifest_or_freeze_digest_public": false,
+    "private_runner_identity_endpoint_or_working_location_public": false,
+    "provider_payload_secret_or_credential_public": false,
+    "repository_task_query_or_oracle_identity_public": false,
+    "source_location_range_excerpt_or_raw_output_public": false
+  },
+  "runner_contract": {
+    "exact_index_build_count": 432,
+    "exact_logical_group_count": 2160,
+    "exact_pre_score_gate_set_required": true,
+    "exact_task_outcome_count": 1728,
+    "identity_free_task_outcome_surface": true,
+    "provider_network_call_count_must_be_zero": true,
+    "raw_repository_execution_adapter_implemented": false,
+    "runner_version": "product_bakeoff_b4_runner.v1",
+    "same_task_technical_pseudoreplication_absent": true
+  },
+  "schema_version": "product_bakeoff_b4_engine_integration.v1",
+  "scorer_contract": {
+    "conservative_zero_event_harm_upper_bound_implemented": true,
+    "deployment_gates_run_after_ranking": true,
+    "exact_ties_share_rank": true,
+    "ordinary_95_and_simultaneous_97_5_intervals": true,
+    "panel_direction_guard_implemented": true,
+    "pareto_frontier_always_computed": true,
+    "quality_and_resource_competition_ranks_always_nonempty": true,
+    "repository_cluster_level_intervals": true,
+    "scorer_version": "product_bakeoff_b4_scorer.v1",
+    "two_planned_candidate_comparisons_only": true
+  },
+  "source_bundle_digest": "b4engsrc_01d4627ef1efd99a7eca570b104d3b2400ada67ba4dee8849946ee4c8698e6a9",
+  "status": "product_bakeoff_b4_analysis_publication_engine_complete_no_runtime_no_holdout_no_execution",
+  "synthetic_validation": {
+    "module_reports": {
+      "publication_fault": {
+        "checks_passed": 7,
+        "checks_total": 7,
+        "passed": true
+      },
+      "publication_self": {
+        "checks_passed": 12,
+        "checks_total": 12,
+        "passed": true,
+        "success_arm_count": 3,
+        "success_comparison_count": 2
+      },
+      "runner_fault": {
+        "checks_passed": 11,
+        "checks_total": 11,
+        "passed": true
+      },
+      "runner_self": {
+        "checks_passed": 10,
+        "checks_total": 10,
+        "logical_groups": 2160,
+        "passed": true,
+        "synthetic_task_outcomes": 1728
+      },
+      "scorer_fault": {
+        "checks_passed": 9,
+        "checks_total": 9,
+        "passed": true
+      },
+      "scorer_self": {
+        "arm_count": 3,
+        "checks_passed": 14,
+        "checks_total": 14,
+        "comparison_count": 2,
+        "passed": true
+      }
+    },
+    "resource_gate_failure_still_has_quality_ranks": true,
+    "resource_gate_failure_still_has_resource_ranks": true,
+    "success_arm_count": 3,
+    "success_comparison_count": 2,
+    "success_phase_c_shortlist_count": 2,
+    "tie_pareto_arm_count": 3,
+    "tie_quality_rank_values": [
+      1
+    ],
+    "tie_resource_rank_values": [
+      1
+    ],
+    "tie_shortlist_count": 0
+  }
+}
