@@ -42,6 +42,8 @@ This root file is only a bilingual index. Do not put research status prose here.
 - B3 engine integration report / B3 引擎集成报告: [`artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json`](../artifacts/product_bakeoff_b3_engine_integration/product_bakeoff_b3_engine_integration.json)
 - B3 offline control plane / B3 离线控制平面: [EN](en/product-bakeoff-b3-control-plane.md) / [ZH](zh/product-bakeoff-b3-control-plane.md)
 - B3 control integration report / B3 控制平面集成报告: [`artifacts/product_bakeoff_b3_control_integration/product_bakeoff_b3_control_integration.json`](../artifacts/product_bakeoff_b3_control_integration/product_bakeoff_b3_control_integration.json)
+- B3 exact-runtime qualification / B3 精确运行时资格聚合: [`artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json`](../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json)
+- B3 fresh-holdout readiness / B3 全新留出集就绪汇总: [`artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json`](../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json)
 
 ## Current route closure / 当前路线关闭
 

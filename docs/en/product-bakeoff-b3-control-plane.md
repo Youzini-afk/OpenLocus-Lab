@@ -2,9 +2,9 @@
 
 Date: 2026-07-18
 
-Status: `product_bakeoff_b3_offline_control_plane_complete_server_required_next_for_exact_linux_qualification`
+Status: `product_bakeoff_b3_private_holdout_frozen_runtime_qualified_public_readiness_published_launch_not_authorized`
 
-The executable B3 control plane is complete and fault-tested without reading a private holdout or producing treatment output. The public aggregate is [`product_bakeoff_b3_control_integration.json`](../../artifacts/product_bakeoff_b3_control_integration/product_bakeoff_b3_control_integration.json).
+The executable B3 control plane is complete and fault-tested. The exact Linux runtime is publicly qualified in [`product_bakeoff_b3_runtime_qualification.json`](../../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json). A fresh private 12-repository, 48-task holdout has now been authored, tokenizer-gated, and frozen with zero treatment output; its aggregate-only public gate is [`product_bakeoff_b3_readiness.json`](../../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json).
 
 This phase implements the surfaces that were deliberately absent from the earlier runner/scorer integration: exact Linux runtime qualification, fresh holdout admission against all four historical frames, private freeze, aggregate readiness, CI-bound launch authorization, disconnect-safe launch, the first-durable-observation attempt receipt, aggregate success publication, and aggregate failed-closeout publication.
 
@@ -50,4 +50,4 @@ Pre-boundary zero-observation work state is only audited as potentially recovera
 
 Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, the computed scratch budget, removal of the inherited 300 GiB floor, cgroup-v1 inactive-file parsing and conservative reclaimable-memory admission, verified-cache reuse without recloning, checkpoint resume without repeated authoring, checkpoint source/plan drift rejection, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
 
-No exact Linux runtime is qualified yet, no B3 private holdout exists, no launch authorization exists, and the attempt boundary has not been crossed. After this control-plane checkpoint and public CI are green, the server should be started for the exact Linux qualification. Private authoring remains forbidden until the aggregate qualification itself is committed and CI-green.
+Exact Linux runtime qualification and private holdout freeze are complete. No launch authorization or treatment output exists, and the attempt boundary has not been crossed. Only after this exact readiness checkpoint passes public CI may the private launch authorization be created and exactly one disconnect-safe formal B3 run begin.
