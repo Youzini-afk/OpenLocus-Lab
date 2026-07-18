@@ -72,10 +72,10 @@ B3_RESULT_DIGEST = (
     "b3result_25ef345fa4b312ab9292ffe47fdb4ee26d0009d7ca3e46c867fcf245f8f82a00"
 )
 B3_AUDIT_FILE_SHA256 = (
-    "cb7e762e89ae1f2b5a7a9c7078533a18b5c3bc7129d22c79e22cb8973847b0ee"
+    "d02943889ea1f39404cd054d97ab44cb55d569d2593c0f9bbec90bbad6ca6658"
 )
 B3_AUDIT_DIGEST = (
-    "b3audit_cc94b30d2b91c61da081ac24188cec5294308217e98772cfd0675a05d6d92f23"
+    "b3audit_94ab485305c1a3eea7e91250f8cb4c336e0309a390ff83e16b6eefaf8fe7e4e9"
 )
 
 B4_ARMS = (b2.S0_ADAPTER_ID, b2.S1_ADAPTER_ID, b2.S4_ADAPTER_ID)
@@ -162,7 +162,7 @@ def _prefixed_digest(prefix: str, value: Mapping[str, Any], key: str) -> str:
 
 
 def _file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def source_bundle_digest() -> str:

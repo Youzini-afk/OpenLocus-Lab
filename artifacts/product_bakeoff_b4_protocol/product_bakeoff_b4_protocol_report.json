@@ -153,8 +153,8 @@
   },
   "next_authorized_action": "implement_and_fault_test_b4_runner_scorer_publication_and_control_without_creating_private_holdout_or_treatment_output",
   "parent_locks": {
-    "b3_design_audit_digest": "b3audit_cc94b30d2b91c61da081ac24188cec5294308217e98772cfd0675a05d6d92f23",
-    "b3_design_audit_file_sha256": "cb7e762e89ae1f2b5a7a9c7078533a18b5c3bc7129d22c79e22cb8973847b0ee",
+    "b3_design_audit_digest": "b3audit_94ab485305c1a3eea7e91250f8cb4c336e0309a390ff83e16b6eefaf8fe7e4e9",
+    "b3_design_audit_file_sha256": "d02943889ea1f39404cd054d97ab44cb55d569d2593c0f9bbec90bbad6ca6658",
     "b3_design_audit_schema": "product_bakeoff_b3_design_audit.v1",
     "b3_design_audit_status": "product_bakeoff_b3_decision_and_replication_design_audited_result_frozen",
     "b3_result_digest": "b3result_25ef345fa4b312ab9292ffe47fdb4ee26d0009d7ca3e46c867fcf245f8f82a00",
@@ -1613,7 +1613,7 @@
     "minimum_moderate_nuisance_joint_quality_gate_power_ppm": 849000,
     "no_universal_80_percent_power_claim": true
   },
-  "protocol_digest": "b4protocol_a5d3867a8773443a44be7b583daba49835f90700bbbd5221d852bdc0417a0f8a",
+  "protocol_digest": "b4protocol_07289b69f07cefe05ccd0b171a8e437739de8ac5a20fd035c0d73baba02b112e",
   "protocol_schema_version": "product_bakeoff_b4_protocol.v1",
   "publication_policy": {
     "aggregate_only": true,
@@ -1756,6 +1756,6 @@
     }
   ],
   "schema_version": "product_bakeoff_b4_protocol_report.v1",
-  "source_bundle_digest": "b4bundle_a6e7b91767088284a415b7735920d3a5730af6afd1e8d27672452b73e8f5e32d",
+  "source_bundle_digest": "b4bundle_122ef433e746b70d60baa79c15ae943cbc703ed0d75801de095a24854ff40a67",
   "status": "product_bakeoff_b4_independent_replication_protocol_frozen_no_runtime_no_holdout_no_execution"
 }

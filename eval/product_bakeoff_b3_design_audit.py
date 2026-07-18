@@ -87,7 +87,7 @@ def _prefixed_digest(prefix: str, value: Mapping[str, Any], key: str) -> str:
 
 
 def _file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def source_bundle_digest() -> str:

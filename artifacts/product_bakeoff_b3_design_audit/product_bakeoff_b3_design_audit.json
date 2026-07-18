@@ -1,6 +1,6 @@
 {
   "aggregate_only": true,
-  "audit_digest": "b3audit_cc94b30d2b91c61da081ac24188cec5294308217e98772cfd0675a05d6d92f23",
+  "audit_digest": "b3audit_94ab485305c1a3eea7e91250f8cb4c336e0309a390ff83e16b6eefaf8fe7e4e9",
   "claim_level": "public_posthoc_design_audit_no_b3_reclassification_no_promotion",
   "closure": {
     "b3_product_default_changed": false,
@@ -142,6 +142,6 @@
     "technical_repetitions_are_not_independent_quality_samples": true
   },
   "schema_version": "product_bakeoff_b3_design_audit.v1",
-  "source_bundle_digest": "b3auditbundle_bb811cab38a9d7337ae656983f709557a67dc3f27ea970325555df3a16912cff",
+  "source_bundle_digest": "b3auditbundle_db1387be34e09b55df5bda8651bd3aa57a8426aa87e72ab91d71bde4f1ad7ce8",
   "status": "product_bakeoff_b3_decision_and_replication_design_audited_result_frozen"
 }
