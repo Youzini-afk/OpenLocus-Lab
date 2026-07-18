@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -18,6 +19,125 @@ import product_bakeoff_b4_control as b4c  # noqa: E402
 import product_bakeoff_b4_execution_adapter as b4adapter  # noqa: E402
 import product_bakeoff_b4_runtime_qualification as b4rq  # noqa: E402
 import product_bakeoff_b4_source as b4src  # noqa: E402
+
+
+B4_RUNTIME_LIMIT_COMMANDS = frozenset(
+    {
+        "qualify-runtime",
+        "prepare-holdout",
+        "freeze-holdout",
+        "build-readiness",
+        "run",
+    }
+)
+
+
+def _ensure_open_file_soft_limit(
+    command: str,
+    *,
+    os_name: str | None = None,
+    getrlimit: Any = None,
+    setrlimit: Any = None,
+    rlimit_nofile: Any = None,
+    rlim_infinity: Any = None,
+) -> bool:
+    """Raise this process to the admitted nofile class before runtime work."""
+
+    current_os = os.name if os_name is None else os_name
+    if current_os != "posix" or command not in B4_RUNTIME_LIMIT_COMMANDS:
+        return False
+    if getrlimit is None or setrlimit is None or rlimit_nofile is None:
+        import resource
+
+        getrlimit = resource.getrlimit
+        setrlimit = resource.setrlimit
+        rlimit_nofile = resource.RLIMIT_NOFILE
+        rlim_infinity = resource.RLIM_INFINITY
+    minimum = int(b4rq.B4_MINIMUM_RUNNER_CLASS["minimum_open_file_soft_limit"])
+    soft, hard = getrlimit(rlimit_nofile)
+    if soft >= minimum:
+        return False
+    if hard != rlim_infinity and hard < minimum:
+        raise b4rq.B4RuntimeQualificationError(
+            "B4 runner hard nofile limit is below the admitted class"
+        )
+    setrlimit(rlimit_nofile, (minimum, hard))
+    raised, _ = getrlimit(rlimit_nofile)
+    if raised < minimum:
+        raise b4rq.B4RuntimeQualificationError(
+            "B4 runner nofile soft limit could not be raised"
+        )
+    return True
+
+
+def _run_cli_limit_self_test() -> dict[str, Any]:
+    state = {"limits": (1024, 1_048_576), "writes": []}
+
+    def getrlimit(_: Any) -> tuple[int, int]:
+        return state["limits"]
+
+    def setrlimit(_: Any, limits: tuple[int, int]) -> None:
+        state["limits"] = limits
+        state["writes"].append(limits)
+
+    adjusted = _ensure_open_file_soft_limit(
+        "qualify-runtime",
+        os_name="posix",
+        getrlimit=getrlimit,
+        setrlimit=setrlimit,
+        rlimit_nofile="nofile",
+        rlim_infinity=-1,
+    )
+    minimum = int(b4rq.B4_MINIMUM_RUNNER_CLASS["minimum_open_file_soft_limit"])
+    checks = {
+        "low_soft_limit_raised": adjusted and state["limits"][0] == minimum,
+        "hard_limit_preserved": state["limits"][1] == 1_048_576,
+        "single_limit_write": state["writes"] == [(minimum, 1_048_576)],
+        "non_runtime_command_unchanged": not _ensure_open_file_soft_limit(
+            "status",
+            os_name="posix",
+            getrlimit=getrlimit,
+            setrlimit=setrlimit,
+            rlimit_nofile="nofile",
+            rlim_infinity=-1,
+        ),
+        "non_posix_unchanged": not _ensure_open_file_soft_limit(
+            "qualify-runtime",
+            os_name="nt",
+            getrlimit=getrlimit,
+            setrlimit=setrlimit,
+            rlimit_nofile="nofile",
+            rlim_infinity=-1,
+        ),
+    }
+    failed = sorted(name for name, passed in checks.items() if not passed)
+    return {
+        "passed": not failed,
+        "checks_total": len(checks),
+        "checks_passed": len(checks) - len(failed),
+        "failed": failed,
+    }
+
+
+def _run_cli_limit_fault_test() -> dict[str, Any]:
+    rejected = False
+    try:
+        _ensure_open_file_soft_limit(
+            "run",
+            os_name="posix",
+            getrlimit=lambda _: (1024, 4096),
+            setrlimit=lambda _resource, _limits: None,
+            rlimit_nofile="nofile",
+            rlim_infinity=-1,
+        )
+    except b4rq.B4RuntimeQualificationError:
+        rejected = True
+    return {
+        "passed": rejected,
+        "checks_total": 1,
+        "checks_passed": int(rejected),
+        "failed": [] if rejected else ["low_hard_limit_not_rejected"],
+    }
 
 
 def _print(value: Mapping[str, Any]) -> None:
@@ -144,6 +264,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def _module_tests(function_name: str) -> dict[str, Any]:
     modules = (b4src, b4rq, b4adapter, b4c)
     reports = {module.__name__: getattr(module, function_name)() for module in modules}
+    reports["product_bakeoff_b4_cli_resource_limit"] = (
+        _run_cli_limit_self_test()
+        if function_name == "run_self_test"
+        else _run_cli_limit_fault_test()
+    )
     return {"passed": all(row["passed"] for row in reports.values()), "reports": reports}
 
 
@@ -166,6 +291,7 @@ def _check_public(path: Path) -> list[str]:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     try:
+        _ensure_open_file_soft_limit(args.command)
         if args.command in {"self-test", "fault-test"}:
             report = _module_tests(
                 "run_self_test" if args.command == "self-test" else "run_fault_test"

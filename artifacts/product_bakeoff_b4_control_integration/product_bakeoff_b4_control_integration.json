@@ -1,6 +1,6 @@
 {
   "claim_level": "engineering_and_synthetic_fault_tests_only_no_private_input",
-  "control_source_bundle_digest": "b4controlsrc_9ff48ae097bf99412722dabc44bea0693f981cdee0cd8a13e544d96c27f19081",
+  "control_source_bundle_digest": "b4controlsrc_b5e00815a8ae8002d339ed8f58691e448ee06ebd25d1197f028c85770688fd12",
   "date": "2026-07-18",
   "implementation_readiness": {
     "attempt_boundary_crossed": false,
@@ -42,7 +42,7 @@
     "twelve_panel_shared_candidate_catalog_with_deterministic_cursors": true,
     "zero_observation_pre_release_admission_reset": true
   },
-  "integration_digest": "b4control_64aa4ecdc0a7d77beeaeeda9c8389c3a94da3d11a1c43a9bb1da012434c30207",
+  "integration_digest": "b4control_7fdd833f88cdb1cf113c4188eb9291e6ed16554ac552c06581e3d946d6bd5283",
   "next_authorized_action": "Start the Linux compute server only now: build the frozen CLI at this exact checkpoint, run aggregate-only runtime qualification, commit it and wait for green CI, then author and freeze the twelve private panels.",
   "parent_engine": {
     "canonical_sha256": "0b812cc06e3c47c4d24e7a1d9ac397d7aaffa0373f350e305cd17a7289892c34",
