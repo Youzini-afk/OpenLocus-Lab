@@ -32,8 +32,6 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 import product_bakeoff_b2_protocol as b2  # noqa: E402
-import product_bakeoff_b3_design_audit as b3audit  # noqa: E402
-import product_bakeoff_b3_publication as b3pub  # noqa: E402
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -177,6 +175,12 @@ def source_bundle_digest() -> str:
 
 
 def _validate_parent_locks() -> tuple[dict[str, Any], dict[str, Any]]:
+    # Keep scorer-bearing historical publication modules out of the import
+    # surface used by the raw B4 RUN child.  They are needed only while
+    # rebuilding/validating the public protocol artifact.
+    import product_bakeoff_b3_design_audit as b3audit  # noqa: PLC0415
+    import product_bakeoff_b3_publication as b3pub  # noqa: PLC0415
+
     if _file_sha256(B3_RESULT_PATH) != B3_RESULT_FILE_SHA256:
         raise B4ProtocolError("B3 result file lock drifted")
     result = json.loads(B3_RESULT_PATH.read_text(encoding="utf-8"))

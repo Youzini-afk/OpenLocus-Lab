@@ -1613,7 +1613,7 @@
     "minimum_moderate_nuisance_joint_quality_gate_power_ppm": 849000,
     "no_universal_80_percent_power_claim": true
   },
-  "protocol_digest": "b4protocol_07289b69f07cefe05ccd0b171a8e437739de8ac5a20fd035c0d73baba02b112e",
+  "protocol_digest": "b4protocol_cf983176938c83c415b44bfb50b64baa866bebac9e1567e85a119f5073683cc1",
   "protocol_schema_version": "product_bakeoff_b4_protocol.v1",
   "publication_policy": {
     "aggregate_only": true,
@@ -1756,6 +1756,6 @@
     }
   ],
   "schema_version": "product_bakeoff_b4_protocol_report.v1",
-  "source_bundle_digest": "b4bundle_122ef433e746b70d60baa79c15ae943cbc703ed0d75801de095a24854ff40a67",
+  "source_bundle_digest": "b4bundle_4e0e292bbd8cfd46ae9acb804183278d896ac8cc1f1260b3ef1830b59abbe2b6",
   "status": "product_bakeoff_b4_independent_replication_protocol_frozen_no_runtime_no_holdout_no_execution"
 }
