@@ -2,9 +2,9 @@
 
 日期：2026-07-18
 
-状态：`product_bakeoff_b3_private_holdout_frozen_runtime_qualified_public_readiness_published_launch_not_authorized`
+状态：`product_bakeoff_b3_tournament_complete_aggregate_only`
 
-B3 的可执行控制平面已经实现并完成故障测试。精确 Linux runtime 已通过 [`product_bakeoff_b3_runtime_qualification.json`](../../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json) 公开资格认证。全新的私有 12 仓库、48 任务留出集现已完成 authoring、分词兼容门槛和冻结，且治疗输出仍为零；其仅含聚合信息的公开门槛为 [`product_bakeoff_b3_readiness.json`](../../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json)。
+B3 的可执行控制平面已经实现并完成故障测试。精确 Linux runtime 已通过 [`product_bakeoff_b3_runtime_qualification.json`](../../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json) 公开资格认证；全新的私有 12 仓库、48 任务留出集在唯一一次正式启动前通过了仅含聚合信息的 [`product_bakeoff_b3_readiness.json`](../../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json) 门槛。该正式运行现已完成，协议允许公开的聚合结果为 [`product_bakeoff_b3_result.json`](../../artifacts/product_bakeoff_b3_result/product_bakeoff_b3_result.json)。
 
 本阶段补齐了此前 runner/scorer 集成刻意没有实现的部分：精确 Linux runtime qualification、相对四个历史帧的全新留出集准入、私有冻结、聚合 readiness、由 CI 绑定的 launch authorization、断线安全启动、第一条持久化观测的尝试边界 receipt、聚合成功发布和聚合失败关闭发布。
 
@@ -50,4 +50,4 @@ Linux launcher 使用 `nohup`、PID 文件、退出码文件、私有日志、wo
 
 跨模块 self-test 和 fault-test 覆盖：源代码闭包、runtime 公开/私有 schema、计算得到的 scratch 预算、取消继承 300 GiB 下限、cgroup v1 inactive-file 解析及保守的可回收内存准入、验证缓存复用且不重新克隆、checkpoint 恢复且不重复 authoring、checkpoint 源/计划漂移拒绝、48 个历史仓库排除、readiness 隐私、成功/失败发布、hook 恢复、只有 release 没有观测、已有观测但缺 receipt 的重建、只有 receipt 没有观测的拒绝，以及边界后禁止重试。Linux launcher 另行通过 13 步握手及重启/PID 复用身份测试。
 
-精确 Linux runtime qualification 和私有留出集冻结均已完成。当前仍不存在 launch authorization 或治疗输出，正式尝试边界也尚未跨越。只有该精确 readiness 检查点通过公开 CI 后，才允许创建私有 launch authorization，并启动唯一一次断连安全的 B3 正式长跑。
+唯一一次 B3 正式尝试已经完成，全程没有重启、恢复、重试、填补或重算。48 个逻辑任务、360 个组和 1,440 条逻辑记录全部完整，所有评分前门槛均通过，provider/网络调用保持为零。冻结的锦标赛决策为 `no_internal_finalist`：没有实验臂进入默认轨、可选轨或 Phase C shortlist，因此产品默认保持不变。B3 至此以聚合结果层级闭合；任何未来实验都必须作为单独预注册的新阶段，而不是本次尝试的延续。

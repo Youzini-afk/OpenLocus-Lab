@@ -2,9 +2,9 @@
 
 Date: 2026-07-18
 
-Status: `product_bakeoff_b3_private_holdout_frozen_runtime_qualified_public_readiness_published_launch_not_authorized`
+Status: `product_bakeoff_b3_tournament_complete_aggregate_only`
 
-The executable B3 control plane is complete and fault-tested. The exact Linux runtime is publicly qualified in [`product_bakeoff_b3_runtime_qualification.json`](../../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json). A fresh private 12-repository, 48-task holdout has now been authored, tokenizer-gated, and frozen with zero treatment output; its aggregate-only public gate is [`product_bakeoff_b3_readiness.json`](../../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json).
+The executable B3 control plane is complete and fault-tested. The exact Linux runtime is publicly qualified in [`product_bakeoff_b3_runtime_qualification.json`](../../artifacts/product_bakeoff_b3_runtime_qualification/product_bakeoff_b3_runtime_qualification.json), and the fresh private 12-repository, 48-task holdout passed its aggregate-only [`product_bakeoff_b3_readiness.json`](../../artifacts/product_bakeoff_b3_readiness/product_bakeoff_b3_readiness.json) gate before the unique formal launch. That run is now complete; the permitted aggregate result is [`product_bakeoff_b3_result.json`](../../artifacts/product_bakeoff_b3_result/product_bakeoff_b3_result.json).
 
 This phase implements the surfaces that were deliberately absent from the earlier runner/scorer integration: exact Linux runtime qualification, fresh holdout admission against all four historical frames, private freeze, aggregate readiness, CI-bound launch authorization, disconnect-safe launch, the first-durable-observation attempt receipt, aggregate success publication, and aggregate failed-closeout publication.
 
@@ -50,4 +50,4 @@ Pre-boundary zero-observation work state is only audited as potentially recovera
 
 Cross-module self-tests and fault tests cover source closure, runtime public/private schemas, the computed scratch budget, removal of the inherited 300 GiB floor, cgroup-v1 inactive-file parsing and conservative reclaimable-memory admission, verified-cache reuse without recloning, checkpoint resume without repeated authoring, checkpoint source/plan drift rejection, 48-repository historical exclusion, readiness privacy, success/failure publication, hook restoration, release-without-observation, observation-without-receipt reconciliation, receipt-without-observation rejection, and forbidden post-boundary retry. The Linux launcher separately passes its 13-step handshake and reboot/PID-reuse identity test.
 
-Exact Linux runtime qualification and private holdout freeze are complete. No launch authorization or treatment output exists, and the attempt boundary has not been crossed. Only after this exact readiness checkpoint passes public CI may the private launch authorization be created and exactly one disconnect-safe formal B3 run begin.
+The unique formal B3 attempt completed without restart, resume, retry, imputation, or recomputation. All 48 logical tasks, 360 groups, and 1,440 logical records are complete; every pre-score gate passed and provider/network calls remained zero. The frozen tournament decision is `no_internal_finalist`: no arm entered the default track, optional track, or Phase C shortlist, so the product default remains unchanged. This closes B3 at aggregate-result level; any future experiment must be a separately preregistered phase rather than a continuation of this attempt.

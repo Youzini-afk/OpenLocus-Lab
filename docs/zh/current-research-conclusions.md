@@ -1,6 +1,8 @@
 # OpenLocus 当前研究结论
 
-日期：2026-07-17
+日期：2026-07-18
+
+产品栈对比 B3 已正式完成，状态为 `product_bakeoff_b3_tournament_complete_aggregate_only`。唯一一次冻结的正式尝试完整执行了 48 个逻辑任务、360 个组和 1,440 条逻辑记录，全部评分前门槛通过，provider/网络调用为零，并且没有重启、恢复、选择性重试、填补或重算。冻结决策为 `no_internal_finalist`：没有实验臂进入默认轨、可选轨或 Phase C shortlist，因此产品默认保持不变。这是在固定帧上的内部产品决策证据，不是普遍排名声明。参见 [`product-bakeoff-b3-control-plane.md`](./product-bakeoff-b3-control-plane.md) 与仅含聚合信息的 [`product_bakeoff_b3_result.json`](../../artifacts/product_bakeoff_b3_result/product_bakeoff_b3_result.json)。
 
 产品栈对比 B3 已作为全新的未来实验完成预注册，状态为 `product_bakeoff_b3_protocol_frozen_no_runtime_no_holdout_no_execution_no_result`。它保持 B2.5 的终态 `failed_closed_no_result`，把 48 个任务视为嵌套在 12 个仓库相关性簇中的成对分析单位，而不是 48 个独立仓库；用六序列 Williams 设计替代只平衡位置的循环顺序，同时平衡一阶前序效应；并冻结一套由评分前门槛和评分器共用、要求完整观测计划的评分/路由规范化实现。target 数量被保留，因为单 target 与多 target 会改变同臂 support 路由；纯诊断序列化漂移可以私下记录，而不会自动变成质量失败。仅创建 launch release 不会消耗尝试，但第一条持久化的 accepted 或 rejected 治疗观测会跨越边界；此后禁止重启、恢复、选择性重试、填补和重算。在该协议检查点，这仍只是设计与合成自检证据；下一条检查点记录后续的 runner/scorer 集成。runtime 仍未 qualification，私有留出集不存在，执行也未获授权。参见 [`product-bakeoff-b3-preregistered-future-tournament.md`](./product-bakeoff-b3-preregistered-future-tournament.md) 与 [`product_bakeoff_b3_protocol_report.json`](../../artifacts/product_bakeoff_b3_protocol/product_bakeoff_b3_protocol_report.json)。
 
