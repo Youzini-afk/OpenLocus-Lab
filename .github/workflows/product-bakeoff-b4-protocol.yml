@@ -1,0 +1,125 @@
+name: product-bakeoff-b4-protocol
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b3_publication.py'
+      - 'eval/product_bakeoff_b3_design_audit.py'
+      - 'eval/product_bakeoff_b4_protocol.py'
+      - 'artifacts/product_bakeoff_b3_result/**'
+      - 'artifacts/product_bakeoff_b3_design_audit/**'
+      - 'artifacts/product_bakeoff_b4_protocol/**'
+      - 'docs/en/product-bakeoff-b3-design-audit.md'
+      - 'docs/zh/product-bakeoff-b3-design-audit.md'
+      - 'docs/en/product-bakeoff-b4-independent-replication-protocol.md'
+      - 'docs/zh/product-bakeoff-b4-independent-replication-protocol.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - '.github/workflows/product-bakeoff-b4-protocol.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b2_protocol.py'
+      - 'eval/product_bakeoff_b3_publication.py'
+      - 'eval/product_bakeoff_b3_design_audit.py'
+      - 'eval/product_bakeoff_b4_protocol.py'
+      - 'artifacts/product_bakeoff_b3_result/**'
+      - 'artifacts/product_bakeoff_b3_design_audit/**'
+      - 'artifacts/product_bakeoff_b4_protocol/**'
+      - 'docs/en/product-bakeoff-b3-design-audit.md'
+      - 'docs/zh/product-bakeoff-b3-design-audit.md'
+      - 'docs/en/product-bakeoff-b4-independent-replication-protocol.md'
+      - 'docs/zh/product-bakeoff-b4-independent-replication-protocol.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - '.github/workflows/product-bakeoff-b4-protocol.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b4-protocol-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  audit-and-protocol:
+    name: audit-and-protocol-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out B3 audit and B4 preregistration
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile public audit and protocol tooling
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b3_design_audit.py \
+            eval/product_bakeoff_b4_protocol.py
+      - name: Run audit, protocol, fault, and drift validation
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          sys.path.insert(0, "eval")
+          import product_bakeoff_b3_design_audit as b3audit
+          import product_bakeoff_b4_protocol as b4
+
+          checks = {
+              "B3 audit self-test": b3audit.run_self_test(),
+              "B3 audit fault-test": b3audit.run_fault_test(),
+              "B4 protocol self-test": b4.run_self_test(),
+              "B4 protocol fault-test": b4.run_fault_test(),
+          }
+          for label, result in checks.items():
+              print(label, json.dumps(result, sort_keys=True))
+              if not result["passed"]:
+                  raise SystemExit(f"{label} failed")
+
+          artifacts = (
+              (
+                  Path("artifacts/product_bakeoff_b3_design_audit/"
+                       "product_bakeoff_b3_design_audit.json"),
+                  b3audit.validate_report,
+              ),
+              (
+                  Path("artifacts/product_bakeoff_b4_protocol/"
+                       "product_bakeoff_b4_protocol_report.json"),
+                  b4.validate_report,
+              ),
+          )
+          for path, validator in artifacts:
+              errors = validator(json.loads(path.read_text(encoding="utf-8")))
+              if errors:
+                  raise SystemExit(f"drift validation failed for {path}: {errors}")
+              print(f"Drift validation passed: {path}")
+          PY
+      - name: Run public privacy and bilingual documentation audits
+        if: runner.os == 'Linux'
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

@@ -1,0 +1,1761 @@
+{
+  "analysis_rules": {
+    "all_arms_ranked_before_deployment_gates": true,
+    "baseline_ranked_symmetrically_with_candidates": true,
+    "confirmatory_primary_relative_effect": "paired_task_success_difference",
+    "confirmatory_simultaneous_ci_level_ppm": 975000,
+    "estimation_ci_level_ppm": 950000,
+    "exact_ties_share_competition_rank": true,
+    "inference_target": "mean_effect_over_the_twelve_frozen_panels",
+    "key_secondary_relative_effects": [
+      "paired_task_utility_net_win_rate",
+      "paired_status_or_target_success_difference",
+      "paired_context_f05_difference"
+    ],
+    "minimum_positive_panels_for_replication_gate": 8,
+    "multiplicity_method": "bonferroni_two_planned_candidate_vs_baseline_comparisons",
+    "no_absolute_b2_quality_floor_veto": true,
+    "no_empty_ranking_when_deployment_gates_fail": true,
+    "no_forced_unique_winner": true,
+    "no_universal_population_effect_claim": true,
+    "paired_effect_point_estimates_and_both_ci_levels_always_published": true,
+    "panel_direction_counts_always_published": true,
+    "panel_direction_guard_is_heterogeneity_check_not_standalone_significance_test": true,
+    "pareto_dimensions": [
+      "task_success_rate_max",
+      "harmful_evidence_rate_min",
+      "warm_query_geometric_mean_us_min",
+      "peak_rss_p95_bytes_min"
+    ],
+    "pareto_frontier_always_published": true,
+    "per_comparison_two_sided_alpha_ppm": 25000,
+    "positive_panel_sign_tail_probability_ppm": 193847,
+    "primary_effect_ci_method": "paired_repository_cluster_mean_t_interval",
+    "quality_and_resource_competition_ranks_always_published": true,
+    "quality_competition_rank_key": [
+      "task_success_rate_desc",
+      "harmful_evidence_rate_asc",
+      "status_or_target_success_rate_desc",
+      "context_f05_mean_desc"
+    ],
+    "repository_cluster_level_uncertainty": true,
+    "resource_competition_rank_key": [
+      "warm_query_geometric_mean_us_asc",
+      "peak_rss_p95_bytes_asc"
+    ],
+    "resource_ratio_ci_method": "paired_repository_cluster_log_ratio_t_interval",
+    "secondary_effects_are_estimation_and_ranking_not_extra_confirmatory_tests": true,
+    "task_quality_is_scored_once_per_arm_without_repeat_vote_or_best_of_selection": true,
+    "task_utility_is_lexicographic_not_opaque_weighted_composite": true,
+    "task_utility_order": [
+      "task_success",
+      "harmful_evidence_absence",
+      "status_or_target_success",
+      "context_f05"
+    ],
+    "two_candidate_comparisons_familywise_controlled": true,
+    "zero_panel_effect_is_not_counted_positive": true
+  },
+  "claim_level": "future_preregistered_multi_panel_replication_design_only",
+  "date": "2026-07-18",
+  "deployment_gates": {
+    "b1_s1_bm25_text": {
+      "aggregate_lower_simultaneous_97_5ci_must_exceed_zero": true,
+      "harmful_evidence_risk_difference_upper_simultaneous_97_5ci_ppm": 20000,
+      "minimum_positive_panels": 8,
+      "minimum_task_success_effect_ppm": 60000,
+      "peak_rss_ratio_upper_95ci_ppm": 1150000,
+      "track": "default_candidate",
+      "warm_query_ratio_upper_95ci_ppm": 1200000
+    },
+    "b1_s4_s2pool_support": {
+      "aggregate_lower_simultaneous_97_5ci_must_exceed_zero": true,
+      "harmful_evidence_risk_difference_upper_simultaneous_97_5ci_ppm": 20000,
+      "minimum_positive_panels": 8,
+      "minimum_task_success_effect_ppm": 60000,
+      "peak_rss_ratio_upper_95ci_ppm": 1250000,
+      "track": "optional_high_recall_candidate",
+      "warm_query_ratio_upper_95ci_ppm": 2100000
+    },
+    "deployment_gate_failure_does_not_delete_rank_or_effect_estimate": true,
+    "promotion_requires_fresh_phase_c_validation": true,
+    "resource_bounds_are_operational_gates_not_superiority_claims": true
+  },
+  "experimental_design": {
+    "all_b2_through_b3_repository_frames_excluded": true,
+    "all_panels_mutually_disjoint": true,
+    "all_panels_repositories_tasks_queries_and_oracles_frozen_before_treatment": true,
+    "arm_ids": [
+      "b1_s0_bm25",
+      "b1_s1_bm25_text",
+      "b1_s4_s2pool_support"
+    ],
+    "authoring_acceptance_is_arm_agnostic_and_pre_treatment": true,
+    "b3_public_aggregate_used_for_planning_only": true,
+    "b3_tasks_queries_oracles_and_treatment_output_reused": false,
+    "baseline_arm": "b1_s0_bm25",
+    "candidate_arms": [
+      "b1_s1_bm25_text",
+      "b1_s4_s2pool_support"
+    ],
+    "cold_task_role_balance_exact_within_every_panel": true,
+    "design_type": "fixed_complete_within_task_three_arm_multi_panel_replication",
+    "each_panel_has_exact_language_by_size_repository_grid": true,
+    "fixed_design_no_adaptive_panel_addition_or_arm_elimination": true,
+    "fixed_design_no_interim_quality_looks": true,
+    "formal_observations_per_task_arm_operation": 1,
+    "independent_panel_count": 12,
+    "index_build_count": 432,
+    "languages_per_panel": [
+      "rust",
+      "python",
+      "typescript"
+    ],
+    "logical_group_count": 2160,
+    "logical_record_count": 2160,
+    "logical_task_count": 576,
+    "repositories_per_panel": 12,
+    "repository_arm_lifecycle_blocks": 1,
+    "repository_cluster_count": 144,
+    "repository_is_independent_replication_cluster": true,
+    "same_task_receives_all_three_arms": true,
+    "same_task_technical_pseudoreplication_eliminated": true,
+    "sequence_balance_exact_within_each_panel_and_cache_state": true,
+    "sequence_balance_exact_within_each_panel_and_task_role": true,
+    "single_repository_arm_lifecycle_has_one_cold_and_three_warm_tasks": true,
+    "six_three_arm_sequences_balance_position_and_first_order_predecessor": true,
+    "size_bands_per_panel": [
+      "small",
+      "medium",
+      "large",
+      "xlarge"
+    ],
+    "task_roles_per_repository": [
+      "direct",
+      "relational",
+      "workflow",
+      "restraint"
+    ],
+    "tasks_are_nested_within_repository": true,
+    "tasks_per_repository": 4,
+    "technical_repetition_count": 0
+  },
+  "implementation_readiness": {
+    "formal_execution_authorized": false,
+    "private_holdout_authored": false,
+    "private_holdout_frozen": false,
+    "protocol_frozen": true,
+    "public_readiness_published": false,
+    "runner_implemented": false,
+    "runtime_qualified": false,
+    "scorer_implemented": false,
+    "treatment_output_exists": false
+  },
+  "next_authorized_action": "implement_and_fault_test_b4_runner_scorer_publication_and_control_without_creating_private_holdout_or_treatment_output",
+  "parent_locks": {
+    "b3_design_audit_digest": "b3audit_cc94b30d2b91c61da081ac24188cec5294308217e98772cfd0675a05d6d92f23",
+    "b3_design_audit_file_sha256": "cb7e762e89ae1f2b5a7a9c7078533a18b5c3bc7129d22c79e22cb8973847b0ee",
+    "b3_design_audit_schema": "product_bakeoff_b3_design_audit.v1",
+    "b3_design_audit_status": "product_bakeoff_b3_decision_and_replication_design_audited_result_frozen",
+    "b3_result_digest": "b3result_25ef345fa4b312ab9292ffe47fdb4ee26d0009d7ca3e46c867fcf245f8f82a00",
+    "b3_result_file_sha256": "a4cb5414b5486e166aae783ce508e55e24e92e181fa73ac232185254be5d8e25",
+    "b3_result_remains_frozen": true,
+    "b3_result_schema": "product_bakeoff_b3_tournament_result.v1",
+    "b3_result_status": "product_bakeoff_b3_tournament_complete_aggregate_only"
+  },
+  "phase": "product_bakeoff_b4_multi_panel_independent_replication_protocol",
+  "power_design": {
+    "between_panel_effect_sd_scenarios_ppm": [
+      0,
+      40000,
+      80000
+    ],
+    "effect_scenarios_ppm": [
+      0,
+      60000,
+      80000,
+      100000,
+      120000,
+      140000,
+      160000
+    ],
+    "fixed_design_student_t_critical_ppm": 2265247,
+    "gate_miss_never_erases_effect_estimates_ranks_or_pareto_result": true,
+    "joint_quality_power_includes_significance_materiality_and_panel_direction_guards": true,
+    "method": "deterministic_monte_carlo_joint_quality_gate_cluster_panel_sensitivity",
+    "minimum_material_effect_ppm": 60000,
+    "minimum_positive_panels": 8,
+    "paired_discordant_probability_sensitivity_ppm": 500000,
+    "panel_heterogeneity_is_mean_centered_with_balanced_positive_negative_shifts": true,
+    "per_comparison_alpha_ppm": 25000,
+    "power_endpoint": "paired_task_success_difference",
+    "raw_b3_pilot_effect_not_used_as_assumed_true_effect": true,
+    "repository_icc_scenarios_ppm": [
+      50000,
+      150000,
+      250000
+    ],
+    "repository_icc_shift_is_symmetrically_feasibility_capped": true,
+    "resource_and_harm_gates_not_power_modeled_without_defensible_distributions": true,
+    "sample_size_panel_sensitivity": [
+      8,
+      12,
+      16,
+      18
+    ],
+    "sensitivity_not_guarantee": true,
+    "simulation_model": "paired_trinary_win_loss_tie_with_panel_and_repository_direction_shifts",
+    "simulations_per_scenario": 2000,
+    "simultaneous_ci_level_ppm": 975000,
+    "smaller_effects_are_estimated_but_not_claimed_well_powered": true,
+    "student_t_critical_method": "second_order_cornish_fisher_by_repository_df",
+    "target_effect_ppm": 120000,
+    "twelve_panels_selected_as_cost_bounded_estimation_and_replication_design": true,
+    "worst_case_eighteen_panel_option_not_selected_because_it_adds_50_percent_records": true
+  },
+  "power_sensitivity": [
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        9294,
+        19571
+      ],
+      "aggregate_rejections": 27,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 13500,
+      "estimated_joint_quality_gate_power_ppm": 12500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        8481,
+        18389
+      ],
+      "joint_quality_gate_passes": 25,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        318580,
+        360038
+      ],
+      "aggregate_rejections": 678,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 339000,
+      "estimated_joint_quality_gate_power_ppm": 322500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        302371,
+        343310
+      ],
+      "joint_quality_gate_passes": 645,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        593977,
+        636580
+      ],
+      "aggregate_rejections": 1231,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 615500,
+      "estimated_joint_quality_gate_power_ppm": 594500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        572820,
+        615818
+      ],
+      "joint_quality_gate_passes": 1189,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        808246,
+        841506
+      ],
+      "aggregate_rejections": 1651,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 825500,
+      "estimated_joint_quality_gate_power_ppm": 807000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        789121,
+        823702
+      ],
+      "joint_quality_gate_passes": 1614,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        923340,
+        944993
+      ],
+      "aggregate_rejections": 1870,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 935000,
+      "estimated_joint_quality_gate_power_ppm": 927500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        915297,
+        938064
+      ],
+      "joint_quality_gate_passes": 1855,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        979840,
+        990297
+      ],
+      "aggregate_rejections": 1972,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 986000,
+      "estimated_joint_quality_gate_power_ppm": 980500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        973454,
+        985703
+      ],
+      "joint_quality_gate_passes": 1961,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        995598,
+        999490
+      ],
+      "aggregate_rejections": 1997,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 998500,
+      "estimated_joint_quality_gate_power_ppm": 997500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        994160,
+        998932
+      ],
+      "joint_quality_gate_passes": 1995,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        9703,
+        20160
+      ],
+      "aggregate_rejections": 28,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 14000,
+      "estimated_joint_quality_gate_power_ppm": 13500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        9294,
+        19571
+      ],
+      "joint_quality_gate_passes": 27,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        271019,
+        310784
+      ],
+      "aggregate_rejections": 581,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 290500,
+      "estimated_joint_quality_gate_power_ppm": 280500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        261246,
+        300596
+      ],
+      "joint_quality_gate_passes": 561,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        489092,
+        532866
+      ],
+      "aggregate_rejections": 1022,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 511000,
+      "estimated_joint_quality_gate_power_ppm": 492000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        470126,
+        513905
+      ],
+      "joint_quality_gate_passes": 984,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        708584,
+        747540
+      ],
+      "aggregate_rejections": 1457,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 728500,
+      "estimated_joint_quality_gate_power_ppm": 712000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        691762,
+        731425
+      ],
+      "joint_quality_gate_passes": 1424,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        849321,
+        879279
+      ],
+      "aggregate_rejections": 1730,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 865000,
+      "estimated_joint_quality_gate_power_ppm": 853500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        837325,
+        868320
+      ],
+      "joint_quality_gate_passes": 1707,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        945556,
+        963698
+      ],
+      "aggregate_rejections": 1911,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 955500,
+      "estimated_joint_quality_gate_power_ppm": 948000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        937382,
+        956901
+      ],
+      "joint_quality_gate_passes": 1896,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        984604,
+        993518
+      ],
+      "aggregate_rejections": 1980,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 990000,
+      "estimated_joint_quality_gate_power_ppm": 986000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        979840,
+        990297
+      ],
+      "joint_quality_gate_passes": 1972,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        8077,
+        17794
+      ],
+      "aggregate_rejections": 24,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 12000,
+      "estimated_joint_quality_gate_power_ppm": 12000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        8077,
+        17794
+      ],
+      "joint_quality_gate_passes": 24,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        223249,
+        260742
+      ],
+      "aggregate_rejections": 483,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 241500,
+      "estimated_joint_quality_gate_power_ppm": 229500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        211599,
+        248438
+      ],
+      "joint_quality_gate_passes": 459,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        398542,
+        441764
+      ],
+      "aggregate_rejections": 840,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 420000,
+      "estimated_joint_quality_gate_power_ppm": 404500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        383193,
+        426173
+      ],
+      "joint_quality_gate_passes": 809,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        620229,
+        662228
+      ],
+      "aggregate_rejections": 1283,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 641500,
+      "estimated_joint_quality_gate_power_ppm": 621000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        599525,
+        642011
+      ],
+      "joint_quality_gate_passes": 1242,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        774690,
+        810187
+      ],
+      "aggregate_rejections": 1586,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 793000,
+      "estimated_joint_quality_gate_power_ppm": 777000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        758235,
+        794703
+      ],
+      "joint_quality_gate_passes": 1554,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        901436,
+        925975
+      ],
+      "aggregate_rejections": 1829,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 914500,
+      "estimated_joint_quality_gate_power_ppm": 905000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        891361,
+        917086
+      ],
+      "joint_quality_gate_passes": 1810,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        966064,
+        980118
+      ],
+      "aggregate_rejections": 1948,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 974000,
+      "estimated_joint_quality_gate_power_ppm": 968000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        959344,
+        974861
+      ],
+      "joint_quality_gate_passes": 1936,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        6877,
+        15999
+      ],
+      "aggregate_rejections": 21,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 10500,
+      "estimated_joint_quality_gate_power_ppm": 10500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        6877,
+        15999
+      ],
+      "joint_quality_gate_passes": 21,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        349601,
+        391895
+      ],
+      "aggregate_rejections": 741,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 370500,
+      "estimated_joint_quality_gate_power_ppm": 349000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        328417,
+        370162
+      ],
+      "joint_quality_gate_passes": 698,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        591456,
+        634111
+      ],
+      "aggregate_rejections": 1226,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 613000,
+      "estimated_joint_quality_gate_power_ppm": 581000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        559241,
+        602449
+      ],
+      "joint_quality_gate_passes": 1162,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        811354,
+        844387
+      ],
+      "aggregate_rejections": 1657,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 828500,
+      "estimated_joint_quality_gate_power_ppm": 804500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        786542,
+        821291
+      ],
+      "joint_quality_gate_passes": 1609,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        934670,
+        954622
+      ],
+      "aggregate_rejections": 1891,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 945500,
+      "estimated_joint_quality_gate_power_ppm": 929000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        916902,
+        939453
+      ],
+      "joint_quality_gate_passes": 1858,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        980429,
+        990706
+      ],
+      "aggregate_rejections": 1973,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 986500,
+      "estimated_joint_quality_gate_power_ppm": 981000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        974029,
+        986127
+      ],
+      "joint_quality_gate_passes": 1962,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        992792,
+        998304
+      ],
+      "aggregate_rejections": 1993,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 996500,
+      "estimated_joint_quality_gate_power_ppm": 994500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        990177,
+        996927
+      ],
+      "joint_quality_gate_passes": 1989,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        8886,
+        18981
+      ],
+      "aggregate_rejections": 26,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 13000,
+      "estimated_joint_quality_gate_power_ppm": 12500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        8481,
+        18389
+      ],
+      "joint_quality_gate_passes": 25,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        271019,
+        310784
+      ],
+      "aggregate_rejections": 581,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 290500,
+      "estimated_joint_quality_gate_power_ppm": 273500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        254412,
+        293457
+      ],
+      "joint_quality_gate_passes": 547,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        483099,
+        526882
+      ],
+      "aggregate_rejections": 1010,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 505000,
+      "estimated_joint_quality_gate_power_ppm": 485000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        463146,
+        506911
+      ],
+      "joint_quality_gate_passes": 970,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        687689,
+        727514
+      ],
+      "aggregate_rejections": 1416,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 708000,
+      "estimated_joint_quality_gate_power_ppm": 687000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        666335,
+        706948
+      ],
+      "joint_quality_gate_passes": 1374,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        848277,
+        878328
+      ],
+      "aggregate_rejections": 1728,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 864000,
+      "estimated_joint_quality_gate_power_ppm": 849000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        832639,
+        864023
+      ],
+      "joint_quality_gate_passes": 1698,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        939555,
+        958719
+      ],
+      "aggregate_rejections": 1900,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 950000,
+      "estimated_joint_quality_gate_power_ppm": 938500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        927106,
+        948212
+      ],
+      "joint_quality_gate_passes": 1877,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        983400,
+        992725
+      ],
+      "aggregate_rejections": 1978,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 989000,
+      "estimated_joint_quality_gate_power_ppm": 984500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        978083,
+        989060
+      ],
+      "joint_quality_gate_passes": 1969,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        6090,
+        14791
+      ],
+      "aggregate_rejections": 19,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 9500,
+      "estimated_joint_quality_gate_power_ppm": 9500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        6090,
+        14791
+      ],
+      "joint_quality_gate_passes": 19,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        230054,
+        267910
+      ],
+      "aggregate_rejections": 497,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 248500,
+      "estimated_joint_quality_gate_power_ppm": 236500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        218392,
+        255618
+      ],
+      "joint_quality_gate_passes": 473,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        416395,
+        459843
+      ],
+      "aggregate_rejections": 876,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 438000,
+      "estimated_joint_quality_gate_power_ppm": 416500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        395074,
+        438246
+      ],
+      "joint_quality_gate_passes": 833,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        591456,
+        634111
+      ],
+      "aggregate_rejections": 1226,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 613000,
+      "estimated_joint_quality_gate_power_ppm": 590500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        568795,
+        611858
+      ],
+      "joint_quality_gate_passes": 1181,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        783963,
+        818879
+      ],
+      "aggregate_rejections": 1604,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 802000,
+      "estimated_joint_quality_gate_power_ppm": 779000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        760290,
+        796640
+      ],
+      "joint_quality_gate_passes": 1558,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        912090,
+        935283
+      ],
+      "aggregate_rejections": 1849,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 924500,
+      "estimated_joint_quality_gate_power_ppm": 910000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        896659,
+        921769
+      ],
+      "joint_quality_gate_passes": 1820,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        967193,
+        980986
+      ],
+      "aggregate_rejections": 1950,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 975000,
+      "estimated_joint_quality_gate_power_ppm": 967000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        958232,
+        973978
+      ],
+      "joint_quality_gate_passes": 1934,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 40000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        6877,
+        15999
+      ],
+      "aggregate_rejections": 21,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 10500,
+      "estimated_joint_quality_gate_power_ppm": 7500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        4550,
+        12338
+      ],
+      "joint_quality_gate_passes": 15,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        314648,
+        355985
+      ],
+      "aggregate_rejections": 670,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 335000,
+      "estimated_joint_quality_gate_power_ppm": 294000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        274443,
+        314347
+      ],
+      "joint_quality_gate_passes": 588,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        552709,
+        596006
+      ],
+      "aggregate_rejections": 1149,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 574500,
+      "estimated_joint_quality_gate_power_ppm": 514500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        492589,
+        536356
+      ],
+      "joint_quality_gate_passes": 1029,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        807211,
+        840545
+      ],
+      "aggregate_rejections": 1649,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 824500,
+      "estimated_joint_quality_gate_power_ppm": 763000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        743870,
+        781122
+      ],
+      "joint_quality_gate_passes": 1526,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        936296,
+        955990
+      ],
+      "aggregate_rejections": 1894,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 947000,
+      "estimated_joint_quality_gate_power_ppm": 905500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        891891,
+        917555
+      ],
+      "joint_quality_gate_passes": 1811,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        982802,
+        992325
+      ],
+      "aggregate_rejections": 1977,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 988500,
+      "estimated_joint_quality_gate_power_ppm": 964000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        954905,
+        971316
+      ],
+      "joint_quality_gate_passes": 1928,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        994160,
+        998932
+      ],
+      "aggregate_rejections": 1995,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 997500,
+      "estimated_joint_quality_gate_power_ppm": 990000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        984604,
+        993518
+      ],
+      "joint_quality_gate_passes": 1980,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 50000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        11356,
+        22500
+      ],
+      "aggregate_rejections": 32,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 16000,
+      "estimated_joint_quality_gate_power_ppm": 13500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        9294,
+        19571
+      ],
+      "joint_quality_gate_passes": 27,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        277378,
+        317400
+      ],
+      "aggregate_rejections": 594,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 297000,
+      "estimated_joint_quality_gate_power_ppm": 269500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        250509,
+        289374
+      ],
+      "joint_quality_gate_passes": 539,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        459658,
+        503413
+      ],
+      "aggregate_rejections": 963,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 481500,
+      "estimated_joint_quality_gate_power_ppm": 440500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        418877,
+        462351
+      ],
+      "joint_quality_gate_passes": 881,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        696856,
+        736312
+      ],
+      "aggregate_rejections": 1434,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 717000,
+      "estimated_joint_quality_gate_power_ppm": 669000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        648069,
+        689283
+      ],
+      "joint_quality_gate_passes": 1338,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        846188,
+        876424
+      ],
+      "aggregate_rejections": 1724,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 862000,
+      "estimated_joint_quality_gate_power_ppm": 830500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        813426,
+        846307
+      ],
+      "joint_quality_gate_passes": 1661,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        947198,
+        965049
+      ],
+      "aggregate_rejections": 1914,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 957000,
+      "estimated_joint_quality_gate_power_ppm": 938000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        926568,
+        947753
+      ],
+      "joint_quality_gate_passes": 1876,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        980429,
+        990706
+      ],
+      "aggregate_rejections": 1973,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 986500,
+      "estimated_joint_quality_gate_power_ppm": 977000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        969458,
+        982713
+      ],
+      "joint_quality_gate_passes": 1954,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 150000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        5700,
+        14183
+      ],
+      "aggregate_rejections": 18,
+      "effect_ppm": 0,
+      "estimated_aggregate_power_ppm": 9000,
+      "estimated_joint_quality_gate_power_ppm": 8500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        5313,
+        13571
+      ],
+      "joint_quality_gate_passes": 17,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        212084,
+        248951
+      ],
+      "aggregate_rejections": 460,
+      "effect_ppm": 60000,
+      "estimated_aggregate_power_ppm": 230000,
+      "estimated_joint_quality_gate_power_ppm": 203500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        186431,
+        221706
+      ],
+      "joint_quality_gate_passes": 407,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        397551,
+        440759
+      ],
+      "aggregate_rejections": 838,
+      "effect_ppm": 80000,
+      "estimated_aggregate_power_ppm": 419000,
+      "estimated_joint_quality_gate_power_ppm": 389500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        368360,
+        411064
+      ],
+      "joint_quality_gate_passes": 779,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        629332,
+        671091
+      ],
+      "aggregate_rejections": 1301,
+      "effect_ppm": 100000,
+      "estimated_aggregate_power_ppm": 650500,
+      "estimated_joint_quality_gate_power_ppm": 613500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        591960,
+        634605
+      ],
+      "joint_quality_gate_passes": 1227,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        795834,
+        829964
+      ],
+      "aggregate_rejections": 1627,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 813500,
+      "estimated_joint_quality_gate_power_ppm": 777500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        758749,
+        795187
+      ],
+      "joint_quality_gate_passes": 1555,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        905159,
+        929239
+      ],
+      "aggregate_rejections": 1836,
+      "effect_ppm": 140000,
+      "estimated_aggregate_power_ppm": 918000,
+      "estimated_joint_quality_gate_power_ppm": 885000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        870274,
+        898250
+      ],
+      "joint_quality_gate_passes": 1770,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        967758,
+        981419
+      ],
+      "aggregate_rejections": 1951,
+      "effect_ppm": 160000,
+      "estimated_aggregate_power_ppm": 975500,
+      "estimated_joint_quality_gate_power_ppm": 964500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        955458,
+        971761
+      ],
+      "joint_quality_gate_passes": 1929,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 80000,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    }
+  ],
+  "power_target_summary": {
+    "effect_ppm": 120000,
+    "interpretation": "large_effect_confirmation_is_well_supported_in_moderate_nuisance_scenarios_but_worst_case_joint_power_is_reported_rather_than_hidden",
+    "joint_quality_gate_scenario_count": 9,
+    "joint_quality_gate_scenarios_at_or_above_800000": 6,
+    "maximum_estimated_aggregate_power_ppm_across_nuisance_scenarios": 947000,
+    "maximum_estimated_joint_quality_gate_power_ppm_across_nuisance_scenarios": 929000,
+    "minimum_estimated_aggregate_power_ppm_across_nuisance_scenarios": 793000,
+    "minimum_estimated_joint_quality_gate_power_ppm_across_nuisance_scenarios": 777000,
+    "minimum_moderate_nuisance_joint_quality_gate_power_ppm": 849000,
+    "no_universal_80_percent_power_claim": true
+  },
+  "protocol_digest": "b4protocol_a5d3867a8773443a44be7b583daba49835f90700bbbd5221d852bdc0417a0f8a",
+  "protocol_schema_version": "product_bakeoff_b4_protocol.v1",
+  "publication_policy": {
+    "aggregate_only": true,
+    "failure_closeout_still_publishes_only_safe_aggregate_counts": true,
+    "no_result_shopping_or_post_output_rule_change": true,
+    "publish_deployment_gate_outcomes_after_ranking": true,
+    "publish_effects_confidence_intervals_ranks_and_pareto_frontier": true,
+    "publish_no_intermediate_panel_metrics_before_terminal_closeout": true,
+    "publish_no_private_repository_task_query_oracle_identity": true,
+    "publish_panel_count_not_panel_repository_identity": true
+  },
+  "randomization": {
+    "cold_role_balance_exact_per_panel": true,
+    "first_order_predecessor_balance_exact_per_panel_and_cache_state": true,
+    "one_cold_three_warm_tasks_per_repository": true,
+    "panel_task_order_seeded_before_treatment": true,
+    "position_balance_exact_per_panel_and_cache_state": true,
+    "schedule_digest": "b4schedule_4d96dd3ff00bce5b110d74167fd914f12bb6b3fb5310e096d96c37233ba4b4b7",
+    "schedule_rows": 576,
+    "seed": "openlocus-b4-20260718-three-arm-twelve-panel-single-lifecycle-v1",
+    "sequence_balance_exact_per_panel_and_task_role": true,
+    "sequence_count": 6
+  },
+  "resource_policy": {
+    "authoring_mode": "serial_candidate_clone_materialize_freeze_cleanup",
+    "durable_results_append_before_scratch_cleanup": true,
+    "failed_or_rejected_candidate_clone_deleted_before_replacement": true,
+    "formal_execution_mode": "bounded_streaming_repository_lanes",
+    "frozen_repository_source_stored_as_content_bound_compact_snapshot": true,
+    "git_history_dependency_caches_and_build_outputs_not_persisted": true,
+    "gpu_required": false,
+    "maximum_expanded_repositories_per_lane": 1,
+    "no_adaptive_parallelism_after_treatment_begins": true,
+    "no_arbitrary_fixed_free_disk_floor": true,
+    "parallel_lane_count_frozen_after_local_and_linux_qualification": true,
+    "same_parallel_lane_count_and_affinity_for_every_arm": true,
+    "scratch_admission_uses_measured_snapshot_and_runner_working_set": true
+  },
+  "sample_size_decision": {
+    "adverse_sensitivity_panel_effect_sd_ppm": 0,
+    "adverse_sensitivity_repository_icc_ppm": 250000,
+    "eighteen_panel_logical_record_count": 3240,
+    "eighteen_panel_record_ratio_ppm": 1500000,
+    "eighteen_panel_repository_cluster_count": 216,
+    "eighteen_panel_worst_case_target_joint_quality_power_ppm": 925000,
+    "selected_logical_record_count": 2160,
+    "selected_panel_count": 12,
+    "selected_repository_cluster_count": 144,
+    "selected_worst_case_target_joint_quality_power_ppm": 777000,
+    "selection_reason": "twelve_panels_preserve_independent_replication_and_always_publish_estimates_while_avoiding_a_50_percent_compute_increase_solely_to_cover_the_most_adverse_unidentified_nuisance_case"
+  },
+  "sample_size_sensitivity": [
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        579364,
+        622249
+      ],
+      "aggregate_rejections": 1202,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 601000,
+      "estimated_joint_quality_gate_power_ppm": 573500,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        551704,
+        595014
+      ],
+      "joint_quality_gate_passes": 1147,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 6,
+      "panel_count": 8,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 96,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        774690,
+        810187
+      ],
+      "aggregate_rejections": 1586,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 793000,
+      "estimated_joint_quality_gate_power_ppm": 777000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        758235,
+        794703
+      ],
+      "joint_quality_gate_passes": 1554,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 8,
+      "panel_count": 12,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 144,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        885547,
+        911921
+      ],
+      "aggregate_rejections": 1799,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 899500,
+      "estimated_joint_quality_gate_power_ppm": 861000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        845145,
+        875471
+      ],
+      "joint_quality_gate_passes": 1722,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 11,
+      "panel_count": 16,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 192,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    },
+    {
+      "aggregate_monte_carlo_95ci_ppm": [
+        940099,
+        959173
+      ],
+      "aggregate_rejections": 1901,
+      "effect_ppm": 120000,
+      "estimated_aggregate_power_ppm": 950500,
+      "estimated_joint_quality_gate_power_ppm": 925000,
+      "joint_quality_gate_monte_carlo_95ci_ppm": [
+        912624,
+        935747
+      ],
+      "joint_quality_gate_passes": 1850,
+      "minimum_material_effect_ppm": 60000,
+      "minimum_positive_panels": 12,
+      "panel_count": 18,
+      "panel_effect_sd_ppm": 0,
+      "repository_cluster_count": 216,
+      "repository_icc_ppm": 250000,
+      "simulations": 2000
+    }
+  ],
+  "schema_version": "product_bakeoff_b4_protocol_report.v1",
+  "source_bundle_digest": "b4bundle_a6e7b91767088284a415b7735920d3a5730af6afd1e8d27672452b73e8f5e32d",
+  "status": "product_bakeoff_b4_independent_replication_protocol_frozen_no_runtime_no_holdout_no_execution"
+}

@@ -1,0 +1,147 @@
+{
+  "aggregate_only": true,
+  "audit_digest": "b3audit_cc94b30d2b91c61da081ac24188cec5294308217e98772cfd0675a05d6d92f23",
+  "claim_level": "public_posthoc_design_audit_no_b3_reclassification_no_promotion",
+  "closure": {
+    "b3_product_default_changed": false,
+    "b3_rescored_reranked_or_recomputed": false,
+    "b3_result_status_changed": false,
+    "private_b3_task_level_scores_reconstructed": false,
+    "private_b3_task_or_repository_identity_read_or_published": false
+  },
+  "corrective_route": {
+    "baseline_ranked_symmetrically_with_candidates": true,
+    "candidate_arms": [
+      "b1_s0_bm25",
+      "b1_s1_bm25_text",
+      "b1_s4_s2pool_support"
+    ],
+    "exact_ties_share_competition_rank": true,
+    "independent_fresh_panels_required": true,
+    "new_execution_authorized": false,
+    "next_protocol_label": "product_bakeoff_b4",
+    "pareto_frontier_always_published": true,
+    "ranking_precedes_deployment_gates": true,
+    "relative_effect_estimates_and_uncertainty_always_published": true
+  },
+  "date": "2026-07-18",
+  "decision_rule_audit": {
+    "absolute_floor_maxima": {
+      "ambiguous_status_success_count": {
+        "baseline_observed": 1,
+        "floor": 5,
+        "observed_candidate_max": 1
+      },
+      "answerable_target_success_count": {
+        "baseline_observed": 19,
+        "floor": 34,
+        "observed_candidate_max": 27
+      },
+      "minimum_language_stratum": {
+        "baseline_observed": 7,
+        "floor": 11,
+        "observed_candidate_max": 9
+      },
+      "minimum_role_stratum": {
+        "baseline_observed": 0,
+        "floor": 8,
+        "observed_candidate_max": 3
+      },
+      "minimum_size_stratum": {
+        "baseline_observed": 4,
+        "floor": 8,
+        "observed_candidate_max": 5
+      },
+      "one_shot_success_count": {
+        "baseline_observed": 23,
+        "floor": 30,
+        "observed_candidate_max": 26
+      },
+      "task_success_count": {
+        "baseline_observed": 23,
+        "floor": 34,
+        "observed_candidate_max": 29
+      }
+    },
+    "all_candidates_shared_the_seven_core_absolute_failures": true,
+    "b2_absolute_quality_floors_reused_without_b3_panel_calibration": true,
+    "baseline_control_not_subject_to_candidate_absolute_quality_floors": true,
+    "baseline_counterfactual_candidate_floor_failures": [
+      "ambiguous_status_success_below_floor",
+      "answerable_target_success_below_floor",
+      "language_stratum_below_floor",
+      "one_shot_success_below_floor",
+      "overall_task_success_below_floor",
+      "role_stratum_below_floor",
+      "size_stratum_below_floor"
+    ],
+    "candidate_eligibility_filter_applied_before_competition_ranking": true,
+    "decision_rule_answered_deployment_eligibility_but_not_relative_order": true,
+    "product_selection_question_not_sufficiently_answered": true,
+    "quality_ranks_empty_because_no_candidate_reached_ranking": true,
+    "resource_ranks_empty_because_no_candidate_reached_ranking": true,
+    "shared_candidate_failure_reasons": [
+      "ambiguous_status_success_below_floor",
+      "answerable_target_success_below_floor",
+      "language_stratum_below_floor",
+      "one_shot_success_below_floor",
+      "overall_task_success_below_floor",
+      "role_stratum_below_floor",
+      "size_stratum_below_floor"
+    ],
+    "tie_policy_implemented_but_not_reached": true
+  },
+  "descriptive_planning_signals": {
+    "b1_s1_bm25_text": {
+      "answerable_target_success_delta": 5,
+      "context_f05_sum_delta_ppm": 14416220,
+      "one_shot_success_delta": 3,
+      "peak_rss_p95_ratio_ppm": 1003940,
+      "planning_only_not_confirmatory": true,
+      "task_success_delta": 3,
+      "warm_query_p95_ratio_ppm": 1028330
+    },
+    "b1_s4_s2pool_support": {
+      "answerable_target_success_delta": 8,
+      "context_f05_sum_delta_ppm": 14563279,
+      "one_shot_success_delta": 3,
+      "peak_rss_p95_ratio_ppm": 1003848,
+      "planning_only_not_confirmatory": true,
+      "task_success_delta": 6,
+      "warm_query_p95_ratio_ppm": 1969124
+    },
+    "b3_may_not_be_counted_as_b4_confirmatory_replication": true,
+    "b3_public_aggregates_may_inform_b4_planning_only": true
+  },
+  "execution_validity": {
+    "all_pre_score_gates_passed": true,
+    "formal_execution_integrity_valid": true,
+    "logical_group_count": 360,
+    "logical_record_count": 1440,
+    "logical_task_count": 48,
+    "provider_network_call_count": 0
+  },
+  "parent_result": {
+    "file_sha256": "a4cb5414b5486e166aae783ce508e55e24e92e181fa73ac232185254be5d8e25",
+    "result_digest": "b3result_25ef345fa4b312ab9292ffe47fdb4ee26d0009d7ca3e46c867fcf245f8f82a00",
+    "result_remains_frozen_and_authoritative": true,
+    "schema_version": "product_bakeoff_b3_tournament_result.v1",
+    "status": "product_bakeoff_b3_tournament_complete_aggregate_only"
+  },
+  "phase": "product_bakeoff_b3_post_result_design_validity_audit",
+  "replication_audit": {
+    "between_panel_variance_not_estimated": true,
+    "formal_tournament_count": 1,
+    "independent_holdout_panel_count": 1,
+    "logical_record_count_is_not_quality_sample_size": true,
+    "logical_task_count": 48,
+    "population_generalization_not_supported": true,
+    "quality_sample_size_is_48_tasks_nested_in_12_repository_clusters": true,
+    "repository_cluster_count": 12,
+    "technical_repetition_count": 4,
+    "technical_repetitions_are_not_independent_quality_samples": true
+  },
+  "schema_version": "product_bakeoff_b3_design_audit.v1",
+  "source_bundle_digest": "b3auditbundle_bb811cab38a9d7337ae656983f709557a67dc3f27ea970325555df3a16912cff",
+  "status": "product_bakeoff_b3_decision_and_replication_design_audited_result_frozen"
+}
