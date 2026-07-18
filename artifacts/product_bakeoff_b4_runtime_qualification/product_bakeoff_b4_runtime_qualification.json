@@ -1,0 +1,107 @@
+{
+  "claim_level": "public_synthetic_runtime_integrity_only_no_private_holdout",
+  "date": "2026-07-18",
+  "decision": {
+    "empirical_result_exists": false,
+    "formal_execution_authorized": false,
+    "private_holdout_read": false,
+    "private_multi_panel_authoring_allowed_after_green_publication_ci": true,
+    "runtime_qualified": true,
+    "treatment_output_exists": false
+  },
+  "next_authorized_action": "Commit this aggregate-only qualification and obtain green public CI; then author and freeze the twelve mutually disjoint private B4 panels.",
+  "phase": "product_bakeoff_b4_exact_linux_runtime_qualification",
+  "publication_limits": {
+    "aggregate_only": true,
+    "exact_cli_or_runtime_fingerprint_public": false,
+    "exact_runner_profile_or_location_public": false,
+    "exact_synthetic_query_or_source_public": false,
+    "private_receipt_digest_public": false,
+    "private_repository_task_or_oracle_public": false
+  },
+  "qualification_digest": "b4qual_9924ace39b38a6b1729beff7f2d8665cb01683df640e766bf840867c59155579",
+  "qualification_version": "product_bakeoff_b4_runtime_qualification.v1",
+  "runner_gate": {
+    "current_runner_class_admitted": true,
+    "exact_current_profile_frozen_privately": true,
+    "exact_runner_profile_public": false,
+    "historical_machine_identity_required": false,
+    "memory_capacity_policy": {
+      "active_file_cache_included": false,
+      "anonymous_or_shared_memory_included": false,
+      "effective_available_capped_at_cgroup_limit": true,
+      "inactive_file_cache_included_as_reclaimable": true,
+      "minimum_effective_available_memory_bytes_at_start": 25769803776,
+      "policy_version": "product_bakeoff_b4_reclaimable_memory_headroom.v1",
+      "raw_limit_headroom_included": true
+    },
+    "minimum_runner_class": {
+      "active_swap_must_equal_zero": true,
+      "cgroup_available_memory_measurement": "raw_limit_headroom_plus_inactive_file_cache_capped_at_limit",
+      "custom_runner_label": "openlocus-b23-private",
+      "finite_cgroup_cpu_and_memory_limits_required": true,
+      "maximum_idle_cgroup_cpu_millicores": 250,
+      "minimum_cgroup_available_memory_bytes_at_start": 25769803776,
+      "minimum_cgroup_memory_limit_bytes": 34359738368,
+      "minimum_effective_cpu_quota_count": 8,
+      "minimum_free_local_scratch_bytes_at_start": 5100273664,
+      "minimum_open_file_soft_limit": 65535,
+      "minimum_python_major": 3,
+      "minimum_python_minor": 10,
+      "profile_revalidated_after_sustained_qualification": true,
+      "provider_physical_host_exclusivity_not_claimed": true,
+      "qualification_runner_registration_must_be_ephemeral_one_job": true,
+      "required_architecture": "x64",
+      "required_cargo_version_prefix": "cargo 1.95.0 ",
+      "required_os": "linux",
+      "required_rustc_version_prefix": "rustc 1.95.0 ",
+      "runner_must_be_dedicated_and_idle": true,
+      "same_machine_instance_for_qualification_and_future_tournament": true,
+      "scratch_must_be_outside_checkout": true,
+      "scratch_volume_must_be_nonrotational_local_block_storage": true,
+      "stable_profile_fields_must_not_change_during_qualification": true
+    },
+    "scratch_capacity_policy": {
+      "arbitrary_fixed_disk_floor_forbidden": true,
+      "authoring_clone_storage_is_measured_separately": true,
+      "calculated_filesystem_margin_bytes": 1073741824,
+      "calculated_peak_working_set_bytes": 4026531840,
+      "concurrent_arm_snapshot_count": 3,
+      "control_receipt_margin_multiplier": 1,
+      "filesystem_margin_fraction_ppm": 250000,
+      "filesystem_margin_minimum_bytes": 1073741824,
+      "groups_are_serial_and_deleted_after_completion": true,
+      "largest_visible_snapshot_bytes": 268435456,
+      "minimum_free_local_scratch_bytes_at_start": 5100273664,
+      "policy_version": "product_bakeoff_b4_measured_serial_working_set.v1",
+      "snapshot_index_and_render_multiplier": 4
+    },
+    "stable_profile_unchanged_during_qualification": true
+  },
+  "schema_version": "product_bakeoff_b4_runtime_qualification_public.v1",
+  "source_gate": {
+    "checkpoint": "55350f4ec24eff0134fbe1208950fe88ac3ce751",
+    "ci_conclusion": "success",
+    "ci_run_id": 29646526753,
+    "control_source_bundle_digest": "b4controlsrc_b5e00815a8ae8002d339ed8f58691e448ee06ebd25d1197f028c85770688fd12"
+  },
+  "status": "product_bakeoff_b4_exact_linux_runtime_qualified_private_multi_panel_authoring_allowed_after_publication_ci",
+  "synthetic_matrix": {
+    "actual_production_bakeoff_query_parser_used": true,
+    "actual_production_cli_used": true,
+    "all_bm25_receipts_executed": true,
+    "all_cases_returned_current_evidence": true,
+    "all_invalid_hits_skipped_zero": true,
+    "all_stale_hits_skipped_zero": true,
+    "case_categories": [
+      "ordinary_identifier",
+      "leading_underscore_identifier",
+      "punctuation_split_identifier",
+      "one_character_identifier"
+    ],
+    "case_count": 4,
+    "passed_case_count": 4,
+    "private_input_read": false,
+    "provider_network_call_count": 0
+  }
+}

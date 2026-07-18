@@ -1,0 +1,81 @@
+name: product-bakeoff-b4-runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_*.py'
+      - 'eval/ci_clone_and_lock_repo.py'
+      - 'crates/**/*.rs'
+      - 'Cargo.lock'
+      - 'scripts/product_bakeoff_b4_linux_longrun.sh'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - 'artifacts/product_bakeoff_b4_runtime_qualification/**'
+      - 'docs/en/product-bakeoff-b4-runtime-qualification.md'
+      - 'docs/zh/product-bakeoff-b4-runtime-qualification.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b4-control.yml'
+      - '.github/workflows/product-bakeoff-b4-runtime.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_*.py'
+      - 'eval/ci_clone_and_lock_repo.py'
+      - 'crates/**/*.rs'
+      - 'Cargo.lock'
+      - 'scripts/product_bakeoff_b4_linux_longrun.sh'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - 'artifacts/product_bakeoff_b4_runtime_qualification/**'
+      - 'docs/en/product-bakeoff-b4-runtime-qualification.md'
+      - 'docs/zh/product-bakeoff-b4-runtime-qualification.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - '.github/workflows/product-bakeoff-b4-control.yml'
+      - '.github/workflows/product-bakeoff-b4-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b4-runtime-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  runtime-publication:
+    name: runtime-publication
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out B4 runtime publication
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile B4 runtime validators
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b4_source.py \
+            eval/product_bakeoff_b4_runtime_qualification.py \
+            eval/product_bakeoff_b4_cli.py
+      - name: Validate aggregate-only B4 runtime qualification
+        run: |
+          python eval/product_bakeoff_b4_cli.py check-public \
+            artifacts/product_bakeoff_b4_runtime_qualification/product_bakeoff_b4_runtime_qualification.json
+      - name: Run public privacy and bilingual documentation audits
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check
