@@ -28,7 +28,7 @@ B4_SCORER_VERSION = "product_bakeoff_b4_scorer.v1"
 B4_PRIVATE_ANALYSIS_SCHEMA = "product_bakeoff_b4_private_analysis.v1"
 B4_PRIVATE_ANALYSIS_STATUS = "product_bakeoff_b4_complete_comparative_analysis_private"
 B4_PARENT_PROTOCOL_DIGEST = (
-    "b4protocol_07289b69f07cefe05ccd0b171a8e437739de8ac5a20fd035c0d73baba02b112e"
+    "b4protocol_cf983176938c83c415b44bfb50b64baa866bebac9e1567e85a119f5073683cc1"
 )
 
 

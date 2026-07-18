@@ -1,0 +1,146 @@
+name: product-bakeoff-b4-control
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b4_protocol.py'
+      - 'eval/product_bakeoff_b4_runner.py'
+      - 'eval/product_bakeoff_b4_scorer.py'
+      - 'eval/product_bakeoff_b4_publication.py'
+      - 'eval/product_bakeoff_b4_execution_adapter.py'
+      - 'eval/product_bakeoff_b4_source.py'
+      - 'eval/product_bakeoff_b4_runtime_qualification.py'
+      - 'eval/product_bakeoff_b4_control.py'
+      - 'eval/product_bakeoff_b4_cli.py'
+      - 'eval/product_bakeoff_b4_control_integration.py'
+      - 'scripts/product_bakeoff_b4_linux_longrun.sh'
+      - 'artifacts/product_bakeoff_b4_protocol/**'
+      - 'artifacts/product_bakeoff_b4_engine_integration/**'
+      - 'artifacts/product_bakeoff_b4_control_integration/**'
+      - 'docs/en/product-bakeoff-b4-control-integration.md'
+      - 'docs/zh/product-bakeoff-b4-control-integration.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - '.github/workflows/product-bakeoff-b4-control.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'eval/product_bakeoff_b4_protocol.py'
+      - 'eval/product_bakeoff_b4_runner.py'
+      - 'eval/product_bakeoff_b4_scorer.py'
+      - 'eval/product_bakeoff_b4_publication.py'
+      - 'eval/product_bakeoff_b4_execution_adapter.py'
+      - 'eval/product_bakeoff_b4_source.py'
+      - 'eval/product_bakeoff_b4_runtime_qualification.py'
+      - 'eval/product_bakeoff_b4_control.py'
+      - 'eval/product_bakeoff_b4_cli.py'
+      - 'eval/product_bakeoff_b4_control_integration.py'
+      - 'scripts/product_bakeoff_b4_linux_longrun.sh'
+      - 'artifacts/product_bakeoff_b4_protocol/**'
+      - 'artifacts/product_bakeoff_b4_engine_integration/**'
+      - 'artifacts/product_bakeoff_b4_control_integration/**'
+      - 'docs/en/product-bakeoff-b4-control-integration.md'
+      - 'docs/zh/product-bakeoff-b4-control-integration.md'
+      - 'docs/en/current-research-conclusions.md'
+      - 'docs/zh/current-research-conclusions.md'
+      - 'scripts/public_artifact_privacy_audit.py'
+      - 'scripts/validate_docs_i18n.py'
+      - '.github/workflows/product-bakeoff-b4-control.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: product-bakeoff-b4-control-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  control-integration:
+    name: control-integration-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out B4 control integration
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Compile B4 control tooling
+        run: |
+          python -m py_compile \
+            eval/product_bakeoff_b4_protocol.py \
+            eval/product_bakeoff_b4_runner.py \
+            eval/product_bakeoff_b4_scorer.py \
+            eval/product_bakeoff_b4_publication.py \
+            eval/product_bakeoff_b4_execution_adapter.py \
+            eval/product_bakeoff_b4_source.py \
+            eval/product_bakeoff_b4_runtime_qualification.py \
+            eval/product_bakeoff_b4_control.py \
+            eval/product_bakeoff_b4_cli.py \
+            eval/product_bakeoff_b4_control_integration.py
+      - name: Prove raw child import fence
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "eval")
+          import product_bakeoff_b4_execution_adapter
+          import product_bakeoff_b4_control
+          forbidden = {
+              "product_bakeoff_b2_author",
+              "product_bakeoff_b2_oracle",
+              "product_bakeoff_b2_scorer",
+              "product_bakeoff_b21_scorer",
+              "product_bakeoff_b24_scorer",
+              "product_bakeoff_b25_scorer",
+              "product_bakeoff_b3_scorer",
+              "product_bakeoff_b4_scorer",
+          }
+          loaded = sorted(forbidden & set(sys.modules))
+          print({"forbidden_loaded": loaded})
+          if loaded:
+              raise SystemExit(1)
+          PY
+      - name: Validate B4 protocol and engine parents
+        run: |
+          python eval/product_bakeoff_b4_protocol.py --self-test
+          python eval/product_bakeoff_b4_protocol.py \
+            --check-drift \
+            artifacts/product_bakeoff_b4_protocol/product_bakeoff_b4_protocol_report.json
+          python eval/product_bakeoff_b4_engine_integration.py \
+            --check-drift \
+            artifacts/product_bakeoff_b4_engine_integration/product_bakeoff_b4_engine_integration.json
+      - name: Run B4 offline control tests
+        run: |
+          python eval/product_bakeoff_b4_cli.py self-test
+          python eval/product_bakeoff_b4_cli.py fault-test
+          python eval/product_bakeoff_b4_control_integration.py --self-test
+          python eval/product_bakeoff_b4_control_integration.py --fault-test
+          python eval/product_bakeoff_b4_control_integration.py \
+            --check-drift \
+            artifacts/product_bakeoff_b4_control_integration/product_bakeoff_b4_control_integration.json
+      - name: Test Linux disconnect-safe handshake
+        if: runner.os == 'Linux'
+        run: bash scripts/product_bakeoff_b4_linux_longrun.sh --self-test
+      - name: Run public privacy and bilingual documentation audits
+        if: runner.os == 'Linux'
+        run: |
+          python scripts/public_artifact_privacy_audit.py --self-test
+          python scripts/public_artifact_privacy_audit.py
+          python scripts/validate_docs_i18n.py
+      - name: Check patch formatting
+        run: git diff --check

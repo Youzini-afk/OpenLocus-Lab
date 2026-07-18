@@ -13,15 +13,15 @@
     "source_runtime_corpus_readiness_execution_control_implemented": false,
     "treatment_output_exists": false
   },
-  "integration_digest": "b4engine_16e18e83ce78a8bdc9f026643f5b42f00c722620b3d31e41bf30282c2af78e02",
+  "integration_digest": "b4engine_4428645a9aeee22032da3b6268bead4c3abc872bbcac8fd1d08fb3da155e2f0f",
   "next_authorized_action": "implement_and_fault_test_the_b4_raw_repository_execution_adapter_and_offline_source_runtime_corpus_readiness_execution_control_without_creating_a_private_holdout_or_treatment_output",
   "parent_protocol": {
-    "canonical_sha256": "4bb3a0d1c673ee684e39e8a3c323cd796d46f27bda5638e209e01b21c6a83f42",
-    "checkpoint": "e5e72cf8dcca0d1a1426fc22ef3133cb0ba0d747",
+    "canonical_sha256": "09b23a56b8595faa9870fcf8f8472cf585b336c24bc09d6d20ce2969b107602f",
+    "checkpoint": "da022c13a00733db113019c3296041b765ec40cd",
     "ci_conclusion": "success",
-    "ci_run_id": 29639800266,
-    "file_sha256": "8521232e02ab32fed0d275aa77c6135c892671887171d3f0f138308e8ae00108",
-    "protocol_digest": "b4protocol_07289b69f07cefe05ccd0b171a8e437739de8ac5a20fd035c0d73baba02b112e"
+    "ci_run_id": 29642868008,
+    "file_sha256": "877479088f70fe5c23a4bebe7ae1230eb4b41488c57a03ce1d334cace06d4df9",
+    "protocol_digest": "b4protocol_cf983176938c83c415b44bfb50b64baa866bebac9e1567e85a119f5073683cc1"
   },
   "phase": "product_bakeoff_b4_closed_matrix_cluster_analysis_publication",
   "publication_contract": {
@@ -68,7 +68,7 @@
     "scorer_version": "product_bakeoff_b4_scorer.v1",
     "two_planned_candidate_comparisons_only": true
   },
-  "source_bundle_digest": "b4engsrc_01d4627ef1efd99a7eca570b104d3b2400ada67ba4dee8849946ee4c8698e6a9",
+  "source_bundle_digest": "b4engsrc_9be6a4350dd1cda70a91284c25b1cb42a9f80bdc42fd3ecbc6331f55fa6fbdd0",
   "status": "product_bakeoff_b4_analysis_publication_engine_complete_no_runtime_no_holdout_no_execution",
   "synthetic_validation": {
     "module_reports": {
